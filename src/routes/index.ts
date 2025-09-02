@@ -1,0 +1,8 @@
+export { default as mainRoutes } from './main.routes';
+export { default as assetRoutes } from './asset.routes';
+export { default as authRoutes } from './auth.routes';
+export { default as assignmentRoutes } from './assignment.routes';
+export { default as employeeRoutes } from './employee.routes';
+export { default as expenseRoutes } from './expense.routes';
+export { default as reportRoutes } from './report.routes';
+export { default as uploadRoutes } from './upload.routes';
