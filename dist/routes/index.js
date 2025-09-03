@@ -1,0 +1,22 @@
+"use strict";
+var __importDefault = (this && this.__importDefault) || function (mod) {
+    return (mod && mod.__esModule) ? mod : { "default": mod };
+};
+Object.defineProperty(exports, "__esModule", { value: true });
+exports.uploadRoutes = exports.reportRoutes = exports.expenseRoutes = exports.employeeRoutes = exports.assignmentRoutes = exports.authRoutes = exports.assetRoutes = exports.mainRoutes = void 0;
+var main_routes_1 = require("./main.routes");
+Object.defineProperty(exports, "mainRoutes", { enumerable: true, get: function () { return __importDefault(main_routes_1).default; } });
+var asset_routes_1 = require("./asset.routes");
+Object.defineProperty(exports, "assetRoutes", { enumerable: true, get: function () { return __importDefault(asset_routes_1).default; } });
+var auth_routes_1 = require("./auth.routes");
+Object.defineProperty(exports, "authRoutes", { enumerable: true, get: function () { return __importDefault(auth_routes_1).default; } });
+var assignment_routes_1 = require("./assignment.routes");
+Object.defineProperty(exports, "assignmentRoutes", { enumerable: true, get: function () { return __importDefault(assignment_routes_1).default; } });
+var employee_routes_1 = require("./employee.routes");
+Object.defineProperty(exports, "employeeRoutes", { enumerable: true, get: function () { return __importDefault(employee_routes_1).default; } });
+var expense_routes_1 = require("./expense.routes");
+Object.defineProperty(exports, "expenseRoutes", { enumerable: true, get: function () { return __importDefault(expense_routes_1).default; } });
+var report_routes_1 = require("./report.routes");
+Object.defineProperty(exports, "reportRoutes", { enumerable: true, get: function () { return __importDefault(report_routes_1).default; } });
+var upload_routes_1 = require("./upload.routes");
+Object.defineProperty(exports, "uploadRoutes", { enumerable: true, get: function () { return __importDefault(upload_routes_1).default; } });

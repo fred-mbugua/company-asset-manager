@@ -1,7 +1,7 @@
 import bcrypt from 'bcryptjs';
 import jwt from 'jsonwebtoken';
 import { UserModel, RefreshTokenModel } from '../models';
-import { JWT_ACCESS_SECRET, JWT_REFRESH_SECRET, JWT_ACCESS_EXPIRATION, JWT_REFRESH_EXPIRATION } from '../config';
+import * as jwtConfig from '../config';
 
 export class AuthService {
   async register(userData: any) {
@@ -38,7 +38,7 @@ export class AuthService {
         throw new Error('Refresh token expired');
       }
       
-      const decoded: any = jwt.verify(refreshToken, JWT_REFRESH_SECRET);
+      const decoded: any = jwt.verify(refreshToken, jwtConfig.JWT_REFRESH_SECRET_KEY);
       const user = await UserModel.findById(decoded.id);
 
       if (!user) {
@@ -65,12 +65,12 @@ export class AuthService {
 
   private generateAccessToken(user: any) {
     const payload = { id: user.id, email: user.email, role: user.role };
-    return jwt.sign(payload, JWT_ACCESS_SECRET as jwt.Secret, { expiresIn: JWT_ACCESS_EXPIRATION });
+    return jwt.sign(payload, jwtConfig.JWT_ACCESS_SECRET_KEY, { expiresIn: jwtConfig.JWT_ACCESS_EXPIRATION_TIME });
   }
 
   private generateRefreshToken(user: any) {
     const payload = { id: user.id, email: user.email, role: user.role };
-    return jwt.sign(payload, JWT_REFRESH_SECRET, { expiresIn: JWT_REFRESH_EXPIRATION });
+    return jwt.sign(payload, jwtConfig.JWT_REFRESH_SECRET_KEY, { expiresIn: jwtConfig.JWT_REFRESH_EXPIRATION_TIME });
   }
 }
 

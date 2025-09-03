@@ -1,0 +1,4 @@
+2025-09-03 17:13:47 error: error: password authentication failed for user "user"
+    at C:\Users\Fredrick\Documents\JS\JSL_SYSTEM\Asset Management Application\app\node_modules\pg-pool\index.js:45:11
+    at processTicksAndRejections (node:internal/process/task_queues:95:5)
+    at async connectDB (C:\Users\Fredrick\Documents\JS\JSL_SYSTEM\Asset Management Application\app\src\config\database.ts:11:5)

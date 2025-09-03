@@ -1,6 +1,6 @@
 import { Request, Response, NextFunction } from 'express';
 import jwt from 'jsonwebtoken';
-import { JWT_ACCESS_SECRET } from '../config';
+import { JWT_ACCESS_SECRET_KEY } from '../config';
 import { AuthenticatedRequest } from '../types';
 
 export const authenticate = (req: AuthenticatedRequest, res: Response, next: NextFunction) => {
@@ -11,7 +11,10 @@ export const authenticate = (req: AuthenticatedRequest, res: Response, next: Nex
   }
 
   try {
-    const decoded = jwt.verify(token, JWT_ACCESS_SECRET);
+    const decoded = jwt.verify(token, JWT_ACCESS_SECRET_KEY);
+    if (typeof decoded === 'string') {
+      return res.status(401).json({ message: 'Invalid token payload' });
+    }
     req.user = decoded;
     next();
   } catch (error) {
