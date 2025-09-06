@@ -1,12 +1,28 @@
 import bcrypt from 'bcryptjs';
 import jwt from 'jsonwebtoken';
-import { UserModel, RefreshTokenModel } from '../models';
+import { UserModel, RefreshTokenModel, RoleModel } from '../models';
 import * as jwtConfig from '../config';
 
 export class AuthService {
   async register(userData: any) {
+    // Find role ID based on the provided role name
+    const role = await RoleModel.findByName(userData.role);
+    if (!role) {
+      throw new Error('Invalid role specified');
+    }
+
+    // Hash password
     const hashedPassword = await bcrypt.hash(userData.password, 10);
-    const newUser = await UserModel.create({ ...userData, password: hashedPassword });
+    
+    // Create new user using the role ID
+    const newUser = await UserModel.create({
+      first_name: userData.first_name,
+      middle_name: userData.middle_name,
+      last_name: userData.last_name,
+      email: userData.email,
+      password_hash: hashedPassword,
+      role_id: role.id
+    });
     return newUser;
   }
 

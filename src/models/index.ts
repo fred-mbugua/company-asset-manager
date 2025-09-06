@@ -5,3 +5,4 @@ export { default as EmployeeModel } from './employee.model';
 export { default as ExpenseModel } from './expense.model';
 export { default as ReportModel } from './report.model';
 export { default as RefreshTokenModel } from './refreshToken.model';
+export { default as RoleModel } from './role.model';
