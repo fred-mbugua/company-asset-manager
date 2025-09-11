@@ -1,0 +1,273 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Create / Manage Users</title>
+  <style>
+    .user-form-container {
+      background: #fff;
+      padding: 20px;
+      border-radius: 8px;
+      max-width: 1500px;
+      margin: 20px auto;
+    }
+    h3 { margin-bottom: 15px; color: #333; }
+    
+    /* Always 3 columns */
+    .form-grid {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 15px;
+    }
+    .form-group {
+      display: flex;
+      flex-direction: column;
+    }
+    label {
+      margin-bottom: 5px;
+      font-weight: 600;
+    }
+    input, select {
+      width: 100%;
+      padding: 8px;
+      border: 1px solid #ccc;
+      border-radius: 4px;
+      font-size: 14px;
+    }
+
+    /* Actions */
+    .actions {
+      display: flex;
+      gap: 10px;
+      margin-top: 15px;
+    }
+    .btn {
+      padding: 8px 16px;
+      border: none;
+      border-radius: 4px;
+      cursor: pointer;
+      font-size: 14px;
+    }
+    .btn-save { background: #F37635; color: #ffffff; }
+    .btn-cancel { background: #F37635; color: #ffffff; }
+
+    /* Messages */
+    .message { margin-top: 15px; font-size: 14px; }
+    .message.success { color: green; }
+    .message.error { color: red; }
+
+    /* Table for user list */
+    .user-list {
+      margin-top: 30px;
+      overflow-x: auto;
+    }
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      font-size: 14px;
+    }
+    th, td {
+      border: 1px solid #ddd;
+      padding: 8px;
+      text-align: left;
+    }
+    th { background: #f8f9fa; }
+    tr:nth-child(even) { background: #fdfdfd; }
+    .btn-edit { background: #F37635; color: #ffffff; }
+    .btn-delete { background: #dc3545; color: #fff; margin-left: 5px; }
+  </style>
+</head>
+<body>
+  <div class="user-form-container">
+    <h3>Create / Manage Users</h3>
+
+    <!-- Form -->
+    <form id="user-form">
+      <input type="hidden" id="user_id">
+
+      <div class="form-grid">
+        <div class="form-group">
+          <label for="first_name">First Name</label>
+          <input type="text" id="first_name" required>
+        </div>
+        <div class="form-group">
+          <label for="middle_name">Middle Name</label>
+          <input type="text" id="middle_name" required>
+        </div>
+        <div class="form-group">
+          <label for="last_name">Last Name</label>
+          <input type="text" id="last_name" required>
+        </div>
+        <div class="form-group">
+          <label for="email">Email</label>
+          <input type="email" id="email" required>
+        </div>
+        <div class="form-group">
+          <label for="password">Password (leave blank if not changing)</label>
+          <input type="password" id="password">
+        </div>
+        <div class="form-group">
+          <label for="role">Role</label>
+          <select id="role" required>
+            <option value="">-- Select Role --</option>
+            <option value="Admin">Admin</option>
+            <option value="Standard User">Standard User</option>
+          </select>
+        </div>
+      </div>
+
+      <div class="actions">
+        <button type="submit" class="btn btn-save">Save</button>
+        <button type="button" class="btn btn-cancel" onclick="resetForm()">Cancel</button>
+      </div>
+      <div id="form-message" class="message"></div>
+    </form>
+
+    <!-- User List -->
+    <div class="user-list">
+      <h3>Users List</h3>
+      <table>
+        <thead>
+          <tr>
+            <th>ID</th>
+            <th>First Name</th>
+            <th>Middle Name</th>
+            <th>Last Name</th>
+            <th>Email</th>
+            <th>Role</th>
+            <th>Actions</th>
+          </tr>
+        </thead>
+        <tbody id="user-table-body">
+          <tr><td colspan="5" style="text-align:center;color:#888;">Loading...</td></tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+
+  <script>
+    const form = document.getElementById("user-form");
+    const messageEl = document.getElementById("form-message");
+    const userTable = document.getElementById("user-table-body");
+
+    // Load users
+    async function loadUsers() {
+      try {
+        const res = await apiFetch("/api/users");
+        if (!res.ok) throw new Error("Failed to load users");
+        const users = await res.json();
+        renderUsers(users);
+      } catch (err) {
+        console.error(err);
+        userTable.innerHTML = `<tr><td colspan="5" style="text-align:center;color:red;">Error loading users</td></tr>`;
+      }
+    }
+
+    function renderUsers(users) {
+      userTable.innerHTML = "";
+      if (!users || users.length === 0) {
+        userTable.innerHTML = `<tr><td colspan="5" style="text-align:center;color:#888;">No users found</td></tr>`;
+        return;
+      }
+      users.forEach(u => {
+        const tr = document.createElement("tr");
+        tr.innerHTML = `
+          <td>${u.id}</td>
+          <td>${u.first_name}</td>
+          <td>${u.middle_name}</td>
+          <td>${u.last_name}</td>
+          <td>${u.email}</td>
+          <td>${u.role}</td>
+          <td>
+            <button class="btn btn-edit" 
+              onclick="editUser(${u.id}, '${u.first_name}', '${u.middle_name}', '${u.last_name}', '${u.email}', '${u.role}')">
+              Edit
+            </button>
+            <button class="btn btn-delete" onclick="deleteUser(${u.id})">Delete</button>
+          </td>
+        `;
+        userTable.appendChild(tr);
+      });
+    }
+
+    // Handle form submit
+    form.addEventListener("submit", async (e) => {
+      e.preventDefault();
+
+      const userId = document.getElementById("user_id").value;
+      const userData = {
+        first_name: form.first_name.value.trim(),
+        middle_name: form.middle_name.value.trim(),
+        last_name: form.last_name.value.trim(),
+        email: form.email.value.trim(),
+        password: form.password.value.trim(),
+        role: form.role.value
+      };
+
+      try {
+        let res;
+        if (userId) {
+          res = await apiFetch(`/api/users/${userId}`, {
+            method: "PUT",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify(userData)
+          });
+        } else {
+          res = await apiFetch("/api/auth/register", {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify(userData)
+          });
+        }
+
+        if (!res.ok) throw new Error("Save failed");
+
+        messageEl.textContent = userId ? "User updated successfully!" : "User created successfully!";
+        messageEl.className = "message success";
+        form.reset();
+        document.getElementById("user_id").value = "";
+        loadUsers();
+      } catch (err) {
+        console.error(err);
+        messageEl.textContent = "Error saving user.";
+        messageEl.className = "message error";
+      }
+    });
+
+    function resetForm() {
+      form.reset();
+      document.getElementById("user_id").value = "";
+      messageEl.textContent = "";
+    }
+
+    // ✅ Fixed editUser to accept and set first/middle/last separately
+    function editUser(id, first_name, middle_name, last_name, email, role) {
+      document.getElementById("user_id").value = id;
+      document.getElementById("first_name").value = first_name;
+      document.getElementById("middle_name").value = middle_name;
+      document.getElementById("last_name").value = last_name;
+      document.getElementById("email").value = email;
+      document.getElementById("role").value = role;
+      messageEl.textContent = "Editing user...";
+      messageEl.className = "message";
+    }
+
+    async function deleteUser(id) {
+      if (!confirm("Delete this user?")) return;
+      try {
+        const res = await apiFetch(`/api/users/${id}`, { method: "DELETE" });
+        if (!res.ok) throw new Error("Delete failed");
+        alert("User deleted");
+        loadUsers();
+      } catch (err) {
+        console.error(err);
+        alert("Error deleting user");
+      }
+    }
+
+    // Init
+    loadUsers();
+  </script>
+</body>
+</html>

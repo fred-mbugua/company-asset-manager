@@ -1,0 +1,46 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Login - Asset Management System</title>
+</head>
+<body style="font-family: Arial, sans-serif; background:#f0f2f5; display:flex; justify-content:center; align-items:center; height:100vh; margin:0;">
+
+  <div style="background:#fff; padding:30px; border-radius:8px; box-shadow:0 2px 8px rgba(0,0,0,0.2); width:300px;">
+    <h2 style="text-align:center; margin-bottom:20px; color:#333;">Login</h2>
+    <form id="login-form">
+      <input type="email" id="email" placeholder="Email" required
+             style="width:100%; padding:10px; margin-bottom:12px; border:1px solid #ccc; border-radius:4px;">
+      <input type="password" id="password" placeholder="Password" required
+             style="width:100%; padding:10px; margin-bottom:12px; border:1px solid #ccc; border-radius:4px;">
+      <button type="submit"
+              style="width:100%; padding:10px; background:#007BFF; color:#fff; border:none; border-radius:4px; cursor:pointer;">
+        Login
+      </button>
+    </form>
+    <p id="error" style="color:red; margin-top:10px; text-align:center; display:none;"></p>
+  </div>
+
+  <!-- Load API helpers -->
+  <script src="assets/js/api.js"></script>
+  <script>
+    const form = document.getElementById("login-form");
+    const errorBox = document.getElementById("error");
+
+    form.onsubmit = async (e) => {
+      e.preventDefault();
+      const email = document.getElementById("email").value.trim();
+      const password = document.getElementById("password").value;
+
+      try {
+        const user = await login(email, password);
+        errorBox.style.display = "none";
+        window.location.href = "dashboard.html"; // redirect after login
+      } catch (err) {
+        errorBox.textContent = err.error || "Login failed";
+        errorBox.style.display = "block";
+      }
+    };
+  </script>
+</body>
+</html>

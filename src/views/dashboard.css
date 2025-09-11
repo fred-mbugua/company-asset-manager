@@ -1,0 +1,220 @@
+:root {
+  --sidebar-bg:#F8F8F8;
+  --sidebar-dark:#e8eef1;
+  --sidebar-hover:#ffffff;
+  --submenu-bg:#ffffff;
+  --text:#333;
+  --content-bg:#ffffff;
+  --card:#333;
+  --shadow:0 2px 4px rgba(0,0,0,.1);
+  --radius:10px;
+}
+
+/* Reset */
+* { box-sizing:border-box; margin:0; padding:0; }
+
+/* General layout */
+body {
+  font-family:Arial,Helvetica,sans-serif;
+  color:#333;
+  background:var(--content-bg);
+  height:100vh;
+  display:flex;
+  flex-direction:column;
+}
+
+/* Navbar */
+.navbar {
+  height:55px;
+  background:var(--card);
+  box-shadow:var(--shadow);
+  display:flex;
+  align-items:center;
+  justify-content:space-between;
+  padding:0 20px;
+  flex-shrink:0;
+}
+.navbar h1 {
+  font-size:18px;
+  font-weight:600;
+  color:#ffffff;
+}
+.admin-info {
+  color:#ffffff;
+  font-weight:500;
+  font-size:14px;
+}
+.admin-info i {
+  margin-right:5px;
+  font-size:18px;
+}
+
+/* Main */
+.main {
+  flex:1;
+  display:flex;
+  overflow:hidden;
+}
+
+/* Sidebar */
+.sidebar {
+  width:230px;
+  background:var(--sidebar-bg);
+  color:var(--text);
+  overflow-y:auto;
+  transition:transform 0.3s ease-in-out;
+  -ms-overflow-style: none;
+  scrollbar-width: none;
+  -webkit-overflow-scrolling: touch;
+}
+.sidebar::-webkit-scrollbar { width:0; height:0; }
+.sidebar ul { list-style:none; }
+.sidebar ul li {
+  text-align:center;
+  padding:14px 10px;
+  cursor:pointer;
+  border-bottom:1px solid rgba(0,0,0,.05);
+  transition:background .2s;
+}
+.sidebar ul li:hover { background:var(--sidebar-hover); }
+.sidebar ul li.active { background:var(--sidebar-hover); }
+.sidebar ul li i {
+  font-size:20px;
+  margin-bottom:5px;
+  display:block;
+}
+.sidebar ul li span {
+  font-size:13px;
+  display:block;
+}
+
+/* Submenu */
+.submenu { display:none; background:var(--submenu-bg); }
+.submenu li {
+  padding:10px 5px;
+  font-size:13px;
+  text-align:left;
+  padding-left:40px;
+  border-bottom:1px solid rgba(0,0,0,.05);
+  cursor:pointer;
+}
+.submenu li:hover { background:var(--sidebar-hover); }
+.has-sub.active .submenu { display:block; }
+
+/* Dashboard area */
+.dashboard {
+  flex:1;
+  padding:20px;
+  overflow-y:auto;
+}
+.card {
+  background:var(--submenu-bg);
+  padding:16px;
+  box-shadow:var(--shadow);
+  margin-bottom:20px;
+}
+
+/* ------------------ RESPONSIVE DESIGN ------------------ */
+
+/* Tablets */
+@media (max-width: 1024px) {
+  .navbar h1 {
+    font-size: 16px;
+  }
+  .sidebar {
+    width: 200px;
+  }
+}
+
+/* Mobile (sidebar collapses) */
+@media (max-width: 768px) {
+  .main {
+    flex-direction: column;
+  }
+
+  .sidebar {
+    position: fixed;
+    top: 55px; /* below navbar */
+    left: -230px; /* hidden */
+    height: 100%;
+    z-index: 1000;
+    transition: left 0.3s ease;
+  }
+
+  .sidebar.open {
+    left: 0; /* slide in when open */
+  }
+
+  .dashboard {
+    padding: 15px;
+  }
+
+  .card {
+    margin-bottom: 15px;
+  }
+
+  .menu-toggle {
+    display: block;
+    font-size: 20px;
+    color: #fff;
+    cursor: pointer;
+    margin-left: 10px;
+  }
+
+  .navbar h1 {
+    font-size: 15px;
+  }
+}
+
+/* Small phones */
+@media (max-width: 480px) {
+  .navbar h1 {
+    font-size: 14px;
+  }
+
+  .admin-info {
+    font-size: 12px;
+  }
+
+  .card {
+    padding: 12px;
+    font-size: 14px;
+  }
+}
+
+/* Hide hamburger by default */
+.menu-toggle {
+  display: none;
+}
+
+/* Show hamburger only on tablets and phones */
+@media (max-width: 768px) {
+  .menu-toggle {
+    display: block;
+    font-size: 22px;
+    color: #fff;
+    cursor: pointer;
+    margin-right: 15px;
+  }
+
+  .navbar {
+    justify-content: flex-start;
+    gap: 10px; /* add space between toggle and title */
+  }
+
+  .navbar h1 {
+    flex: 1;               /* let the title expand */
+    text-align: center;    /* keep title centered */
+  }
+
+  .admin-info {
+    position: absolute; 
+    right: 15px;           /* stick admin info to the right */
+  }
+}
+
+
+
+
+
+
