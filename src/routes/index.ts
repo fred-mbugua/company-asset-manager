@@ -6,3 +6,4 @@ export { default as employeeRoutes } from './employee.routes';
 export { default as expenseRoutes } from './expense.routes';
 export { default as reportRoutes } from './report.routes';
 export { default as uploadRoutes } from './upload.routes';
+export { default as viewsRoutes } from './views.routes';
