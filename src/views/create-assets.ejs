@@ -4,42 +4,8 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
   <title>Create Asset</title>
-  <style>
-    body { font-family: Arial, sans-serif; background:#fff; margin:0; }
-    .form-container {
-      background:#fff; padding:20px; margin:20px auto; 
-      max-width:1500px; border-radius:8px;
-    }
-    h2 { margin-bottom:15px; font-size:20px; }
-    form {
-      display: grid;
-      grid-template-columns: repeat(3, 1fr);
-      gap: 15px;
-    }
-    .form-field { display:flex; flex-direction:column; }
-    .form-field label { font-size:14px; margin-bottom:5px; font-weight:600; }
-    .form-field input, .form-field select, .form-field textarea {
-      padding:8px; border:1px solid #ccc; border-radius:5px; font-size:14px;
-    }
-    .form-buttons {
-      grid-column: span 3;
-      display:flex;
-      gap:10px;
-    }
-    .btn {
-      padding:10px 18px; border:none; border-radius:5px;
-      cursor:pointer; font-size:14px;
-    }
-    .btn-save { background:#F37635; color:#fff; }
-    .btn-cancel { background:#F37635; color:#fff; }
-    .notification {
-      grid-column: span 3;
-      margin-top:15px; padding:10px; border-radius:6px;
-      color:#fff; display:none;
-    }
-    .notification.success { background:#28a745; }
-    .notification.error { background:#dc3545; }
-  </style>
+  <link rel="stylesheet" href="assets/css/assets.css">
+  <style></style>
 </head>
 <body>
   <div class="form-container">
@@ -113,51 +79,7 @@
   </div>
 
   <script src="assets/js/api.js"></script>
-  <script>
-    const form = document.getElementById("assetForm");
-    const notification = document.getElementById("notification");
-
-    form.addEventListener("submit", async (e) => {
-      e.preventDefault();
-
-      const payload = {
-        asset_tag: document.getElementById("asset_tag").value.trim(),
-        asset_type: document.getElementById("asset_type").value,
-        manufacturer: document.getElementById("manufacturer").value.trim(),
-        model: document.getElementById("model").value.trim(),
-        serial_number: document.getElementById("serial_number").value.trim(),
-        status: document.getElementById("status").value,
-        location: document.getElementById("location").value.trim(),
-        purchase_date: document.getElementById("purchase_date").value,
-        purchase_price: parseFloat(document.getElementById("purchase_price").value),
-        notes: document.getElementById("notes").value.trim(),
-      };
-
-      try {
-        const res = await apiFetch("/api/assets", {
-          method: "POST",
-          body: JSON.stringify(payload)
-        });
-
-        if (!res.ok) throw new Error("Failed to save asset");
-
-        await res.json();
-        showNotification("Asset created successfully ✅", "success");
-        form.reset();
-      } catch (err) {
-        console.error(err);
-        showNotification("Error creating asset ❌", "error");
-      }
-    });
-
-    function showNotification(msg, type) {
-      notification.textContent = msg;
-      notification.className = "notification " + type;
-      notification.style.display = "block";
-      setTimeout(() => {
-        notification.style.display = "none";
-      }, 3000);
-    }
-  </script>
+  <script src="assets/js/assets.js"></script>
+  <script></script>
 </body>
 </html>
