@@ -6,3 +6,5 @@ export { default as ExpenseModel } from './expense.model';
 export { default as ReportModel } from './report.model';
 export { default as RefreshTokenModel } from './refreshToken.model';
 export { default as RoleModel } from './role.model';
+export { default as DepartmentModel } from './department.model';
+export { default as ActionLogModel } from './actionLog.model';

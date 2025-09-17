@@ -1,37 +1,41 @@
 "use strict";
+var __importDefault = (this && this.__importDefault) || function (mod) {
+    return (mod && mod.__esModule) ? mod : { "default": mod };
+};
 Object.defineProperty(exports, "__esModule", { value: true });
-const models_1 = require("../models");
+const asset_model_1 = __importDefault(require("../models/asset.model"));
+const actionLog_service_1 = __importDefault(require("./actionLog.service"));
 class AssetService {
-    async getAssets() {
-        return models_1.AssetModel.findAll();
+    async create(assetData, userId) {
+        const newAsset = await asset_model_1.default.create(assetData);
+        await actionLog_service_1.default.logAction(userId, 'CREATE', 'Asset', newAsset.id, { asset_tag: newAsset.asset_tag });
+        return newAsset;
     }
-    async getAssetById(id) {
-        const asset = await models_1.AssetModel.findById(id);
+    async getAll() {
+        return asset_model_1.default.findAll();
+    }
+    async getById(id) {
+        const asset = await asset_model_1.default.findById(id);
         if (!asset) {
-            throw new Error('Asset not found');
+            throw new Error('Asset not found.');
         }
         return asset;
     }
-    async createAsset(assetData) {
-        // You can add validation and business logic here before saving
-        return models_1.AssetModel.create(assetData);
+    async update(id, updateData, userId) {
+        const asset = await this.getById(id);
+        const changes = { old_data: asset, new_data: updateData };
+        const updatedAsset = await asset_model_1.default.update(id, updateData);
+        await actionLog_service_1.default.logAction(userId, 'UPDATE', 'Asset', id, changes);
+        return updatedAsset;
     }
-    async updateAsset(id, assetData) {
-        const existingAsset = await models_1.AssetModel.findById(id);
-        if (!existingAsset) {
-            throw new Error('Asset not found');
-        }
-        return models_1.AssetModel.update(id, assetData);
+    async delete(id, userId) {
+        const asset = await this.getById(id);
+        await asset_model_1.default.delete(id);
+        await actionLog_service_1.default.logAction(userId, 'DELETE', 'Asset', id, { asset_tag: asset.asset_tag });
+        return { message: 'Asset deleted successfully.' };
     }
-    async deleteAsset(id) {
-        const existingAsset = await models_1.AssetModel.findById(id);
-        if (!existingAsset) {
-            throw new Error('Asset not found');
-        }
-        return models_1.AssetModel.delete(id);
-    }
-    async searchAssets(query) {
-        return models_1.AssetModel.search(query);
+    async search(query) {
+        return asset_model_1.default.search(query);
     }
 }
 exports.default = new AssetService();

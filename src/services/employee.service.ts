@@ -10,11 +10,19 @@ class EmployeeService {
   }
 
   async getAssetsByEmployeeId(employeeId: string) {
-    const employeeAssets = await AssignmentModel.findByEmployeeId(employeeId);
-    if (!employeeAssets || employeeAssets.length === 0) {
+    const employeesAssets = await AssignmentModel.findByEmployeeId(employeeId);
+    if (!employeesAssets || employeesAssets.length === 0) {
       return { message: "No assets found for this employee.", assets: [] };
     }
-    return { message: "Assets retrieved successfully.", assets: employeeAssets };
+    return { message: "Assets retrieved successfully.", assets: employeesAssets };
+  }
+
+  // async create(employeeData: any, userId: number) {
+  //   return EmployeeModel.create(employeeData);
+  // }
+
+  async getAll() {
+    return EmployeeModel.findAll();
   }
 }
 

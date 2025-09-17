@@ -1,31 +1,55 @@
 "use strict";
+var __importDefault = (this && this.__importDefault) || function (mod) {
+    return (mod && mod.__esModule) ? mod : { "default": mod };
+};
 Object.defineProperty(exports, "__esModule", { value: true });
-const models_1 = require("../models");
+const assignment_model_1 = __importDefault(require("../models/assignment.model"));
+const actionLog_service_1 = __importDefault(require("./actionLog.service"));
 class AssignmentService {
-    async assignAsset(assetId, employeeId) {
-        const asset = await models_1.AssetModel.findById(assetId);
-        if (!asset) {
-            throw new Error('Asset not found');
+    async assignAsset(assignmentData, userId) {
+        // checking if the asset is already assigned
+        const existingAssignment = await assignment_model_1.default.findActiveByAssetId(assignmentData.asset_id);
+        if (existingAssignment) {
+            throw new Error('Asset is already assigned to another employee.');
         }
-        if (asset.status !== 'In Stock') {
-            throw new Error('Asset is not available for assignment');
-        }
-        const newAssignment = await models_1.AssignmentModel.create({ asset_id: assetId, employee_id: employeeId });
-        // Update asset status to 'In Use'
-        await models_1.AssetModel.update(assetId, { status: 'In Use' });
+        const newAssignment = await assignment_model_1.default.create(assignmentData);
+        await actionLog_service_1.default.logAction(userId, 'ASSIGN ASSET', 'Assignment', newAssignment.id, { asset_id: newAssignment.asset_id, employee_id: newAssignment.employee_id });
         return newAssignment;
     }
-    async returnAsset(assetId) {
-        const assignment = await models_1.AssignmentModel.returnAsset(assetId);
+    async returnAsset(id, userId) {
+        // Check if the assignment exists
+        const assignment = await assignment_model_1.default.findById(id);
         if (!assignment) {
-            throw new Error('Active assignment not found for this asset');
+            throw new Error('Assignment not found.');
         }
-        // Update asset status to 'In Stock'
-        await models_1.AssetModel.update(assetId, { status: 'In Stock' });
+        // Update the returned_date
+        const updatedAssignment = await assignment_model_1.default.update(id, { returned_date: new Date() });
+        await actionLog_service_1.default.logAction(userId, 'RETURN ASSET', // Use a specific action type
+        'Assignment', id, { returned_date: updatedAssignment.returned_date });
+        return updatedAssignment;
+    }
+    async getAll() {
+        return assignment_model_1.default.findAll();
+    }
+    async getById(id) {
+        const assignment = await assignment_model_1.default.findById(id);
+        if (!assignment) {
+            throw new Error('Assignment not found.');
+        }
         return assignment;
     }
-    async getAssignmentHistoryByAsset(assetId) {
-        return models_1.AssignmentModel.findByAssetId(assetId);
+    async update(id, updateData, userId) {
+        const assignment = await this.getById(id);
+        const changes = { old_data: assignment, new_data: updateData };
+        const updatedAssignment = await assignment_model_1.default.update(id, updateData);
+        await actionLog_service_1.default.logAction(userId, 'UPDATE', 'Assignment', id, changes);
+        return updatedAssignment;
+    }
+    async delete(id, userId) {
+        const assignment = await this.getById(id);
+        await assignment_model_1.default.delete(id);
+        await actionLog_service_1.default.logAction(userId, 'DELETE', 'Assignment', id);
+        return { message: 'Assignment deleted successfully.' };
     }
 }
 exports.default = new AssignmentService();

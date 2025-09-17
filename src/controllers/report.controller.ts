@@ -1,5 +1,6 @@
 import { Request, Response } from 'express';
 import { ReportService } from '../services';
+import { successResponse, errorResponse } from '../utils/response';
 import logger from '../utils/logger';
 
 class ReportController {
@@ -7,10 +8,10 @@ class ReportController {
     try {
       const { employeeId } = req.params;
       const report = await ReportService.getAssetsByEmployee(employeeId);
-      res.status(200).json(report);
+      successResponse(res, 200, 'Assets by employee report generated successfully', report);
     } catch (error: any) {
       logger.error('Failed to generate assets by employee report:', error);
-      res.status(404).json({ error: error.message });
+      errorResponse(res, 404, error.message);
     }
   }
 
@@ -18,10 +19,10 @@ class ReportController {
     try {
       const { location } = req.params;
       const report = await ReportService.getAssetsByBranch(location);
-      res.status(200).json(report);
+      successResponse(res, 200, 'Assets by branch report generated successfully', report);
     } catch (error: any) {
       logger.error('Failed to generate assets by branch report:', error);
-      res.status(404).json({ error: error.message });
+      errorResponse(res, 404, error.message);
     }
   }
 
@@ -29,14 +30,13 @@ class ReportController {
     try {
       const { startDate, endDate } = req.query;
       if (!startDate || !endDate) {
-        res.status(400).json({ error: 'Start date and end date are required' });
-        return;
+        return errorResponse(res, 400, 'Start date and end date are required');
       }
       const expenses = await ReportService.getExpensesByTimePeriod(startDate as string, endDate as string);
-      res.status(200).json(expenses);
+      successResponse(res, 200, 'Expenses report generated successfully', expenses);
     } catch (error: any) {
       logger.error('Failed to generate expenses report:', error);
-      res.status(500).json({ error: 'Failed to generate report' });
+      errorResponse(res, 500, 'Failed to generate report');
     }
   }
 }

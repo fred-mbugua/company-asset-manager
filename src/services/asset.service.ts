@@ -1,44 +1,69 @@
-import { AssetModel } from '../models';
+import AssetModel from '../models/asset.model';
+import ActionLogService from './actionLog.service';
+import logger from '../utils/logger';
 
 class AssetService {
-  async getAssets() {
-    return AssetModel.findAll();
-  }
+    async create(assetData: any, userId: number) {
+        const newAsset = await AssetModel.create(assetData);
+        
+        await ActionLogService.logAction(
+            userId, 
+            'CREATE', 
+            'Asset', 
+            newAsset.id,
+            { asset_tag: newAsset.asset_tag }
+        );
 
-  async getAssetById(id: string) {
-    const asset = await AssetModel.findById(id);
-    if (!asset) {
-      throw new Error('Asset not found');
+        return newAsset;
     }
-    return asset;
-  }
 
-  async createAsset(assetData: any) {
-    // You can add validation and business logic here before saving
-    return AssetModel.create(assetData);
-  }
-
-  async updateAsset(id: string, assetData: any) {
-    const existingAsset = await AssetModel.findById(id);
-    if (!existingAsset) {
-      throw new Error('Asset not found');
+    async getAll() {
+        return AssetModel.findAll();
     }
-    return AssetModel.update(id, assetData);
-  }
-
-  async deleteAsset(id: string) {
-    const existingAsset = await AssetModel.findById(id);
-    if (!existingAsset) {
-      throw new Error('Asset not found');
+    
+    async getById(id: number) {
+        const asset = await AssetModel.findById(id);
+        if (!asset) {
+            throw new Error('Asset not found.');
+        }
+        return asset;
     }
-    return AssetModel.delete(id);
-  }
 
-  async searchAssets(query: any) {
-    return AssetModel.search(query);
-  }
+    async update(id: number, updateData: any, userId: number) {
+        const asset = await this.getById(id);
+        const changes = { old_data: asset, new_data: updateData };
+        
+        const updatedAsset = await AssetModel.update(id, updateData);
 
-  
+        await ActionLogService.logAction(
+            userId,
+            'UPDATE',
+            'Asset',
+            id,
+            changes
+        );
+        
+        return updatedAsset;
+    }
+
+    async delete(id: number, userId: number) {
+        const asset = await this.getById(id);
+        await AssetModel.delete(id);
+
+        await ActionLogService.logAction(
+            userId, 
+            'DELETE', 
+            'Asset', 
+            id,
+            { asset_tag: asset.asset_tag }
+        );
+
+        return { message: 'Asset deleted successfully.' };
+    }
+
+    async search(query: any) {
+        return AssetModel.search(query);
+    }
 }
 
 export default new AssetService();

@@ -1,17 +1,49 @@
-const form = document.getElementById("login-form");
-const errorBox = document.getElementById("error");
+// src/assets/js/login.js
+document.addEventListener('DOMContentLoaded', () => {
+    const loginForm = document.getElementById('login-form');
+    const errorElement = document.getElementById('error');
 
-form.onsubmit = async (e) => {
-  e.preventDefault();
-  const email = document.getElementById("email").value.trim();
-  const password = document.getElementById("password").value;
+    const showError = (message) => {
+        errorElement.textContent = message;
+        errorElement.style.display = 'block';
+    };
 
-  try {
-    const user = await login(email, password);
-    errorBox.style.display = "none";
-    window.location.href = "dashboard.html"; // redirect after login
-  } catch (err) {
-    errorBox.textContent = err.error || "Login failed";
-    errorBox.style.display = "block";
-  }
-};
+    const clearError = () => {
+        errorElement.textContent = '';
+        errorElement.style.display = 'none';
+    };
+
+    if (loginForm) {
+        loginForm.addEventListener('submit', async (event) => {
+            event.preventDefault();
+
+            clearError();
+
+            const email = document.getElementById('email').value;
+            const password = document.getElementById('password').value;
+
+            try {
+                // The API call is the same, but the response no longer contains tokens
+                const response = await fetch('/api/auth/login', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify({ email, password }),
+                });
+
+                if (response.ok) {
+                    // The tokens have been set as HttpOnly cookies by the server.
+                    // We don't need to do anything here. Just redirect.
+                    window.location.href = '/dashboard';
+                } else {
+                    const data = await response.json();
+                    showError(data.error || 'Login failed. Please try again.');
+                }
+            } catch (error) {
+                console.error('Error during login:', error);
+                showError('A network error occurred. Please try again later.');
+            }
+        });
+    }
+});

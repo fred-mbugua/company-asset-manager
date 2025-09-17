@@ -3,7 +3,7 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
     return (mod && mod.__esModule) ? mod : { "default": mod };
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.RefreshTokenModel = exports.ReportModel = exports.ExpenseModel = exports.EmployeeModel = exports.AssignmentModel = exports.UserModel = exports.AssetModel = void 0;
+exports.RoleModel = exports.RefreshTokenModel = exports.ReportModel = exports.ExpenseModel = exports.EmployeeModel = exports.AssignmentModel = exports.UserModel = exports.AssetModel = void 0;
 var asset_model_1 = require("./asset.model");
 Object.defineProperty(exports, "AssetModel", { enumerable: true, get: function () { return __importDefault(asset_model_1).default; } });
 var user_model_1 = require("./user.model");
@@ -18,3 +18,5 @@ var report_model_1 = require("./report.model");
 Object.defineProperty(exports, "ReportModel", { enumerable: true, get: function () { return __importDefault(report_model_1).default; } });
 var refreshToken_model_1 = require("./refreshToken.model");
 Object.defineProperty(exports, "RefreshTokenModel", { enumerable: true, get: function () { return __importDefault(refreshToken_model_1).default; } });
+var role_model_1 = require("./role.model");
+Object.defineProperty(exports, "RoleModel", { enumerable: true, get: function () { return __importDefault(role_model_1).default; } });

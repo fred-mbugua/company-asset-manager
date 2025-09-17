@@ -7,3 +7,6 @@ export { default as ReportService } from './report.service';
 export { default as BulkUploadService, upload as BulkUploadMiddleware } from './bulkUpload.service';
 export { default as EmailService } from './email.service';
 export { default as SMSService } from './sms.service';
+export { default as UserService } from './user.service';
+export { default as ActionLogService } from './actionLog.service';
+export { default as DepartmentService } from './department.service';

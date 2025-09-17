@@ -15,7 +15,7 @@ class ExpenseModel {
     return result.rows[0];
   }
 
-  async findByAssetId(assetId: string) {
+  async findByAssetId(assetId: number) {
     const query = 'SELECT * FROM expenses WHERE asset_id = $1 ORDER BY date DESC';
     const result = await pool.query(query, [assetId]);
     return result.rows;
@@ -25,6 +25,33 @@ class ExpenseModel {
     const query = 'SELECT * FROM expenses WHERE date BETWEEN $1 AND $2 ORDER BY date ASC';
     const result = await pool.query(query, [startDate, endDate]);
     return result.rows;
+  }
+
+  async findallAssets() {
+        const query = 'SELECT * FROM expenses ORDER BY date DESC';
+        const result = await pool.query(query);
+        return result.rows;
+    }
+
+  async update(id: number, updateData: any) {
+    const fields = [];
+    const values = [];
+    let index = 1;
+
+    for (const key in updateData) {
+      fields.push(`${key} = $${index}`);
+      values.push(updateData[key]);
+      index++;
+    }
+    const query = `UPDATE expenses SET ${fields.join(', ')} WHERE id = $${index} RETURNING *`;
+    values.push(id);
+    const result = await pool.query(query, values);
+    return result.rows[0];
+  }
+  async delete(id: number) {
+    const query = 'DELETE FROM expenses WHERE id = $1';
+    await pool.query(query, [id]);
+    return { message: 'Expense deleted successfully.' };
   }
 }
 

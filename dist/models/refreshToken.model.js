@@ -12,6 +12,9 @@ class RefreshTokenModel {
      * @param expiresAt The expiration date of the token.
      */
     async save(userId, token, expiresAt) {
+        // console.log(`Saving refresh token for user ${userId}`);
+        // console.log(`Token: ${token}`);
+        // console.log(`Expires At: ${expiresAt}`);
         const query = 'INSERT INTO refresh_tokens (token, user_id, expires_at) VALUES ($1, $2, $3) ON CONFLICT (user_id) DO UPDATE SET token = EXCLUDED.token, expires_at = EXCLUDED.expires_at';
         await database_1.default.query(query, [token, userId, expiresAt]);
     }

@@ -3,68 +3,77 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
     return (mod && mod.__esModule) ? mod : { "default": mod };
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-const services_1 = require("../services");
+exports.AssetController = void 0;
+const asset_service_1 = __importDefault(require("../services/asset.service"));
+const response_1 = require("../utils/response");
 const logger_1 = __importDefault(require("../utils/logger"));
 class AssetController {
-    async getAssets(req, res) {
+    async getAll(req, res) {
         try {
-            const assets = await services_1.AssetService.getAssets();
-            res.status(200).json(assets);
+            const assets = await asset_service_1.default.getAll();
+            (0, response_1.successResponse)(res, 200, 'Assets retrieved successfully', assets);
         }
         catch (error) {
             logger_1.default.error('Failed to get assets:', error);
-            res.status(500).json({ error: 'Failed to retrieve assets' });
+            (0, response_1.errorResponse)(res, 500, 'Failed to retrieve assets');
         }
     }
-    async getAssetById(req, res) {
+    async getById(req, res) {
         try {
-            const asset = await services_1.AssetService.getAssetById(req.params.id);
-            res.status(200).json(asset);
+            const asset = await asset_service_1.default.getById(Number(req.params.id));
+            (0, response_1.successResponse)(res, 200, 'Asset retrieved successfully', asset);
         }
         catch (error) {
             logger_1.default.error(`Asset not found with ID ${req.params.id}:`, error);
-            res.status(404).json({ error: error.message });
+            (0, response_1.errorResponse)(res, 404, error.message);
         }
     }
-    async createAsset(req, res) {
+    async create(req, res) {
+        var _a;
         try {
-            const newAsset = await services_1.AssetService.createAsset(req.body);
-            res.status(201).json(newAsset);
+            const userId = (_a = req.user) === null || _a === void 0 ? void 0 : _a.id;
+            const newAsset = await asset_service_1.default.create(req.body, userId);
+            (0, response_1.successResponse)(res, 201, 'Asset created successfully', newAsset);
         }
         catch (error) {
             logger_1.default.error('Failed to create asset:', error);
-            res.status(400).json({ error: 'Invalid asset data' });
+            (0, response_1.errorResponse)(res, 400, 'Invalid asset data');
         }
     }
-    async updateAsset(req, res) {
+    async update(req, res) {
+        var _a;
         try {
-            const updatedAsset = await services_1.AssetService.updateAsset(req.params.id, req.body);
-            res.status(200).json(updatedAsset);
+            const userId = (_a = req.user) === null || _a === void 0 ? void 0 : _a.id;
+            const updatedAsset = await asset_service_1.default.update(Number(req.params.id), req.body, userId);
+            (0, response_1.successResponse)(res, 200, 'Asset updated successfully', updatedAsset);
         }
         catch (error) {
             logger_1.default.error(`Failed to update asset with ID ${req.params.id}:`, error);
-            res.status(400).json({ error: error.message });
+            (0, response_1.errorResponse)(res, 400, error.message);
         }
     }
-    async deleteAsset(req, res) {
+    async delete(req, res) {
+        var _a;
         try {
-            await services_1.AssetService.deleteAsset(req.params.id);
-            res.status(204).send();
+            const userId = (_a = req.user) === null || _a === void 0 ? void 0 : _a.id;
+            const result = await asset_service_1.default.delete(Number(req.params.id), userId);
+            (0, response_1.successResponse)(res, 200, result.message);
         }
         catch (error) {
             logger_1.default.error(`Failed to delete asset with ID ${req.params.id}:`, error);
-            res.status(404).json({ error: error.message });
+            (0, response_1.errorResponse)(res, 404, error.message);
         }
     }
-    async searchAssets(req, res) {
+    async search(req, res) {
         try {
-            const assets = await services_1.AssetService.searchAssets(req.query);
-            res.status(200).json(assets);
+            const assets = await asset_service_1.default.search(req.query);
+            (0, response_1.successResponse)(res, 200, 'Assets retrieved successfully', assets);
         }
         catch (error) {
             logger_1.default.error('Failed to search assets:', error);
-            res.status(500).json({ error: 'Failed to search assets' });
+            (0, response_1.errorResponse)(res, 500, 'Failed to search assets');
         }
     }
 }
+exports.AssetController = AssetController;
 exports.default = new AssetController();

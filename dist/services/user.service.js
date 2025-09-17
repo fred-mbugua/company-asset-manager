@@ -5,11 +5,24 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
 Object.defineProperty(exports, "__esModule", { value: true });
 const models_1 = require("../models");
 const bcryptjs_1 = __importDefault(require("bcryptjs"));
+const actionLog_service_1 = __importDefault(require("./actionLog.service"));
 class UserService {
-    async createUser(userData) {
-        // Hash the password before saving
-        userData.password = await bcryptjs_1.default.hash(userData.password, 10);
-        return models_1.UserModel.create(userData);
+    constructor() {
+        this.SALT_ROUNDS = 10;
+    }
+    async createUser(userData, userId) {
+        const { password_hash, ...rest } = userData;
+        const existingUser = await models_1.UserModel.findByEmail(rest.email); // Call model method
+        if (existingUser) {
+            throw new Error('A user with this email already exists.');
+        }
+        const hashedPassword = await bcryptjs_1.default.hash(password_hash, this.SALT_ROUNDS);
+        const newUser = await models_1.UserModel.create({
+            ...rest,
+            password_hash: hashedPassword
+        });
+        await actionLog_service_1.default.logAction(userId, 'CREATE', 'User', newUser.id, { created_email: newUser.email });
+        return newUser;
     }
     async getAllUsers() {
         return models_1.UserModel.findAll();
@@ -21,23 +34,28 @@ class UserService {
         }
         return user;
     }
-    async updateUser(id, updateData) {
+    async updateUser(id, updateData, userId) {
         const user = await models_1.UserModel.findById(id);
         if (!user) {
             throw new Error('User not found');
         }
+        const changes = { old_data: user, new_data: updateData };
         // Hash the new password
-        if (updateData.password) {
-            updateData.password = await bcryptjs_1.default.hash(updateData.password, 10);
+        if (updateData.password_hash) {
+            updateData.password_hash = await bcryptjs_1.default.hash(updateData.password_hash, 10);
         }
-        return models_1.UserModel.update(id, updateData);
+        const updateUser = await models_1.UserModel.update(id, updateData);
+        await actionLog_service_1.default.logAction(userId, 'UPDATE', 'User', Number(id), changes);
+        return updateUser;
     }
-    async deleteUser(id) {
+    async deleteUser(id, userId) {
         const user = await models_1.UserModel.findById(id);
         if (!user) {
             throw new Error('User not found');
         }
-        return models_1.UserModel.delete(id);
+        await models_1.UserModel.delete(id);
+        await actionLog_service_1.default.logAction(userId, 'DELETE', 'User', Number(id), { deleted_user_email: user.email });
+        return { message: 'User deleted successfully.' };
     }
 }
 exports.default = new UserService();

@@ -5,19 +5,19 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
 Object.defineProperty(exports, "__esModule", { value: true });
 const database_1 = __importDefault(require("../config/database"));
 class UserModel {
-    async findById(id) {
-        const query = 'SELECT id, full_name, email, role FROM users WHERE id = $1';
-        const result = await database_1.default.query(query, [id]);
-        return result.rows[0];
-    }
     async findByEmail(email) {
-        const query = 'SELECT * FROM users WHERE email = $1';
+        const query = 'SELECT u.*, r.name AS role FROM users u JOIN roles r ON u.role_id = r.id WHERE u.email = $1';
         const result = await database_1.default.query(query, [email]);
         return result.rows[0];
     }
-    async create(userData) {
-        const query = 'INSERT INTO users (employee_id, full_name, email, password, role) VALUES ($1, $2, $3, $4, $5) RETURNING id, full_name, email, role';
-        const result = await database_1.default.query(query, [userData.employee_id, userData.full_name, userData.email, userData.password, userData.role]);
+    async findById(id) {
+        const query = 'SELECT u.*, r.name AS role FROM users u JOIN roles r ON u.role_id = r.id WHERE u.id = $1';
+        const result = await database_1.default.query(query, [id]);
+        return result.rows[0];
+    }
+    async create(user) {
+        const query = 'INSERT INTO users (first_name, middle_name, last_name, email, password, role_id) VALUES ($1, $2, $3, $4, $5, $6) RETURNING *';
+        const result = await database_1.default.query(query, [user.first_name, user.middle_name, user.last_name, user.email, user.password_hash, user.role_id]);
         return result.rows[0];
     }
     async findAll() {

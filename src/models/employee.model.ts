@@ -18,6 +18,36 @@ class EmployeeModel {
     const result = await pool.query(query, [location]);
     return result.rows;
   }
+
+  async findByEmployeeId(employeeId: string) {
+        const query = `
+            SELECT
+                A.id,
+                A.asset_tag,
+                A.asset_type,
+                A.manufacturer,
+                A.model,
+                A.serial_number,
+                A.status,
+                A.location,
+                A.purchase_date,
+                A.purchase_price,
+                A.notes,
+                E.id AS employee_id
+            FROM
+                assets AS A
+            INNER JOIN
+                assignments AS ASGN ON ASGN.asset_id = A.id
+            INNER JOIN
+                employees AS E ON ASGN.employee_id = E.id
+            WHERE
+                E.id = $1
+            ORDER BY
+                A.id DESC;
+        `;
+        const result = await pool.query(query, [employeeId]);
+        return result.rows;
+    }
 }
 
 export default new EmployeeModel();

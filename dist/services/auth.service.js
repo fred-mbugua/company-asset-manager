@@ -41,15 +41,32 @@ const bcryptjs_1 = __importDefault(require("bcryptjs"));
 const jsonwebtoken_1 = __importDefault(require("jsonwebtoken"));
 const models_1 = require("../models");
 const jwtConfig = __importStar(require("../config"));
+const actionLog_service_1 = __importDefault(require("./actionLog.service"));
 class AuthService {
     async register(userData) {
-        const hashedPassword = await bcryptjs_1.default.hash(userData.password, 10);
-        const newUser = await models_1.UserModel.create({ ...userData, password: hashedPassword });
+        // // Find role ID based on the provided role name
+        const role = await models_1.RoleModel.findByName(userData.role);
+        if (!role) {
+            throw new Error('Invalid role specified');
+        }
+        // Hash password
+        const hashedPassword = await bcryptjs_1.default.hash(userData.password_hash, 10);
+        // Create new user using the role ID
+        const newUser = await models_1.UserModel.create({
+            first_name: userData.first_name,
+            middle_name: userData.middle_name,
+            last_name: userData.last_name,
+            email: userData.email,
+            password_hash: hashedPassword,
+            role_id: role.id
+        });
+        // Log the registration action
+        await actionLog_service_1.default.logAction(newUser.id, 'REGISTER', 'User', newUser.id, { email: newUser.email });
         return newUser;
     }
-    async login(email, password) {
-        const user = await models_1.UserModel.findByEmail(email);
-        if (!user || !await bcryptjs_1.default.compare(password, user.password)) {
+    async login(credentials) {
+        const user = await models_1.UserModel.findByEmail(credentials.email);
+        if (!user || !await bcryptjs_1.default.compare(credentials.password, user.password)) {
             throw new Error('Invalid credentials');
         }
         const accessToken = this.generateAccessToken(user);
@@ -57,9 +74,11 @@ class AuthService {
         const expirationDate = new Date();
         expirationDate.setDate(expirationDate.getDate() + 7);
         await models_1.RefreshTokenModel.save(user.id, refreshToken, expirationDate);
+        // Log the login action
+        await actionLog_service_1.default.logAction(user.id, 'LOGIN', 'User', user.id, { email: user.email });
         return { accessToken, refreshToken, user };
     }
-    async refresh(refreshToken) {
+    async refresh(refreshToken, userId) {
         try {
             const storedToken = await models_1.RefreshTokenModel.findByToken(refreshToken);
             if (!storedToken) {
@@ -78,7 +97,7 @@ class AuthService {
             const expirationDate = new Date();
             expirationDate.setDate(expirationDate.getDate() + 7);
             await models_1.RefreshTokenModel.save(user.id, newRefreshToken, expirationDate);
-            return { accessToken: newAccessToken, refreshToken: newRefreshToken };
+            return { accessToken: newAccessToken, newRefreshToken: newRefreshToken };
         }
         catch (error) {
             throw new Error('Invalid or expired refresh token');

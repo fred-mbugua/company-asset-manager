@@ -14,27 +14,37 @@ class UserModel {
     return result.rows[0];
   }
 
-  async create(user: { first_name: string; middle_name: string; last_name: string; email: string; password_hash: string; role_id: number }) {
-    const query = 'INSERT INTO users (first_name, middle_name, last_name, email, password, role_id) VALUES ($1, $2, $3, $4, $5, $6) RETURNING *';
-    const result = await pool.query(query, [user.first_name, user.middle_name, user.last_name, user.email, user.password_hash, user.role_id]);
-    return result.rows[0];
-  }
+  async create(userData: any) {
+
+    // console.log('Creating user:', userData);
+        const query = `
+            INSERT INTO users (first_name, middle_name, last_name, email, password, role_id, department_id)
+            VALUES ($1, $2, $3, $4, $5, $6, $7)
+            RETURNING id, first_name, middle_name, last_name, email, role_id, department_id;
+        `;
+        const values = [userData.first_name, userData.middle_name, userData.last_name, userData.email, userData.password_hash, userData.role_id, userData.department_id];
+        const result = await pool.query(query, values);
+        return result.rows[0];
+    }
 
   
   async findAll() {
-    const query = 'SELECT id, full_name, email, role FROM users ORDER BY full_name ASC';
+    const query = 'SELECT id, first_name, middle_name, last_name, email, role_id, department_id FROM users ORDER BY first_name ASC';
     const result = await pool.query(query);
     return result.rows;
   }
 
   
   async update(id: string, updateData: any) {
-    const fields = Object.keys(updateData).map((key, index) => `${key} = $${index + 2}`).join(', ');
-    const values = [id, ...Object.values(updateData)];
-    const query = `UPDATE users SET ${fields} WHERE id = $1 RETURNING id, full_name, email, role`;
-    const result = await pool.query(query, values);
-    return result.rows[0];
-  }
+        const query = `
+            UPDATE users SET first_name = $1, middle_name = $2, last_name = $3, email = $4, password = $5, role = $6, department_id = $7
+            WHERE id = $8
+            RETURNING id, first_name, middle_name, last_name, email, role, department_id;
+        `;
+        const values = [updateData.first_name, updateData.middle_name, updateData.last_name, updateData.email, updateData.password_hash, updateData.role, updateData.department_id, id];
+        const result = await pool.query(query, values);
+        return result.rows[0];
+    }
 
   
   async delete(id: string) {

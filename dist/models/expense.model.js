@@ -28,5 +28,29 @@ class ExpenseModel {
         const result = await database_1.default.query(query, [startDate, endDate]);
         return result.rows;
     }
+    async findallAssets() {
+        const query = 'SELECT * FROM expenses ORDER BY date DESC';
+        const result = await database_1.default.query(query);
+        return result.rows;
+    }
+    async update(id, updateData) {
+        const fields = [];
+        const values = [];
+        let index = 1;
+        for (const key in updateData) {
+            fields.push(`${key} = $${index}`);
+            values.push(updateData[key]);
+            index++;
+        }
+        const query = `UPDATE expenses SET ${fields.join(', ')} WHERE id = $${index} RETURNING *`;
+        values.push(id);
+        const result = await database_1.default.query(query, values);
+        return result.rows[0];
+    }
+    async delete(id) {
+        const query = 'DELETE FROM expenses WHERE id = $1';
+        await database_1.default.query(query, [id]);
+        return { message: 'Expense deleted successfully.' };
+    }
 }
 exports.default = new ExpenseModel();

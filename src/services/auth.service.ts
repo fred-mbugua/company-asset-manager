@@ -2,11 +2,17 @@ import bcrypt from 'bcryptjs';
 import jwt from 'jsonwebtoken';
 import { UserModel, RefreshTokenModel, RoleModel } from '../models';
 import * as jwtConfig from '../config';
+import ActionLogService from './actionLog.service';
+import { ILoginCredentials, ICreateUser } from '../types/index';
 
 export class AuthService {
-  async register(userData: any) {
-    // Find role ID based on the provided role name
+  async register(userData: ICreateUser) {
+    // // Find role ID based on the provided role name
     const role = await RoleModel.findByName(userData.role);
+
+    // console.log('User data:', userData.password);
+
+    // console.log('Role found:', role);
     if (!role) {
       throw new Error('Invalid role specified');
     }
@@ -21,14 +27,24 @@ export class AuthService {
       last_name: userData.last_name,
       email: userData.email,
       password_hash: hashedPassword,
-      role_id: role.id
+      role_id: role?.id,
+      department_id: userData?.department_id
     });
+
+    // Log the registration action
+        await ActionLogService.logAction(
+            newUser.id,
+            'REGISTER',
+            'User',
+            newUser.id,
+            { email: newUser.email }
+        );
     return newUser;
   }
 
-  async login(email: string, password: string) {
-    const user = await UserModel.findByEmail(email);
-    if (!user || !await bcrypt.compare(password, user.password)) {
+  async login(credentials: ILoginCredentials) {
+    const user = await UserModel.findByEmail(credentials.email);
+    if (!user || !await bcrypt.compare(credentials.password, user.password)) {
       throw new Error('Invalid credentials');
     }
 
@@ -38,11 +54,18 @@ export class AuthService {
     const expirationDate = new Date();
     expirationDate.setDate(expirationDate.getDate() + 7);
     await RefreshTokenModel.save(user.id, refreshToken, expirationDate);
-
+    // Log the login action
+        await ActionLogService.logAction(
+            user.id,
+            'LOGIN',
+            'User',
+            user.id,
+            { email: user.email }
+        );
     return { accessToken, refreshToken, user };
   }
 
-  async refresh(refreshToken: string) {
+  async refresh(refreshToken: string, userId: number) {
     try {
       const storedToken = await RefreshTokenModel.findByToken(refreshToken);
 
@@ -67,8 +90,8 @@ export class AuthService {
       const expirationDate = new Date();
       expirationDate.setDate(expirationDate.getDate() + 7);
       await RefreshTokenModel.save(user.id, newRefreshToken, expirationDate);
-
-      return { accessToken: newAccessToken, refreshToken: newRefreshToken };
+      
+      return { accessToken: newAccessToken, newRefreshToken: newRefreshToken };
 
     } catch (error) {
       throw new Error('Invalid or expired refresh token');

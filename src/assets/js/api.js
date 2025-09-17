@@ -1,70 +1,40 @@
-// assets/js/api.js
+// src/assets/js/api.js
+// This file is now very simple as cookies are handled by the browser.
 
-// -----------------------------
-// CONFIG
-// -----------------------------
-const API_BASE = "http://localhost:5000/api"; // change this to match your Node.js backend
+const api = async (endpoint, options = {}) => {
+    const defaultOptions = {
+        headers: {
+            'Content-Type': 'application/json',
+        },
+        // This is crucial for sending cookies with cross-origin requests
+        credentials: 'include'
+    };
 
-// -----------------------------
-// TOKEN HELPERS
-// -----------------------------
-function getAccessToken() {
-  return localStorage.getItem("accessToken") || null;
-}
+    // Merge provided options with defaults
+    const mergedOptions = { ...defaultOptions, ...options };
+    
+    // The browser automatically attaches the 'accessToken' cookie
+    // So we don't need to add it to the Authorization header here.
 
-function setAccessToken(token) {
-  if (token) localStorage.setItem("accessToken", token);
-  else localStorage.removeItem("accessToken");
-}
+    const url = `/api${endpoint}`;
 
-// -----------------------------
-// FETCH WRAPPER
-// -----------------------------
-async function apiFetch(path, options = {}) {
-  const headers = options.headers || {};
-  headers["Content-Type"] = headers["Content-Type"] || "application/json";
-  const token = getAccessToken();
-  if (token) headers["Authorization"] = `Bearer ${token}`;
-  const res = await fetch(`${API_BASE}${path}`, { ...options, headers });
+    try {
+        const response = await fetch(url, mergedOptions);
+        
+        // Handle unauthorized responses (e.g., expired token)
+        if (response.status === 401) {
+            // Optional: You could implement a refresh token flow here, but
+            // for simplicity, we just redirect to login if the request fails
+            window.location.href = '/login';
+            return;
+        }
 
-  if (res.status === 401) {
-    setAccessToken(null);
-    window.location.href = "login.html"; // redirect on expired/invalid token
-  }
+        return response;
+    } catch (error) {
+        console.error('API call failed:', error);
+        throw error;
+    }
+};
 
-  return res;
-}
-
-// -----------------------------
-// AUTH HELPERS
-// -----------------------------
-async function login(email, password) {
-  const res = await fetch(`${API_BASE}/auth/login`, {
-    method: "POST",
-    headers: { "Content-Type": "application/json" },
-    body: JSON.stringify({ email, password }),
-  });
-
-  if (!res.ok) {
-    throw await res.json().catch(() => ({ error: "Login failed" }));
-  }
-
-  const data = await res.json();
-  setAccessToken(data.accessToken);
-  localStorage.setItem("user", JSON.stringify(data.user));
-  return data.user;
-}
-
-function logout() {
-  setAccessToken(null);
-  localStorage.removeItem("user");
-  window.location.href = "login.html";
-}
-
-function isLoggedIn() {
-  return !!getAccessToken();
-}
-
-function getUser() {
-  return JSON.parse(localStorage.getItem("user") || "null");
-}
+// Exporting the API helper for use in other JS files
+window.api = api;

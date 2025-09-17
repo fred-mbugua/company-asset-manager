@@ -15,5 +15,15 @@ class ReportModel {
         const result = await database_1.default.query(query, [assetType]);
         return result.rows[0].total_value;
     }
+    async getTotalAssetCount() {
+        const query = 'SELECT COUNT(*) FROM assets';
+        const result = await database_1.default.query(query);
+        return result.rows[0].count;
+    }
+    async getTotalExpenseSum() {
+        const query = 'SELECT SUM(amount) FROM expenses';
+        const result = await database_1.default.query(query);
+        return result.rows[0].sum;
+    }
 }
 exports.default = new ReportModel();

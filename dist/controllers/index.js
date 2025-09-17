@@ -3,7 +3,7 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
     return (mod && mod.__esModule) ? mod : { "default": mod };
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.BulkUploadController = exports.ReportController = exports.ExpenseController = exports.EmployeeController = exports.AssignmentController = exports.AuthController = exports.AssetController = void 0;
+exports.ViewsController = exports.BulkUploadController = exports.ReportController = exports.ExpenseController = exports.EmployeeController = exports.AssignmentController = exports.AuthController = exports.AssetController = void 0;
 var asset_controller_1 = require("./asset.controller");
 Object.defineProperty(exports, "AssetController", { enumerable: true, get: function () { return __importDefault(asset_controller_1).default; } });
 var auth_controller_1 = require("./auth.controller");
@@ -18,3 +18,5 @@ var report_controller_1 = require("./report.controller");
 Object.defineProperty(exports, "ReportController", { enumerable: true, get: function () { return __importDefault(report_controller_1).default; } });
 var bulkUpload_controller_1 = require("./bulkUpload.controller");
 Object.defineProperty(exports, "BulkUploadController", { enumerable: true, get: function () { return __importDefault(bulkUpload_controller_1).default; } });
+var view_controller_1 = require("./view.controller");
+Object.defineProperty(exports, "ViewsController", { enumerable: true, get: function () { return __importDefault(view_controller_1).default; } });
