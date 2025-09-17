@@ -240,7 +240,7 @@ Endpoints for `Employees`, `Assignments`, and `Expenses` follow the same RESTful
 
 ## Mock Data for Testing
 
-Use this mock data to test your API endpoints.
+Use this mock data to test these API endpoints.
 
 ### **Register User**
 ```json
