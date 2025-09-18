@@ -111,6 +111,20 @@ export class AuthService {
     const payload = { id: user.id, email: user.email, role: user.role };
     return jwt.sign(payload, jwtConfig.JWT_REFRESH_SECRET_KEY, { expiresIn: jwtConfig.JWT_REFRESH_EXPIRATION_TIME });
   }
+
+  async getAllUserRoles() {
+    const roles = await RoleModel.findAll();
+    return roles;
+  }
+  
+  // async getUserRolesById(userId: number) {
+  //   const user = await UserModel.findById(userId);
+  //   if (!user) {
+  //     throw new Error('User not found');
+  //   }  
+  //   const roles = await RoleModel.findByUserId(user.id);
+  //   return roles;
+  // }
 }
 
 export default new AuthService();

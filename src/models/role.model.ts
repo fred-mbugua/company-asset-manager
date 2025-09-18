@@ -12,6 +12,12 @@ class RoleModel {
     const result = await pool.query(query, [id]);
     return result.rows[0];
   }
+
+  async findAll() {
+    const query = 'SELECT * FROM roles';
+    const result = await pool.query(query);
+    return result.rows;
+  }
 }
 
 export default new RoleModel();
