@@ -170,3 +170,42 @@
 2025-09-17 16:23:54 info: All departments retrieved successfully
 2025-09-17 16:40:55 info: Server running on port 3000
 2025-09-17 16:40:55 info: Database connected successfully!
+2025-09-18 16:57:09 info: Server running on port 3000
+2025-09-18 16:57:10 info: Database connected successfully!
+2025-09-19 09:44:09 info: User logged in successfully: fmbugua@jiranismart.com
+2025-09-19 09:44:42 error: error: column "description" of relation "assets" does not exist
+    at F:\WORK DOCS\JS\JSL_SYSTEM\Asset Management Application\app\node_modules\pg-pool\index.js:45:11
+    at processTicksAndRejections (node:internal/process/task_queues:95:5)
+    at async Function.create (F:\WORK DOCS\JS\JSL_SYSTEM\Asset Management Application\app\src\models\asset.model.ts:11:24)
+    at async AssetService.create (F:\WORK DOCS\JS\JSL_SYSTEM\Asset Management Application\app\src\services\asset.service.ts:7:26)
+    at async create (F:\WORK DOCS\JS\JSL_SYSTEM\Asset Management Application\app\src\controllers\asset.controller.ts:31:30)
+2025-09-19 09:46:07 info: Server running on port 3000
+2025-09-19 09:46:07 info: Database connected successfully!
+2025-09-19 09:46:20 error: error: column "description" of relation "assets" does not exist
+    at F:\WORK DOCS\JS\JSL_SYSTEM\Asset Management Application\app\node_modules\pg-pool\index.js:45:11
+    at processTicksAndRejections (node:internal/process/task_queues:95:5)
+    at async Function.create (F:\WORK DOCS\JS\JSL_SYSTEM\Asset Management Application\app\src\models\asset.model.ts:11:24)
+    at async AssetService.create (F:\WORK DOCS\JS\JSL_SYSTEM\Asset Management Application\app\src\services\asset.service.ts:7:26)
+    at async create (F:\WORK DOCS\JS\JSL_SYSTEM\Asset Management Application\app\src\controllers\asset.controller.ts:31:30)
+2025-09-19 09:46:39 error: error: column "description" of relation "assets" does not exist
+    at F:\WORK DOCS\JS\JSL_SYSTEM\Asset Management Application\app\node_modules\pg-pool\index.js:45:11
+    at processTicksAndRejections (node:internal/process/task_queues:95:5)
+    at async Function.create (F:\WORK DOCS\JS\JSL_SYSTEM\Asset Management Application\app\src\models\asset.model.ts:11:24)
+    at async AssetService.create (F:\WORK DOCS\JS\JSL_SYSTEM\Asset Management Application\app\src\services\asset.service.ts:7:26)
+    at async create (F:\WORK DOCS\JS\JSL_SYSTEM\Asset Management Application\app\src\controllers\asset.controller.ts:31:30)
+2025-09-19 09:47:16 info: Server running on port 3000
+2025-09-19 09:47:16 info: Database connected successfully!
+2025-09-19 09:47:23 error: error: column "description" of relation "assets" does not exist
+    at F:\WORK DOCS\JS\JSL_SYSTEM\Asset Management Application\app\node_modules\pg-pool\index.js:45:11
+    at processTicksAndRejections (node:internal/process/task_queues:95:5)
+    at async Function.create (F:\WORK DOCS\JS\JSL_SYSTEM\Asset Management Application\app\src\models\asset.model.ts:11:24)
+    at async AssetService.create (F:\WORK DOCS\JS\JSL_SYSTEM\Asset Management Application\app\src\services\asset.service.ts:7:26)
+    at async create (F:\WORK DOCS\JS\JSL_SYSTEM\Asset Management Application\app\src\controllers\asset.controller.ts:32:30)
+2025-09-19 09:48:29 info: Server running on port 3000
+2025-09-19 09:48:29 info: Database connected successfully!
+2025-09-19 09:50:11 info: Server running on port 3000
+2025-09-19 09:50:11 info: Database connected successfully!
+2025-09-19 09:53:18 info: Server running on port 3000
+2025-09-19 09:53:18 info: Database connected successfully!
+2025-09-19 09:53:40 info: Server running on port 3000
+2025-09-19 09:53:40 info: Database connected successfully!

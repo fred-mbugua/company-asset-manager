@@ -3,11 +3,11 @@ import db from '../config/database';
 class AssetModel {
     static async create(assetData: any) {
         const query = `
-            INSERT INTO assets (asset_tag, serial_number, description, purchase_date, purchase_price)
-            VALUES ($1, $2, $3, $4, $5)
+            INSERT INTO assets (asset_tag, asset_type, manufacturer, model, serial_number, status, location, purchase_date, purchase_price, notes)
+            VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10)
             RETURNING *;
         `;
-        const values = [assetData.asset_tag, assetData.serial_number, assetData.description, assetData.purchase_date, assetData.purchase_price];
+        const values = [assetData.asset_tag, assetData.asset_type, assetData.manufacturer, assetData.model, assetData.serial_number, assetData.status, assetData.location, assetData.purchase_date, assetData.purchase_price, assetData.notes];
         const result = await db.query(query, values);
         return result.rows[0];
     }

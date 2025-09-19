@@ -26,6 +26,7 @@ export class AssetController {
     }
 
     async create(req: AuthenticatedRequest, res: Response) {
+        // console.log('Creating asset with data:', req.body);
         try {
             const userId = req.user?.id;
             const newAsset = await AssetService.create(req.body, userId);

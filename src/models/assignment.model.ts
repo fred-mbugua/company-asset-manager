@@ -32,6 +32,8 @@ import db from '../config/database';
 
 class AssignmentModel {
     static async create(assignmentData: any) {
+        // console.log('Creating assignment with data:', assignmentData);
+
         const query = `
             INSERT INTO assignments (asset_id, employee_id, assigned_date, returned_date, notes)
             VALUES ($1, $2, NOW(), NULL, $3)
