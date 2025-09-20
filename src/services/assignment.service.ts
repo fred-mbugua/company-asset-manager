@@ -14,7 +14,7 @@ class AssignmentService {
 
         await ActionLogService.logAction(
             userId,
-            'ASSIGN ASSET', 
+            'ASSIGN ASSET',
             'Assignment',
             newAssignment.id,
             { asset_id: newAssignment.asset_id, employee_id: newAssignment.employee_id }

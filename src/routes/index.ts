@@ -8,3 +8,4 @@ export { default as reportRoutes } from './report.routes';
 export { default as uploadRoutes } from './upload.routes';
 export { default as viewsRoutes } from './views.routes';
 export { default as departmentRoutes } from './departments.routes';
+export { default as branchRoutes } from './branches.routes';

@@ -5,16 +5,29 @@ import { AuthenticatedRequest } from '../types';
 import logger from '../utils/logger'; // Import the logger
 
 class AuthController {
-    async register(req: Request, res: Response) {
-        // console.log('Registered user:', req.body);
-        try {
-            const newUser = await AuthService.register(req.body);
-            const { password, ...user } = newUser;
+    // async register(req: Request, res: Response) {
+    //     // console.log('Registered user:', req.body);
+    //     try {
+    //         const newUser = await AuthService.register(req.body);
+    //         const { password, ...user } = newUser;
 
-            logger.info(`User registered successfully: ${user.email}`);
-            successResponse(res, 201, 'User registered successfully', { user });
-        } catch (error) {
-            logger.error(`Registration failed: ${(error as Error).message}`, { error });
+    //         logger.info(`User registered successfully: ${user.email}`);
+    //         successResponse(res, 201, 'User registered successfully', { user });
+    //     } catch (error) {
+    //         logger.error(`Registration failed: ${(error as Error).message}`, { error });
+    //         errorResponse(res, 400, (error as Error).message);
+    //     }
+    // }
+
+    async register(req: Request, res: Response) {
+        logger.info('Received request to register a new user.');
+        const userId = req.user?.id;
+        try {
+            const newUser = await AuthService.registerUser(req.body, userId);
+            logger.info(`New user registered successfully with email: ${newUser.email}`);
+            successResponse(res, 201, 'User registered successfully', newUser);
+        } catch (error: any) {
+            logger.error('Failed to register user:', error);
             errorResponse(res, 400, (error as Error).message);
         }
     }

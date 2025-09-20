@@ -41,3 +41,126 @@
     at async Function.create (F:\WORK DOCS\JS\JSL_SYSTEM\Asset Management Application\app\src\models\asset.model.ts:11:24)
     at async AssetService.create (F:\WORK DOCS\JS\JSL_SYSTEM\Asset Management Application\app\src\services\asset.service.ts:7:26)
     at async create (F:\WORK DOCS\JS\JSL_SYSTEM\Asset Management Application\app\src\controllers\asset.controller.ts:32:30)
+2025-09-19 14:49:29 error: error: column "returned_date" does not exist
+    at F:\WORK DOCS\JS\JSL_SYSTEM\Asset Management Application\app\node_modules\pg-pool\index.js:45:11
+    at processTicksAndRejections (node:internal/process/task_queues:95:5)
+    at async Function.findActiveByAssetId (F:\WORK DOCS\JS\JSL_SYSTEM\Asset Management Application\app\src\models\assignment.model.ts:81:24)
+    at async AssignmentService.assignAsset (F:\WORK DOCS\JS\JSL_SYSTEM\Asset Management Application\app\src\services\assignment.service.ts:8:36)
+    at async assignAsset (F:\WORK DOCS\JS\JSL_SYSTEM\Asset Management Application\app\src\controllers\assignment.controller.ts:12:35)
+2025-09-19 14:50:49 error: error: bind message supplies 5 parameters, but prepared statement "" requires 3
+    at F:\WORK DOCS\JS\JSL_SYSTEM\Asset Management Application\app\node_modules\pg-pool\index.js:45:11
+    at processTicksAndRejections (node:internal/process/task_queues:95:5)
+    at async Function.create (F:\WORK DOCS\JS\JSL_SYSTEM\Asset Management Application\app\src\models\assignment.model.ts:43:24)
+    at async AssignmentService.assignAsset (F:\WORK DOCS\JS\JSL_SYSTEM\Asset Management Application\app\src\services\assignment.service.ts:13:31)
+    at async assignAsset (F:\WORK DOCS\JS\JSL_SYSTEM\Asset Management Application\app\src\controllers\assignment.controller.ts:12:35)
+2025-09-19 14:51:54 error: error: insert or update on table "assignments" violates foreign key constraint "assignments_employee_id_fkey"
+    at F:\WORK DOCS\JS\JSL_SYSTEM\Asset Management Application\app\node_modules\pg-pool\index.js:45:11
+    at processTicksAndRejections (node:internal/process/task_queues:95:5)
+    at async Function.create (F:\WORK DOCS\JS\JSL_SYSTEM\Asset Management Application\app\src\models\assignment.model.ts:43:24)
+    at async AssignmentService.assignAsset (F:\WORK DOCS\JS\JSL_SYSTEM\Asset Management Application\app\src\services\assignment.service.ts:13:31)
+    at async assignAsset (F:\WORK DOCS\JS\JSL_SYSTEM\Asset Management Application\app\src\controllers\assignment.controller.ts:12:35)
+2025-09-19 15:03:48 error: error: insert or update on table "assignments" violates foreign key constraint "assignments_employee_id_fkey"
+    at F:\WORK DOCS\JS\JSL_SYSTEM\Asset Management Application\app\node_modules\pg-pool\index.js:45:11
+    at processTicksAndRejections (node:internal/process/task_queues:95:5)
+    at async Function.create (F:\WORK DOCS\JS\JSL_SYSTEM\Asset Management Application\app\src\models\assignment.model.ts:43:24)
+    at async AssignmentService.assignAsset (F:\WORK DOCS\JS\JSL_SYSTEM\Asset Management Application\app\src\services\assignment.service.ts:13:31)
+    at async assignAsset (F:\WORK DOCS\JS\JSL_SYSTEM\Asset Management Application\app\src\controllers\assignment.controller.ts:12:35)
+2025-09-19 15:03:49 error: error: insert or update on table "assignments" violates foreign key constraint "assignments_employee_id_fkey"
+    at F:\WORK DOCS\JS\JSL_SYSTEM\Asset Management Application\app\node_modules\pg-pool\index.js:45:11
+    at processTicksAndRejections (node:internal/process/task_queues:95:5)
+    at async Function.create (F:\WORK DOCS\JS\JSL_SYSTEM\Asset Management Application\app\src\models\assignment.model.ts:43:24)
+    at async AssignmentService.assignAsset (F:\WORK DOCS\JS\JSL_SYSTEM\Asset Management Application\app\src\services\assignment.service.ts:13:31)
+    at async assignAsset (F:\WORK DOCS\JS\JSL_SYSTEM\Asset Management Application\app\src\controllers\assignment.controller.ts:12:35)
+2025-09-19 15:03:50 error: error: insert or update on table "assignments" violates foreign key constraint "assignments_employee_id_fkey"
+    at F:\WORK DOCS\JS\JSL_SYSTEM\Asset Management Application\app\node_modules\pg-pool\index.js:45:11
+    at processTicksAndRejections (node:internal/process/task_queues:95:5)
+    at async Function.create (F:\WORK DOCS\JS\JSL_SYSTEM\Asset Management Application\app\src\models\assignment.model.ts:43:24)
+    at async AssignmentService.assignAsset (F:\WORK DOCS\JS\JSL_SYSTEM\Asset Management Application\app\src\services\assignment.service.ts:13:31)
+    at async assignAsset (F:\WORK DOCS\JS\JSL_SYSTEM\Asset Management Application\app\src\controllers\assignment.controller.ts:12:35)
+2025-09-20 08:43:04 error: Registration failed: Illegal arguments: undefined, number
+2025-09-20 08:44:40 error: Registration failed: Illegal arguments: undefined, number
+2025-09-20 08:52:47 error: Error: A user with this email already exists.
+    at AuthService.registerUser (F:\WORK DOCS\JS\JSL_SYSTEM\Asset Management Application\app\src\services\auth.service.ts:61:23)
+    at processTicksAndRejections (node:internal/process/task_queues:95:5)
+    at async register (F:\WORK DOCS\JS\JSL_SYSTEM\Asset Management Application\app\src\controllers\auth.controller.ts:25:29)
+2025-09-20 08:52:47 error: Error: A user with this email already exists.
+    at AuthService.registerUser (F:\WORK DOCS\JS\JSL_SYSTEM\Asset Management Application\app\src\services\auth.service.ts:61:23)
+    at processTicksAndRejections (node:internal/process/task_queues:95:5)
+    at async register (F:\WORK DOCS\JS\JSL_SYSTEM\Asset Management Application\app\src\controllers\auth.controller.ts:25:29)
+2025-09-20 08:57:08 error: Error: A user with this email already exists.
+    at AuthService.registerUser (F:\WORK DOCS\JS\JSL_SYSTEM\Asset Management Application\app\src\services\auth.service.ts:61:39)
+    at processTicksAndRejections (node:internal/process/task_queues:95:5)
+    at async register (F:\WORK DOCS\JS\JSL_SYSTEM\Asset Management Application\app\src\controllers\auth.controller.ts:25:29)
+2025-09-20 10:58:10 error: SyntaxError: Expected ',' or '}' after property value in JSON at position 143
+    at JSON.parse (<anonymous>)
+    at parse (F:\WORK DOCS\JS\JSL_SYSTEM\Asset Management Application\app\node_modules\body-parser\lib\types\json.js:92:19)
+    at F:\WORK DOCS\JS\JSL_SYSTEM\Asset Management Application\app\node_modules\body-parser\lib\read.js:128:18
+    at AsyncResource.runInAsyncScope (node:async_hooks:206:9)
+    at invokeCallback (F:\WORK DOCS\JS\JSL_SYSTEM\Asset Management Application\app\node_modules\raw-body\index.js:238:16)
+    at done (F:\WORK DOCS\JS\JSL_SYSTEM\Asset Management Application\app\node_modules\raw-body\index.js:227:7)
+    at IncomingMessage.onEnd (F:\WORK DOCS\JS\JSL_SYSTEM\Asset Management Application\app\node_modules\raw-body\index.js:287:7)
+    at IncomingMessage.emit (node:events:518:28)
+    at IncomingMessage.emit (node:domain:488:12)
+    at endReadableNT (node:internal/streams/readable:1696:12)
+2025-09-20 10:58:33 error: SyntaxError: Expected ',' or '}' after property value in JSON at position 143
+    at JSON.parse (<anonymous>)
+    at parse (F:\WORK DOCS\JS\JSL_SYSTEM\Asset Management Application\app\node_modules\body-parser\lib\types\json.js:92:19)
+    at F:\WORK DOCS\JS\JSL_SYSTEM\Asset Management Application\app\node_modules\body-parser\lib\read.js:128:18
+    at AsyncResource.runInAsyncScope (node:async_hooks:206:9)
+    at invokeCallback (F:\WORK DOCS\JS\JSL_SYSTEM\Asset Management Application\app\node_modules\raw-body\index.js:238:16)
+    at done (F:\WORK DOCS\JS\JSL_SYSTEM\Asset Management Application\app\node_modules\raw-body\index.js:227:7)
+    at IncomingMessage.onEnd (F:\WORK DOCS\JS\JSL_SYSTEM\Asset Management Application\app\node_modules\raw-body\index.js:287:7)
+    at IncomingMessage.emit (node:events:518:28)
+    at IncomingMessage.emit (node:domain:488:12)
+    at endReadableNT (node:internal/streams/readable:1696:12)
+2025-09-20 10:59:38 error: SyntaxError: Expected ',' or '}' after property value in JSON at position 143
+    at JSON.parse (<anonymous>)
+    at parse (F:\WORK DOCS\JS\JSL_SYSTEM\Asset Management Application\app\node_modules\body-parser\lib\types\json.js:92:19)
+    at F:\WORK DOCS\JS\JSL_SYSTEM\Asset Management Application\app\node_modules\body-parser\lib\read.js:128:18
+    at AsyncResource.runInAsyncScope (node:async_hooks:206:9)
+    at invokeCallback (F:\WORK DOCS\JS\JSL_SYSTEM\Asset Management Application\app\node_modules\raw-body\index.js:238:16)
+    at done (F:\WORK DOCS\JS\JSL_SYSTEM\Asset Management Application\app\node_modules\raw-body\index.js:227:7)
+    at IncomingMessage.onEnd (F:\WORK DOCS\JS\JSL_SYSTEM\Asset Management Application\app\node_modules\raw-body\index.js:287:7)
+    at IncomingMessage.emit (node:events:518:28)
+    at IncomingMessage.emit (node:domain:488:12)
+    at endReadableNT (node:internal/streams/readable:1696:12)
+2025-09-20 11:00:19 error: Error: A user with this email already exists.
+    at AuthService.registerUser (F:\WORK DOCS\JS\JSL_SYSTEM\Asset Management Application\app\src\services\auth.service.ts:61:39)
+    at processTicksAndRejections (node:internal/process/task_queues:95:5)
+    at async register (F:\WORK DOCS\JS\JSL_SYSTEM\Asset Management Application\app\src\controllers\auth.controller.ts:25:29)
+2025-09-20 11:01:23 error: error: null value in column "branch_location" of relation "employees" violates not-null constraint
+    at F:\WORK DOCS\JS\JSL_SYSTEM\Asset Management Application\app\node_modules\pg-pool\index.js:45:11
+    at processTicksAndRejections (node:internal/process/task_queues:95:5)
+    at async EmployeeModel.create (F:\WORK DOCS\JS\JSL_SYSTEM\Asset Management Application\app\src\models\employee.model.ts:19:24)
+    at async AuthService.registerUser (F:\WORK DOCS\JS\JSL_SYSTEM\Asset Management Application\app\src\services\auth.service.ts:65:33)
+    at async register (F:\WORK DOCS\JS\JSL_SYSTEM\Asset Management Application\app\src\controllers\auth.controller.ts:25:29)
+2025-09-20 11:01:23 error: error: null value in column "branch_location" of relation "employees" violates not-null constraint
+    at F:\WORK DOCS\JS\JSL_SYSTEM\Asset Management Application\app\node_modules\pg-pool\index.js:45:11
+    at processTicksAndRejections (node:internal/process/task_queues:95:5)
+    at async EmployeeModel.create (F:\WORK DOCS\JS\JSL_SYSTEM\Asset Management Application\app\src\models\employee.model.ts:19:24)
+    at async AuthService.registerUser (F:\WORK DOCS\JS\JSL_SYSTEM\Asset Management Application\app\src\services\auth.service.ts:65:33)
+    at async register (F:\WORK DOCS\JS\JSL_SYSTEM\Asset Management Application\app\src\controllers\auth.controller.ts:25:29)
+2025-09-20 11:31:36 error: error: column "role" of relation "users" does not exist
+    at F:\WORK DOCS\JS\JSL_SYSTEM\Asset Management Application\app\node_modules\pg-pool\index.js:45:11
+    at processTicksAndRejections (node:internal/process/task_queues:95:5)
+    at async UserModel.create (F:\WORK DOCS\JS\JSL_SYSTEM\Asset Management Application\app\src\models\user.model.ts:52:20)
+    at async AuthService.registerUser (F:\WORK DOCS\JS\JSL_SYSTEM\Asset Management Application\app\src\services\auth.service.ts:80:29)
+    at async register (F:\WORK DOCS\JS\JSL_SYSTEM\Asset Management Application\app\src\controllers\auth.controller.ts:26:29)
+2025-09-20 11:31:36 error: error: column "role" of relation "users" does not exist
+    at F:\WORK DOCS\JS\JSL_SYSTEM\Asset Management Application\app\node_modules\pg-pool\index.js:45:11
+    at processTicksAndRejections (node:internal/process/task_queues:95:5)
+    at async UserModel.create (F:\WORK DOCS\JS\JSL_SYSTEM\Asset Management Application\app\src\models\user.model.ts:52:20)
+    at async AuthService.registerUser (F:\WORK DOCS\JS\JSL_SYSTEM\Asset Management Application\app\src\services\auth.service.ts:80:29)
+    at async register (F:\WORK DOCS\JS\JSL_SYSTEM\Asset Management Application\app\src\controllers\auth.controller.ts:26:29)
+2025-09-20 11:34:35 error: error: null value in column "first_name" of relation "users" violates not-null constraint
+    at F:\WORK DOCS\JS\JSL_SYSTEM\Asset Management Application\app\node_modules\pg-pool\index.js:45:11
+    at processTicksAndRejections (node:internal/process/task_queues:95:5)
+    at async UserModel.create (F:\WORK DOCS\JS\JSL_SYSTEM\Asset Management Application\app\src\models\user.model.ts:51:20)
+    at async AuthService.registerUser (F:\WORK DOCS\JS\JSL_SYSTEM\Asset Management Application\app\src\services\auth.service.ts:80:29)
+    at async register (F:\WORK DOCS\JS\JSL_SYSTEM\Asset Management Application\app\src\controllers\auth.controller.ts:26:29)
+2025-09-20 11:34:35 error: error: null value in column "first_name" of relation "users" violates not-null constraint
+    at F:\WORK DOCS\JS\JSL_SYSTEM\Asset Management Application\app\node_modules\pg-pool\index.js:45:11
+    at processTicksAndRejections (node:internal/process/task_queues:95:5)
+    at async UserModel.create (F:\WORK DOCS\JS\JSL_SYSTEM\Asset Management Application\app\src\models\user.model.ts:51:20)
+    at async AuthService.registerUser (F:\WORK DOCS\JS\JSL_SYSTEM\Asset Management Application\app\src\services\auth.service.ts:80:29)
+    at async register (F:\WORK DOCS\JS\JSL_SYSTEM\Asset Management Application\app\src\controllers\auth.controller.ts:26:29)

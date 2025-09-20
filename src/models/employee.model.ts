@@ -1,6 +1,26 @@
 import pool from '../config/database';
 
 class EmployeeModel {
+
+  async create(employeeData: any) {
+        const query = `
+            INSERT INTO employees (first_name, middle_name, last_name, branch_location, department, department_id, branch_id)
+            VALUES ($1, $2, $3, $4, $5, $6, $7)
+            RETURNING *;
+        `;
+        const values = [
+            employeeData.first_name,
+            employeeData.middle_name,
+            employeeData.last_name,
+            employeeData.branch_location,
+            employeeData.department,
+            employeeData.department_id,
+            employeeData.branch_id
+        ];
+        const result = await pool.query(query, values);
+        return result.rows[0];
+    }
+
   async findById(id: string) {
     const query = 'SELECT * FROM employees WHERE id = $1';
     const result = await pool.query(query, [id]);
