@@ -451,3 +451,5 @@
     at async assignAsset (F:\WORK DOCS\JS\JSL_SYSTEM\Asset Management Application\app\src\controllers\assignment.controller.ts:12:35)
 2025-09-20 12:09:50 info: Server running on port 3000
 2025-09-20 12:09:50 info: Database connected successfully!
+2025-09-20 12:10:01 info: Server running on port 3000
+2025-09-20 12:10:01 info: Database connected successfully!

@@ -104,11 +104,16 @@ All API responses follow a standard JSON format:
 
     ```json
     {
-      "asset_tag": "LAP-001",
-      "serial_number": "SN-XYZ-12345",
-      "description": "Lenovo ThinkPad X1 Carbon",
-      "purchase_date": "2024-01-15",
-      "purchase_price": 1500.00
+        "asset_tag": "LPT-RTR-004",
+        "asset_type": "Laptop",
+        "manufacturer": "Huawei",
+        "model": "Huawei Lap",
+        "serial_number": "L-B-345678",
+        "status": "In Stock",
+        "location": "Wote Branch",
+        "purchase_date": "2024-03-10",
+        "purchase_price": 40000.00,
+        "notes": "Replacement laptop."
     }
     ```
 * **Success Response:** `HTTP 201 Created`
