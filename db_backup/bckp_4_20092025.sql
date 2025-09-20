@@ -5,7 +5,7 @@
 -- Dumped from database version 16.2
 -- Dumped by pg_dump version 16.0
 
--- Started on 2025-09-20 11:41:52
+-- Started on 2025-09-20 12:46:28
 
 SET statement_timeout = 0;
 SET lock_timeout = 0;
@@ -577,6 +577,11 @@ COPY public.action_logs (id, user_id, action_type, entity_type, entity_id, detai
 4	\N	LOGIN	User	1	{"email": "fmbugua@gmail.com"}	2025-09-17 13:03:55.806448+03
 12	\N	CREATE	Branch	1	{"branch_name": "Headquarters"}	2025-09-20 11:29:51.782508+03
 13	\N	CREATE	User	7	{"registered_email": "fmbugua@jiranismart.com"}	2025-09-20 11:36:45.246267+03
+14	7	LOGIN	User	7	{"email": "fmbugua@jiranismart.com"}	2025-09-20 11:44:23.379311+03
+15	7	LOGIN	User	7	{"email": "fmbugua@jiranismart.com"}	2025-09-20 11:56:05.244261+03
+16	7	LOGIN	User	7	{"email": "fmbugua@jiranismart.com"}	2025-09-20 12:03:54.367717+03
+17	7	LOGIN	User	7	{"email": "fmbugua@jiranismart.com"}	2025-09-20 12:04:30.212094+03
+18	7	ASSIGN ASSET	Assignment	6	{"asset_id": 1, "employee_id": 4}	2025-09-20 12:09:23.057376+03
 \.
 
 
@@ -601,6 +606,7 @@ COPY public.assets (id, asset_tag, asset_type, manufacturer, model, serial_numbe
 --
 
 COPY public.assignments (id, asset_id, employee_id, assignment_date, return_date, notes) FROM stdin;
+6	1	4	2025-09-20	\N	Meets the minimum requirement
 \.
 
 
@@ -668,6 +674,7 @@ COPY public.expenses (id, asset_id, expense_type, date, amount, vendor, invoice_
 --
 
 COPY public.refresh_tokens (id, token, user_id, expires_at) FROM stdin;
+20	eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6NywiZW1haWwiOiJmbWJ1Z3VhQGppcmFuaXNtYXJ0LmNvbSIsInJvbGUiOiJBZG1pbiIsImlhdCI6MTc1ODM1OTA3MCwiZXhwIjoxNzU4OTYzODcwfQ.D6iTkNytCXmQ5B5NIq4CZy4r9IghJKAH8WsZoFFnBaE	7	2025-09-27 12:04:30.203+03
 \.
 
 
@@ -690,7 +697,7 @@ COPY public.roles (id, name) FROM stdin;
 --
 
 COPY public.users (id, employee_id, first_name, middle_name, last_name, email, password, role_id, department_id, phone, branch_id) FROM stdin;
-7	4	Fredrick		Mbugua	fmbugua@jiranismart.com	$2a$10$HR0dy1le/l3GCWL/mwbyk.0c1FVWy8DmCPK2hlqWVpTqZmvLsRjuq	1	\N	+254740790088	\N
+7	4	Fredrick		Mbugua	fmbugua@jiranismart.com	$2a$10$HR0dy1le/l3GCWL/mwbyk.0c1FVWy8DmCPK2hlqWVpTqZmvLsRjuq	1	\N	+254740790088	1
 \.
 
 
@@ -700,7 +707,7 @@ COPY public.users (id, employee_id, first_name, middle_name, last_name, email, p
 -- Name: action_logs_id_seq; Type: SEQUENCE SET; Schema: public; Owner: postgres
 --
 
-SELECT pg_catalog.setval('public.action_logs_id_seq', 13, true);
+SELECT pg_catalog.setval('public.action_logs_id_seq', 18, true);
 
 
 --
@@ -718,7 +725,7 @@ SELECT pg_catalog.setval('public.assets_id_seq', 4, true);
 -- Name: assignments_id_seq; Type: SEQUENCE SET; Schema: public; Owner: postgres
 --
 
-SELECT pg_catalog.setval('public.assignments_id_seq', 4, true);
+SELECT pg_catalog.setval('public.assignments_id_seq', 6, true);
 
 
 --
@@ -763,7 +770,7 @@ SELECT pg_catalog.setval('public.expenses_id_seq', 1, false);
 -- Name: refresh_tokens_id_seq; Type: SEQUENCE SET; Schema: public; Owner: postgres
 --
 
-SELECT pg_catalog.setval('public.refresh_tokens_id_seq', 19, true);
+SELECT pg_catalog.setval('public.refresh_tokens_id_seq', 23, true);
 
 
 --
@@ -1149,7 +1156,7 @@ ALTER TABLE ONLY public.users
     ADD CONSTRAINT users_role_id_fkey FOREIGN KEY (role_id) REFERENCES public.roles(id);
 
 
--- Completed on 2025-09-20 11:41:52
+-- Completed on 2025-09-20 12:46:28
 
 --
 -- PostgreSQL database dump complete
