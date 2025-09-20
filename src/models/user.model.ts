@@ -54,7 +54,14 @@ class UserModel {
   }
 
   async findByEmail(email: string) {
-    const query = 'SELECT * FROM users WHERE email = $1;';
+    const query = `Select
+                      users.*,
+                      roles.name As role
+                  From
+                      users Inner Join
+                      roles On users.role_id = roles.id
+                  Where
+                      users.email  = $1;`;
     const result = await pool.query(query, [email]);
     return result.rows[0];
   }

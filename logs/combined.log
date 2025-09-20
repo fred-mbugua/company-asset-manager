@@ -415,3 +415,39 @@
 2025-09-20 11:39:00 info: Database connected successfully!
 2025-09-20 11:39:33 info: Server running on port 3000
 2025-09-20 11:39:33 info: Database connected successfully!
+2025-09-20 11:40:42 info: Server running on port 3000
+2025-09-20 11:40:42 info: Database connected successfully!
+2025-09-20 11:44:23 info: User logged in successfully: fmbugua@jiranismart.com
+2025-09-20 11:45:47 info: Server running on port 3000
+2025-09-20 11:45:47 info: Database connected successfully!
+2025-09-20 11:48:25 info: Server running on port 3000
+2025-09-20 11:48:25 info: Database connected successfully!
+2025-09-20 11:50:33 info: Server running on port 3000
+2025-09-20 11:50:33 info: Database connected successfully!
+2025-09-20 11:53:41 info: Server running on port 3000
+2025-09-20 11:53:42 info: Database connected successfully!
+2025-09-20 11:54:18 info: Server running on port 3000
+2025-09-20 11:54:18 info: Database connected successfully!
+2025-09-20 11:55:16 info: Server running on port 3000
+2025-09-20 11:55:16 info: Database connected successfully!
+2025-09-20 11:55:51 info: Server running on port 3000
+2025-09-20 11:55:51 info: Database connected successfully!
+2025-09-20 11:56:05 info: User logged in successfully: fmbugua@jiranismart.com
+2025-09-20 12:03:29 info: Server running on port 3000
+2025-09-20 12:03:29 info: Database connected successfully!
+2025-09-20 12:03:47 info: Server running on port 3000
+2025-09-20 12:03:47 info: Database connected successfully!
+2025-09-20 12:03:54 info: User logged in successfully: fmbugua@jiranismart.com
+2025-09-20 12:04:26 info: Server running on port 3000
+2025-09-20 12:04:26 info: Database connected successfully!
+2025-09-20 12:04:30 info: User logged in successfully: fmbugua@jiranismart.com
+2025-09-20 12:05:25 info: Server running on port 3000
+2025-09-20 12:05:25 info: Database connected successfully!
+2025-09-20 12:07:04 error: error: insert or update on table "assignments" violates foreign key constraint "assignments_employee_id_fkey"
+    at F:\WORK DOCS\JS\JSL_SYSTEM\Asset Management Application\app\node_modules\pg-pool\index.js:45:11
+    at processTicksAndRejections (node:internal/process/task_queues:95:5)
+    at async Function.create (F:\WORK DOCS\JS\JSL_SYSTEM\Asset Management Application\app\src\models\assignment.model.ts:43:24)
+    at async AssignmentService.assignAsset (F:\WORK DOCS\JS\JSL_SYSTEM\Asset Management Application\app\src\services\assignment.service.ts:13:31)
+    at async assignAsset (F:\WORK DOCS\JS\JSL_SYSTEM\Asset Management Application\app\src\controllers\assignment.controller.ts:12:35)
+2025-09-20 12:09:50 info: Server running on port 3000
+2025-09-20 12:09:50 info: Database connected successfully!

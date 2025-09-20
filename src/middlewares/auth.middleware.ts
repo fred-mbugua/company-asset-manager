@@ -12,6 +12,7 @@ export const authenticate = (req: AuthenticatedRequest, res: Response, next: Nex
 
   try {
     const decoded = jwt.verify(token, JWT_ACCESS_SECRET_KEY);
+    // console.log('Decoded token:', decoded);
     if (typeof decoded === 'string') {
       return res.status(401).json({ message: 'Invalid token payload' });
     }
@@ -24,6 +25,7 @@ export const authenticate = (req: AuthenticatedRequest, res: Response, next: Nex
 
 export const authorize = (roles: string[]) => {
   return (req: AuthenticatedRequest, res: Response, next: NextFunction) => {
+    // console.log('User role:', req.user);
     if (!req.user || !roles.includes(req.user.role)) {
       return res.status(403).json({ message: 'Forbidden' });
     }

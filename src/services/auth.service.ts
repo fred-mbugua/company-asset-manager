@@ -112,7 +112,7 @@ export class AuthService {
   async login(credentials: ILoginCredentials) {
     const user = await UserModel.findByEmail(credentials.email);
     if (!user || !await bcrypt.compare(credentials.password, user.password)) {
-      throw new Error('Invalid credentials');
+      return Promise.reject(new Error('Invalid credentials'));
     }
 
     const accessToken = this.generateAccessToken(user);
@@ -170,6 +170,7 @@ export class AuthService {
   }
 
   private generateAccessToken(user: any) {
+    // console.log('Generating access token for user:', user);
     const payload = { id: user.id, email: user.email, role: user.role };
     return jwt.sign(payload, jwtConfig.JWT_ACCESS_SECRET_KEY, { expiresIn: jwtConfig.JWT_ACCESS_EXPIRATION_TIME });
   }

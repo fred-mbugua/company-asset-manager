@@ -32,7 +32,7 @@ import db from '../config/database';
 
 class AssignmentModel {
     static async create(assignmentData: any) {
-        console.log('Creating assignment with data:', assignmentData);
+        // console.log('Creating assignment with data:', assignmentData);
 
         const query = `
             INSERT INTO assignments (asset_id, employee_id, assignment_date, return_date, notes)
