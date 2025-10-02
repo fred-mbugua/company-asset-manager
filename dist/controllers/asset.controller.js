@@ -30,6 +30,7 @@ class AssetController {
     }
     async create(req, res) {
         var _a;
+        // console.log('Creating asset with data:', req.body);
         try {
             const userId = (_a = req.user) === null || _a === void 0 ? void 0 : _a.id;
             const newAsset = await asset_service_1.default.create(req.body, userId);

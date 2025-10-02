@@ -52,7 +52,7 @@ class AuthController {
             });
 
             logger.info(`User logged in successfully: ${user.email}`);
-            successResponse(res, 200, 'Logged in successfully', { accessToken, user });
+            successResponse(res, 200, 'Logged in successfully', { user });
         } catch (error) {
             logger.error(`Login failed: ${(error as Error).message}`, { email: req.body.email, error });
             errorResponse(res, 401, (error as Error).message);
@@ -82,7 +82,7 @@ class AuthController {
                 return errorResponse(res, 401, 'Refresh token not found');
             }
 
-            const { accessToken, newRefreshToken } = await AuthService.refresh(refreshToken, req.user?.id);
+            const { accessToken, newRefreshToken } = await AuthService.refresh(refreshToken);
 
             res.cookie('accessToken', accessToken, {
                 httpOnly: true,
@@ -131,6 +131,7 @@ class AuthController {
             errorResponse(res, 500, (error as Error).message);
         }
     }
+    
 }
 
 export default new AuthController();

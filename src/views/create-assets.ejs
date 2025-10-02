@@ -1,85 +1,77 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-  <title>Create Asset</title>
-  <link rel="stylesheet" href="assets/css/assets.css">
-  <style></style>
-</head>
-<body>
-  <div class="form-container">
-    <h2>Create New Asset</h2>
-    <form id="assetForm">
-      <div class="form-field">
-        <label for="asset_tag">Asset Tag</label>
-        <input type="text" id="asset_tag" required>
-      </div>
-      <div class="form-field">
-        <label for="asset_type">Asset Type</label>
-        <select id="asset_type" required>
-          <option value="">-- Select type --</option>
-          <option>Laptop</option>
-          <option>Printer</option>
-          <option>Router</option>
-          <option>Switch</option>
-          <option>CCTV</option>
-          <option>Other</option>
-        </select>
-      </div>
-      <div class="form-field">
-        <label for="manufacturer">Manufacturer</label>
-        <input type="text" id="manufacturer" required>
-      </div>
+<%- include('partials/header', { pageTitle: 'Create Asset', cssFile: 'assets' }) %>
+<%- include('partials/navbar') %>
 
-      <div class="form-field">
-        <label for="model">Model</label>
-        <input type="text" id="model" required>
-      </div>
-      <div class="form-field">
-        <label for="serial_number">Serial Number</label>
-        <input type="text" id="serial_number" required>
-      </div>
-      <div class="form-field">
-        <label for="status">Status</label>
-        <select id="status" required>
-          <option value="">-- Select status --</option>
-          <option>In Stock</option>
-          <option>In Use</option>
-          <option>Under Repair</option>
-          <option>Disposed</option>
-        </select>
-      </div>
+<div class="main">
+    <%- include('partials/sidebar') %>
+    <section class="content-area">
+        <div class="form-container">
+            <h2>Create New Asset</h2>
+            <form id="assetForm">
+                <div class="form-field">
+                    <label for="asset_tag">Asset Tag</label>
+                    <input type="text" id="asset_tag" required>
+                </div>
+                <div class="form-field">
+                    <label for="asset_type">Asset Type</label>
+                    <select id="asset_type" required>
+                        <option value="">-- Select type --</option>
+                        <option>Laptop</option>
+                        <option>Printer</option>
+                        <option>Router</option>
+                        <option>Switch</option>
+                        <option>CCTV</option>
+                        <option>Other</option>
+                    </select>
+                </div>
+                <div class="form-field">
+                    <label for="manufacturer">Manufacturer</label>
+                    <input type="text" id="manufacturer" required>
+                </div>
 
-      <div class="form-field">
-        <label for="location">Location</label>
-        <input type="text" id="location" required>
-      </div>
-      <div class="form-field">
-        <label for="purchase_date">Purchase Date</label>
-        <input type="date" id="purchase_date" required>
-      </div>
-      <div class="form-field">
-        <label for="purchase_price">Purchase Price</label>
-        <input type="number" step="0.01" id="purchase_price" required>
-      </div>
+                <div class="form-field">
+                    <label for="model">Model</label>
+                    <input type="text" id="model" required>
+                </div>
+                <div class="form-field">
+                    <label for="serial_number">Serial Number</label>
+                    <input type="text" id="serial_number" required>
+                </div>
+                <div class="form-field">
+                    <label for="status">Status</label>
+                    <select id="status" required>
+                        <option value="">-- Select status --</option>
+                        <option>In Stock</option>
+                        <option>In Use</option>
+                        <option>Under Repair</option>
+                        <option>Disposed</option>
+                    </select>
+                </div>
 
-      <div class="form-field">
-        <label for="notes">Notes</label>
-        <textarea id="notes" rows="3"></textarea>
-      </div>
+                <div class="form-field">
+                    <label for="location">Location</label>
+                    <input type="text" id="location" required> 
+                </div>
+                <div class="form-field">
+                    <label for="purchase_date">Purchase Date</label>
+                    <input type="date" id="purchase_date" required>
+                </div>
+                <div class="form-field">
+                    <label for="purchase_price">Purchase Price</label>
+                    <input type="number" step="0.01" id="purchase_price" required>
+                </div>
 
-      <div class="form-buttons">
-        <button type="submit" class="btn btn-save">Save Asset</button>
-        <button type="reset" class="btn btn-cancel">Cancel</button>
-      </div>
-    </form>
+                <div class="form-field full-width">
+                    <label for="notes">Notes</label>
+                    <textarea id="notes" rows="3"></textarea>
+                </div>
 
-    <div id="notification" class="notification"></div>
-  </div>
+                <div class="form-buttons full-width">
+                    <button type="submit" class="btn btn-save">Save Asset</button>
+                    <button type="reset" class="btn btn-cancel">Cancel</button>
+                </div>
+            </form>
+        </div>
+    </section>
+</div>
 
-  <script src="assets/js/api.js"></script>
-  <script src="assets/js/assets.js"></script>
-  <script></script>
-</body>
-</html>
+<%- include('partials/footer', { jsFile: 'assets' }) %>

@@ -1,65 +1,50 @@
-async function loadAssets() {
-    try {
-      const res = await apiFetch("/api/assets");
-      if (!res.ok) throw new Error("Failed to load assets");
-      const assets = await res.json();
+// public/assets/js/expenses.js
 
-      const select = document.getElementById("asset_id");
-      assets.forEach(a => {
-        const option = document.createElement("option");
-        option.value = a.id;
-        option.textContent = `${a.asset_tag} (${a.asset_type})`;
-        select.appendChild(option);
-      });
-    } catch (err) {
-      console.error(err);
-      showAlert("Error loading assets", "error");
-    }
-  }
-
-  document.getElementById("expense-form").addEventListener("submit", async (e) => {
+document.getElementById('expense-form').addEventListener('submit', async function(e) {
     e.preventDefault();
-    const data = {
-      asset_id: parseInt(document.getElementById("asset_id").value),
-      expense_type: document.getElementById("expense_type").value,
-      date: document.getElementById("date").value,
-      amount: parseFloat(document.getElementById("amount").value),
-      vendor: document.getElementById("vendor").value,
-      invoice_number: document.getElementById("invoice_number").value,
-      notes: document.getElementById("notes").value,
+
+    const formData = {
+        asset_id: parseInt(document.getElementById('asset_id').value),
+        expense_type: document.getElementById('expense_type').value,
+        date: document.getElementById('date').value,
+        amount: parseFloat(document.getElementById('amount').value),
+        vendor: document.getElementById('vendor').value,
+        invoice_number: document.getElementById('invoice_number').value,
+        notes: document.getElementById('notes').value
     };
 
     try {
-      const res = await apiFetch("/api/expenses", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify(data),
-      });
-
-      if (res.ok) {
-        showAlert("Expense created successfully!", "success");
-        document.getElementById("expense-form").reset();
-      } else {
-        const errMsg = await res.text();
-        showAlert("Failed to create expense: " + errMsg, "error");
-      }
-    } catch (err) {
-      showAlert("Error creating expense: " + err.message, "error");
+        // Assuming an API endpoint /expenses exists
+        const response = await API.post('/expenses', formData);
+        showMessage('success', response.message || 'Expense saved successfully!');
+        
+        document.getElementById('expense-form').reset();
+    } catch (error) {
+        showMessage('error', error.message || 'Failed to save expense.');
     }
-  });
+});
 
-  document.getElementById("cancel-btn").addEventListener("click", () => {
-    if (typeof loadContent === "function") {
-      loadContent("dashboard");
-    } else {
-      window.history.back();
+// Functionality to dynamically load assets if not done by EJS (fallback)
+async function loadAssets() {
+    try {
+        const select = document.getElementById('asset_id');
+        // Clear existing options, except the first placeholder
+        while (select.options.length > 1) { select.remove(1); }
+
+        const response = await API.get('/assets');
+        response.data.forEach(asset => {
+            const option = document.createElement('option');
+            option.value = asset.id;
+            option.textContent = `${asset.asset_tag} - ${asset.description}`;
+            select.appendChild(option);
+        });
+    } catch (error) {
+        console.error("Could not load assets:", error);
+        showMessage('error', 'Failed to load asset list.');
     }
-  });
+}
 
-  function showAlert(msg, type) {
-    const alertDiv = document.getElementById("form-alert");
-    alertDiv.className = "alert " + (type === "success" ? "alert-success" : "alert-error");
-    alertDiv.textContent = msg;
-  }
-
-  loadAssets();
+// Load assets if EJS didn't populate them
+if (document.getElementById('asset_id').options.length <= 1) {
+    loadAssets();
+}

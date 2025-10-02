@@ -113,6 +113,33 @@
     box-shadow:var(--shadow);
     margin-bottom:20px;
   }
+
+  /* Message container */
+  .app-message-container {
+    position: fixed;
+    top: 20px;
+    right: 20px;
+    z-index: 1000;
+}
+.app-message {
+    padding: 15px 25px;
+    margin-bottom: 10px;
+    border-radius: 5px;
+    color: white;
+    font-weight: bold;
+    box-shadow: 0 4px 8px rgba(0,0,0,0.2);
+    transition: opacity 0.5s ease-in-out;
+}
+.app-message-success {
+    background-color: #4CAF50;
+}
+.app-message-error {
+    background-color: #f44336;
+}
+.app-message.fade-out {
+    opacity: 0;
+}
+
   
   /* ------------------ RESPONSIVE DESIGN ------------------ */
   

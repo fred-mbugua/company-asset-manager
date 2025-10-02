@@ -170,3 +170,28 @@
     at async Function.create (F:\WORK DOCS\JS\JSL_SYSTEM\Asset Management Application\app\src\models\assignment.model.ts:43:24)
     at async AssignmentService.assignAsset (F:\WORK DOCS\JS\JSL_SYSTEM\Asset Management Application\app\src\services\assignment.service.ts:13:31)
     at async assignAsset (F:\WORK DOCS\JS\JSL_SYSTEM\Asset Management Application\app\src\controllers\assignment.controller.ts:12:35)
+2025-09-28 18:54:20 error: Login failed: Invalid credentials
+2025-09-28 18:54:25 error: Login failed: Invalid credentials
+2025-10-02 14:41:41 error: Error: Failed to lookup view "login" in views directory "F:\WORK DOCS\JS\JSL_SYSTEM\Asset Management Application\app\dist\views"
+    at Function.render (F:\WORK DOCS\JS\JSL_SYSTEM\Asset Management Application\app\node_modules\express\lib\application.js:597:17)
+    at ServerResponse.render (F:\WORK DOCS\JS\JSL_SYSTEM\Asset Management Application\app\node_modules\express\lib\response.js:1049:7)
+    at renderLogin (F:\WORK DOCS\JS\JSL_SYSTEM\Asset Management Application\app\dist\controllers\view.controller.js:7:13)
+    at Layer.handle [as handle_request] (F:\WORK DOCS\JS\JSL_SYSTEM\Asset Management Application\app\node_modules\express\lib\router\layer.js:95:5)
+    at next (F:\WORK DOCS\JS\JSL_SYSTEM\Asset Management Application\app\node_modules\express\lib\router\route.js:149:13)
+    at Route.dispatch (F:\WORK DOCS\JS\JSL_SYSTEM\Asset Management Application\app\node_modules\express\lib\router\route.js:119:3)
+    at Layer.handle [as handle_request] (F:\WORK DOCS\JS\JSL_SYSTEM\Asset Management Application\app\node_modules\express\lib\router\layer.js:95:5)
+    at F:\WORK DOCS\JS\JSL_SYSTEM\Asset Management Application\app\node_modules\express\lib\router\index.js:284:15
+    at Function.process_params (F:\WORK DOCS\JS\JSL_SYSTEM\Asset Management Application\app\node_modules\express\lib\router\index.js:346:12)
+    at next (F:\WORK DOCS\JS\JSL_SYSTEM\Asset Management Application\app\node_modules\express\lib\router\index.js:280:10)
+2025-10-02 14:41:46 error: Error: Failed to lookup view "login" in views directory "F:\WORK DOCS\JS\JSL_SYSTEM\Asset Management Application\app\dist\views"
+    at Function.render (F:\WORK DOCS\JS\JSL_SYSTEM\Asset Management Application\app\node_modules\express\lib\application.js:597:17)
+    at ServerResponse.render (F:\WORK DOCS\JS\JSL_SYSTEM\Asset Management Application\app\node_modules\express\lib\response.js:1049:7)
+    at renderLogin (F:\WORK DOCS\JS\JSL_SYSTEM\Asset Management Application\app\dist\controllers\view.controller.js:7:13)
+    at Layer.handle [as handle_request] (F:\WORK DOCS\JS\JSL_SYSTEM\Asset Management Application\app\node_modules\express\lib\router\layer.js:95:5)
+    at next (F:\WORK DOCS\JS\JSL_SYSTEM\Asset Management Application\app\node_modules\express\lib\router\route.js:149:13)
+    at Route.dispatch (F:\WORK DOCS\JS\JSL_SYSTEM\Asset Management Application\app\node_modules\express\lib\router\route.js:119:3)
+    at Layer.handle [as handle_request] (F:\WORK DOCS\JS\JSL_SYSTEM\Asset Management Application\app\node_modules\express\lib\router\layer.js:95:5)
+    at F:\WORK DOCS\JS\JSL_SYSTEM\Asset Management Application\app\node_modules\express\lib\router\index.js:284:15
+    at Function.process_params (F:\WORK DOCS\JS\JSL_SYSTEM\Asset Management Application\app\node_modules\express\lib\router\index.js:346:12)
+    at next (F:\WORK DOCS\JS\JSL_SYSTEM\Asset Management Application\app\node_modules\express\lib\router\index.js:280:10)
+2025-10-02 15:26:01 error: Login failed: Invalid credentials

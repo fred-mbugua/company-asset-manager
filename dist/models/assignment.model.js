@@ -30,8 +30,9 @@ Object.defineProperty(exports, "__esModule", { value: true });
 const database_1 = __importDefault(require("../config/database"));
 class AssignmentModel {
     static async create(assignmentData) {
+        // console.log('Creating assignment with data:', assignmentData);
         const query = `
-            INSERT INTO assignments (asset_id, employee_id, assigned_date, returned_date, notes)
+            INSERT INTO assignments (asset_id, employee_id, assignment_date, return_date, notes)
             VALUES ($1, $2, NOW(), NULL, $3)
             RETURNING *;
         `;
@@ -67,7 +68,7 @@ class AssignmentModel {
     static async findActiveByAssetId(assetId) {
         const query = `
             SELECT * FROM assignments 
-            WHERE asset_id = $1 AND returned_date IS NULL;
+            WHERE asset_id = $1 AND return_date IS NULL;
         `;
         const result = await database_1.default.query(query, [assetId]);
         return result.rows[0];

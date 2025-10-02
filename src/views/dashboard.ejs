@@ -1,75 +1,20 @@
-<!DOCTYPE html>
-<html lang="en">
+<%- include('partials/header', { pageTitle: 'Dashboard', cssFile: 'styles' }) %>
+<%- include('partials/navbar') %>
 
-<head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-  <title>ICT AMS</title>
-  <!-- Font Awesome -->
-  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css"/>
-  <link rel="stylesheet" href="assets/css/styles.css">
-</head>
+<div class="main">
+    <%- include('partials/sidebar') %>
 
-<body>
-  <!-- TOP NAVBAR -->
-  <div class="navbar">
-    <span class="menu-toggle"><i class="fa fa-bars"></i></span>
-    <h1>ASSET MANAGEMENT SYSTEM - AMS</h1>
-    <div class="admin-info">
-      <i class="fa fa-user-circle"></i> Admin
-    </div>
-  </div>
-  
-
-  <!-- MAIN: SIDEBAR + DASHBOARD -->
-  <div class="main">
-    <!-- Sidebar -->
-    <aside class="sidebar" id="sidebar">
-      <ul id="menu">
-        <li data-content="dashboard"><i class="fa fa-dashboard"></i><span>Dashboard</span></li>
-        <li class="has-sub">
-          <i class="fa fa-plus-square-o"></i><span>Assets</span>
-          <ul class="submenu">
-            <li data-content="create-assets">Create Assets</li>
-          </ul>
-        </li>
-        <li class="has-sub">
-          <i class="fa fa-list-alt"></i><span>Assignments</span>
-          <ul class="submenu">
-            <li data-content="view-assets">View Assets</li>
-            <li data-content="assign-assets">Assign Assets</li>
-          </ul>
-        </li>
-        <li class="has-sub">
-          <i class="fa fa-money"></i><span>Expenses</span>
-          <ul class="submenu">
-            <li data-content="create-expenses">Create Expenses</li>
-          </ul>
-        </li>
-        <li data-content="reports">
-          <i class="fa fa-bar-chart"></i><span>Reports</span>
-        </li>
-        
-        <li class="has-sub">
-          <i class="fa fa-cogs"></i><span>Administration</span>
-          <ul class="submenu">
-            <li data-content="create-users">Create Users</li>
-          </ul>
-        </li>
-      </ul>
-    </aside>
-
-    <!-- Dashboard Area -->
     <section class="dashboard" id="dashboard-content" data-current-page="dashboard">
-      <h2>Dashboard</h2>
-      <div class="card">Total Assets: 0</div>
-      <div class="card">Total Expenses: $0</div>
+        <h2>Dashboard</h2>
+        <div class="card">Total Assets: <%= locals.assetStats?.totalAssets || 0 %></div>
+        <div class="card">Total Expenses: Ksh. <%= locals.assetStats?.totalExpenses || 0 %></div>
+        <% if (locals.message) { %>
+            <script>
+                // Show dynamic message upon page load
+                showMessage('<%= locals.message.type %>', '<%= locals.message.text %>');
+            </script>
+        <% } %>
     </section>
-  </div>
+</div>
 
-  <!-- Load API helpers -->
-  <script src="assets/js/api.js"></script>
-  <script src="assets/js/main.js"></script>
-  <script></script>
-</body>
-</html>
+<%- include('partials/footer', { jsFile: 'main' }) %>

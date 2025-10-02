@@ -1,44 +1,28 @@
-const form = document.getElementById("assetForm");
-    const notification = document.getElementById("notification");
+// public/assets/js/assets.js
 
-    form.addEventListener("submit", async (e) => {
-      e.preventDefault();
+document.getElementById('assetForm').addEventListener('submit', async function(e) {
+    e.preventDefault();
 
-      const payload = {
-        asset_tag: document.getElementById("asset_tag").value.trim(),
-        asset_type: document.getElementById("asset_type").value,
-        manufacturer: document.getElementById("manufacturer").value.trim(),
-        model: document.getElementById("model").value.trim(),
-        serial_number: document.getElementById("serial_number").value.trim(),
-        status: document.getElementById("status").value,
-        location: document.getElementById("location").value.trim(),
-        purchase_date: document.getElementById("purchase_date").value,
-        purchase_price: parseFloat(document.getElementById("purchase_price").value),
-        notes: document.getElementById("notes").value.trim(),
-      };
+    const formData = {
+        asset_tag: document.getElementById('asset_tag').value,
+        asset_type: document.getElementById('asset_type').value,
+        manufacturer: document.getElementById('manufacturer').value,
+        model: document.getElementById('model').value,
+        serial_number: document.getElementById('serial_number').value,
+        status: document.getElementById('status').value,
+        location: document.getElementById('location').value,
+        purchase_date: document.getElementById('purchase_date').value,
+        purchase_price: parseFloat(document.getElementById('purchase_price').value),
+        notes: document.getElementById('notes').value
+    };
 
-      try {
-        const res = await apiFetch("/api/assets", {
-          method: "POST",
-          body: JSON.stringify(payload)
-        });
-
-        if (!res.ok) throw new Error("Failed to save asset");
-
-        await res.json();
-        showNotification("Asset created successfully ✅", "success");
-        form.reset();
-      } catch (err) {
-        console.error(err);
-        showNotification("Error creating asset ❌", "error");
-      }
-    });
-
-    function showNotification(msg, type) {
-      notification.textContent = msg;
-      notification.className = "notification " + type;
-      notification.style.display = "block";
-      setTimeout(() => {
-        notification.style.display = "none";
-      }, 3000);
+    try {
+        const response = await API.post('/assets', formData);
+        showMessage('success', response.message || 'Asset created successfully!');
+        
+        // Clear the form after successful submission
+        document.getElementById('assetForm').reset();
+    } catch (error) {
+        showMessage('error', error.message || 'Failed to create asset.');
     }
+});

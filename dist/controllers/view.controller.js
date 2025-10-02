@@ -12,11 +12,18 @@ class ViewsController {
             // Fetch necessary data for the dashboard
             const totalAssets = await models_1.ReportModel.getTotalAssetCount();
             const totalExpenses = await models_1.ReportModel.getTotalExpenseSum();
+            // console.log('Rendering dashboard with data:', { 
+            //     user: req.user,
+            //     totalAssets: totalAssets,
+            //     totalExpenses: totalExpenses
+            // });
             // Pass the data to the EJS template
             res.render('dashboard', {
                 user: req.user,
-                totalAssets: totalAssets,
-                totalExpenses: totalExpenses
+                assetStats: {
+                    totalAssets: totalAssets,
+                    totalExpenses: totalExpenses
+                }
             });
         }
         catch (error) {

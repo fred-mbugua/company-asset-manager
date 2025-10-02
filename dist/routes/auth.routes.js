@@ -11,4 +11,5 @@ router.post('/register', (0, express_async_handler_1.default)(auth_controller_1.
 router.post('/login', (0, express_async_handler_1.default)(auth_controller_1.default.login));
 router.post('/refresh-token', (0, express_async_handler_1.default)(auth_controller_1.default.refresh));
 router.post('/logout', (0, express_async_handler_1.default)(auth_controller_1.default.logout));
+router.get('/roles', (0, express_async_handler_1.default)(auth_controller_1.default.getAllUserRoles));
 exports.default = router;

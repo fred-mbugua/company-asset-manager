@@ -5,6 +5,24 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
 Object.defineProperty(exports, "__esModule", { value: true });
 const database_1 = __importDefault(require("../config/database"));
 class EmployeeModel {
+    async create(employeeData) {
+        const query = `
+            INSERT INTO employees (first_name, middle_name, last_name, branch_location, department, department_id, branch_id)
+            VALUES ($1, $2, $3, $4, $5, $6, $7)
+            RETURNING *;
+        `;
+        const values = [
+            employeeData.first_name,
+            employeeData.middle_name,
+            employeeData.last_name,
+            employeeData.branch_location,
+            employeeData.department,
+            employeeData.department_id,
+            employeeData.branch_id
+        ];
+        const result = await database_1.default.query(query, values);
+        return result.rows[0];
+    }
     async findById(id) {
         const query = 'SELECT * FROM employees WHERE id = $1';
         const result = await database_1.default.query(query, [id]);

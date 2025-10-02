@@ -1,121 +1,86 @@
-const form = document.getElementById("user-form");
-    const messageEl = document.getElementById("form-message");
-    const userTable = document.getElementById("user-table-body");
+// public/assets/js/users.js
 
-    // Load users
-    async function loadUsers() {
-      try {
-        const res = await apiFetch("/api/users");
-        if (!res.ok) throw new Error("Failed to load users");
-        const users = await res.json();
-        renderUsers(users);
-      } catch (err) {
-        console.error(err);
-        userTable.innerHTML = `<tr><td colspan="5" style="text-align:center;color:red;">Error loading users</td></tr>`;
-      }
+const userForm = document.getElementById('user-form');
+let isEditing = false; // Flag to determine if we are creating or updating
+
+userForm.addEventListener('submit', async function(e) {
+    e.preventDefault();
+
+    const userId = document.getElementById('user_id').value;
+    const isNewUser = userId === '';
+    
+    const url = isNewUser ? '/auth/register' : `/users/${userId}`;
+    const method = isNewUser ? 'POST' : 'PUT';
+
+    const formData = {
+        first_name: document.getElementById('first_name').value,
+        middle_name: document.getElementById('middle_name').value,
+        last_name: document.getElementById('last_name').value,
+        email: document.getElementById('email').value,
+        password: document.getElementById('password').value,
+        role_id: parseInt(document.getElementById('role_id').value),
+        department_id: parseInt(document.getElementById('department_id').value),
+        branch_id: parseInt(document.getElementById('branch_id').value),
+    };
+
+    // Remove password if it's an update and the field is empty
+    if (!isNewUser && !formData.password) {
+        delete formData.password;
     }
 
-    function renderUsers(users) {
-      userTable.innerHTML = "";
-      if (!users || users.length === 0) {
-        userTable.innerHTML = `<tr><td colspan="5" style="text-align:center;color:#888;">No users found</td></tr>`;
-        return;
-      }
-      users.forEach(u => {
-        const tr = document.createElement("tr");
-        tr.innerHTML = `
-          <td>${u.id}</td>
-          <td>${u.first_name}</td>
-          <td>${u.middle_name}</td>
-          <td>${u.last_name}</td>
-          <td>${u.email}</td>
-          <td>${u.role}</td>
-          <td>
-            <button class="btn btn-edit" 
-              onclick="editUser(${u.id}, '${u.first_name}', '${u.middle_name}', '${u.last_name}', '${u.email}', '${u.role}')">
-              Edit
-            </button>
-            <button class="btn btn-delete" onclick="deleteUser(${u.id})">Delete</button>
-          </td>
-        `;
-        userTable.appendChild(tr);
-      });
+    try {
+        const response = await API.request(method, url, formData);
+        showMessage('success', response.message || (isNewUser ? 'User created.' : 'User updated.'));
+        
+        // Reload page to update the table (simple non-SPA approach)
+        window.location.reload(); 
+    } catch (error) {
+        showMessage('error', error.message || 'Operation failed.');
     }
+});
 
-    // Handle form submit
-    form.addEventListener("submit", async (e) => {
-      e.preventDefault();
+function resetForm() {
+    userForm.reset();
+    document.getElementById('user_id').value = '';
+    document.querySelector('.btn-save').textContent = 'Create User';
+    document.getElementById('password').placeholder = '';
+    isEditing = false;
+}
 
-      const userId = document.getElementById("user_id").value;
-      const userData = {
-        first_name: form.first_name.value.trim(),
-        middle_name: form.middle_name.value.trim(),
-        last_name: form.last_name.value.trim(),
-        email: form.email.value.trim(),
-        password: form.password.value.trim(),
-        role: form.role.value
-      };
+// Function to populate form for editing (simple non-SPA approach)
+async function editUser(id) {
+    try {
+        const response = await API.get(`/users/${id}`);
+        const user = response.data;
+        
+        document.getElementById('user_id').value = user.id;
+        document.getElementById('first_name').value = user.first_name;
+        document.getElementById('middle_name').value = user.middle_name || '';
+        document.getElementById('last_name').value = user.last_name;
+        document.getElementById('email').value = user.email;
+        document.getElementById('role_id').value = user.role_id;
+        document.getElementById('department_id').value = user.department_id;
+        document.getElementById('branch_id').value = user.branch_id;
+        
+        document.querySelector('.btn-save').textContent = 'Update User';
+        document.getElementById('password').placeholder = 'Enter new password to change';
+        isEditing = true;
 
-      try {
-        let res;
-        if (userId) {
-          res = await apiFetch(`/api/users/${userId}`, {
-            method: "PUT",
-            headers: { "Content-Type": "application/json" },
-            body: JSON.stringify(userData)
-          });
-        } else {
-          res = await apiFetch("/api/auth/register", {
-            method: "POST",
-            headers: { "Content-Type": "application/json" },
-            body: JSON.stringify(userData)
-          });
-        }
-
-        if (!res.ok) throw new Error("Save failed");
-
-        messageEl.textContent = userId ? "User updated successfully!" : "User created successfully!";
-        messageEl.className = "message success";
-        form.reset();
-        document.getElementById("user_id").value = "";
-        loadUsers();
-      } catch (err) {
-        console.error(err);
-        messageEl.textContent = "Error saving user.";
-        messageEl.className = "message error";
-      }
-    });
-
-    function resetForm() {
-      form.reset();
-      document.getElementById("user_id").value = "";
-      messageEl.textContent = "";
+    } catch (error) {
+        showMessage('error', error.message || 'Failed to fetch user details.');
     }
+}
 
-    // ✅ Fixed editUser to accept and set first/middle/last separately
-    function editUser(id, first_name, middle_name, last_name, email, role) {
-      document.getElementById("user_id").value = id;
-      document.getElementById("first_name").value = first_name;
-      document.getElementById("middle_name").value = middle_name;
-      document.getElementById("last_name").value = last_name;
-      document.getElementById("email").value = email;
-      document.getElementById("role").value = role;
-      messageEl.textContent = "Editing user...";
-      messageEl.className = "message";
+// Attach edit/delete handlers to the window (required for EJS onclick events)
+window.editUser = editUser;
+window.deleteUser = async function(id) {
+    if (!confirm('Are you sure you want to delete this user?')) return;
+    try {
+        const response = await API.delete(`/users/${id}`);
+        showMessage('success', response.message || 'User deleted successfully.');
+        window.location.reload();
+    } catch (error) {
+        showMessage('error', error.message || 'Failed to delete user.');
     }
-
-    async function deleteUser(id) {
-      if (!confirm("Delete this user?")) return;
-      try {
-        const res = await apiFetch(`/api/users/${id}`, { method: "DELETE" });
-        if (!res.ok) throw new Error("Delete failed");
-        alert("User deleted");
-        loadUsers();
-      } catch (err) {
-        console.error(err);
-        alert("Error deleting user");
-      }
-    }
-
-    // Init
-    loadUsers();
+};
+window.resetForm = resetForm;

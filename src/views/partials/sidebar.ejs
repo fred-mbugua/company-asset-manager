@@ -1,0 +1,62 @@
+<%
+    // Assuming 'user' object is passed to EJS and contains user role information (e.g., user.role_id or user.role)
+    const userRole = locals.user?.role || 'Standard User'; 
+    
+    // Define access rules for navigation items
+    const menuItems = [
+        { title: 'Dashboard', icon: 'fa-dashboard', url: '/', roles: ['Admin', 'Standard User'] },
+        { 
+            title: 'Assets', icon: 'fa-plus-square-o', roles: ['Admin', 'Standard User'], submenu: [
+                { title: 'Create Assets', url: '/assets/create', roles: ['Admin', 'Standard User'] },
+            ]
+        },
+        { 
+            title: 'Assignments', icon: 'fa-list-alt', roles: ['Admin', 'Standard User'], submenu: [
+                { title: 'View Assets', url: '/assets/view', roles: ['Admin', 'Standard User'] },
+                { title: 'Assign Assets', url: '/assets/assign', roles: ['Admin'] }, // Only Admin can assign
+            ]
+        },
+        { 
+            title: 'Expenses', icon: 'fa-money', roles: ['Admin', 'Standard User'], submenu: [
+                { title: 'Create Expenses', url: '/expenses/create', roles: ['Admin', 'Standard User'] },
+            ]
+        },
+        { title: 'Reports', icon: 'fa-bar-chart', url: '/reports', roles: ['Admin'] }, // Only Admin can view reports
+        { 
+            title: 'Administration', icon: 'fa-cogs', roles: ['Admin'], submenu: [ // Restricted to Admin
+                { title: 'Create Users', url: '/users/create', roles: ['Admin'] },
+                { title: 'Manage Branches', url: '/branches/manage', roles: ['Admin'] },
+                { title: 'Manage Departments', url: '/departments/manage', roles: ['Admin'] },
+            ]
+        },
+    ];
+
+    const hasAccess = (requiredRoles) => requiredRoles.includes(userRole);
+%>
+
+<aside class="sidebar" id="sidebar">
+    <ul id="menu">
+        <% menuItems.forEach(item => { %>
+            <% if (hasAccess(item.roles)) { %>
+                <% if (item.submenu) { %>
+                    <li class="has-sub">
+                        <i class="<%= item.icon %>"></i><span><%= item.title %></span>
+                        <ul class="submenu">
+                            <% item.submenu.forEach(subItem => { %>
+                                <% if (hasAccess(subItem.roles)) { %>
+                                    <li><a href="<%= subItem.url %>"><%= subItem.title %></a></li>
+                                <% } %>
+                            <% }) %>
+                        </ul>
+                    </li>
+                <% } else { %>
+                    <li data-content="<%= item.title.toLowerCase().replace(/\s/g, '-') %>">
+                        <a href="<%= item.url %>">
+                            <i class="<%= item.icon %>"></i><span><%= item.title %></span>
+                        </a>
+                    </li>
+                <% } %>
+            <% } %>
+        <% }) %>
+    </ul>
+</aside>

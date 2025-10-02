@@ -1,84 +1,50 @@
+// public/assets/js/reports.js
+
 function showForm(type) {
-    document.querySelectorAll(".report-form").forEach(f => f.style.display = "none");
-    document.getElementById(type + "-form").style.display = "block";
-    document.getElementById("report-output").innerHTML = "";
-  }
+    ['employee-form', 'branch-form', 'expenses-form'].forEach(id => {
+        document.getElementById(id).style.display = 'none';
+    });
+    document.getElementById(`${type}-form`).style.display = 'block';
+    document.getElementById('report-output').innerHTML = '';
+}
 
-  async function fetchEmployeeReport() {
-    const id = document.getElementById("employeeId").value.trim();
-    if (!id) return alert("Enter Employee ID");
+async function generateReport(endpoint, params) {
+    const outputDiv = document.getElementById('report-output');
+    outputDiv.innerHTML = '<p style="text-align:center;">Generating report...</p>';
     try {
-      const res = await apiFetch(`/api/reports/assets/employee/${id}`);
-      if (!res.ok) throw new Error("Failed to fetch employee report");
-      const data = await res.json();
-
-      let html = `<h3>Employee: ${data.employee.full_name}</h3>`;
-      if (!data.assets || data.assets.length === 0) {
-        html += `<p style="color:#888;">No assets assigned.</p>`;
-      } else {
-        html += `<table><thead><tr>
-          <th>ID</th><th>Asset Tag</th><th>Type</th><th>Assignment Date</th>
-        </tr></thead><tbody>`;
-        data.assets.forEach(a => {
-          html += `<tr><td>${a.id}</td><td>${a.asset_tag}</td><td>${a.asset_type || ""}</td><td>${a.assignment_date}</td></tr>`;
-        });
-        html += `</tbody></table>`;
-      }
-      document.getElementById("report-output").innerHTML = html;
-    } catch (err) {
-      document.getElementById("report-output").innerHTML = `<p style="color:red;">Error loading report</p>`;
+        const queryString = new URLSearchParams(params).toString();
+        const response = await API.get(`/reports/${endpoint}?${queryString}`);
+        
+        if (response.data && response.data.reportHtml) {
+            outputDiv.innerHTML = response.data.reportHtml; // Server returns pre-rendered HTML
+        } else if (response.data) {
+            outputDiv.innerHTML = '<h4>Report Data:</h4>' + JSON.stringify(response.data, null, 2);
+        } else {
+            outputDiv.innerHTML = '<p>No data found for this report.</p>';
+        }
+        showMessage('success', 'Report generated successfully.');
+    } catch (error) {
+        outputDiv.innerHTML = '<p style="color:red;">Error generating report.</p>';
+        showMessage('error', error.message || 'Failed to generate report.');
     }
-  }
+}
 
-  async function fetchBranchReport() {
-    const loc = document.getElementById("branchLocation").value.trim();
-    if (!loc) return alert("Enter Branch Location");
-    try {
-      const res = await apiFetch(`/api/reports/assets/branch/${encodeURIComponent(loc)}`);
-      if (!res.ok) throw new Error("Failed to fetch branch report");
-      const data = await res.json();
+window.showForm = showForm;
+window.fetchEmployeeReport = () => {
+    const employeeId = document.getElementById('employeeId').value;
+    if (!employeeId) return showMessage('error', 'Please enter an Employee ID.');
+    generateReport('employee-assets', { employeeId });
+};
 
-      let html = `<h3>Assets in Branch: ${loc}</h3>`;
-      if (!data || data.length === 0) {
-        html += `<p style="color:#888;">No assets found.</p>`;
-      } else {
-        html += `<table><thead><tr>
-          <th>ID</th><th>Asset Tag</th><th>Type</th><th>Location</th>
-        </tr></thead><tbody>`;
-        data.forEach(a => {
-          html += `<tr><td>${a.id}</td><td>${a.asset_tag}</td><td>${a.asset_type || ""}</td><td>${a.location || ""}</td></tr>`;
-        });
-        html += `</tbody></table>`;
-      }
-      document.getElementById("report-output").innerHTML = html;
-    } catch (err) {
-      document.getElementById("report-output").innerHTML = `<p style="color:red;">Error loading report</p>`;
-    }
-  }
+window.fetchBranchReport = () => {
+    const branchId = document.getElementById('branchId').value;
+    if (!branchId) return showMessage('error', 'Please enter a Branch ID.');
+    generateReport('branch-assets', { branchId });
+};
 
-  async function fetchExpensesReport() {
-    const start = document.getElementById("startDate").value;
-    const end = document.getElementById("endDate").value;
-    if (!start || !end) return alert("Select start and end dates");
-    try {
-      const res = await apiFetch(`/api/reports/expenses/time-period?startDate=${start}&endDate=${end}`);
-      if (!res.ok) throw new Error("Failed to fetch expenses report");
-      const data = await res.json();
-
-      let html = `<h3>Expenses from ${start} to ${end}</h3>`;
-      if (!data || data.length === 0) {
-        html += `<p style="color:#888;">No expenses found.</p>`;
-      } else {
-        html += `<table><thead><tr>
-          <th>ID</th><th>Asset ID</th><th>Type</th><th>Amount</th><th>Date</th>
-        </tr></thead><tbody>`;
-        data.forEach(e => {
-          html += `<tr><td>${e.id}</td><td>${e.asset_id}</td><td>${e.expense_type || ""}</td><td>${e.amount}</td><td>${e.date}</td></tr>`;
-        });
-        html += `</tbody></table>`;
-      }
-      document.getElementById("report-output").innerHTML = html;
-    } catch (err) {
-      document.getElementById("report-output").innerHTML = `<p style="color:red;">Error loading report</p>`;
-    }
-  }
+window.fetchExpensesReport = () => {
+    const startDate = document.getElementById('startDate').value;
+    const endDate = document.getElementById('endDate').value;
+    if (!startDate || !endDate) return showMessage('error', 'Please select both start and end dates.');
+    generateReport('expenses-period', { startDate, endDate });
+};

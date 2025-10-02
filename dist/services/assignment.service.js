@@ -10,7 +10,7 @@ class AssignmentService {
         // checking if the asset is already assigned
         const existingAssignment = await assignment_model_1.default.findActiveByAssetId(assignmentData.asset_id);
         if (existingAssignment) {
-            throw new Error('Asset is already assigned to another employee.');
+            return Promise.reject(new Error('Asset is already assigned to another employee.'));
         }
         const newAssignment = await assignment_model_1.default.create(assignmentData);
         await actionLog_service_1.default.logAction(userId, 'ASSIGN ASSET', 'Assignment', newAssignment.id, { asset_id: newAssignment.asset_id, employee_id: newAssignment.employee_id });

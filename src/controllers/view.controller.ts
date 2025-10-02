@@ -16,11 +16,19 @@ class ViewsController {
             const totalAssets = await ReportModel.getTotalAssetCount();
             const totalExpenses = await ReportModel.getTotalExpenseSum();
 
+            // console.log('Rendering dashboard with data:', { 
+            //     user: req.user,
+            //     totalAssets: totalAssets,
+            //     totalExpenses: totalExpenses
+            // });
+
             // Pass the data to the EJS template
             res.render('dashboard', { 
                 user: req.user,
-                totalAssets: totalAssets,
-                totalExpenses: totalExpenses
+                assetStats: {
+                    totalAssets: totalAssets,
+                    totalExpenses: totalExpenses
+                }
             });
         } catch (error) {
             console.error('Error rendering dashboard:', error);
@@ -35,7 +43,19 @@ class ViewsController {
 
     // Rendering the page for viewing assets
     async renderViewAssets(req: Request, res: Response) {
-        res.render('view-assets');
+        // res.render('view-assets');
+        try {
+            const assets = await AssetModel.findAll(); 
+            res.render('view-assets', { 
+                pageTitle: 'View Assets',
+                user: req.user,
+                assets: assets
+            });
+        } catch (error) {
+            console.error('Error rendering view-assets page:', error);
+            res.status(500).send('Error loading assets.');
+            return;
+        }
     }
     
     // Rendering the page for assigning assets. Requires lists of assets and employees.

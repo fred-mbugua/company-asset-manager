@@ -1,55 +1,69 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>View Assets</title>
-  <link rel="stylesheet" href="assets/css/viewassets.css">
-  <style></style>
-</head>
-<body>
-  <div class="assets-container" id="assets-list-section">
-    <h3>All Assets</h3>
-    <!-- Filters -->
-    <div class="filters">
-      <input type="text" id="filter-tag" placeholder="Asset Tag">
-      <input type="text" id="filter-serial" placeholder="Serial Number">
-      <select id="filter-type">
-        <option value="">All Types</option>
-        <option value="Laptop">Laptop</option>
-        <option value="Printer">Printer</option>
-        <option value="Router">Router</option>
-        <option value="Switch">Switch</option>
-        <option value="CCTV">CCTV</option>
-        <option value="Other">Other</option>
-      </select>
-      <input type="text" id="filter-location" placeholder="Location">
-      <button class="btn btn-view" id="search-btn">Search</button>
-    </div>
-    <!-- Asset Table -->
-    <table>
-      <thead>
-        <tr>
-          <th>ID</th><th>Asset Tag</th><th>Type</th><th>Manufacturer</th>
-          <th>Model</th><th>Serial</th><th>Status</th><th>Location</th>
-          <th>Purchase Date</th><th>Actions</th>
-        </tr>
-      </thead>
-      <tbody id="asset-table-body">
-        <tr><td colspan="10" style="text-align:center;color:#888;">Loading...</td></tr>
-      </tbody>
-    </table>
-  </div>
+<%- include('partials/header', { pageTitle: 'View Assets', cssFile: 'viewassets' }) %>
+<%- include('partials/navbar') %>
 
-  <!-- View/Edit Section -->
-  <div class="assets-container" id="asset-detail-section" style="display:none;">
-    <h3 id="asset-form-title">Asset Details</h3>
-    <form id="asset-detail-form" class="asset-form"></form>
-    <div class="form-actions" id="asset-form-actions"></div>
-  </div>
+<div class="main">
+    <%- include('partials/sidebar') %>
+    <section class="content-area">
+        <div class="assets-container" id="assets-list-section">
+            <h3>All Assets</h3>
+            <div class="filters">
+                <input type="text" id="filter-tag" placeholder="Asset Tag">
+                <input type="text" id="filter-serial" placeholder="Serial Number">
+                <select id="filter-type">
+                    <option value="">All Types</option>
+                    <option value="Laptop">Laptop</option>
+                    <option value="Printer">Printer</option>
+                    <option value="Router">Router</option>
+                    <option value="Switch">Switch</option>
+                    <option value="CCTV">CCTV</option>
+                    <option value="Other">Other</option>
+                </select>
+                <input type="text" id="filter-location" placeholder="Location">
+                <button class="btn btn-view" id="search-btn">Search</button>
+            </div>
+            <table>
+                <thead>
+                    <tr>
+                        <th>ID</th><th>Asset Tag</th><th>Type</th><th>Manufacturer</th>
+                        <th>Model</th><th>Serial</th><th>Status</th><th>Location</th>
+                        <th>Purchase Date</th><th>Actions</th>
+                    </tr>
+                </thead>
+                <tbody id="asset-table-body">
+                    <% if (locals.assets && locals.assets.length > 0) { %>
+                        <% locals.assets.forEach(asset => { %>
+                            <tr data-id="<%= asset.id %>">
+                                <td><%= asset.id %></td>
+                                <td><%= asset.asset_tag %></td>
+                                <td><%= asset.asset_type %></td>
+                                <td><%= asset.manufacturer %></td>
+                                <td><%= asset.model %></td>
+                                <td><%= asset.serial_number %></td>
+                                <td><%= asset.status %></td>
+                                <td><%= asset.location %></td>
+                                <td><%= new Date(asset.purchase_date).toLocaleDateString() %></td>
+                                <td>
+                                    <button class="btn btn-edit" onclick="showAssetDetails(<%= asset.id %>)">View/Edit</button>
+                                </td>
+                            </tr>
+                        <% }); %>
+                    <% } else { %>
+                         <tr><td colspan="10" style="text-align:center;color:#888;">No assets found.</td></tr>
+                    <% } %>
+                </tbody>
+            </table>
+        </div>
 
-  <script></script>
-  <script src="assets/js/api.js"></script>
-  <script src="assets/js/viewassets.js"></script>
-</body>
-</html>
+        <div class="assets-container" id="asset-detail-section" style="display:none;">
+            <h3 id="asset-form-title">Asset Details</h3>
+            <form id="asset-detail-form" class="asset-form">
+                </form>
+            <div class="form-actions" id="asset-form-actions">
+                <button class="btn btn-save" id="save-asset-btn">Save Changes</button>
+                <button class="btn btn-cancel" onclick="document.getElementById('asset-detail-section').style.display='none'; document.getElementById('assets-list-section').style.display='block';">Cancel</button>
+            </div>
+        </div>
+    </section>
+</div>
+
+<%- include('partials/footer', { jsFile: 'viewassets' }) %>

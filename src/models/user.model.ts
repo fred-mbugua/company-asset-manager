@@ -31,7 +31,7 @@ class UserModel {
   //   }
 
   async create(userData: any) {
-    console.log('Creating user:', userData);
+    // console.log('Creating user:', userData);
     const query = `
             INSERT INTO users (employee_id, first_name, middle_name, last_name, email, password, role_id, department_id, phone, branch_id)
             VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10)

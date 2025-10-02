@@ -40,34 +40,165 @@ exports.AuthService = void 0;
 const bcryptjs_1 = __importDefault(require("bcryptjs"));
 const jsonwebtoken_1 = __importDefault(require("jsonwebtoken"));
 const models_1 = require("../models");
+const logger_1 = __importDefault(require("../utils/logger"));
+const employee_model_1 = __importDefault(require("../models/employee.model"));
+const database_1 = __importDefault(require("../config/database"));
 const jwtConfig = __importStar(require("../config"));
 const actionLog_service_1 = __importDefault(require("./actionLog.service"));
 class AuthService {
-    async register(userData) {
-        // // Find role ID based on the provided role name
-        const role = await models_1.RoleModel.findByName(userData.role);
-        if (!role) {
-            throw new Error('Invalid role specified');
+    constructor() {
+        // async register(userData: ICreateUser) {
+        //   // // Find role ID based on the provided role name
+        //   const role = await RoleModel.findByName(userData.role);
+        //   // console.log('User data:', userData.password);
+        //   // console.log('Role found:', role);
+        //   if (!role) {
+        //     throw new Error('Invalid role specified');
+        //   }
+        //   // Hash password
+        //   const hashedPassword = await bcrypt.hash(userData.password, 10);
+        //   // Create new user using the role ID
+        //   const newUser = await UserModel.create({
+        //     first_name: userData.first_name,
+        //     middle_name: userData.middle_name,
+        //     last_name: userData.last_name,
+        //     email: userData.email,
+        //     password_hash: hashedPassword,
+        //     role_id: role?.id,
+        //     department_id: userData?.department_id
+        //   });
+        //   // Log the registration action
+        //       await ActionLogService.logAction(
+        //           newUser.id,
+        //           'REGISTER',
+        //           'User',
+        //           newUser.id,
+        //           { email: newUser.email }
+        //       );
+        //   return newUser;
+        // }
+        // private SALT_ROUNDS = 10;
+        // async registerUser(registrationData: any, userId: number) {
+        //   // console.log('Registration data received:', registrationData);
+        //       // Start a database transaction
+        //       const client = await db.connect();
+        //       try {
+        //           await client.query('BEGIN');
+        //           // Check if the user's email already exists
+        //           const existingUser = await UserModel.findByEmail(registrationData.email);
+        //           if (existingUser) {
+        //               return Promise.reject(new Error('A user with this email already exists.'));
+        //           }
+        //           // Create the employee record first
+        //           const newEmployee = await EmployeeModel.create({
+        //               first_name: registrationData.first_name,
+        //               middle_name: registrationData.middle_name,
+        //               last_name: registrationData.last_name,
+        //               email: registrationData.email,
+        //               department: registrationData.department,
+        //               department_id: registrationData.department_id,
+        //               branch_location: registrationData.branch_location,
+        //               branch_id: registrationData.branch_id
+        //           });
+        //           // Hash the password
+        //           const hashedPassword = await bcrypt.hash(registrationData.password, this.SALT_ROUNDS);
+        //           // Create the user account, linking it to the new employee's ID
+        //           const newUser = await UserModel.create({
+        //               employee_id: newEmployee.id,
+        //               first_name: registrationData.first_name,
+        //               middle_name: registrationData.middle_name,
+        //               last_name: registrationData.last_name,
+        //               email: registrationData.email,
+        //               phone: registrationData.phone,
+        //               password: hashedPassword,
+        //               role_id: registrationData.role_id,
+        //               branch_id: registrationData.branch_id
+        //           });
+        //           // Log the creation of both the user and employee
+        //           await ActionLogService.logAction(
+        //               userId, // User ID who performed the action
+        //               'CREATE',
+        //               'User',
+        //               newUser.id,
+        //               { registered_email: newUser.email }
+        //           );
+        //           await client.query('COMMIT');
+        //           return newUser;
+        //       } catch (error) {
+        //           await client.query('ROLLBACK');
+        //           logger.error('Registration failed:', error);
+        //           throw error;
+        //       } finally {
+        //           client.release();
+        //       }
+        //   }
+        this.SALT_ROUNDS = 10;
+        // async getUserRolesById(userId: number) {
+        //   const user = await UserModel.findById(userId);
+        //   if (!user) {
+        //     throw new Error('User not found');
+        //   }  
+        //   const roles = await RoleModel.findByUserId(user.id);
+        //   return roles;
+        // }
+    }
+    // IMPORTANT: The userId parameter is now required, representing the Admin/User
+    // who is registering the new user.
+    async registerUser(registrationData, performingUserId) {
+        // console.log('Registration data received:', registrationData);
+        // Start a database transaction
+        const client = await database_1.default.connect();
+        try {
+            await client.query('BEGIN');
+            // Check if the user's email already exists
+            const existingUser = await models_1.UserModel.findByEmail(registrationData.email);
+            if (existingUser) {
+                return Promise.reject(new Error('A user with this email already exists.'));
+            }
+            // Create the employee record first
+            const newEmployee = await employee_model_1.default.create({
+                first_name: registrationData.first_name,
+                middle_name: registrationData.middle_name,
+                last_name: registrationData.last_name,
+                email: registrationData.email,
+                department: registrationData.department,
+                department_id: registrationData.department_id,
+                branch_location: registrationData.branch_location,
+                branch_id: registrationData.branch_id
+            }); // Passed client
+            // Hash the password
+            const hashedPassword = await bcryptjs_1.default.hash(registrationData.password, this.SALT_ROUNDS);
+            // Create the user account, linking it to the new employee's ID
+            const newUser = await models_1.UserModel.create({
+                employee_id: newEmployee.id,
+                first_name: registrationData.first_name,
+                middle_name: registrationData.middle_name,
+                last_name: registrationData.last_name,
+                email: registrationData.email,
+                phone: registrationData.phone,
+                password: hashedPassword,
+                role_id: registrationData.role_id,
+                branch_id: registrationData.branch_id
+            }); // Passed client
+            // Log the creation of both the user and employee
+            await actionLog_service_1.default.logAction(performingUserId, // User ID who performed the action (Admin)
+            'CREATE', 'User', newUser.id, { registered_email: newUser.email });
+            await client.query('COMMIT');
+            return newUser;
         }
-        // Hash password
-        const hashedPassword = await bcryptjs_1.default.hash(userData.password_hash, 10);
-        // Create new user using the role ID
-        const newUser = await models_1.UserModel.create({
-            first_name: userData.first_name,
-            middle_name: userData.middle_name,
-            last_name: userData.last_name,
-            email: userData.email,
-            password_hash: hashedPassword,
-            role_id: role.id
-        });
-        // Log the registration action
-        await actionLog_service_1.default.logAction(newUser.id, 'REGISTER', 'User', newUser.id, { email: newUser.email });
-        return newUser;
+        catch (error) {
+            await client.query('ROLLBACK');
+            logger_1.default.error('Registration failed:', error);
+            throw error;
+        }
+        finally {
+            client.release();
+        }
     }
     async login(credentials) {
         const user = await models_1.UserModel.findByEmail(credentials.email);
         if (!user || !await bcryptjs_1.default.compare(credentials.password, user.password)) {
-            throw new Error('Invalid credentials');
+            return Promise.reject(new Error('Invalid credentials'));
         }
         const accessToken = this.generateAccessToken(user);
         const refreshToken = this.generateRefreshToken(user);
@@ -78,7 +209,7 @@ class AuthService {
         await actionLog_service_1.default.logAction(user.id, 'LOGIN', 'User', user.id, { email: user.email });
         return { accessToken, refreshToken, user };
     }
-    async refresh(refreshToken, userId) {
+    async refresh(refreshToken) {
         try {
             const storedToken = await models_1.RefreshTokenModel.findByToken(refreshToken);
             if (!storedToken) {
@@ -107,12 +238,17 @@ class AuthService {
         await models_1.RefreshTokenModel.deleteByToken(refreshToken);
     }
     generateAccessToken(user) {
+        // console.log('Generating access token for user:', user);
         const payload = { id: user.id, email: user.email, role: user.role };
         return jsonwebtoken_1.default.sign(payload, jwtConfig.JWT_ACCESS_SECRET_KEY, { expiresIn: jwtConfig.JWT_ACCESS_EXPIRATION_TIME });
     }
     generateRefreshToken(user) {
         const payload = { id: user.id, email: user.email, role: user.role };
         return jsonwebtoken_1.default.sign(payload, jwtConfig.JWT_REFRESH_SECRET_KEY, { expiresIn: jwtConfig.JWT_REFRESH_EXPIRATION_TIME });
+    }
+    async getAllUserRoles() {
+        const roles = await models_1.RoleModel.findAll();
+        return roles;
     }
 }
 exports.AuthService = AuthService;

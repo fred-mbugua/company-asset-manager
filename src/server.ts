@@ -2,13 +2,22 @@ import express from 'express';
 import cookieParser from 'cookie-parser';
 import path from 'path';
 import cors from 'cors';
+import session from 'express-session';
+const app = express();
+app.use(session({
+    secret: 'assetManager@2025', // strong secret key
+    resave: false,
+    saveUninitialized: true,
+    cookie: { secure: process.env.NODE_ENV === 'production' }
+}));
+
 import { mainRoutes, viewsRoutes } from './routes';
 import { connectDB } from './config/database';
 import { PORT } from './config';
 import logger from './utils/logger';
 import 'express-async-errors'; // Handles async errors in Express
 
-const app = express();
+
 
 // Middleware
 app.use(express.json());

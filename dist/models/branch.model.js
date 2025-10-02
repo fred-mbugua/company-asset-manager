@@ -4,21 +4,25 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
 };
 Object.defineProperty(exports, "__esModule", { value: true });
 const database_1 = __importDefault(require("../config/database"));
-class RoleModel {
-    async findByName(name) {
-        const query = 'SELECT * FROM roles WHERE name = $1';
-        const result = await database_1.default.query(query, [name]);
+class BranchModel {
+    static async create(branchData) {
+        const query = `
+            INSERT INTO branches (name, location)
+            VALUES ($1, $2)
+            RETURNING *;
+        `;
+        const result = await database_1.default.query(query, [branchData.name, branchData.location]);
         return result.rows[0];
     }
-    async findById(id) {
-        const query = 'SELECT * FROM roles WHERE id = $1';
+    static async findById(id) {
+        const query = `SELECT * FROM branches WHERE id = $1;`;
         const result = await database_1.default.query(query, [id]);
         return result.rows[0];
     }
-    async findAll() {
-        const query = 'SELECT * FROM roles';
+    static async findAll() {
+        const query = `SELECT * FROM branches;`;
         const result = await database_1.default.query(query);
         return result.rows;
     }
 }
-exports.default = new RoleModel();
+exports.default = BranchModel;

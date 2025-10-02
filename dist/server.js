@@ -7,12 +7,19 @@ const express_1 = __importDefault(require("express"));
 const cookie_parser_1 = __importDefault(require("cookie-parser"));
 const path_1 = __importDefault(require("path"));
 const cors_1 = __importDefault(require("cors"));
+const express_session_1 = __importDefault(require("express-session"));
+const app = (0, express_1.default)();
+app.use((0, express_session_1.default)({
+    secret: 'assetManager@2025', // strong secret key
+    resave: false,
+    saveUninitialized: true,
+    cookie: { secure: process.env.NODE_ENV === 'production' }
+}));
 const routes_1 = require("./routes");
 const database_1 = require("./config/database");
 const config_1 = require("./config");
 const logger_1 = __importDefault(require("./utils/logger"));
 require("express-async-errors"); // Handles async errors in Express
-const app = (0, express_1.default)();
 // Middleware
 app.use(express_1.default.json());
 app.use((0, cookie_parser_1.default)());

@@ -1,0 +1,26 @@
+<script src="/assets/js/message.js"></script>
+<script src="/assets/js/api.js"></script>
+<script>
+  const logoutLink = document.getElementById('logout-link');
+  
+  // Global function to redirect on logout
+  if (logoutLink) {
+    logoutLink.addEventListener('click', async (e) => {
+    e.preventDefault();
+    try {
+      await API.post('/auth/logout'); // Assuming API helper handles token clearance
+      window.location.href = '/login';
+    } catch (error) {
+      console.error('Logout failed:', error);
+      // Even if the request fails, clear local cookies/storage and redirect
+      window.location.href = '/login';
+    }
+  });
+  }
+</script>
+<% if (locals.jsFile) { %>
+<script src="/assets/js/<%= jsFile %>.js"></script>
+<% } %>
+</body>
+
+</html>

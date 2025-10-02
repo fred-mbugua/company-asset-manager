@@ -1,52 +1,43 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-  <meta charset="UTF-8"/>
-  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-  <title>Reports</title>
-  <link rel="stylesheet" href="assets/css/reports.css">
-  <style></style>
-</head>
-<body>
-  <div class="reports-container">
-    <h2>Reports</h2>
+<%- include('partials/header', { pageTitle: 'Reports', cssFile: 'reports' }) %>
+<%- include('partials/navbar') %>
 
-    <!-- Report Buttons -->
-    <div class="report-buttons">
-      <button class="report-btn" onclick="showForm('employee')">Employee Assets Report</button>
-      <button class="report-btn" onclick="showForm('branch')">Branch Assets Report</button>
-      <button class="report-btn" onclick="showForm('expenses')">Expenses Report (Time Period)</button>
-    </div>
+<div class="main">
+    <%- include('partials/sidebar') %>
+    <section class="content-area">
+        <div class="reports-container">
+            <h2>Reports</h2>
 
-    <!-- Employee Report Form -->
-    <div class="report-form" id="employee-form">
-      <label>Employee ID: </label>
-      <input type="number" id="employeeId" placeholder="Enter Employee ID"/>
-      <button onclick="fetchEmployeeReport()">Generate</button>
-    </div>
+            <div class="report-buttons">
+                <button class="report-btn" onclick="showForm('employee')">Employee Assets Report</button>
+                <button class="report-btn" onclick="showForm('branch')">Branch Assets Report</button>
+                <button class="report-btn" onclick="showForm('expenses')">Expenses Report (Time Period)</button>
+            </div>
 
-    <!-- Branch Report Form -->
-    <div class="report-form" id="branch-form">
-      <label>Branch Location: </label>
-      <input type="text" id="branchLocation" placeholder="Enter Branch Name"/>
-      <button onclick="fetchBranchReport()">Generate</button>
-    </div>
+            <div class="report-form" id="employee-form" style="display:none;">
+                <label>Employee ID: </label>
+                <input type="number" id="employeeId" placeholder="Enter Employee ID"/>
+                <button onclick="fetchEmployeeReport()">Generate</button>
+            </div>
 
-    <!-- Expenses Report Form -->
-    <div class="report-form" id="expenses-form">
-      <label>Start Date: </label>
-      <input type="date" id="startDate"/>
-      <label>End Date: </label>
-      <input type="date" id="endDate"/>
-      <button onclick="fetchExpensesReport()">Generate</button>
-    </div>
+            <div class="report-form" id="branch-form" style="display:none;">
+                <label>Branch ID: </label>
+                <input type="number" id="branchId" placeholder="Enter Branch ID"/>
+                <button onclick="fetchBranchReport()">Generate</button>
+            </div>
 
-    <!-- Report Output -->
-    <div id="report-output"></div>
-  </div>
+            <div class="report-form" id="expenses-form" style="display:none;">
+                <label>Start Date: </label>
+                <input type="date" id="startDate"/>
+                <label>End Date: </label>
+                <input type="date" id="endDate"/>
+                <button onclick="fetchExpensesReport()">Generate</button>
+            </div>
 
-  <script></script>
-  <script src="assets/js/api.js"></script>
-  <script src="assets/js/reports.js"></script>
-</body>
-</html>
+            <div id="report-output">
+                <p style="text-align: center; color: #888;">Select a report type to generate.</p>
+            </div>
+        </div>
+    </section>
+</div>
+
+<%- include('partials/footer', { jsFile: 'reports' }) %>

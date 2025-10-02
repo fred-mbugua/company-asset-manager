@@ -1,0 +1,11 @@
+<%
+    const userName = locals.user?.first_name || 'Admin';
+%>
+<div class="navbar">
+    <span class="menu-toggle"><i class="fa fa-bars"></i></span>
+    <h1>ASSET MANAGEMENT SYSTEM - AMS</h1>
+    <div class="admin-info">
+        <i class="fa fa-user-circle"></i> <%= userName %>
+        <a href="#" id="logout-link" style="margin-left: 10px; color: #fff;">(Logout)</a>
+    </div>
+</div>

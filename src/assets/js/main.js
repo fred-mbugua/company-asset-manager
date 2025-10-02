@@ -84,7 +84,7 @@
 'view-assets': 'view-assets.html',
 'assign-assets': 'assign-assets.html',
 'create-expenses': 'create-expenses.html',
-'reports': 'reports.html',   // ✅ New single entry point
+'reports': 'reports.html',
 'create-users': 'create-user.html',
 'edit-assets': 'edit-assets.html',
 };

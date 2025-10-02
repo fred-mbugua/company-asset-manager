@@ -1,40 +1,45 @@
-// src/assets/js/api.js
-// This file is now very simple as cookies are handled by the browser.
+// public/assets/js/api.js
 
-const api = async (endpoint, options = {}) => {
-    const defaultOptions = {
-        headers: {
-            'Content-Type': 'application/json',
-        },
-        // This is crucial for sending cookies with cross-origin requests
-        credentials: 'include'
-    };
+class API {
+    static async request(method, url, data = null) {
+        const fullUrl = `/api${url}`; // Assuming API prefix
+        const options = {
+            method: method,
+            headers: {
+                'Content-Type': 'application/json',
+                // JWT is handled by HTTP-only cookies, no need to manually attach headers
+            },
+            body: data ? JSON.stringify(data) : null,
+        };
 
-    // Merge provided options with defaults
-    const mergedOptions = { ...defaultOptions, ...options };
-    
-    // The browser automatically attaches the 'accessToken' cookie
-    // So we don't need to add it to the Authorization header here.
+        try {
+            const response = await fetch(fullUrl, options);
 
-    const url = `/api${endpoint}`;
+            // Handle 401 Unauthorized for token expiration
+            if (response.status === 401) {
+                // The server should handle token refresh/re-issuance implicitly. 
+                // If it still returns 401, it means refresh failed.
+                window.location.href = '/login'; // Redirect to login
+                return; 
+            }
 
-    try {
-        const response = await fetch(url, mergedOptions);
-        
-        // Handle unauthorized responses (e.g., expired token)
-        if (response.status === 401) {
-            // Optional: You could implement a refresh token flow here, but
-            // for simplicity, we just redirect to login if the request fails
-            window.location.href = '/login';
-            return;
+            const jsonResponse = await response.json();
+
+            if (!response.ok) {
+                // Throw an error with the server message
+                throw new Error(jsonResponse.message || 'API request failed.');
+            }
+
+            return jsonResponse;
+        } catch (error) {
+            // Log for debugging and re-throw for service/controller to handle
+            console.error(`API Error on ${method} ${url}:`, error);
+            throw error;
         }
-
-        return response;
-    } catch (error) {
-        console.error('API call failed:', error);
-        throw error;
     }
-};
 
-// Exporting the API helper for use in other JS files
-window.api = api;
+    static get(url) { return this.request('GET', url); }
+    static post(url, data) { return this.request('POST', url, data); }
+    static put(url, data) { return this.request('PUT', url, data); }
+    static delete(url) { return this.request('DELETE', url); }
+}

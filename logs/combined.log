@@ -453,3 +453,111 @@
 2025-09-20 12:09:50 info: Database connected successfully!
 2025-09-20 12:10:01 info: Server running on port 3000
 2025-09-20 12:10:01 info: Database connected successfully!
+2025-09-20 12:59:11 info: User logged in successfully: fmbugua@jiranismart.com
+2025-09-25 14:05:30 info: Server running on port 3000
+2025-09-25 14:05:32 info: Database connected successfully!
+2025-09-25 14:06:44 info: Received request to register a new user.
+2025-09-25 14:06:45 info: New user registered successfully with email: ict@jiranismart.com
+2025-09-25 14:13:18 info: Server running on port 3000
+2025-09-25 14:13:18 info: Database connected successfully!
+2025-09-25 14:16:31 info: User logged in successfully: fmbugua@jiranismart.com
+2025-09-25 16:17:55 info: Server running on port 3000
+2025-09-25 16:17:55 info: Database connected successfully!
+2025-09-25 16:23:27 info: Server running on port 3000
+2025-09-25 16:23:27 info: Database connected successfully!
+2025-09-28 18:28:29 info: Server running on port 7000
+2025-09-28 18:28:30 info: Database connected successfully!
+2025-09-28 18:33:23 info: Server running on port 3000
+2025-09-28 18:33:23 info: Database connected successfully!
+2025-09-28 18:40:38 info: User logged in successfully: fmbugua@jiranismart.com
+2025-09-28 18:40:42 info: User logged in successfully: fmbugua@jiranismart.com
+2025-09-28 18:44:13 info: User logged in successfully: fmbugua@jiranismart.com
+2025-09-28 18:44:16 info: User logged in successfully: fmbugua@jiranismart.com
+2025-09-28 18:44:39 info: User logged in successfully: fmbugua@jiranismart.com
+2025-09-28 18:45:33 info: User logged in successfully: fmbugua@jiranismart.com
+2025-09-28 18:54:20 error: Login failed: Invalid credentials
+2025-09-28 18:54:25 error: Login failed: Invalid credentials
+2025-09-28 18:54:27 info: User logged in successfully: fmbugua@jiranismart.com
+2025-09-28 18:55:29 info: Server running on port 3000
+2025-09-28 18:55:29 info: Database connected successfully!
+2025-09-28 18:55:58 info: User logged in successfully: fmbugua@jiranismart.com
+2025-09-28 18:57:14 info: User logged out successfully
+2025-09-28 18:57:16 info: User logged in successfully: fmbugua@jiranismart.com
+2025-09-28 18:57:19 info: User logged out successfully
+2025-09-28 19:03:08 info: User logged in successfully: fmbugua@jiranismart.com
+2025-09-28 19:03:40 info: Server running on port 3000
+2025-09-28 19:03:40 info: Database connected successfully!
+2025-09-28 19:05:21 info: Server running on port 3000
+2025-09-28 19:05:22 info: Database connected successfully!
+2025-09-28 19:10:02 info: Server running on port 3000
+2025-09-28 19:10:02 info: Database connected successfully!
+2025-09-28 19:10:32 info: Server running on port 3000
+2025-09-28 19:10:32 info: Database connected successfully!
+2025-09-28 19:11:19 info: Server running on port 3000
+2025-09-28 19:11:19 info: Database connected successfully!
+2025-09-28 19:11:33 info: User logged in successfully: fmbugua@jiranismart.com
+2025-09-28 19:16:08 info: Server running on port 3000
+2025-09-28 19:16:08 info: Database connected successfully!
+2025-09-28 19:16:33 info: Server running on port 3000
+2025-09-28 19:16:33 info: Database connected successfully!
+2025-09-29 14:17:39 info: Server running on port 3000
+2025-09-29 14:17:39 info: Database connected successfully!
+2025-09-29 14:18:14 info: Server running on port 3000
+2025-09-29 14:18:14 info: Database connected successfully!
+2025-09-29 14:18:47 info: Server running on port 3000
+2025-09-29 14:18:47 info: Database connected successfully!
+2025-09-29 14:19:02 info: Server running on port 3000
+2025-09-29 14:19:03 info: Database connected successfully!
+2025-09-29 14:19:29 info: Server running on port 3000
+2025-09-29 14:19:29 info: Database connected successfully!
+2025-09-29 14:20:16 info: Server running on port 3000
+2025-09-29 14:20:16 info: Database connected successfully!
+2025-09-29 14:20:25 info: Server running on port 3000
+2025-09-29 14:20:25 info: Database connected successfully!
+2025-09-29 14:20:38 info: Server running on port 3000
+2025-09-29 14:20:38 info: Database connected successfully!
+2025-09-29 14:21:56 info: User logged out successfully
+2025-09-29 14:22:30 info: User logged in successfully: fmbugua@jiranismart.com
+2025-09-29 14:23:40 info: Server running on port 3000
+2025-09-29 14:23:40 info: Database connected successfully!
+2025-09-29 14:23:48 info: User logged out successfully
+2025-09-29 14:24:01 info: User logged in successfully: fmbugua@jiranismart.com
+2025-09-29 14:24:22 info: Server running on port 3000
+2025-09-29 14:24:22 info: Database connected successfully!
+2025-09-29 15:46:54 info: User logged in successfully: fmbugua@jiranismart.com
+2025-09-30 12:27:43 info: Server running on port 3000
+2025-09-30 12:27:44 info: Database connected successfully!
+2025-10-02 14:41:33 info: Server running on port 3000
+2025-10-02 14:41:33 info: Database connected successfully!
+2025-10-02 14:41:41 error: Error: Failed to lookup view "login" in views directory "F:\WORK DOCS\JS\JSL_SYSTEM\Asset Management Application\app\dist\views"
+    at Function.render (F:\WORK DOCS\JS\JSL_SYSTEM\Asset Management Application\app\node_modules\express\lib\application.js:597:17)
+    at ServerResponse.render (F:\WORK DOCS\JS\JSL_SYSTEM\Asset Management Application\app\node_modules\express\lib\response.js:1049:7)
+    at renderLogin (F:\WORK DOCS\JS\JSL_SYSTEM\Asset Management Application\app\dist\controllers\view.controller.js:7:13)
+    at Layer.handle [as handle_request] (F:\WORK DOCS\JS\JSL_SYSTEM\Asset Management Application\app\node_modules\express\lib\router\layer.js:95:5)
+    at next (F:\WORK DOCS\JS\JSL_SYSTEM\Asset Management Application\app\node_modules\express\lib\router\route.js:149:13)
+    at Route.dispatch (F:\WORK DOCS\JS\JSL_SYSTEM\Asset Management Application\app\node_modules\express\lib\router\route.js:119:3)
+    at Layer.handle [as handle_request] (F:\WORK DOCS\JS\JSL_SYSTEM\Asset Management Application\app\node_modules\express\lib\router\layer.js:95:5)
+    at F:\WORK DOCS\JS\JSL_SYSTEM\Asset Management Application\app\node_modules\express\lib\router\index.js:284:15
+    at Function.process_params (F:\WORK DOCS\JS\JSL_SYSTEM\Asset Management Application\app\node_modules\express\lib\router\index.js:346:12)
+    at next (F:\WORK DOCS\JS\JSL_SYSTEM\Asset Management Application\app\node_modules\express\lib\router\index.js:280:10)
+2025-10-02 14:41:46 error: Error: Failed to lookup view "login" in views directory "F:\WORK DOCS\JS\JSL_SYSTEM\Asset Management Application\app\dist\views"
+    at Function.render (F:\WORK DOCS\JS\JSL_SYSTEM\Asset Management Application\app\node_modules\express\lib\application.js:597:17)
+    at ServerResponse.render (F:\WORK DOCS\JS\JSL_SYSTEM\Asset Management Application\app\node_modules\express\lib\response.js:1049:7)
+    at renderLogin (F:\WORK DOCS\JS\JSL_SYSTEM\Asset Management Application\app\dist\controllers\view.controller.js:7:13)
+    at Layer.handle [as handle_request] (F:\WORK DOCS\JS\JSL_SYSTEM\Asset Management Application\app\node_modules\express\lib\router\layer.js:95:5)
+    at next (F:\WORK DOCS\JS\JSL_SYSTEM\Asset Management Application\app\node_modules\express\lib\router\route.js:149:13)
+    at Route.dispatch (F:\WORK DOCS\JS\JSL_SYSTEM\Asset Management Application\app\node_modules\express\lib\router\route.js:119:3)
+    at Layer.handle [as handle_request] (F:\WORK DOCS\JS\JSL_SYSTEM\Asset Management Application\app\node_modules\express\lib\router\layer.js:95:5)
+    at F:\WORK DOCS\JS\JSL_SYSTEM\Asset Management Application\app\node_modules\express\lib\router\index.js:284:15
+    at Function.process_params (F:\WORK DOCS\JS\JSL_SYSTEM\Asset Management Application\app\node_modules\express\lib\router\index.js:346:12)
+    at next (F:\WORK DOCS\JS\JSL_SYSTEM\Asset Management Application\app\node_modules\express\lib\router\index.js:280:10)
+2025-10-02 14:43:03 info: Server running on port 3000
+2025-10-02 14:43:03 info: Database connected successfully!
+2025-10-02 14:45:08 info: User logged in successfully: fmbugua@jiranismart.com
+2025-10-02 15:26:01 error: Login failed: Invalid credentials
+2025-10-02 15:28:06 info: User logged in successfully: ict@jiranismart.com
+2025-10-02 15:39:32 info: User logged in successfully: fmbugua@jiranismart.com
+2025-10-02 16:00:54 info: Server running on port 3000
+2025-10-02 16:00:55 info: Database connected successfully!
+2025-10-02 16:01:44 info: Server running on port 3000
+2025-10-02 16:01:44 info: Database connected successfully!

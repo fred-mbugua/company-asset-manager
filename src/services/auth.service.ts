@@ -46,9 +46,74 @@ export class AuthService {
   //   return newUser;
   // }
 
+  // private SALT_ROUNDS = 10;
+
+  // async registerUser(registrationData: any, userId: number) {
+  //   // console.log('Registration data received:', registrationData);
+  //       // Start a database transaction
+  //       const client = await db.connect();
+  //       try {
+  //           await client.query('BEGIN');
+
+  //           // Check if the user's email already exists
+  //           const existingUser = await UserModel.findByEmail(registrationData.email);
+  //           if (existingUser) {
+  //               return Promise.reject(new Error('A user with this email already exists.'));
+  //           }
+
+  //           // Create the employee record first
+  //           const newEmployee = await EmployeeModel.create({
+  //               first_name: registrationData.first_name,
+  //               middle_name: registrationData.middle_name,
+  //               last_name: registrationData.last_name,
+  //               email: registrationData.email,
+  //               department: registrationData.department,
+  //               department_id: registrationData.department_id,
+  //               branch_location: registrationData.branch_location,
+  //               branch_id: registrationData.branch_id
+  //           });
+
+  //           // Hash the password
+  //           const hashedPassword = await bcrypt.hash(registrationData.password, this.SALT_ROUNDS);
+
+  //           // Create the user account, linking it to the new employee's ID
+  //           const newUser = await UserModel.create({
+  //               employee_id: newEmployee.id,
+  //               first_name: registrationData.first_name,
+  //               middle_name: registrationData.middle_name,
+  //               last_name: registrationData.last_name,
+  //               email: registrationData.email,
+  //               phone: registrationData.phone,
+  //               password: hashedPassword,
+  //               role_id: registrationData.role_id,
+  //               branch_id: registrationData.branch_id
+  //           });
+
+  //           // Log the creation of both the user and employee
+  //           await ActionLogService.logAction(
+  //               userId, // User ID who performed the action
+  //               'CREATE',
+  //               'User',
+  //               newUser.id,
+  //               { registered_email: newUser.email }
+  //           );
+
+  //           await client.query('COMMIT');
+  //           return newUser;
+  //       } catch (error) {
+  //           await client.query('ROLLBACK');
+  //           logger.error('Registration failed:', error);
+  //           throw error;
+  //       } finally {
+  //           client.release();
+  //       }
+  //   }
+
   private SALT_ROUNDS = 10;
 
-  async registerUser(registrationData: any, userId: number) {
+  // IMPORTANT: The userId parameter is now required, representing the Admin/User
+  // who is registering the new user.
+  async registerUser(registrationData: any, performingUserId: number) {
     // console.log('Registration data received:', registrationData);
         // Start a database transaction
         const client = await db.connect();
@@ -71,7 +136,7 @@ export class AuthService {
                 department_id: registrationData.department_id,
                 branch_location: registrationData.branch_location,
                 branch_id: registrationData.branch_id
-            });
+            }); // Passed client
 
             // Hash the password
             const hashedPassword = await bcrypt.hash(registrationData.password, this.SALT_ROUNDS);
@@ -87,11 +152,11 @@ export class AuthService {
                 password: hashedPassword,
                 role_id: registrationData.role_id,
                 branch_id: registrationData.branch_id
-            });
+            }); // Passed client
 
             // Log the creation of both the user and employee
             await ActionLogService.logAction(
-                userId, // User ID who performed the action
+                performingUserId, // User ID who performed the action (Admin)
                 'CREATE',
                 'User',
                 newUser.id,
@@ -132,7 +197,7 @@ export class AuthService {
     return { accessToken, refreshToken, user };
   }
 
-  async refresh(refreshToken: string, userId: number) {
+  async refresh(refreshToken: string) {
     try {
       const storedToken = await RefreshTokenModel.findByToken(refreshToken);
 
