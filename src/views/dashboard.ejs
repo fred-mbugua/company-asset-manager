@@ -6,7 +6,7 @@
 
     <section class="dashboard" id="dashboard-content" data-current-page="dashboard">
         <h2>Dashboard</h2>
-        <div class="card">Total Assets: <%= locals.assetStats?.totalAssets || 0 %></div>
+        <div class="card">Total Assets:<%= locals.assetStats?.totalAssets || 0 %></div>
         <div class="card">Total Expenses: Ksh. <%= locals.assetStats?.totalExpenses || 0 %></div>
         <% if (locals.message) { %>
             <script>
@@ -17,4 +17,4 @@
     </section>
 </div>
 
-<%- include('partials/footer', { jsFile: 'main' }) %>
+<%- include('partials/footer', { jsFile: 'dashboard' }) %>

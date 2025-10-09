@@ -3,59 +3,117 @@
 
 <div class="main">
     <%- include('partials/sidebar') %>
-    <section class="content-area">
-        <div class="assign-container">
-            <h3>Assign Asset</h3>
+    <section class="content-wrapper">
+        <div class="page-header">
+            <h2>Asset Assignment Management</h2>
+        </div>
 
-            <form id="assign-form">
-                <select id="asset-select" required>
-                    <option value="">Select Asset</option>
-                    <% locals.assets.forEach(asset => { %>
-                        <option value="<%= asset.id %>"><%= asset.asset_tag %> - <%= asset.description %></option>
-                    <% }); %>
-                </select>
-                <select id="employee-select" required>
-                    <option value="">Select Employee</option>
-                    <% locals.employees.forEach(employee => { %>
-                        <option value="<%= employee.id %>"><%= employee.first_name %> <%= employee.last_name %> (<%= employee.email %>)</option>
-                    <% }); %>
-                </select>
-                <button type="submit">Assign</button>
+        <div class="form-section">
+            <div class="section-header">
+                <h3>Assign New Asset</h3>
+            </div>
+            
+            <form id="assignment-form">
+                <div class="form-row">
+                    <div class="form-group">
+                        <label for="asset_id">Asset</label>
+                        <select id="asset_id" required>
+                            <option value="">-- Select Asset --</option>
+                            <% locals.assets.forEach(asset => { %>
+                            <option value="<%= asset.id %>">
+                                <%= asset.asset_tag %> - <%= asset.manufacturer %> <%= asset.model %>
+                            </option>
+                            <% }); %>
+                        </select>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="employee_id">Employee</label>
+                        <select id="employee_id" required>
+                            <option value="">-- Select Employee --</option>
+                            <% locals.employees.forEach(employee => { %>
+                            <option value="<%= employee.id %>">
+                                <%= employee.first_name %> <%= employee.last_name %> (<%= employee.emp_email %>)
+                            </option>
+                            <% }); %>
+                        </select>
+                    </div>
+                </div>
+
+                <div class="form-row">
+                    <div class="form-group">
+                        <label for="assignment_date">Assignment Date</label>
+                        <input type="date" id="assignment_date" required 
+                               value="<%= new Date().toISOString().substring(0, 10) %>">
+                    </div>
+                    
+                    <div class="form-group">
+                        <label for="notes">Notes</label>
+                        <textarea id="notes" rows="3" 
+                                  placeholder="Enter assignment details..."></textarea>
+                    </div>
+                </div>
+
+                <div class="form-actions">
+                    <button type="submit" class="btn btn-primary">Assign Asset</button>
+                </div>
             </form>
+        </div>
 
-            <h3>Current Assignments</h3>
-            <table>
-                <thead>
-                    <tr>
-                        <th>ID</th>
-                        <th>Asset</th>
-                        <th>Employee</th>
-                        <th>Assigned Date</th>
-                        <th>Returned Date</th>
-                        <th>Actions</th>
-                    </tr>
-                </thead>
-                <tbody id="assignment-table-body">
-                    <% if (locals.assignments && locals.assignments.length > 0) { %>
-                        <% locals.assignments.forEach(assignment => { %>
+        <div class="table-section">
+            <div class="section-header">
+                <h3>Current Assignments</h3>
+            </div>
+            
+            <div class="table-responsive">
+                <table>
+                    <thead>
+                        <tr>
+                            <th>ID</th>
+                            <th>Asset Tag</th>
+                            <th>Model Name</th>
+                            <th>Employee</th>
+                            <th>Assigned Date</th>
+                            <th>Notes</th>
+                            <th>Return Date</th>
+                            <th>Actions</th>
+                        </tr>
+                    </thead>
+                    <tbody id="assignment-table-body">
+                        <% if (locals.assignments && locals.assignments.length > 0) { %>
+                            <% locals.assignments.forEach(assignment => { %>
                             <tr>
                                 <td><%= assignment.id %></td>
                                 <td><%= assignment.asset_tag %></td>
-                                <td><%= assignment.employee_name %></td>
-                                <td><%= new Date(assignment.assigned_date).toLocaleDateString() %></td>
-                                <td><%= assignment.returned_date ? new Date(assignment.returned_date).toLocaleDateString() : 'N/A' %></td>
+                                <td><%= assignment.model %></td>
                                 <td>
-                                    <% if (!assignment.returned_date) { %>
-                                        <button class="btn btn-return" data-id="<%= assignment.id %>">Return</button>
+                                    <%= assignment.employee_first_name %>
+                                    <%= assignment.employee_middle_name ? assignment.employee_middle_name : '' %>
+                                    <%= assignment.employee_last_name %>
+                                </td>
+                                <td><%= new Date(assignment.assignment_date).toLocaleDateString() %></td>
+                                <td><%= assignment.notes || 'N/A' %></td>
+                                <td>
+                                    <%= assignment.return_date ? 
+                                        new Date(assignment.return_date).toLocaleDateString() : 'N/A' %>
+                                </td>
+                                <td>
+                                    <% if (!assignment.return_date) { %>
+                                    <button class="btn btn-return" data-id="<%= assignment.id %>">
+                                        Return
+                                    </button>
                                     <% } %>
                                 </td>
                             </tr>
-                        <% }); %>
-                    <% } else { %>
-                        <tr><td colspan="6" style="text-align:center;color:#888;">No current assignments.</td></tr>
-                    <% } %>
-                </tbody>
-            </table>
+                            <% }); %>
+                        <% } else { %>
+                            <tr>
+                                <td colspan="7" class="no-data">No current assignments</td>
+                            </tr>
+                        <% } %>
+                    </tbody>
+                </table>
+            </div>
         </div>
     </section>
 </div>

@@ -6,3 +6,5 @@ export { default as ExpenseController } from './expense.controller';
 export { default as ReportController } from './report.controller';
 export { default as BulkUploadController } from './bulkUpload.controller';
 export { default as ViewsController } from './view.controller';
+export { default as AssetTypeController } from './assetType.controller';
+export { default as AssetStatusController } from './assetStatus.controller';

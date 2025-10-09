@@ -195,3 +195,39 @@
     at Function.process_params (F:\WORK DOCS\JS\JSL_SYSTEM\Asset Management Application\app\node_modules\express\lib\router\index.js:346:12)
     at next (F:\WORK DOCS\JS\JSL_SYSTEM\Asset Management Application\app\node_modules\express\lib\router\index.js:280:10)
 2025-10-02 15:26:01 error: Login failed: Invalid credentials
+2025-10-02 16:49:41 error: error: column "description" of relation "assets" does not exist
+    at F:\WORK DOCS\JS\JSL_SYSTEM\Asset Management Application\app\node_modules\pg-pool\index.js:45:11
+    at processTicksAndRejections (node:internal/process/task_queues:95:5)
+    at async Function.update (F:\WORK DOCS\JS\JSL_SYSTEM\Asset Management Application\app\src\models\asset.model.ts:34:24)
+    at async AssetService.update (F:\WORK DOCS\JS\JSL_SYSTEM\Asset Management Application\app\src\services\asset.service.ts:36:30)
+    at async update (F:\WORK DOCS\JS\JSL_SYSTEM\Asset Management Application\app\src\controllers\asset.controller.ts:43:34)
+2025-10-02 16:51:14 error: error: column "description" of relation "assets" does not exist
+    at F:\WORK DOCS\JS\JSL_SYSTEM\Asset Management Application\app\node_modules\pg-pool\index.js:45:11
+    at processTicksAndRejections (node:internal/process/task_queues:95:5)
+    at async Function.update (F:\WORK DOCS\JS\JSL_SYSTEM\Asset Management Application\app\src\models\asset.model.ts:34:24)
+    at async AssetService.update (F:\WORK DOCS\JS\JSL_SYSTEM\Asset Management Application\app\src\services\asset.service.ts:36:30)
+    at async update (F:\WORK DOCS\JS\JSL_SYSTEM\Asset Management Application\app\src\controllers\asset.controller.ts:43:34)
+2025-10-07 09:00:44 error: Error: Failed to lookup view "login" in views directory "F:\WORK DOCS\JS\JSL_SYSTEM\Asset Management Application\app\dist\views"
+    at Function.render (F:\WORK DOCS\JS\JSL_SYSTEM\Asset Management Application\app\node_modules\express\lib\application.js:597:17)
+    at ServerResponse.render (F:\WORK DOCS\JS\JSL_SYSTEM\Asset Management Application\app\node_modules\express\lib\response.js:1049:7)
+    at renderLogin (F:\WORK DOCS\JS\JSL_SYSTEM\Asset Management Application\app\dist\controllers\view.controller.js:7:13)
+    at Layer.handle [as handle_request] (F:\WORK DOCS\JS\JSL_SYSTEM\Asset Management Application\app\node_modules\express\lib\router\layer.js:95:5)
+    at next (F:\WORK DOCS\JS\JSL_SYSTEM\Asset Management Application\app\node_modules\express\lib\router\route.js:149:13)
+    at Route.dispatch (F:\WORK DOCS\JS\JSL_SYSTEM\Asset Management Application\app\node_modules\express\lib\router\route.js:119:3)
+    at Layer.handle [as handle_request] (F:\WORK DOCS\JS\JSL_SYSTEM\Asset Management Application\app\node_modules\express\lib\router\layer.js:95:5)
+    at F:\WORK DOCS\JS\JSL_SYSTEM\Asset Management Application\app\node_modules\express\lib\router\index.js:284:15
+    at Function.process_params (F:\WORK DOCS\JS\JSL_SYSTEM\Asset Management Application\app\node_modules\express\lib\router\index.js:346:12)
+    at next (F:\WORK DOCS\JS\JSL_SYSTEM\Asset Management Application\app\node_modules\express\lib\router\index.js:280:10)
+2025-10-09 16:30:38 error: Failed to create branch: duplicate key value violates unique constraint "branches_name_key"
+2025-10-09 16:57:27 error: error: invalid input syntax for type integer: "NaN"
+    at F:\WORK DOCS\JS\JSL_SYSTEM\Asset Management Application\app\node_modules\pg-pool\index.js:45:11
+    at processTicksAndRejections (node:internal/process/task_queues:95:5)
+    at async Function.findById (F:\WORK DOCS\JS\JSL_SYSTEM\Asset Management Application\app\src\models\asset.model.ts:23:24)
+    at async AssetService.getById (F:\WORK DOCS\JS\JSL_SYSTEM\Asset Management Application\app\src\services\asset.service.ts:25:23)
+    at async getById (F:\WORK DOCS\JS\JSL_SYSTEM\Asset Management Application\app\src\controllers\asset.controller.ts:20:27)
+2025-10-09 17:00:09 error: error: invalid input syntax for type integer: "NaN"
+    at F:\WORK DOCS\JS\JSL_SYSTEM\Asset Management Application\app\node_modules\pg-pool\index.js:45:11
+    at processTicksAndRejections (node:internal/process/task_queues:95:5)
+    at async Function.findById (F:\WORK DOCS\JS\JSL_SYSTEM\Asset Management Application\app\src\models\asset.model.ts:23:24)
+    at async AssetService.getById (F:\WORK DOCS\JS\JSL_SYSTEM\Asset Management Application\app\src\services\asset.service.ts:25:23)
+    at async getById (F:\WORK DOCS\JS\JSL_SYSTEM\Asset Management Application\app\src\controllers\asset.controller.ts:20:27)

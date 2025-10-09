@@ -37,14 +37,29 @@ class ViewsController {
     }
     // Rendering the page for viewing assets
     async renderViewAssets(req, res) {
-        res.render('view-assets');
+        // res.render('view-assets');
+        try {
+            const assets = await models_1.AssetModel.findAll();
+            res.render('view-assets', {
+                pageTitle: 'View Assets',
+                user: req.user,
+                assets: assets
+            });
+        }
+        catch (error) {
+            console.error('Error rendering view-assets page:', error);
+            res.status(500).send('Error loading assets.');
+            return;
+        }
     }
     // Rendering the page for assigning assets. Requires lists of assets and employees.
     async renderAssignAssets(req, res) {
         try {
             const assets = await models_1.AssetModel.findAll();
-            const employees = await models_1.EmployeeModel.findAll();
-            res.render('assign-assets', { assets, employees });
+            const employees = await models_1.EmployeeModel.findEmployeesSpecificData();
+            const assignments = await models_1.AssignmentModel.findAll();
+            console.log('Rendering assign-assets with data:', { assets, employees, assignments });
+            res.render('assign-assets', { assets, employees, assignments });
         }
         catch (error) {
             console.error('Error rendering assign-assets page:', error);

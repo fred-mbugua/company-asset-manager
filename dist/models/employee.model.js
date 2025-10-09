@@ -29,7 +29,18 @@ class EmployeeModel {
         return result.rows[0];
     }
     async findAll() {
-        const query = 'SELECT * FROM employees ORDER BY full_name ASC';
+        const query = 'SELECT * FROM employees ORDER BY first_name ASC';
+        const result = await database_1.default.query(query);
+        return result.rows;
+    }
+    async findEmployeesSpecificData() {
+        const query = `Select
+    emp.*,
+    users.email As emp_email
+From
+    employees emp Inner Join
+    users On users.employee_id = emp.id
+     ORDER BY first_name ASC`;
         const result = await database_1.default.query(query);
         return result.rows;
     }

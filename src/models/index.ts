@@ -8,3 +8,5 @@ export { default as RefreshTokenModel } from './refreshToken.model';
 export { default as RoleModel } from './role.model';
 export { default as DepartmentModel } from './department.model';
 export { default as ActionLogModel } from './actionLog.model';
+export { default as AssetTypeModel } from './assetType.model';
+export { default as AssetStatusModel } from './assetStatus.model';

@@ -15,12 +15,9 @@
                     <label for="asset_type">Asset Type</label>
                     <select id="asset_type" required>
                         <option value="">-- Select type --</option>
-                        <option>Laptop</option>
-                        <option>Printer</option>
-                        <option>Router</option>
-                        <option>Switch</option>
-                        <option>CCTV</option>
-                        <option>Other</option>
+                        <% assetTypes.forEach(function(type) { %>
+                            <option value="<%= type.id %>"><%= type.name %></option>
+                        <% }); %>
                     </select>
                 </div>
                 <div class="form-field">
@@ -40,10 +37,9 @@
                     <label for="status">Status</label>
                     <select id="status" required>
                         <option value="">-- Select status --</option>
-                        <option>In Stock</option>
-                        <option>In Use</option>
-                        <option>Under Repair</option>
-                        <option>Disposed</option>
+                        <% assetStatuses.forEach(function(status) { %>
+                            <option value="<%= status.id %>"><%= status.name %></option>
+                        <% }); %>
                     </select>
                 </div>
 

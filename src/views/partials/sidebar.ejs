@@ -4,26 +4,26 @@
     
     // Define access rules for navigation items
     const menuItems = [
-        { title: 'Dashboard', icon: 'fa-dashboard', url: '/', roles: ['Admin', 'Standard User'] },
+        { title: 'Dashboard', icon: 'uil-dashboard', url: '/', roles: ['Admin', 'Standard User'] },
         { 
-            title: 'Assets', icon: 'fa-plus-square-o', roles: ['Admin', 'Standard User'], submenu: [
+            title: 'Assets', icon: 'uil-briefcase', roles: ['Admin', 'Standard User'], submenu: [
                 { title: 'Create Assets', url: '/assets/create', roles: ['Admin', 'Standard User'] },
             ]
         },
         { 
-            title: 'Assignments', icon: 'fa-list-alt', roles: ['Admin', 'Standard User'], submenu: [
+            title: 'Assignments', icon: 'uil-clipboard-notes', roles: ['Admin', 'Standard User'], submenu: [
                 { title: 'View Assets', url: '/assets/view', roles: ['Admin', 'Standard User'] },
                 { title: 'Assign Assets', url: '/assets/assign', roles: ['Admin'] }, // Only Admin can assign
             ]
         },
         { 
-            title: 'Expenses', icon: 'fa-money', roles: ['Admin', 'Standard User'], submenu: [
+            title: 'Expenses', icon: 'uil-receipt', roles: ['Admin', 'Standard User'], submenu: [
                 { title: 'Create Expenses', url: '/expenses/create', roles: ['Admin', 'Standard User'] },
             ]
         },
-        { title: 'Reports', icon: 'fa-bar-chart', url: '/reports', roles: ['Admin'] }, // Only Admin can view reports
+        { title: 'Reports', icon: 'uil-analytics', url: '/reports', roles: ['Admin'] }, // Only Admin can view reports
         { 
-            title: 'Administration', icon: 'fa-cogs', roles: ['Admin'], submenu: [ // Restricted to Admin
+            title: 'Administration', icon: 'uil-cog', roles: ['Admin'], submenu: [ // Restricted to Admin
                 { title: 'Create Users', url: '/users/create', roles: ['Admin'] },
                 { title: 'Manage Branches', url: '/branches/manage', roles: ['Admin'] },
                 { title: 'Manage Departments', url: '/departments/manage', roles: ['Admin'] },

@@ -1,5 +1,3 @@
-// public/assets/js/viewassets.js
-
 const listSection = document.getElementById('assets-list-section');
 const detailSection = document.getElementById('asset-detail-section');
 const detailForm = document.getElementById('asset-detail-form');
@@ -13,7 +11,7 @@ async function showAssetDetails(id) {
         const asset = response.data;
         currentAssetId = id;
 
-        // Simple form generation for viewing/editing
+        // Form generation for viewing/editing
         detailForm.innerHTML = `
             <div class="form-field"><label>Asset Tag:</label><input type="text" id="edit_tag" value="${asset.asset_tag}" required></div>
             <div class="form-field"><label>Serial Number:</label><input type="text" id="edit_serial" value="${asset.serial_number}" required></div>
@@ -24,7 +22,7 @@ async function showAssetDetails(id) {
                 <option value="Disposed">Disposed</option>
             </select></div>
             <div class="form-field"><label>Purchase Price:</label><input type="number" step="0.01" id="edit_price" value="${asset.purchase_price}" required></div>
-            <div class="form-field full-width"><label>Description:</label><textarea id="edit_desc" rows="3">${asset.description}</textarea></div>
+            <div class="form-field full-width"><label>Notes:</label><textarea id="edit_desc" rows="3">${asset.notes}</textarea></div>
         `;
         document.getElementById('edit_status').value = asset.status;
         
@@ -44,7 +42,7 @@ document.getElementById('save-asset-btn').addEventListener('click', async () => 
         serial_number: document.getElementById('edit_serial').value,
         status: document.getElementById('edit_status').value,
         purchase_price: parseFloat(document.getElementById('edit_price').value),
-        description: document.getElementById('edit_desc').value,
+        notes: document.getElementById('edit_desc').value,
         // Include other fields as needed
     };
 
@@ -52,7 +50,7 @@ document.getElementById('save-asset-btn').addEventListener('click', async () => 
         const response = await API.put(`/assets/${currentAssetId}`, updatedData);
         showMessage('success', response.message || 'Asset updated successfully!');
         
-        // Hide details and show list, reloading list data (simple non-SPA approach)
+        // Hide details and show list, reloading list data
         listSection.style.display = 'block';
         detailSection.style.display = 'none';
         window.location.reload(); 

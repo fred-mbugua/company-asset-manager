@@ -25,12 +25,22 @@ class AssetModel {
     }
     
     static async update(id: number, updateData: any) {
+
+        console.log('Updating asset with data:', updateData);
+        
+        
+        // asset_tag: document.getElementById('edit_tag').value,
+        // serial_number: document.getElementById('edit_serial').value,
+        // status: document.getElementById('edit_status').value,
+        // purchase_price: parseFloat(document.getElementById('edit_price').value),
+        // notes:
+        
         const query = `
-            UPDATE assets SET asset_tag = $1, serial_number = $2, description = $3, purchase_date = $4, purchase_price = $5
+            UPDATE assets SET asset_tag = $1, serial_number = $2, status = $3, purchase_price = $4, notes = $5
             WHERE id = $6
             RETURNING *;
         `;
-        const values = [updateData.asset_tag, updateData.serial_number, updateData.description, updateData.purchase_date, updateData.purchase_price, id];
+        const values = [updateData.asset_tag, updateData.serial_number, updateData.status, updateData.purchase_price, updateData.notes, id];
         const result = await db.query(query, values);
         return result.rows[0];
     }

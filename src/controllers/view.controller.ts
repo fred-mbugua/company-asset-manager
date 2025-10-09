@@ -1,5 +1,5 @@
 import { Request, Response } from 'express';
-import { AssetModel, EmployeeModel, ReportModel } from '../models';
+import { AssetModel, EmployeeModel, ReportModel, AssignmentModel, AssetTypeModel, AssetStatusModel } from '../models';
 import { AuthenticatedRequest } from '../types';
 
 class ViewsController {
@@ -38,18 +38,28 @@ class ViewsController {
 
     // Rendering the page for creating a new asset
     async renderCreateAsset(req: Request, res: Response) {
-        res.render('create-assets');
+        try {
+            const assetTypes = await AssetTypeModel.findAll();
+            const assetStatuses = await AssetStatusModel.findAll();
+            res.render('create-assets', { user: req.user, assetTypes, assetStatuses });
+        } catch (error) {
+            console.error('Error rendering create-assets page:', error);
+            res.status(500).send('Error loading asset types.');
+        }
     }
 
     // Rendering the page for viewing assets
     async renderViewAssets(req: Request, res: Response) {
         // res.render('view-assets');
         try {
-            const assets = await AssetModel.findAll(); 
+            const assets = await AssetModel.findAll();
+            const assetTypes = await AssetTypeModel.findAll();
+            // console.log('Rendering view-assets with assets:', assets);
             res.render('view-assets', { 
-                pageTitle: 'View Assets',
                 user: req.user,
-                assets: assets
+                pageTitle: 'View Assets',
+                assets: assets,
+                assetTypes: assetTypes
             });
         } catch (error) {
             console.error('Error rendering view-assets page:', error);
@@ -62,8 +72,10 @@ class ViewsController {
     async renderAssignAssets(req: Request, res: Response) {
         try {
             const assets = await AssetModel.findAll();
-            const employees = await EmployeeModel.findAll();
-            res.render('assign-assets', { assets, employees });
+            const employees = await EmployeeModel.findEmployeesSpecificData();
+            const assignments = await AssignmentModel.findAll();
+            // console.log('Rendering assign-assets with data:', { assets, employees, assignments });
+            res.render('assign-assets', { user: req.user, assets, employees, assignments });
         } catch (error) {
             console.error('Error rendering assign-assets page:', error);
             res.status(500).send('Error loading data for asset assignment.');
@@ -74,7 +86,7 @@ class ViewsController {
     async renderCreateExpenses(req: Request, res: Response) {
         try {
             const assets = await AssetModel.findAll();
-            res.render('create-expenses', { assets });
+            res.render('create-expenses', { user: req.user, assets });
         } catch (error) {
             console.error('Error rendering create-expenses page:', error);
             res.status(500).send('Error loading data for expenses.');
@@ -83,12 +95,12 @@ class ViewsController {
 
     // Rendering the page for creating and managing users
     async renderCreateUser(req: Request, res: Response) {
-        res.render('create-user');
+        res.render('create-user', { user: req.user });
     }
 
     // Rendering the reports page
     async renderReports(req: Request, res: Response) {
-        res.render('reports');
+        res.render('reports', { user: req.user });
     }
 }
 

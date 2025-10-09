@@ -45,7 +45,25 @@ class AssignmentModel {
     }
 
     static async findAll() {
-        const query = `SELECT * FROM assignments;`;
+        const query = `Select
+                            ass.id As id,
+                            asts.asset_tag As asset_tag,
+                            emps.first_name As employee_first_name,
+                            emps.middle_name As employee_middle_name,
+                            emps.last_name As employee_last_name,
+                            ass.assignment_date As assignment_date,
+                            ass.return_date As return_date,
+                            ass.notes,
+                            asts.model,
+                            asts.serial_number,
+                            asts.manufacturer,
+                            asts.asset_type
+                        From
+                            assignments ass Inner Join
+                            assets asts On ass.asset_id = asts.id Inner Join
+                            employees emps On ass.employee_id = emps.id
+                        Order By
+                            assignment_date Desc`;
         const result = await db.query(query);
         return result.rows;
     }
@@ -55,7 +73,7 @@ class AssignmentModel {
         const result = await db.query(query, [id]);
         return result.rows[0];
     }
-    
+
     static async update(id: number, updateData: any) {
         const query = `
             UPDATE assignments SET asset_id = COALESCE($1, asset_id), employee_id = COALESCE($2, employee_id), assigned_date = COALESCE($3, assigned_date), returned_date = COALESCE($4, returned_date), notes = COALESCE($5, notes)

@@ -2,7 +2,7 @@ import pool from '../config/database';
 
 class EmployeeModel {
 
-  async create(employeeData: any) {
+    async create(employeeData: any) {
         const query = `
             INSERT INTO employees (first_name, middle_name, last_name, branch_location, department, department_id, branch_id)
             VALUES ($1, $2, $3, $4, $5, $6, $7)
@@ -21,25 +21,37 @@ class EmployeeModel {
         return result.rows[0];
     }
 
-  async findById(id: string) {
-    const query = 'SELECT * FROM employees WHERE id = $1';
-    const result = await pool.query(query, [id]);
-    return result.rows[0];
-  }
+    async findById(id: string) {
+        const query = 'SELECT * FROM employees WHERE id = $1';
+        const result = await pool.query(query, [id]);
+        return result.rows[0];
+    }
 
-  async findAll() {
-    const query = 'SELECT * FROM employees ORDER BY full_name ASC';
-    const result = await pool.query(query);
-    return result.rows;
-  }
+    async findAll() {
+        const query = 'SELECT * FROM employees ORDER BY first_name ASC';
+        const result = await pool.query(query);
+        return result.rows;
+    }
 
-  async findByLocation(location: string) {
-    const query = 'SELECT * FROM employees WHERE branch_location = $1';
-    const result = await pool.query(query, [location]);
-    return result.rows;
-  }
+    async findEmployeesSpecificData() {
+        const query = `Select
+    emp.*,
+    users.email As emp_email
+From
+    employees emp Inner Join
+    users On users.employee_id = emp.id
+     ORDER BY first_name ASC`;
+        const result = await pool.query(query);
+        return result.rows;
+    }
 
-  async findByEmployeeId(employeeId: string) {
+    async findByLocation(location: string) {
+        const query = 'SELECT * FROM employees WHERE branch_location = $1';
+        const result = await pool.query(query, [location]);
+        return result.rows;
+    }
+
+    async findByEmployeeId(employeeId: string) {
         const query = `
             SELECT
                 A.id,

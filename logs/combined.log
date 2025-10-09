@@ -561,3 +561,179 @@
 2025-10-02 16:00:55 info: Database connected successfully!
 2025-10-02 16:01:44 info: Server running on port 3000
 2025-10-02 16:01:44 info: Database connected successfully!
+2025-10-02 16:04:20 info: Server running on port 3000
+2025-10-02 16:04:20 info: Database connected successfully!
+2025-10-02 16:45:16 info: User logged out successfully
+2025-10-02 16:45:36 info: User logged in successfully: ict@jiranismart.com
+2025-10-02 16:49:41 error: error: column "description" of relation "assets" does not exist
+    at F:\WORK DOCS\JS\JSL_SYSTEM\Asset Management Application\app\node_modules\pg-pool\index.js:45:11
+    at processTicksAndRejections (node:internal/process/task_queues:95:5)
+    at async Function.update (F:\WORK DOCS\JS\JSL_SYSTEM\Asset Management Application\app\src\models\asset.model.ts:34:24)
+    at async AssetService.update (F:\WORK DOCS\JS\JSL_SYSTEM\Asset Management Application\app\src\services\asset.service.ts:36:30)
+    at async update (F:\WORK DOCS\JS\JSL_SYSTEM\Asset Management Application\app\src\controllers\asset.controller.ts:43:34)
+2025-10-02 16:51:14 error: error: column "description" of relation "assets" does not exist
+    at F:\WORK DOCS\JS\JSL_SYSTEM\Asset Management Application\app\node_modules\pg-pool\index.js:45:11
+    at processTicksAndRejections (node:internal/process/task_queues:95:5)
+    at async Function.update (F:\WORK DOCS\JS\JSL_SYSTEM\Asset Management Application\app\src\models\asset.model.ts:34:24)
+    at async AssetService.update (F:\WORK DOCS\JS\JSL_SYSTEM\Asset Management Application\app\src\services\asset.service.ts:36:30)
+    at async update (F:\WORK DOCS\JS\JSL_SYSTEM\Asset Management Application\app\src\controllers\asset.controller.ts:43:34)
+2025-10-02 16:53:25 info: Server running on port 3000
+2025-10-02 16:53:26 info: Database connected successfully!
+2025-10-02 16:58:04 info: Server running on port 3000
+2025-10-02 16:58:05 info: Database connected successfully!
+2025-10-02 16:59:07 info: Server running on port 3000
+2025-10-02 16:59:07 info: Database connected successfully!
+2025-10-02 17:00:25 info: Server running on port 3000
+2025-10-02 17:00:25 info: Database connected successfully!
+2025-10-02 17:17:16 info: Server running on port 3000
+2025-10-02 17:17:16 info: Database connected successfully!
+2025-10-02 17:39:26 info: Server running on port 3000
+2025-10-02 17:39:26 info: Database connected successfully!
+2025-10-03 12:35:15 info: User logged in successfully: fmbugua@jiranismart.com
+2025-10-03 12:40:57 info: Server running on port 3000
+2025-10-03 12:40:57 info: Database connected successfully!
+2025-10-03 13:01:03 info: Server running on port 3000
+2025-10-03 13:01:04 info: Database connected successfully!
+2025-10-03 13:03:18 info: Server running on port 3000
+2025-10-03 13:03:18 info: Database connected successfully!
+2025-10-03 14:01:11 info: Server running on port 3000
+2025-10-03 14:01:11 info: Database connected successfully!
+2025-10-03 15:38:30 info: User logged in successfully: fmbugua@jiranismart.com
+2025-10-03 15:52:14 info: Server running on port 3000
+2025-10-03 15:52:14 info: Database connected successfully!
+2025-10-03 16:42:11 info: Server running on port 3000
+2025-10-03 16:42:12 info: Database connected successfully!
+2025-10-03 16:45:22 info: Server running on port 3000
+2025-10-03 16:45:22 info: Database connected successfully!
+2025-10-03 16:47:20 info: Server running on port 3000
+2025-10-03 16:47:20 info: Database connected successfully!
+2025-10-07 08:59:55 info: Server running on port 3000
+2025-10-07 08:59:55 info: Database connected successfully!
+2025-10-07 09:00:44 error: Error: Failed to lookup view "login" in views directory "F:\WORK DOCS\JS\JSL_SYSTEM\Asset Management Application\app\dist\views"
+    at Function.render (F:\WORK DOCS\JS\JSL_SYSTEM\Asset Management Application\app\node_modules\express\lib\application.js:597:17)
+    at ServerResponse.render (F:\WORK DOCS\JS\JSL_SYSTEM\Asset Management Application\app\node_modules\express\lib\response.js:1049:7)
+    at renderLogin (F:\WORK DOCS\JS\JSL_SYSTEM\Asset Management Application\app\dist\controllers\view.controller.js:7:13)
+    at Layer.handle [as handle_request] (F:\WORK DOCS\JS\JSL_SYSTEM\Asset Management Application\app\node_modules\express\lib\router\layer.js:95:5)
+    at next (F:\WORK DOCS\JS\JSL_SYSTEM\Asset Management Application\app\node_modules\express\lib\router\route.js:149:13)
+    at Route.dispatch (F:\WORK DOCS\JS\JSL_SYSTEM\Asset Management Application\app\node_modules\express\lib\router\route.js:119:3)
+    at Layer.handle [as handle_request] (F:\WORK DOCS\JS\JSL_SYSTEM\Asset Management Application\app\node_modules\express\lib\router\layer.js:95:5)
+    at F:\WORK DOCS\JS\JSL_SYSTEM\Asset Management Application\app\node_modules\express\lib\router\index.js:284:15
+    at Function.process_params (F:\WORK DOCS\JS\JSL_SYSTEM\Asset Management Application\app\node_modules\express\lib\router\index.js:346:12)
+    at next (F:\WORK DOCS\JS\JSL_SYSTEM\Asset Management Application\app\node_modules\express\lib\router\index.js:280:10)
+2025-10-07 09:03:33 info: Server running on port 3000
+2025-10-07 09:03:33 info: Database connected successfully!
+2025-10-07 09:03:42 info: User logged in successfully: fmbugua@jiranismart.com
+2025-10-08 09:10:42 info: User logged in successfully: fmbugua@jiranismart.com
+2025-10-08 09:43:06 info: Server running on port 3000
+2025-10-08 09:43:07 info: Database connected successfully!
+2025-10-08 09:44:04 info: Server running on port 3000
+2025-10-08 09:44:04 info: Database connected successfully!
+2025-10-08 09:47:38 info: Server running on port 3000
+2025-10-08 09:47:38 info: Database connected successfully!
+2025-10-08 09:47:49 info: Server running on port 3000
+2025-10-08 09:47:49 info: Database connected successfully!
+2025-10-08 09:48:33 info: Server running on port 3000
+2025-10-08 09:48:33 info: Database connected successfully!
+2025-10-09 08:29:00 info: User logged in successfully: fmbugua@jiranismart.com
+2025-10-09 10:10:07 info: User logged in successfully: fmbugua@jiranismart.com
+2025-10-09 11:33:46 info: Server running on port 3000
+2025-10-09 11:33:47 info: Database connected successfully!
+2025-10-09 11:34:58 info: Server running on port 3000
+2025-10-09 11:34:58 info: Database connected successfully!
+2025-10-09 11:36:06 info: Server running on port 3000
+2025-10-09 11:36:07 info: Database connected successfully!
+2025-10-09 11:48:56 info: Server running on port 3000
+2025-10-09 11:48:56 info: Database connected successfully!
+2025-10-09 11:49:56 info: Server running on port 3000
+2025-10-09 11:49:56 info: Database connected successfully!
+2025-10-09 11:55:41 info: Server running on port 3000
+2025-10-09 11:55:41 info: Database connected successfully!
+2025-10-09 11:57:03 info: Server running on port 3000
+2025-10-09 11:57:03 info: Database connected successfully!
+2025-10-09 11:57:37 info: Server running on port 3000
+2025-10-09 11:57:37 info: Database connected successfully!
+2025-10-09 11:58:06 info: Server running on port 3000
+2025-10-09 11:58:06 info: Database connected successfully!
+2025-10-09 14:14:47 info: Server running on port 3000
+2025-10-09 14:14:47 info: Database connected successfully!
+2025-10-09 14:15:47 info: Server running on port 3000
+2025-10-09 14:15:48 info: Database connected successfully!
+2025-10-09 14:17:27 info: Server running on port 3000
+2025-10-09 14:17:27 info: Database connected successfully!
+2025-10-09 14:18:23 info: Server running on port 3000
+2025-10-09 14:18:23 info: Database connected successfully!
+2025-10-09 14:19:21 info: Server running on port 3000
+2025-10-09 14:19:21 info: Database connected successfully!
+2025-10-09 14:21:50 info: Server running on port 3000
+2025-10-09 14:21:50 info: Database connected successfully!
+2025-10-09 14:24:18 info: Server running on port 3000
+2025-10-09 14:24:18 info: Database connected successfully!
+2025-10-09 14:24:37 info: Server running on port 3000
+2025-10-09 14:24:37 info: Database connected successfully!
+2025-10-09 14:25:29 info: Server running on port 3000
+2025-10-09 14:25:30 info: Database connected successfully!
+2025-10-09 14:26:23 info: Server running on port 3000
+2025-10-09 14:26:23 info: Database connected successfully!
+2025-10-09 14:28:02 info: Server running on port 3000
+2025-10-09 14:28:02 info: Database connected successfully!
+2025-10-09 15:19:11 info: Server running on port 3000
+2025-10-09 15:19:11 info: Database connected successfully!
+2025-10-09 15:27:58 info: Server running on port 3000
+2025-10-09 15:27:58 info: Database connected successfully!
+2025-10-09 16:04:34 info: Server running on port 3000
+2025-10-09 16:04:34 info: Database connected successfully!
+2025-10-09 16:06:18 info: User logged in successfully: fmbugua@jiranismart.com
+2025-10-09 16:07:25 info: Server running on port 3000
+2025-10-09 16:07:25 info: Database connected successfully!
+2025-10-09 16:09:23 info: Server running on port 3000
+2025-10-09 16:09:23 info: Database connected successfully!
+2025-10-09 16:09:30 info: User logged in successfully: fmbugua@jiranismart.com
+2025-10-09 16:27:27 info: User logged in successfully: fmbugua@jiranismart.com
+2025-10-09 16:29:01 info: Server running on port 3000
+2025-10-09 16:29:01 info: Database connected successfully!
+2025-10-09 16:29:13 info: User logged in successfully: fmbugua@jiranismart.com
+2025-10-09 16:30:33 info: All departments retrieved successfully
+2025-10-09 16:30:38 error: Failed to create branch: duplicate key value violates unique constraint "branches_name_key"
+2025-10-09 16:54:48 info: User logged in successfully: fmbugua@jiranismart.com
+2025-10-09 16:57:27 error: error: invalid input syntax for type integer: "NaN"
+    at F:\WORK DOCS\JS\JSL_SYSTEM\Asset Management Application\app\node_modules\pg-pool\index.js:45:11
+    at processTicksAndRejections (node:internal/process/task_queues:95:5)
+    at async Function.findById (F:\WORK DOCS\JS\JSL_SYSTEM\Asset Management Application\app\src\models\asset.model.ts:23:24)
+    at async AssetService.getById (F:\WORK DOCS\JS\JSL_SYSTEM\Asset Management Application\app\src\services\asset.service.ts:25:23)
+    at async getById (F:\WORK DOCS\JS\JSL_SYSTEM\Asset Management Application\app\src\controllers\asset.controller.ts:20:27)
+2025-10-09 17:00:09 error: error: invalid input syntax for type integer: "NaN"
+    at F:\WORK DOCS\JS\JSL_SYSTEM\Asset Management Application\app\node_modules\pg-pool\index.js:45:11
+    at processTicksAndRejections (node:internal/process/task_queues:95:5)
+    at async Function.findById (F:\WORK DOCS\JS\JSL_SYSTEM\Asset Management Application\app\src\models\asset.model.ts:23:24)
+    at async AssetService.getById (F:\WORK DOCS\JS\JSL_SYSTEM\Asset Management Application\app\src\services\asset.service.ts:25:23)
+    at async getById (F:\WORK DOCS\JS\JSL_SYSTEM\Asset Management Application\app\src\controllers\asset.controller.ts:20:27)
+2025-10-09 17:01:27 info: Server running on port 3000
+2025-10-09 17:01:27 info: Database connected successfully!
+2025-10-09 17:02:17 info: Server running on port 3000
+2025-10-09 17:02:18 info: Database connected successfully!
+2025-10-09 17:03:47 info: User logged in successfully: fmbugua@jiranismart.com
+2025-10-09 17:06:39 info: Server running on port 3000
+2025-10-09 17:06:39 info: Database connected successfully!
+2025-10-09 17:07:15 info: Server running on port 3000
+2025-10-09 17:07:15 info: Database connected successfully!
+2025-10-09 17:13:28 info: Server running on port 3000
+2025-10-09 17:13:28 info: Database connected successfully!
+2025-10-09 17:15:09 info: Server running on port 3000
+2025-10-09 17:15:09 info: Database connected successfully!
+2025-10-09 17:20:31 info: Server running on port 3000
+2025-10-09 17:20:31 info: Database connected successfully!
+2025-10-09 17:21:20 info: Server running on port 3000
+2025-10-09 17:21:20 info: Database connected successfully!
+2025-10-09 17:22:09 info: Server running on port 3000
+2025-10-09 17:22:09 info: Database connected successfully!
+2025-10-09 17:22:31 info: Server running on port 3000
+2025-10-09 17:22:31 info: Database connected successfully!
+2025-10-09 18:03:42 info: Server running on port 3000
+2025-10-09 18:03:42 info: Database connected successfully!
+2025-10-09 18:05:20 info: Server running on port 3000
+2025-10-09 18:05:20 info: Database connected successfully!
+2025-10-09 18:07:37 info: Server running on port 3000
+2025-10-09 18:07:37 info: Database connected successfully!
+2025-10-09 18:08:30 info: Server running on port 3000
+2025-10-09 18:08:30 info: Database connected successfully!
+2025-10-09 18:12:06 info: User logged in successfully: fmbugua@jiranismart.com

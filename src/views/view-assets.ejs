@@ -11,12 +11,11 @@
                 <input type="text" id="filter-serial" placeholder="Serial Number">
                 <select id="filter-type">
                     <option value="">All Types</option>
-                    <option value="Laptop">Laptop</option>
-                    <option value="Printer">Printer</option>
-                    <option value="Router">Router</option>
-                    <option value="Switch">Switch</option>
-                    <option value="CCTV">CCTV</option>
-                    <option value="Other">Other</option>
+                    if (locals.assetTypes && locals.assetTypes.length > 0) { 
+                        <% locals.assetTypes.forEach(type => { %>
+                            <option value="<%= type.name %>"><%= type.name %></option>
+                        <% }); %>
+                    } 
                 </select>
                 <input type="text" id="filter-location" placeholder="Location">
                 <button class="btn btn-view" id="search-btn">Search</button>
