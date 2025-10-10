@@ -13,7 +13,7 @@ export class AssignmentController {
             successResponse(res, 201, 'Asset assigned successfully', newAssignment);
         } catch (error: any) {
             logger.error('Failed to assign asset:', error);
-            errorResponse(res, 400, 'Failed to assign asset');
+            errorResponse(res, 400, `Failed to assign asset: ${error.message}`);
         }
     }
 

@@ -5,7 +5,7 @@ document.getElementById('expense-form').addEventListener('submit', async functio
 
     const formData = {
         asset_id: parseInt(document.getElementById('asset_id').value),
-        expense_type: document.getElementById('expense_type').value,
+        expense_type_id: parseInt(document.getElementById('expense_type_id').value),
         date: document.getElementById('date').value,
         amount: parseFloat(document.getElementById('amount').value),
         vendor: document.getElementById('vendor').value,

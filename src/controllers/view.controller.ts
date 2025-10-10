@@ -1,5 +1,5 @@
 import { Request, Response } from 'express';
-import { AssetModel, EmployeeModel, ReportModel, AssignmentModel, AssetTypeModel, AssetStatusModel } from '../models';
+import { AssetModel, EmployeeModel, ReportModel, AssignmentModel, AssetTypeModel, AssetStatusModel, ExpenseTypeModel } from '../models';
 import { AuthenticatedRequest } from '../types';
 
 class ViewsController {
@@ -86,7 +86,8 @@ class ViewsController {
     async renderCreateExpenses(req: Request, res: Response) {
         try {
             const assets = await AssetModel.findAll();
-            res.render('create-expenses', { user: req.user, assets });
+            const expenseTypes = await ExpenseTypeModel.findAll();
+            res.render('create-expenses', { user: req.user, assets, expenseTypes });
         } catch (error) {
             console.error('Error rendering create-expenses page:', error);
             res.status(500).send('Error loading data for expenses.');

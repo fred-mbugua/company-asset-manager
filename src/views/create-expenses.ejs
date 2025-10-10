@@ -13,19 +13,20 @@
                         <option value="">Select Asset</option>
                         <% if (locals.assets) { %>
                             <% locals.assets.forEach(asset => { %>
-                                <option value="<%= asset.id %>"><%= asset.asset_tag %> - <%= asset.description %></option>
+                                <option value="<%= asset.id %>"><%= asset.asset_tag %> - <%= asset.manufacturer %> - <%= asset.model %></option>
                             <% }); %>
                         <% } %>
                     </select>
                 </div>
                 <div class="form-group">
                     <label for="expense_type">Expense Type</label>
-                    <select id="expense_type" name="expense_type" required>
+                    <select id="expense_type_id" name="expense_type_id" required>
                         <option value="">Select Type</option>
-                        <option value="Purchase">Purchase</option>
-                        <option value="Repair">Repair</option>
-                        <option value="Maintenance">Maintenance</option>
-                        <option value="Upgrade">Upgrade</option>
+                        <% if (locals.expenseTypes) { %>
+                            <% locals.expenseTypes.forEach(type => { %>
+                                <option value="<%= type.id %>"><%= type.name %></option>
+                            <% }); %>
+                        <% } %>
                     </select>
                 </div>
                 <div class="form-group">

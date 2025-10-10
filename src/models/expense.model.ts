@@ -2,15 +2,16 @@ import pool from '../config/database';
 
 class ExpenseModel {
   async create(expenseData: any) {
-    const query = 'INSERT INTO expenses (asset_id, expense_type, date, amount, vendor, invoice_number, notes) VALUES ($1, $2, $3, $4, $5, $6, $7) RETURNING *';
+    // console.log('Creating expense with data:', expenseData);
+    const query = 'INSERT INTO expenses (asset_id, date, amount, vendor, invoice_number, notes, expense_type_id) VALUES ($1, $2, $3, $4, $5, $6, $7) RETURNING *';
     const result = await pool.query(query, [
       expenseData.asset_id,
-      expenseData.expense_type,
       expenseData.date,
       expenseData.amount,
       expenseData.vendor,
       expenseData.invoice_number,
       expenseData.notes,
+      expenseData.expense_type_id,
     ]);
     return result.rows[0];
   }
