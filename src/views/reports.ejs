@@ -1,4 +1,4 @@
-<%- include('partials/header', { pageTitle: 'Reports', cssFile: 'reports' }) %>
+<%- include('partials/header', { pageTitle: 'Reports', cssFile: 'reports', cssFile2: 'assign' }) %>
 <%- include('partials/navbar') %>
 
 <div class="main">
@@ -33,8 +33,11 @@
                 <button onclick="fetchExpensesReport()">Generate</button>
             </div>
 
-            <div id="report-output">
+            <!-- <div id="report-output">
                 <p style="text-align: center; color: #888;">Select a report type to generate.</p>
+            </div> -->
+            <div id="report-output">
+                <%- include('partials/asset-assignments', { assignments: locals.assignments }) %>
             </div>
         </div>
     </section>

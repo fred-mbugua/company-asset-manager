@@ -13,6 +13,8 @@ router.get('/assets/view', authenticate, asyncHandler(ViewsController.renderView
 router.get('/assets/assign', authenticate, asyncHandler(ViewsController.renderAssignAssets));
 router.get('/expenses/create', authenticate, asyncHandler(ViewsController.renderCreateExpenses));
 router.get('/users/create', authenticate, asyncHandler(ViewsController.renderCreateUser));
-router.get('/reports', authenticate, asyncHandler(ViewsController.renderReports));
+router.get('/reports/assets', authenticate, asyncHandler(ViewsController.renderAssetsReport));
+router.get('/reports/expenses', authenticate, asyncHandler(ViewsController.renderAssetExpenseReport));
+router.get('/reports/assignments', authenticate, asyncHandler(ViewsController.renderAssetAssignmentReport));
 
 export default router;

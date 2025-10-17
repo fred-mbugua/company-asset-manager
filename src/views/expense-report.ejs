@@ -1,0 +1,68 @@
+<%- include('partials/header', { pageTitle: 'Expenses Report', cssFile: 'expenses-report' }) %>
+<%- include('partials/navbar', { user: locals.user }) %>
+
+<div class="main">
+    <%- include('partials/sidebar') %>
+    <section class="content-area">
+        <div class="report-container">
+            <h3>Asset Expenses Report</h3>
+
+            <div class="filters">
+                <select id="filter-tag">
+                    <option value="">Asset Tags</option>
+                    <% // Populate asset tags here %>
+                </select>
+                
+                <select id="filter-type">
+                    <option value="">All Expense Types</option>
+                    <% // Populate expense types here %>
+                </select>
+                <select id="filter-department">
+                    <option value="">All Department</option>
+                    <% // Populate departments here %>
+                </select>
+                <select id="filter-location">
+                    <option value="">Location</option>
+                    <% // Populate locations here %>
+                </select>
+                <input type="date" id="filter-from-date" placeholder="From Date">
+                <input type="date" id="filter-to-date" placeholder="To Date">
+
+                <button class="btn btn-view" id="search-btn">Search</button>
+                <button class="btn btn-export" id="export-btn">Export to Excel</button>
+            </div>
+
+            <table class="report-table">
+                <thead>
+                    <tr>
+                        <th>ID</th>
+                        <th>Asset Tag</th>
+                        <th>Expense Type</th>
+                        <th>Date</th>
+                        <th>Amount</th>
+                        <th>Vendor</th>
+                        <th>Invoice No.</th>
+                        <th>Department</th>
+                        <th>Location</th>
+                        <th>Notes</th>
+                    </tr>
+                </thead>
+                <tbody id="expenses-table-body">
+                    </tbody>
+            </table>
+
+            <div class="pagination-controls">
+                <select id="page-size">
+                    <option value="20">20 per page</option>
+                    <option value="30">30 per page</option>
+                    <option value="50">50 per page</option>
+                </select>
+                <button id="prev-btn" class="btn" disabled>Previous</button>
+                <span id="page-info">Page 1 of ?</span>
+                <button id="next-btn" class="btn">Next</button>
+            </div>
+        </div>
+    </section>
+</div>
+
+<%- include('partials/footer', { jsFile: 'expenses-report' }) %>

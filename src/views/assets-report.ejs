@@ -1,0 +1,65 @@
+<%- include('partials/header', { pageTitle: 'Asset Report', cssFile: 'assets-report' }) %>
+<%- include('partials/navbar', { user: locals.user }) %>
+
+<div class="main">
+    <%- include('partials/sidebar') %>
+    <section class="content-area">
+        <div class="assets-container" id="assets-list-section">
+            <h3>Asset Report</h3>
+            
+            <div class="filters">
+                <select id="filter-type">
+                    <option value="">All Types</option>
+                    <% if (locals.assetTypes) { %>
+                        <% locals.assetTypes.forEach(type => { %>
+                            <option value="<%= type.name %>"><%= type.name %></option>
+                        <% }); %>
+                    <% } %>
+                </select>
+                <select id="filter-location">
+                    <option value="">All Locations</option>
+                    <% // Add option population logic here, e.g., locals.locations.forEach %>
+                </select>
+                <select id="filter-department">
+                    <option value="">All Departments</option>
+                    <% // Add option population logic here, e.g., locals.departments.forEach %>
+                </select>
+                <button class="btn btn-view" id="search-btn">Search</button>
+                <button class="btn btn-export" id="export-btn">Export to Excel</button>
+            </div>
+            
+            <table class="report-table">
+                <thead>
+                    <tr>
+                        <th>ID</th>
+                        <th>Asset Tag</th>
+                        <th>Type</th>
+                        <th>Manufacturer</th>
+                        <th>Model</th>
+                        <th>Serial</th>
+                        <th>Status</th>
+                        <th>Location</th>
+                        <th>Department</th>
+                        <th>Purchase Date</th>
+                    </tr>
+                </thead>
+                <tbody id="asset-table-body">
+                    </tbody>
+            </table>
+            
+            <div class="pagination-controls">
+                <select id="page-size">
+                    <option value="20">20 per page</option>
+                    <option value="30">30 per page</option>
+                    <option value="50">50 per page</option>
+                </select>
+                <button id="prev-btn" class="btn" disabled>Previous</button>
+                <span id="page-info">Page 1 of ?</span>
+                <button id="next-btn" class="btn">Next</button>
+            </div>
+
+        </div>
+    </section>
+</div>
+
+<%- include('partials/footer', { jsFile: 'asset-report' }) %>

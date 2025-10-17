@@ -1,0 +1,161 @@
+/* ========================================= */
+/* General Layout and Container Styles       */
+/* ========================================= */
+.report-container {
+    padding: 25px;
+    background-color: #ffffff;
+    border-radius: 8px;
+    box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+    max-width: 1300px; /* Limit width for readability */
+    margin: 20px auto;
+}
+
+.report-container h3 {
+    color: #333;
+    border-bottom: 2px solid #f0f0f0;
+    padding-bottom: 12px;
+    margin-bottom: 25px;
+    font-size: 1.6em;
+    font-weight: 600;
+}
+
+/* ========================================= */
+/* Filters Layout and Inputs                 */
+/* ========================================= */
+.filters {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 12px;
+    align-items: center;
+    margin-bottom: 25px;
+    padding: 15px;
+    background-color: #f8f8f8;
+    border-radius: 6px;
+    border: 1px solid #eee;
+}
+
+.filters input,
+.filters select {
+    padding: 10px 12px;
+    border: 1px solid #ccc;
+    border-radius: 4px;
+    font-size: 0.9em;
+    flex: 1 1 150px; /* Ensures inputs take up space nicely */
+    transition: border-color 0.2s;
+}
+
+.filters input:focus,
+.filters select:focus {
+    border-color: #F37635;
+    outline: none;
+    box-shadow: 0 0 0 1px #F37635;
+}
+/* ========================================= */
+/* Button Styles                             */
+/* ========================================= */
+.btn {
+    padding: 10px 18px;
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
+    font-weight: 600;
+    transition: background-color 0.2s, transform 0.1s;
+    font-size: 0.9em;
+    margin-left: 5px;
+}
+
+.btn-view {
+    background-color: #F37635; /* Blue for Search */
+    color: white;
+}
+
+.btn-export {
+    background-color: #28a745; /* Green for Export */
+    color: white;
+}
+
+.btn:hover {
+    opacity: 0.95;
+    transform: translateY(-1px);
+}
+
+/* ========================================= */
+/* Report Table Styles                       */
+/* ========================================= */
+.report-table {
+    width: 100%;
+    border-collapse: collapse;
+    font-size: 0.9em;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
+}
+
+.report-table thead th {
+    padding: 12px 15px;
+    background-color: #e9ecef;
+    color: #495057;
+    font-weight: 700;
+    text-align: left;
+    text-transform: uppercase;
+    border: 1px solid #dee2e6;
+}
+
+.report-table tbody td {
+    padding: 12px 15px;
+    border: 1px solid #dee2e6;
+    vertical-align: top;
+}
+
+.report-table tbody tr:nth-child(even) {
+    background-color: #f7f7f7;
+}
+
+.report-table tbody tr:hover {
+    background-color: #eef;
+}
+
+/* ========================================= */
+/* Pagination Controls */
+/* ========================================= */
+.pagination-controls {
+    display: flex;
+    justify-content: flex-end;
+    align-items: center;
+    gap: 10px;
+    margin-top: 20px;
+    padding: 10px 0;
+    border-top: 1px solid #eee;
+}
+
+.pagination-controls .btn {
+    padding: 8px 15px;
+    background-color: #6c757d;
+    color: white;
+    font-weight: normal;
+}
+
+.pagination-controls .btn:disabled {
+    background-color: #e9ecef;
+    color: #6c757d;
+    cursor: not-allowed;
+    transform: none;
+    opacity: 1;
+}
+
+#page-size {
+    padding: 8px 10px;
+    border: 1px solid #ccc;
+    border-radius: 4px;
+}
+
+#page-info {
+    font-weight: 600;
+    color: #495057;
+}
+
+@media (max-width: 600px) {
+    .pagination-controls {
+        justify-content: space-between;
+        gap: 5px;
+        flex-wrap: wrap;
+    }
+}

@@ -2,61 +2,125 @@
 <%- include('partials/navbar') %>
 
 <div class="main">
-    <%- include('partials/sidebar') %>
-    <section class="content-area">
-        <div class="form-container">
-            <h3>Create Expense</h3>
-            <form id="expense-form">
-                <div class="form-group">
-                    <label for="asset_id">Asset</label>
-                    <select id="asset_id" name="asset_id" required>
-                        <option value="">Select Asset</option>
-                        <% if (locals.assets) { %>
-                            <% locals.assets.forEach(asset => { %>
-                                <option value="<%= asset.id %>"><%= asset.asset_tag %> - <%= asset.manufacturer %> - <%= asset.model %></option>
-                            <% }); %>
-                        <% } %>
-                    </select>
-                </div>
-                <div class="form-group">
-                    <label for="expense_type">Expense Type</label>
-                    <select id="expense_type_id" name="expense_type_id" required>
-                        <option value="">Select Type</option>
-                        <% if (locals.expenseTypes) { %>
-                            <% locals.expenseTypes.forEach(type => { %>
-                                <option value="<%= type.id %>"><%= type.name %></option>
-                            <% }); %>
-                        <% } %>
-                    </select>
-                </div>
-                <div class="form-group">
-                    <label for="date">Date</label>
-                    <input type="date" id="date" name="date" required>
-                </div>
-                <div class="form-group">
-                    <label for="amount">Amount</label>
-                    <input type="number" step="0.01" id="amount" name="amount" required>
-                </div>
-                <div class="form-group">
-                    <label for="vendor">Vendor</label>
-                    <input type="text" id="vendor" name="vendor" required>
-                </div>
-                <div class="form-group">
-                    <label for="invoice_number">Invoice Number</label>
-                    <input type="text" id="invoice_number" name="invoice_number" required>
-                </div>
-                <div class="form-group full-width">
-                    <label for="notes">Notes</label>
-                    <textarea id="notes" name="notes"></textarea>
-                </div>
+  <%- include('partials/sidebar') %>
+  <section class="content-wrapper">
+    <div class="page-header">
+      <h2>Expense Management</h2>
+    </div>
 
-                <div class="form-actions full-width">
-                    <button type="submit" class="btn btn-submit">Save</button>
-                    <button type="button" class="btn btn-cancel" id="cancel-btn">Cancel</button>
-                </div>
-            </form>
+    <div class="form-section">
+      <div class="section-header">
+        <h3>Create New Expense</h3>
+      </div>
+      
+      <form id="expense-form">
+        <div class="form-grid">
+          <div class="form-group">
+            <label for="asset_id">Asset</label>
+            <select id="asset_id" name="asset_id" required>
+              <option value="">Select Asset</option>
+              <% if (locals.assets) { %>
+                <% locals.assets.forEach(asset => { %>
+                <option value="<%= asset.id %>">
+                  <%= asset.asset_tag %> - <%= asset.manufacturer %> - <%= asset.model %>
+                </option>
+                <% }); %>
+              <% } %>
+            </select>
+          </div>
+
+          <div class="form-group">
+            <label for="expense_type">Expense Type</label>
+            <select id="expense_type_id" name="expense_type_id" required>
+              <option value="">Select Type</option>
+              <% if (locals.expenseTypes) { %>
+                <% locals.expenseTypes.forEach(type => { %>
+                <option value="<%= type.id %>"><%= type.name %></option>
+                <% }); %>
+              <% } %>
+            </select>
+          </div>
+
+          <div class="form-group">
+            <label for="date">Date</label>
+            <input type="date" id="date" name="date" required>
+          </div>
+
+          <div class="form-group">
+            <label for="amount">Amount</label>
+            <input type="number" step="0.01" id="amount" name="amount" required>
+          </div>
+
+          <div class="form-group">
+            <label for="vendor">Vendor</label>
+            <input type="text" id="vendor" name="vendor" required>
+          </div>
+
+          <div class="form-group">
+            <label for="invoice_number">Invoice Number</label>
+            <input type="text" id="invoice_number" name="invoice_number" required>
+          </div>
+
+          <div class="form-group notes-field">
+            <label for="notes">Notes</label>
+            <textarea id="notes" name="notes" rows="3"></textarea>
+          </div>
         </div>
-    </section>
+
+        <div class="form-actions">
+          <button type="submit" class="btn btn-primary">Save Expense</button>
+          <button type="button" class="btn btn-secondary" id="cancel-btn">Cancel</button>
+        </div>
+      </form>
+    </div>
+
+    <div class="table-section">
+      <div class="section-header">
+        <h3>Expense History</h3>
+      </div>
+
+      <div class="table-responsive">
+        <table>
+          <thead>
+            <tr>
+              <th>ID</th>
+              <th>Asset</th>
+              <th>Model Name</th>
+              <th>Date</th>
+              <th>Vendor</th>
+              <th>Invoice #</th>
+              <th>Notes</th>
+              <th>Amount</th>
+            </tr>
+          </thead>
+          <tbody>
+            <% if (locals.expenses && locals.expenses.length > 0) { %>
+              <% locals.expenses.forEach(expense => { %>
+              <tr>
+                <td><%= expense.id %></td>
+                <td><%= expense.asset_tag %> - <%= expense.manufacturer %></td>
+                <td><%= expense.model %></td>
+                <td><%= new Date(expense.expense_date).toLocaleDateString() %></td>
+                <td><%= expense.vendor %></td>
+                <td><%= expense.invoice_number %></td>
+                <td><%= expense.expense_notes || 'N/A' %></td>
+                <td>Ksh. <%= expense.expense_amount.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ',') %></td>
+              </tr>
+              <% }); %>
+              <tr>
+                <td colspan="7" class="no-data" style="text-align: right;">Sub total: </td>
+                <td class="subtotal">Ksh. <%= locals.expenses[0].expense_subtotal.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ',') %></td>
+              </tr>
+            <% } else { %>
+              <tr>
+                <td colspan="7" class="no-data">No expenses recorded</td>
+              </tr>
+            <% } %>
+          </tbody>
+        </table>
+      </div>
+    </div>
+  </section>
 </div>
 
 <%- include('partials/footer', { jsFile: 'expenses' }) %>

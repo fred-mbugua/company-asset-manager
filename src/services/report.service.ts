@@ -11,6 +11,11 @@ class ReportService {
     return { employee, assets };
   }
 
+  async getAllAssets() {
+    const assets = await AssignmentModel.findAll();
+    return assets;
+  }
+
   async getAssetsByBranch(branchLocation: string) {
     const assets = await AssetModel.search({ location: branchLocation });
     return assets;

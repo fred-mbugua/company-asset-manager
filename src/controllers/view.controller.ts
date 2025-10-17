@@ -1,5 +1,5 @@
 import { Request, Response } from 'express';
-import { AssetModel, EmployeeModel, ReportModel, AssignmentModel, AssetTypeModel, AssetStatusModel, ExpenseTypeModel } from '../models';
+import { AssetModel, EmployeeModel, ReportModel, AssignmentModel, AssetTypeModel, AssetStatusModel, ExpenseTypeModel, ExpenseModel } from '../models';
 import { AuthenticatedRequest } from '../types';
 
 class ViewsController {
@@ -87,7 +87,9 @@ class ViewsController {
         try {
             const assets = await AssetModel.findAll();
             const expenseTypes = await ExpenseTypeModel.findAll();
-            res.render('create-expenses', { user: req.user, assets, expenseTypes });
+            const expenses = await ReportModel.getExpenseDetailForAllAssets();
+            // console.log('Rendering create-expenses with data:', { assets, expenseTypes, expenses });
+            res.render('create-expenses', { user: req.user, assets, expenseTypes, expenses });
         } catch (error) {
             console.error('Error rendering create-expenses page:', error);
             res.status(500).send('Error loading data for expenses.');
@@ -100,8 +102,21 @@ class ViewsController {
     }
 
     // Rendering the reports page
-    async renderReports(req: Request, res: Response) {
-        res.render('reports', { user: req.user });
+    // async renderReports(req: Request, res: Response) {
+    //     const assignments = await AssignmentModel.findAll();
+    //     res.render('reports', { user: req.user, assignments });
+    // }
+
+    async renderAssetAssignmentReport(req: Request, res: Response) {
+        res.render('assignments-report', { user: req.user });
+    }
+
+    async renderAssetExpenseReport(req: Request, res: Response) {
+        res.render('expense-report', { user: req.user });
+    }
+
+    async renderAssetsReport(req: Request, res: Response) {
+        res.render('assets-report', { user: req.user });
     }
 }
 

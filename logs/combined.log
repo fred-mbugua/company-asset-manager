@@ -829,3 +829,141 @@
 2025-10-10 17:05:13 info: Database connected successfully!
 2025-10-10 17:07:03 info: Server running on port 3000
 2025-10-10 17:07:03 info: Database connected successfully!
+2025-10-11 09:08:24 info: User logged in successfully: fmbugua@jiranismart.com
+2025-10-11 09:11:59 info: User logged out successfully
+2025-10-11 09:12:02 info: User logged in successfully: fmbugua@jiranismart.com
+2025-10-13 08:13:18 info: Server running on port 3000
+2025-10-13 08:13:18 info: Database connected successfully!
+2025-10-13 08:13:58 error: Error: Failed to lookup view "dashboard" in views directory "F:\WORK DOCS\JS\JSL_SYSTEM\Asset Management Application\app\dist\views"
+    at Function.render (F:\WORK DOCS\JS\JSL_SYSTEM\Asset Management Application\app\node_modules\express\lib\application.js:597:17)
+    at ServerResponse.render (F:\WORK DOCS\JS\JSL_SYSTEM\Asset Management Application\app\node_modules\express\lib\response.js:1049:7)
+    at renderDashboard (F:\WORK DOCS\JS\JSL_SYSTEM\Asset Management Application\app\dist\controllers\view.controller.js:21:17)
+    at process.processTicksAndRejections (node:internal/process/task_queues:95:5)
+2025-10-13 08:14:00 error: Error: Failed to lookup view "dashboard" in views directory "F:\WORK DOCS\JS\JSL_SYSTEM\Asset Management Application\app\dist\views"
+    at Function.render (F:\WORK DOCS\JS\JSL_SYSTEM\Asset Management Application\app\node_modules\express\lib\application.js:597:17)
+    at ServerResponse.render (F:\WORK DOCS\JS\JSL_SYSTEM\Asset Management Application\app\node_modules\express\lib\response.js:1049:7)
+    at renderDashboard (F:\WORK DOCS\JS\JSL_SYSTEM\Asset Management Application\app\dist\controllers\view.controller.js:21:17)
+    at process.processTicksAndRejections (node:internal/process/task_queues:95:5)
+2025-10-13 16:34:29 info: Server running on port 3000
+2025-10-13 16:34:29 info: Database connected successfully!
+2025-10-14 07:32:40 info: Server running on port 3000
+2025-10-14 07:32:40 info: Database connected successfully!
+2025-10-14 07:34:05 info: User logged in successfully: fmbugua@jiranismart.com
+2025-10-14 09:43:45 info: Server running on port 3000
+2025-10-14 09:43:46 info: Database connected successfully!
+2025-10-14 09:45:31 info: Server running on port 3000
+2025-10-14 09:45:31 info: Database connected successfully!
+2025-10-14 10:16:24 info: Server running on port 3000
+2025-10-14 10:16:24 info: Database connected successfully!
+2025-10-14 10:17:02 info: Server running on port 3000
+2025-10-14 10:17:02 info: Database connected successfully!
+2025-10-14 10:22:00 info: Server running on port 3000
+2025-10-14 10:22:00 info: Database connected successfully!
+2025-10-14 10:22:16 error: TypeError: F:\WORK DOCS\JS\JSL_SYSTEM\Asset Management Application\app\src\views\create-expenses.ejs:102
+    100|                 <td><%= expense.asset_tag %> - <%= expense.manufacturer %></td>
+    101|                 <td><%= new Date(expense.expense_date).toLocaleDateString() %></td>
+ >> 102|                 <td>$<%= expense.expense_amount.toFixed(2) %></td>
+    103|                 <td><%= expense.vendor %></td>
+    104|                 <td><%= expense.invoice_number %></td>
+    105|                 <td><%= expense.notes || 'N/A' %></td>
+
+expense.expense_amount.toFixed is not a function
+    at eval (eval at compile (F:\WORK DOCS\JS\JSL_SYSTEM\Asset Management Application\app\node_modules\ejs\lib\ejs.js:673:12), <anonymous>:75:49)
+    at Array.forEach (<anonymous>)
+    at eval (eval at compile (F:\WORK DOCS\JS\JSL_SYSTEM\Asset Management Application\app\node_modules\ejs\lib\ejs.js:673:12), <anonymous>:61:24)
+    at create-expenses (F:\WORK DOCS\JS\JSL_SYSTEM\Asset Management Application\app\node_modules\ejs\lib\ejs.js:703:17)
+    at tryHandleCache (F:\WORK DOCS\JS\JSL_SYSTEM\Asset Management Application\app\node_modules\ejs\lib\ejs.js:274:36)
+    at View.exports.renderFile [as engine] (F:\WORK DOCS\JS\JSL_SYSTEM\Asset Management Application\app\node_modules\ejs\lib\ejs.js:491:10)
+    at View.render (F:\WORK DOCS\JS\JSL_SYSTEM\Asset Management Application\app\node_modules\express\lib\view.js:135:8)
+    at tryRender (F:\WORK DOCS\JS\JSL_SYSTEM\Asset Management Application\app\node_modules\express\lib\application.js:657:10)
+    at Function.render (F:\WORK DOCS\JS\JSL_SYSTEM\Asset Management Application\app\node_modules\express\lib\application.js:609:3)
+    at ServerResponse.render (F:\WORK DOCS\JS\JSL_SYSTEM\Asset Management Application\app\node_modules\express\lib\response.js:1049:7)
+2025-10-14 10:22:19 error: TypeError: F:\WORK DOCS\JS\JSL_SYSTEM\Asset Management Application\app\src\views\create-expenses.ejs:102
+    100|                 <td><%= expense.asset_tag %> - <%= expense.manufacturer %></td>
+    101|                 <td><%= new Date(expense.expense_date).toLocaleDateString() %></td>
+ >> 102|                 <td>$<%= expense.expense_amount.toFixed(2) %></td>
+    103|                 <td><%= expense.vendor %></td>
+    104|                 <td><%= expense.invoice_number %></td>
+    105|                 <td><%= expense.notes || 'N/A' %></td>
+
+expense.expense_amount.toFixed is not a function
+    at eval (eval at compile (F:\WORK DOCS\JS\JSL_SYSTEM\Asset Management Application\app\node_modules\ejs\lib\ejs.js:673:12), <anonymous>:75:49)
+    at Array.forEach (<anonymous>)
+    at eval (eval at compile (F:\WORK DOCS\JS\JSL_SYSTEM\Asset Management Application\app\node_modules\ejs\lib\ejs.js:673:12), <anonymous>:61:24)
+    at create-expenses (F:\WORK DOCS\JS\JSL_SYSTEM\Asset Management Application\app\node_modules\ejs\lib\ejs.js:703:17)
+    at tryHandleCache (F:\WORK DOCS\JS\JSL_SYSTEM\Asset Management Application\app\node_modules\ejs\lib\ejs.js:274:36)
+    at View.exports.renderFile [as engine] (F:\WORK DOCS\JS\JSL_SYSTEM\Asset Management Application\app\node_modules\ejs\lib\ejs.js:491:10)
+    at View.render (F:\WORK DOCS\JS\JSL_SYSTEM\Asset Management Application\app\node_modules\express\lib\view.js:135:8)
+    at tryRender (F:\WORK DOCS\JS\JSL_SYSTEM\Asset Management Application\app\node_modules\express\lib\application.js:657:10)
+    at Function.render (F:\WORK DOCS\JS\JSL_SYSTEM\Asset Management Application\app\node_modules\express\lib\application.js:609:3)
+    at ServerResponse.render (F:\WORK DOCS\JS\JSL_SYSTEM\Asset Management Application\app\node_modules\express\lib\response.js:1049:7)
+2025-10-14 10:22:42 error: TypeError: F:\WORK DOCS\JS\JSL_SYSTEM\Asset Management Application\app\src\views\create-expenses.ejs:102
+    100|                 <td><%= expense.asset_tag %> - <%= expense.manufacturer %></td>
+    101|                 <td><%= new Date(expense.expense_date).toLocaleDateString() %></td>
+ >> 102|                 <td>$<%= expense.expense_amount.toFixed(2) %></td>
+    103|                 <td><%= expense.vendor %></td>
+    104|                 <td><%= expense.invoice_number %></td>
+    105|                 <td><%= expense.notes || 'N/A' %></td>
+
+expense.expense_amount.toFixed is not a function
+    at eval (eval at compile (F:\WORK DOCS\JS\JSL_SYSTEM\Asset Management Application\app\node_modules\ejs\lib\ejs.js:673:12), <anonymous>:75:49)
+    at Array.forEach (<anonymous>)
+    at eval (eval at compile (F:\WORK DOCS\JS\JSL_SYSTEM\Asset Management Application\app\node_modules\ejs\lib\ejs.js:673:12), <anonymous>:61:24)
+    at create-expenses (F:\WORK DOCS\JS\JSL_SYSTEM\Asset Management Application\app\node_modules\ejs\lib\ejs.js:703:17)
+    at tryHandleCache (F:\WORK DOCS\JS\JSL_SYSTEM\Asset Management Application\app\node_modules\ejs\lib\ejs.js:274:36)
+    at View.exports.renderFile [as engine] (F:\WORK DOCS\JS\JSL_SYSTEM\Asset Management Application\app\node_modules\ejs\lib\ejs.js:491:10)
+    at View.render (F:\WORK DOCS\JS\JSL_SYSTEM\Asset Management Application\app\node_modules\express\lib\view.js:135:8)
+    at tryRender (F:\WORK DOCS\JS\JSL_SYSTEM\Asset Management Application\app\node_modules\express\lib\application.js:657:10)
+    at Function.render (F:\WORK DOCS\JS\JSL_SYSTEM\Asset Management Application\app\node_modules\express\lib\application.js:609:3)
+    at ServerResponse.render (F:\WORK DOCS\JS\JSL_SYSTEM\Asset Management Application\app\node_modules\express\lib\response.js:1049:7)
+2025-10-14 11:13:00 info: User logged in successfully: fmbugua@jiranismart.com
+2025-10-14 11:33:50 info: Server running on port 3000
+2025-10-14 11:33:50 info: Database connected successfully!
+2025-10-14 11:44:48 info: Server running on port 3000
+2025-10-14 11:44:48 info: Database connected successfully!
+2025-10-14 11:48:12 info: Server running on port 3000
+2025-10-14 11:48:12 info: Database connected successfully!
+2025-10-14 12:05:41 info: Server running on port 3000
+2025-10-14 12:05:42 info: Database connected successfully!
+2025-10-15 12:04:20 info: User logged in successfully: fmbugua@jiranismart.com
+2025-10-15 12:04:21 info: User logged in successfully: fmbugua@jiranismart.com
+2025-10-15 12:04:21 info: User logged in successfully: fmbugua@jiranismart.com
+2025-10-15 16:07:14 info: User logged in successfully: fmbugua@jiranismart.com
+2025-10-17 14:23:34 info: Server running on port 4000
+2025-10-17 14:23:35 info: Database connected successfully!
+2025-10-17 14:24:20 error: Login failed: Invalid credentials
+2025-10-17 14:27:14 info: Server running on port 4000
+2025-10-17 14:27:14 info: Database connected successfully!
+2025-10-17 14:33:52 error: Error: Failed to lookup view "asset-assignment" in views directory "F:\WORK DOCS\JS\JSL_SYSTEM\Asset Management Application\app\src\views"
+    at Function.render (F:\WORK DOCS\JS\JSL_SYSTEM\Asset Management Application\app\node_modules\express\lib\application.js:597:17)
+    at ServerResponse.render (F:\WORK DOCS\JS\JSL_SYSTEM\Asset Management Application\app\node_modules\express\lib\response.js:1049:7)
+    at renderAssetAssignmentReport (F:\WORK DOCS\JS\JSL_SYSTEM\Asset Management Application\app\src\controllers\view.controller.ts:111:13)
+    at asyncUtilWrap (F:\WORK DOCS\JS\JSL_SYSTEM\Asset Management Application\app\node_modules\express-async-handler\index.js:3:20)
+    at Layer.handle [as handle_request] (F:\WORK DOCS\JS\JSL_SYSTEM\Asset Management Application\app\node_modules\express\lib\router\layer.js:95:5)
+    at next (F:\WORK DOCS\JS\JSL_SYSTEM\Asset Management Application\app\node_modules\express\lib\router\route.js:149:13)
+    at authenticate (F:\WORK DOCS\JS\JSL_SYSTEM\Asset Management Application\app\src\middlewares\auth.middleware.ts:75:20)
+    at Layer.handle [as handle_request] (F:\WORK DOCS\JS\JSL_SYSTEM\Asset Management Application\app\node_modules\express\lib\router\layer.js:95:5)
+    at next (F:\WORK DOCS\JS\JSL_SYSTEM\Asset Management Application\app\node_modules\express\lib\router\route.js:149:13)
+    at Route.dispatch (F:\WORK DOCS\JS\JSL_SYSTEM\Asset Management Application\app\node_modules\express\lib\router\route.js:119:3)
+2025-10-17 14:35:09 info: Server running on port 4000
+2025-10-17 14:35:09 info: Database connected successfully!
+2025-10-17 16:20:45 error: Login failed: Invalid credentials
+2025-10-17 16:20:47 error: Login failed: Invalid credentials
+2025-10-17 16:20:48 error: Login failed: Invalid credentials
+2025-10-17 16:20:49 error: Login failed: Invalid credentials
+2025-10-17 16:21:14 error: Login failed: Invalid credentials
+2025-10-17 16:21:50 info: User logged in successfully: fmbugua@jiranismart.com
+2025-10-17 16:31:07 info: Server running on port 4000
+2025-10-17 16:31:07 info: Database connected successfully!
+2025-10-17 16:45:00 info: Server running on port 4000
+2025-10-17 16:45:01 info: Database connected successfully!
+2025-10-17 16:45:21 info: Server running on port 4000
+2025-10-17 16:45:21 info: Database connected successfully!
+2025-10-17 16:45:49 info: Server running on port 4000
+2025-10-17 16:45:49 info: Database connected successfully!
+2025-10-17 16:46:24 info: Server running on port 4000
+2025-10-17 16:46:24 info: Database connected successfully!
+2025-10-17 16:46:48 info: Server running on port 4000
+2025-10-17 16:46:48 info: Database connected successfully!
+2025-10-17 16:47:53 info: Server running on port 4000
+2025-10-17 16:47:53 info: Database connected successfully!

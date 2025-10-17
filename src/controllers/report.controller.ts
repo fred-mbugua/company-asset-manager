@@ -15,6 +15,16 @@ class ReportController {
     }
   }
 
+  async getAllAssets(req: Request, res: Response): Promise<void> {
+    try {
+      const report = await ReportService.getAllAssets();
+      successResponse(res, 200, 'Assets report generated successfully', report);
+    } catch (error: any) {
+      logger.error('Failed to generate assets report:', error);
+      errorResponse(res, 404, error.message);
+    }
+  }
+
   async getAssetsByBranch(req: Request, res: Response): Promise<void> {
     try {
       const { location } = req.params;

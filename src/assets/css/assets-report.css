@@ -1,0 +1,147 @@
+/* General container and heading styles */
+.assets-container {
+    padding: 20px;
+    background-color: #ffffff;
+    border-radius: 8px;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
+}
+
+.assets-container h3 {
+    color: #333;
+    border-bottom: 2px solid #eee;
+    padding-bottom: 10px;
+    margin-bottom: 20px;
+    font-size: 1.5em;
+}
+
+/* Filters and Export Layout */
+.filters {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 15px;
+    align-items: center;
+    margin-bottom: 20px;
+    padding: 15px;
+    background-color: #f9f9f9;
+    border-radius: 6px;
+}
+
+.filters input[type="text"],
+.filters select {
+    padding: 10px 12px;
+    border: 1px solid #ccc;
+    border-radius: 4px;
+    font-size: 0.9em;
+    flex: 1 1 150px; /* Allows flexibility but ensures minimum width */
+    transition: border-color 0.3s;
+}
+
+.filters input:focus,
+.filters select:focus {
+    border-color: #F37635;
+    outline: none;
+    box-shadow: 0 0 0 2px rgba(0, 123, 255, 0.2);
+}
+
+/* Button Styles (for Search and Export) */
+.btn {
+    padding: 10px 20px;
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
+    font-weight: 600;
+    transition: background-color 0.3s, transform 0.1s;
+}
+
+.btn-view,
+.btn-export {
+    background-color: #F37635;
+    color: white;
+}
+
+.btn-export {
+    background-color: #28a745; /* Green for success/export */
+}
+
+.btn:hover {
+    opacity: 0.9;
+    transform: translateY(-1px);
+}
+
+/* Report Table Styles */
+.report-table {
+    width: 100%;
+    border-collapse: collapse;
+    margin-top: 20px;
+    font-size: 0.9em;
+}
+
+.report-table th,
+.report-table td {
+    padding: 12px 15px;
+    border: 1px solid #ddd;
+    text-align: left;
+}
+
+.report-table thead th {
+    background-color: #f1f1f1;
+    color: #333;
+    font-weight: 700;
+    text-transform: uppercase;
+    font-size: 0.85em;
+}
+
+.report-table tbody tr:nth-child(even) {
+    background-color: #f8f8f8;
+}
+
+.report-table tbody tr:hover {
+    background-color: #eef;
+}
+
+/* ========================================= */
+/* Pagination Controls */
+/* ========================================= */
+.pagination-controls {
+    display: flex;
+    justify-content: flex-end;
+    align-items: center;
+    gap: 10px;
+    margin-top: 20px;
+    padding: 10px 0;
+    border-top: 1px solid #eee;
+}
+
+.pagination-controls .btn {
+    padding: 8px 15px;
+    background-color: #6c757d;
+    color: white;
+    font-weight: normal;
+}
+
+.pagination-controls .btn:disabled {
+    background-color: #e9ecef;
+    color: #6c757d;
+    cursor: not-allowed;
+    transform: none;
+    opacity: 1;
+}
+
+#page-size {
+    padding: 8px 10px;
+    border: 1px solid #ccc;
+    border-radius: 4px;
+}
+
+#page-info {
+    font-weight: 600;
+    color: #495057;
+}
+
+@media (max-width: 600px) {
+    .pagination-controls {
+        justify-content: space-between;
+        gap: 5px;
+        flex-wrap: wrap;
+    }
+}

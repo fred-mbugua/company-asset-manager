@@ -1,5 +1,3 @@
-// public/assets/js/reports.js
-
 function showForm(type) {
     ['employee-form', 'branch-form', 'expenses-form'].forEach(id => {
         document.getElementById(id).style.display = 'none';
@@ -35,6 +33,7 @@ window.fetchEmployeeReport = () => {
     if (!employeeId) return showMessage('error', 'Please enter an Employee ID.');
     generateReport('employee-assets', { employeeId });
 };
+
 
 window.fetchBranchReport = () => {
     const branchId = document.getElementById('branchId').value;
