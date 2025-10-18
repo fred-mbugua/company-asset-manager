@@ -1033,3 +1033,5 @@ Could not find the include file "partials/asset-assignments"
     at ServerResponse.render (F:\WORK DOCS\JS\JSL_SYSTEM\Asset Management Application\app\node_modules\express\lib\response.js:1049:7)
     at renderAssignAssets (F:\WORK DOCS\JS\JSL_SYSTEM\Asset Management Application\app\src\controllers\view.controller.ts:78:17)
     at processTicksAndRejections (node:internal/process/task_queues:95:5)
+2025-10-18 12:52:47 info: Server running on port 4000
+2025-10-18 12:52:47 info: Database connected successfully!
