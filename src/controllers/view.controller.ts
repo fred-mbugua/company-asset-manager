@@ -1,5 +1,5 @@
 import { Request, Response } from 'express';
-import { AssetModel, EmployeeModel, ReportModel, AssignmentModel, AssetTypeModel, AssetStatusModel, ExpenseTypeModel, ExpenseModel } from '../models';
+import { AssetModel, EmployeeModel, ReportModel, AssignmentModel, AssetTypeModel, AssetStatusModel, ExpenseTypeModel, ExpenseModel, LocationModel, DepartmentModel } from '../models';
 import { AuthenticatedRequest } from '../types';
 
 class ViewsController {
@@ -116,7 +116,12 @@ class ViewsController {
     }
 
     async renderAssetsReport(req: Request, res: Response) {
-        res.render('assets-report', { user: req.user });
+        const assetTypes = await AssetTypeModel.findAll();
+        const branches = await LocationModel.findAll();
+        const departments = await DepartmentModel.findAll();
+        const assetStatuses = await AssetStatusModel.findAll();
+        const assets = await AssetModel.findAll();
+        res.render('assets-report', { user: req.user, assetTypes, branches, departments, assetStatuses, assets });
     }
 }
 

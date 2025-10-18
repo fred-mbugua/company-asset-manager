@@ -1,5 +1,5 @@
 import { Request, Response } from 'express';
-import { ReportService } from '../services';
+import { ReportService, ReportExportService } from '../services';
 import { successResponse, errorResponse } from '../utils/response';
 import logger from '../utils/logger';
 
@@ -49,6 +49,37 @@ class ReportController {
       errorResponse(res, 500, 'Failed to generate report');
     }
   }
+
+  /**
+     * Handles the request to export the Asset Report to Excel.
+     */
+    async exportAssetReport(req: Request, res: Response): Promise<void> {
+        try {
+            // Get filters from the query parameters (e.g., ?type=Laptop&location=NY)
+            const filters = req.query; 
+
+            // 1. Generate the Excel file buffer
+            const excelBuffer = await ReportExportService.generateAssetReport(filters);
+
+            // 2. Set necessary HTTP headers for download
+            const date = new Date().toISOString().slice(0, 10);
+            res.setHeader(
+                'Content-Type',
+                'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet'
+            );
+            res.setHeader(
+                'Content-Disposition',
+                `attachment; filename=Asset_Report_${date}.xlsx`
+            );
+
+            // 3. Send the buffer to the client
+            res.send(excelBuffer);
+
+        } catch (error) {
+            console.error('Exporting Asset Report failed:', error);
+            res.status(500).send('Failed to generate report.');
+        }
+    }
 }
 
 export default new ReportController();

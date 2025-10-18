@@ -12,18 +12,33 @@
                     <option value="">All Types</option>
                     <% if (locals.assetTypes) { %>
                         <% locals.assetTypes.forEach(type => { %>
-                            <option value="<%= type.name %>"><%= type.name %></option>
+                            <option value="<%= type.name %>" data-type-id="<%= type.id %>"><%= type.name %></option>
                         <% }); %>
                     <% } %>
                 </select>
                 <select id="filter-location">
                     <option value="">All Locations</option>
-                    <% // Add option population logic here, e.g., locals.locations.forEach %>
+                    <% if (locals.branches) { %>
+                        <% locals.branches.forEach(location => { %>
+                            <option value="<%= location.name %>" data-location-id="<%= location.id %>"><%= location.name %></option>
+                        <% }); %>
+                    <% } %>
                 </select>
-                <select id="filter-department">
-                    <option value="">All Departments</option>
-                    <% // Add option population logic here, e.g., locals.departments.forEach %>
+                <select id="filter-status">
+                    <option value="">All Statuses</option>
+                    <% if (locals.assetStatuses) { %>
+                        <% locals.assetStatuses.forEach(status => { %>
+                            <option value="<%= status.name %>" data-status-id="<%= status.id %>"><%= status.name %></option>
+                        <% }); %>
+                    <% } %>
                 </select>
+                <div class="date-filters">
+                    <label>Purchase Date Range:</label>
+                    <input type="date" id="filter-from-date" placeholder="From Date">
+                    <input type="date" id="filter-to-date" placeholder="To Date">
+                </div>
+                 
+                
                 <button class="btn btn-view" id="search-btn">Search</button>
                 <button class="btn btn-export" id="export-btn">Export to Excel</button>
             </div>
@@ -39,11 +54,26 @@
                         <th>Serial</th>
                         <th>Status</th>
                         <th>Location</th>
-                        <th>Department</th>
                         <th>Purchase Date</th>
                     </tr>
                 </thead>
                 <tbody id="asset-table-body">
+                    <!-- Asset rows will be populated here dynamically -->
+                    <% if (locals.assets) { %>
+                        <% locals.assets.forEach(asset => { %>
+                            <tr>
+                                <td><%= asset.id %></td>
+                                <td><%= asset.asset_tag %></td>
+                                <td><%= asset.type_name %></td>
+                                <td><%= asset.manufacturer %></td>
+                                <td><%= asset.model %></td>
+                                <td><%= asset.serial_number %></td>
+                                <td><%= asset.status_name %></td>
+                                <td><%= asset.location %></td>
+                                <td><%= asset.purchase_date %></td>
+                            </tr>
+                        <% }); %>
+                    <% } %>
                     </tbody>
             </table>
             

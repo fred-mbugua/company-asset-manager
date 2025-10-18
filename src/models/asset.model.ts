@@ -1,5 +1,20 @@
 import db from '../config/database';
 
+
+// Define the expected structure for the data returned by the join query
+interface AssetReportData {
+    id: number;
+    asset_tag: string;
+    type_name: string;
+    manufacturer: string;
+    model: string;
+    serial_number: string;
+    status_name: string;
+    location: string;
+    department: string;
+    purchase_date: Date;
+    // Add other fields you need for the full report
+}
 class AssetModel {
     static async create(assetData: any) {
         const query = `
@@ -13,7 +28,27 @@ class AssetModel {
     }
 
     static async findAll() {
-        const query = `SELECT * FROM assets;`;
+        const query = `
+        Select
+            assets.id,
+            assets.asset_tag,
+            assets.asset_type,
+            assets.manufacturer,
+            assets.model,
+            assets.serial_number,
+            assets.status,
+            assets.location,
+            assets.purchase_date,
+            assets.purchase_price,
+            assets.notes,
+            asset_types.name As type_name,
+            asset_statuses.name As status_name
+        From
+            assets Inner Join
+            asset_types On assets.asset_type_id = asset_types.id Inner Join
+            asset_statuses On assets.asset_status_id = asset_statuses.id
+        Order By
+            assets.purchase_date Desc LIMIT 20;`;
         const result = await db.query(query);
         return result.rows;
     }
@@ -59,6 +94,89 @@ class AssetModel {
         `;
         const result = await db.query(sql, [searchQuery]);
         return result.rows;
+    }
+
+    /**
+     * Fetches all assets, applying dynamic filters. Designed for full reports (no LIMIT/OFFSET).
+     * @param filters - An object containing filtering criteria (e.g., { type: 'Laptop', location: 'NY' }).
+     * @returns A promise resolving to an array of all matching asset records.
+     */
+    static async findAllFiltered(filters: any): Promise<AssetReportData[]> {
+        const queryParams: any[] = [];
+        const whereClauses: string[] = [];
+        let paramIndex = 1;
+
+        // Base Query: Perform necessary joins to get all required report fields
+        let query = `
+            SELECT
+                a.id,
+                a.asset_tag,
+                at.name AS type_name,
+                a.manufacturer,
+                a.model,
+                a.serial_number,
+                ast.name AS status_name,
+                l.name AS location,
+                d.name AS department,
+                a.purchase_date
+            FROM
+                assets a
+            LEFT JOIN asset_types at ON a.asset_type_id = at.id
+            LEFT JOIN asset_statuses ast ON a.asset_status_id = ast.id
+            LEFT JOIN locations l ON a.location_id = l.id
+            LEFT JOIN departments d ON a.department_id = d.id
+        `;
+        
+        // --- Dynamic Filtering ---
+
+        // Filter by Asset Type Name
+        if (filters.type) {
+            whereClauses.push(`at.name ILIKE $${paramIndex++}`);
+            queryParams.push(`%${filters.type}%`);
+        }
+
+        // Filter by Location Name
+        if (filters.location) {
+            whereClauses.push(`l.name ILIKE $${paramIndex++}`);
+            queryParams.push(`%${filters.location}%`);
+        }
+
+        // Filter by Department Name
+        if (filters.department) {
+            whereClauses.push(`d.name ILIKE $${paramIndex++}`);
+            queryParams.push(`%${filters.department}%`);
+        }
+        
+        // Filter by Asset Status Name (Example if you add this filter later)
+        if (filters.status) {
+            whereClauses.push(`ast.name ILIKE $${paramIndex++}`);
+            queryParams.push(`%${filters.status}%`);
+        }
+
+        // Filter by Asset Tag (Partial or Exact Match)
+        if (filters.asset_tag) {
+            whereClauses.push(`a.asset_tag ILIKE $${paramIndex++}`);
+            queryParams.push(`%${filters.asset_tag}%`);
+        }
+
+
+        // --- Assemble the final WHERE clause ---
+        if (whereClauses.length > 0) {
+            query += ` WHERE ${whereClauses.join(' AND ')}`;
+        }
+
+        // Add final ordering
+        query += ` ORDER BY a.asset_tag ASC;`;
+        
+        // --- Execute Query ---
+        try {
+            console.log('Executing Report Query:', query);
+            const result = await db.query(query, queryParams);
+            return result.rows;
+        } catch (error) {
+            console.error('Error fetching filtered asset report data:', error);
+            throw new Error('Database error during report generation.');
+        }
     }
 }
 

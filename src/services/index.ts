@@ -12,3 +12,4 @@ export { default as ActionLogService } from './actionLog.service';
 export { default as DepartmentService } from './department.service';
 export { default as AssetTypeService } from './assetType.service';
 export { default as AssetStatusService } from './assetStatus.service';
+export { default as ReportExportService } from './reportExport.service';

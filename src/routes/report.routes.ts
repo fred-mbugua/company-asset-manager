@@ -11,5 +11,10 @@ router.get('/expenses/all', authenticate, asyncHandler(ReportController.getAsset
 router.get('/assets/employee/:employeeId', authenticate, asyncHandler(ReportController.getAssetsByEmployee));
 router.get('/assets/branch/:location', authenticate, asyncHandler(ReportController.getAssetsByBranch));
 router.get('/expenses/time-period', authenticate, authorize(['Admin']), asyncHandler(ReportController.getExpensesByTimePeriod));
+router.get(
+    '/assets/export', 
+    authenticate, 
+    asyncHandler(ReportController.exportAssetReport)
+);
 
 export default router;

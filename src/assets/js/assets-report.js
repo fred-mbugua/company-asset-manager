@@ -34,7 +34,7 @@ document.addEventListener('DOMContentLoaded', () => {
     const fetchAndRenderData = async () => {
         const limit = parseInt(pageSizeSelect.value);
         const offset = (currentPage - 1) * limit;
-        
+
         // Show loading state
         tableBody.innerHTML = `<tr><td colspan="10" style="text-align:center;color:#888;">Loading report data...</td></tr>`;
 
@@ -46,7 +46,7 @@ document.addEventListener('DOMContentLoaded', () => {
             };
 
             // Assuming API.get handles query string construction (e.g., /reports/assets?limit=20&offset=0)
-            const response = await API.get(reportEndpoint, params); 
+            const response = await API.get(reportEndpoint, params);
             const data = response.data.assets;
             const totalCount = response.data.totalCount;
 
@@ -129,13 +129,26 @@ document.addEventListener('DOMContentLoaded', () => {
             fetchAndRenderData();
         }
     });
-    
-    // Export button handler
+
     exportBtn.addEventListener('click', () => {
+        // 1. Get the current filters from the UI using the existing function
         const filters = getFilters();
+
+        // 2. IMPORTANT: Remove pagination parameters (limit and offset) 
+        // The backend must return ALL records when exporting.
+        delete filters.limit;
+        delete filters.offset;
+
+        // 3. Convert filters object into a URL query string 
         const exportQuery = new URLSearchParams(filters).toString();
-        // Redirect or open a new window to the export endpoint
-        window.open(`${reportEndpoint}/export?${exportQuery}`, '_blank');
+
+        // 4. Construct the full export URL
+        // reportEndpoint is defined as '/reports/assets' or similar
+        const exportURL = `${reportEndpoint}/export?${exportQuery}`;
+
+        // 5. Trigger the file download by navigating the browser to the URL.
+        // The browser automatically attaches the authentication cookie to this request.
+        window.open(exportURL, '_blank');
     });
 
     // Initial load
