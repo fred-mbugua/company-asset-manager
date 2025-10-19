@@ -15,6 +15,17 @@ class ReportController {
     }
   }
 
+  async getFilteredAssets(req: Request, res: Response): Promise<void> {
+    try {
+      const filters = req.query;
+      const report = await ReportService.getFilteredAssets(filters);
+      successResponse(res, 200, 'Filtered assets report generated successfully', report);
+    } catch (error: any) {
+      logger.error('Failed to generate assets report:', error);
+      errorResponse(res, 404, error.message);
+    }
+  }
+
   async getAllAssets(req: Request, res: Response): Promise<void> {
     try {
       const report = await ReportService.getAllAssets();
@@ -55,13 +66,15 @@ class ReportController {
      */
     async exportAssetReport(req: Request, res: Response): Promise<void> {
         try {
-            // Get filters from the query parameters (e.g., ?type=Laptop&location=NY)
+            // Getting filters from the query parameters (e.g., ?type=Laptop&location=NY)
             const filters = req.query; 
 
-            // 1. Generate the Excel file buffer
+            // console.log('Exporting Asset Report with filters:', filters);
+
+            // Generating the Excel file buffer
             const excelBuffer = await ReportExportService.generateAssetReport(filters);
 
-            // 2. Set necessary HTTP headers for download
+            // Setting necessary HTTP headers for download
             const date = new Date().toISOString().slice(0, 10);
             res.setHeader(
                 'Content-Type',
@@ -72,7 +85,7 @@ class ReportController {
                 `attachment; filename=Asset_Report_${date}.xlsx`
             );
 
-            // 3. Send the buffer to the client
+            // Sending the buffer to the client
             res.send(excelBuffer);
 
         } catch (error) {

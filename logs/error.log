@@ -398,3 +398,95 @@ Could not find the include file "partials/asset-assignments"
     at ServerResponse.render (F:\WORK DOCS\JS\JSL_SYSTEM\Asset Management Application\app\node_modules\express\lib\response.js:1049:7)
     at renderAssignAssets (F:\WORK DOCS\JS\JSL_SYSTEM\Asset Management Application\app\src\controllers\view.controller.ts:78:17)
     at processTicksAndRejections (node:internal/process/task_queues:95:5)
+2025-10-19 11:48:35 error: Error: Database error during report generation.
+    at Function.findAllFiltered (F:\WORK DOCS\JS\JSL_SYSTEM\Asset Management Application\app\src\models\asset.model.ts:188:19)
+    at processTicksAndRejections (node:internal/process/task_queues:95:5)
+    at async ReportService.getFilteredAssets (F:\WORK DOCS\JS\JSL_SYSTEM\Asset Management Application\app\src\services\report.service.ts:38:20)
+    at async getFilteredAssets (F:\WORK DOCS\JS\JSL_SYSTEM\Asset Management Application\app\src\controllers\report.controller.ts:21:22)
+2025-10-19 12:49:03 error: Error: Database error during report generation.
+    at Function.findAllFiltered (F:\WORK DOCS\JS\JSL_SYSTEM\Asset Management Application\app\src\models\asset.model.ts:186:19)
+    at processTicksAndRejections (node:internal/process/task_queues:95:5)
+    at async ReportService.getFilteredAssets (F:\WORK DOCS\JS\JSL_SYSTEM\Asset Management Application\app\src\services\report.service.ts:38:20)
+    at async getFilteredAssets (F:\WORK DOCS\JS\JSL_SYSTEM\Asset Management Application\app\src\controllers\report.controller.ts:21:22)
+2025-10-19 12:55:21 error: ReferenceError: F:\WORK DOCS\JS\JSL_SYSTEM\Asset Management Application\app\src\views\assets-report.ejs:73
+    71|                                 <td><%= asset.status_name %></td>
+    72|                                 <td><%= asset.location %></td>
+ >> 73|                                 <td><%= toISOString(asset.purchase_date) %></td>
+    74|                             </tr>
+    75|                         <% }); %>
+    76|                     <% } %>
+
+toISOString is not defined
+    at eval (eval at compile (F:\WORK DOCS\JS\JSL_SYSTEM\Asset Management Application\app\node_modules\ejs\lib\ejs.js:673:12), <anonymous>:106:7)
+    at Array.forEach (<anonymous>)
+    at eval (eval at compile (F:\WORK DOCS\JS\JSL_SYSTEM\Asset Management Application\app\node_modules\ejs\lib\ejs.js:673:12), <anonymous>:79:22)
+    at assets-report (F:\WORK DOCS\JS\JSL_SYSTEM\Asset Management Application\app\node_modules\ejs\lib\ejs.js:703:17)
+    at tryHandleCache (F:\WORK DOCS\JS\JSL_SYSTEM\Asset Management Application\app\node_modules\ejs\lib\ejs.js:274:36)
+    at View.exports.renderFile [as engine] (F:\WORK DOCS\JS\JSL_SYSTEM\Asset Management Application\app\node_modules\ejs\lib\ejs.js:491:10)
+    at View.render (F:\WORK DOCS\JS\JSL_SYSTEM\Asset Management Application\app\node_modules\express\lib\view.js:135:8)
+    at tryRender (F:\WORK DOCS\JS\JSL_SYSTEM\Asset Management Application\app\node_modules\express\lib\application.js:657:10)
+    at Function.render (F:\WORK DOCS\JS\JSL_SYSTEM\Asset Management Application\app\node_modules\express\lib\application.js:609:3)
+    at ServerResponse.render (F:\WORK DOCS\JS\JSL_SYSTEM\Asset Management Application\app\node_modules\express\lib\response.js:1049:7)
+    at renderAssetsReport (F:\WORK DOCS\JS\JSL_SYSTEM\Asset Management Application\app\src\controllers\view.controller.ts:124:13)
+    at processTicksAndRejections (node:internal/process/task_queues:95:5)
+2025-10-19 12:55:24 error: ReferenceError: F:\WORK DOCS\JS\JSL_SYSTEM\Asset Management Application\app\src\views\assets-report.ejs:73
+    71|                                 <td><%= asset.status_name %></td>
+    72|                                 <td><%= asset.location %></td>
+ >> 73|                                 <td><%= toISOString(asset.purchase_date) %></td>
+    74|                             </tr>
+    75|                         <% }); %>
+    76|                     <% } %>
+
+toISOString is not defined
+    at eval (eval at compile (F:\WORK DOCS\JS\JSL_SYSTEM\Asset Management Application\app\node_modules\ejs\lib\ejs.js:673:12), <anonymous>:106:7)
+    at Array.forEach (<anonymous>)
+    at eval (eval at compile (F:\WORK DOCS\JS\JSL_SYSTEM\Asset Management Application\app\node_modules\ejs\lib\ejs.js:673:12), <anonymous>:79:22)
+    at assets-report (F:\WORK DOCS\JS\JSL_SYSTEM\Asset Management Application\app\node_modules\ejs\lib\ejs.js:703:17)
+    at tryHandleCache (F:\WORK DOCS\JS\JSL_SYSTEM\Asset Management Application\app\node_modules\ejs\lib\ejs.js:274:36)
+    at View.exports.renderFile [as engine] (F:\WORK DOCS\JS\JSL_SYSTEM\Asset Management Application\app\node_modules\ejs\lib\ejs.js:491:10)
+    at View.render (F:\WORK DOCS\JS\JSL_SYSTEM\Asset Management Application\app\node_modules\express\lib\view.js:135:8)
+    at tryRender (F:\WORK DOCS\JS\JSL_SYSTEM\Asset Management Application\app\node_modules\express\lib\application.js:657:10)
+    at Function.render (F:\WORK DOCS\JS\JSL_SYSTEM\Asset Management Application\app\node_modules\express\lib\application.js:609:3)
+    at ServerResponse.render (F:\WORK DOCS\JS\JSL_SYSTEM\Asset Management Application\app\node_modules\express\lib\response.js:1049:7)
+    at renderAssetsReport (F:\WORK DOCS\JS\JSL_SYSTEM\Asset Management Application\app\src\controllers\view.controller.ts:124:13)
+    at processTicksAndRejections (node:internal/process/task_queues:95:5)
+2025-10-19 12:55:25 error: ReferenceError: F:\WORK DOCS\JS\JSL_SYSTEM\Asset Management Application\app\src\views\assets-report.ejs:73
+    71|                                 <td><%= asset.status_name %></td>
+    72|                                 <td><%= asset.location %></td>
+ >> 73|                                 <td><%= toISOString(asset.purchase_date) %></td>
+    74|                             </tr>
+    75|                         <% }); %>
+    76|                     <% } %>
+
+toISOString is not defined
+    at eval (eval at compile (F:\WORK DOCS\JS\JSL_SYSTEM\Asset Management Application\app\node_modules\ejs\lib\ejs.js:673:12), <anonymous>:106:7)
+    at Array.forEach (<anonymous>)
+    at eval (eval at compile (F:\WORK DOCS\JS\JSL_SYSTEM\Asset Management Application\app\node_modules\ejs\lib\ejs.js:673:12), <anonymous>:79:22)
+    at assets-report (F:\WORK DOCS\JS\JSL_SYSTEM\Asset Management Application\app\node_modules\ejs\lib\ejs.js:703:17)
+    at tryHandleCache (F:\WORK DOCS\JS\JSL_SYSTEM\Asset Management Application\app\node_modules\ejs\lib\ejs.js:274:36)
+    at View.exports.renderFile [as engine] (F:\WORK DOCS\JS\JSL_SYSTEM\Asset Management Application\app\node_modules\ejs\lib\ejs.js:491:10)
+    at View.render (F:\WORK DOCS\JS\JSL_SYSTEM\Asset Management Application\app\node_modules\express\lib\view.js:135:8)
+    at tryRender (F:\WORK DOCS\JS\JSL_SYSTEM\Asset Management Application\app\node_modules\express\lib\application.js:657:10)
+    at Function.render (F:\WORK DOCS\JS\JSL_SYSTEM\Asset Management Application\app\node_modules\express\lib\application.js:609:3)
+    at ServerResponse.render (F:\WORK DOCS\JS\JSL_SYSTEM\Asset Management Application\app\node_modules\express\lib\response.js:1049:7)
+    at renderAssetsReport (F:\WORK DOCS\JS\JSL_SYSTEM\Asset Management Application\app\src\controllers\view.controller.ts:124:13)
+    at processTicksAndRejections (node:internal/process/task_queues:95:5)
+2025-10-19 13:34:36 error: ReferenceError: F:\WORK DOCS\JS\JSL_SYSTEM\Asset Management Application\app\src\views\assets-report.ejs:86
+    84|                     <option value="50">50 per page</option>
+    85|                 </select>
+ >> 86|                 <button id="prev-btn" class="btn" <%= pagination.hasPrevPage ? '' : 'disabled' %>>Previous</button>
+    87| <span id="page-info">Page <%= pagination.currentPage %> of <%= pagination.totalPages %></span>
+    88| <button id="next-btn" class="btn" <%= pagination.hasNextPage ? '' : 'disabled' %>>Next</button>
+    89|             </div>
+
+pagination is not defined
+    at eval (eval at compile (F:\WORK DOCS\JS\JSL_SYSTEM\Asset Management Application\app\node_modules\ejs\lib\ejs.js:673:12), <anonymous>:115:26)
+    at assets-report (F:\WORK DOCS\JS\JSL_SYSTEM\Asset Management Application\app\node_modules\ejs\lib\ejs.js:703:17)
+    at tryHandleCache (F:\WORK DOCS\JS\JSL_SYSTEM\Asset Management Application\app\node_modules\ejs\lib\ejs.js:274:36)
+    at View.exports.renderFile [as engine] (F:\WORK DOCS\JS\JSL_SYSTEM\Asset Management Application\app\node_modules\ejs\lib\ejs.js:491:10)
+    at View.render (F:\WORK DOCS\JS\JSL_SYSTEM\Asset Management Application\app\node_modules\express\lib\view.js:135:8)
+    at tryRender (F:\WORK DOCS\JS\JSL_SYSTEM\Asset Management Application\app\node_modules\express\lib\application.js:657:10)
+    at Function.render (F:\WORK DOCS\JS\JSL_SYSTEM\Asset Management Application\app\node_modules\express\lib\application.js:609:3)
+    at ServerResponse.render (F:\WORK DOCS\JS\JSL_SYSTEM\Asset Management Application\app\node_modules\express\lib\response.js:1049:7)
+    at renderAssetsReport (F:\WORK DOCS\JS\JSL_SYSTEM\Asset Management Application\app\src\controllers\view.controller.ts:135:13)
+    at processTicksAndRejections (node:internal/process/task_queues:95:5)

@@ -1,5 +1,3 @@
-// public/assets/js/asset-report.js
-
 document.addEventListener('DOMContentLoaded', () => {
     const tableBody = document.getElementById('asset-table-body');
     const searchBtn = document.getElementById('search-btn');
@@ -13,7 +11,7 @@ document.addEventListener('DOMContentLoaded', () => {
     let currentPage = 1;
     let totalPages = 1;
     let currentFilters = {};
-    const reportEndpoint = '/reports/assets'; // <-- Define your API endpoint
+    const reportEndpoint = '/reports/assets'; // <-- Defining API endpoint
 
     /**
      * Gathers all filter values from the UI.
@@ -23,10 +21,15 @@ document.addEventListener('DOMContentLoaded', () => {
         return {
             type: document.getElementById('filter-type')?.value,
             location: document.getElementById('filter-location')?.value,
-            department: document.getElementById('filter-department')?.value,
+            status: document.getElementById('filter-status')?.value,
+            from_date: document.getElementById('filter-from-date')?.value,
+            to_date: document.getElementById('filter-to-date')?.value,
+            // department: document.getElementById('filter-department')?.value,
             // Include other filters (e.g., status, date ranges) as needed
         };
     };
+
+    console.log('Filters: ', getFilters());
 
     /**
      * Fetches and renders the asset data based on current state.
@@ -45,10 +48,13 @@ document.addEventListener('DOMContentLoaded', () => {
                 offset: offset
             };
 
-            // Assuming API.get handles query string construction (e.g., /reports/assets?limit=20&offset=0)
             const response = await API.get(reportEndpoint, params);
-            const data = response.data.assets;
-            const totalCount = response.data.totalCount;
+            const data = response.data;
+
+            // console.log('Fetched data:', data);
+            const totalCount = response.data.length || 0;
+
+            // console.log('Total Count:', totalCount);
 
             totalPages = Math.ceil(totalCount / limit);
 
@@ -83,7 +89,6 @@ document.addEventListener('DOMContentLoaded', () => {
                 <td>${asset.serial_number}</td>
                 <td>${asset.status_name || 'N/A'}</td>
                 <td>${asset.location || 'N/A'}</td>
-                <td>${asset.department || 'N/A'}</td>
                 <td>${new Date(asset.purchase_date).toLocaleDateString()}</td>
             </tr>
         `).join('');
@@ -104,6 +109,7 @@ document.addEventListener('DOMContentLoaded', () => {
     // Search/Filter button handler
     searchBtn.addEventListener('click', () => {
         currentFilters = getFilters();
+        // console.log('Applying Filters: ', currentFilters);
         currentPage = 1; // Reset to first page on new search
         fetchAndRenderData();
     });
@@ -131,26 +137,22 @@ document.addEventListener('DOMContentLoaded', () => {
     });
 
     exportBtn.addEventListener('click', () => {
-        // 1. Get the current filters from the UI using the existing function
+        //  Getting the current filters from the UI using the existing function
         const filters = getFilters();
 
-        // 2. IMPORTANT: Remove pagination parameters (limit and offset) 
+        //  Removing pagination parameters (limit and offset) 
         // The backend must return ALL records when exporting.
         delete filters.limit;
         delete filters.offset;
 
-        // 3. Convert filters object into a URL query string 
+        // Converting filters object into a URL query string
         const exportQuery = new URLSearchParams(filters).toString();
 
-        // 4. Construct the full export URL
-        // reportEndpoint is defined as '/reports/assets' or similar
-        const exportURL = `${reportEndpoint}/export?${exportQuery}`;
+        //  Constructing the full export URL
+        const exportURL = `/api${reportEndpoint}/export?${exportQuery}`;
 
-        // 5. Trigger the file download by navigating the browser to the URL.
+        // Triggering the file download by navigating the browser to the URL.
         // The browser automatically attaches the authentication cookie to this request.
         window.open(exportURL, '_blank');
     });
-
-    // Initial load
-    fetchAndRenderData();
 });

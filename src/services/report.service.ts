@@ -1,4 +1,4 @@
-import { AssetModel, EmployeeModel, ExpenseModel, AssignmentModel, ReportModel } from '../models';
+import { AssetModel, EmployeeModel, ExpenseModel, AssignmentModel, ReportModel, AssetReportModel } from '../models';
 import logger from '../utils/logger';
 
 class ReportService {
@@ -32,6 +32,11 @@ class ReportService {
 
   async getTotalValueByCategory(assetType: string) {
     return ReportModel.getTotalValueByCategory(assetType);
+  }
+
+  async getFilteredAssets(filters: any) {
+    const assets = await AssetModel.findAllFiltered(filters);
+    return assets;
   }
 }
 

@@ -2,94 +2,99 @@
 <%- include('partials/navbar', { user: locals.user }) %>
 
 <div class="main">
-    <%- include('partials/sidebar') %>
-    <section class="content-area">
-        <div class="assets-container" id="assets-list-section">
-            <h3>Asset Report</h3>
-            
-            <div class="filters">
-                <select id="filter-type">
-                    <option value="">All Types</option>
-                    <% if (locals.assetTypes) { %>
-                        <% locals.assetTypes.forEach(type => { %>
-                            <option value="<%= type.name %>" data-type-id="<%= type.id %>"><%= type.name %></option>
-                        <% }); %>
-                    <% } %>
-                </select>
-                <select id="filter-location">
-                    <option value="">All Locations</option>
-                    <% if (locals.branches) { %>
-                        <% locals.branches.forEach(location => { %>
-                            <option value="<%= location.name %>" data-location-id="<%= location.id %>"><%= location.name %></option>
-                        <% }); %>
-                    <% } %>
-                </select>
-                <select id="filter-status">
-                    <option value="">All Statuses</option>
-                    <% if (locals.assetStatuses) { %>
-                        <% locals.assetStatuses.forEach(status => { %>
-                            <option value="<%= status.name %>" data-status-id="<%= status.id %>"><%= status.name %></option>
-                        <% }); %>
-                    <% } %>
-                </select>
-                <div class="date-filters">
-                    <label>Purchase Date Range:</label>
-                    <input type="date" id="filter-from-date" placeholder="From Date">
-                    <input type="date" id="filter-to-date" placeholder="To Date">
-                </div>
-                 
-                
-                <button class="btn btn-view" id="search-btn">Search</button>
-                <button class="btn btn-export" id="export-btn">Export to Excel</button>
-            </div>
-            
-            <table class="report-table">
-                <thead>
-                    <tr>
-                        <th>ID</th>
-                        <th>Asset Tag</th>
-                        <th>Type</th>
-                        <th>Manufacturer</th>
-                        <th>Model</th>
-                        <th>Serial</th>
-                        <th>Status</th>
-                        <th>Location</th>
-                        <th>Purchase Date</th>
-                    </tr>
-                </thead>
-                <tbody id="asset-table-body">
-                    <!-- Asset rows will be populated here dynamically -->
-                    <% if (locals.assets) { %>
-                        <% locals.assets.forEach(asset => { %>
-                            <tr>
-                                <td><%= asset.id %></td>
-                                <td><%= asset.asset_tag %></td>
-                                <td><%= asset.type_name %></td>
-                                <td><%= asset.manufacturer %></td>
-                                <td><%= asset.model %></td>
-                                <td><%= asset.serial_number %></td>
-                                <td><%= asset.status_name %></td>
-                                <td><%= asset.location %></td>
-                                <td><%= asset.purchase_date %></td>
-                            </tr>
-                        <% }); %>
-                    <% } %>
-                    </tbody>
-            </table>
-            
-            <div class="pagination-controls">
-                <select id="page-size">
-                    <option value="20">20 per page</option>
-                    <option value="30">30 per page</option>
-                    <option value="50">50 per page</option>
-                </select>
-                <button id="prev-btn" class="btn" disabled>Previous</button>
-                <span id="page-info">Page 1 of ?</span>
-                <button id="next-btn" class="btn">Next</button>
-            </div>
+  <%- include('partials/sidebar') %>
+  <section class="content-area">
+    <div class="assets-container" id="assets-list-section">
+      <h3>Asset Report</h3>
 
+      <div class="filters">
+        <select id="filter-type">
+          <option value="">All Types</option>
+          <% if (locals.assetTypes) { %>
+          <% locals.assetTypes.forEach(type => { %>
+          <option value="<%= type.name %>" data-type-id="<%= type.id %>"><%= type.name %></option>
+          <% }); %>
+          <% } %>
+        </select>
+        <select id="filter-location">
+          <option value="">All Locations</option>
+          <% if (locals.branches) { %>
+          <% locals.branches.forEach(location => { %>
+          <option value="<%= location.name %>" data-location-id="<%= location.id %>"><%= location.name %></option>
+          <% }); %>
+          <% } %>
+        </select>
+        <select id="filter-status">
+          <option value="">All Statuses</option>
+          <% if (locals.assetStatuses) { %>
+          <% locals.assetStatuses.forEach(status => { %>
+          <option value="<%= status.name %>" data-status-id="<%= status.id %>"><%= status.name %></option>
+          <% }); %>
+          <% } %>
+        </select>
+        <div class="date-filters">
+          <label>Purchase Date Range:</label>
+          <input type="date" id="filter-from-date" placeholder="From Date">
+          <input type="date" id="filter-to-date" placeholder="To Date">
         </div>
-    </section>
+
+
+        <button class="btn btn-view" id="search-btn">Search</button>
+        <button class="btn btn-export" id="export-btn">Export to Excel</button>
+      </div>
+
+      <div class="report-table-wrapper">
+        <table class="report-table">
+          <thead>
+            <tr>
+              <th>ID</th>
+              <th>Asset Tag</th>
+              <th>Type</th>
+              <th>Manufacturer</th>
+              <th>Model</th>
+              <th>Serial</th>
+              <th>Status</th>
+              <th>Location</th>
+              <th>Purchase Date</th>
+            </tr>
+          </thead>
+          <tbody id="asset-table-body">
+            <!-- Asset rows will be populated here dynamically -->
+            <% if (locals.assets) { %>
+            <% locals.assets.forEach(asset => { %>
+            <tr>
+              <td><%= asset.id %></td>
+              <td><%= asset.asset_tag %></td>
+              <td><%= asset.type_name %></td>
+              <td><%= asset.manufacturer %></td>
+              <td><%= asset.model %></td>
+              <td><%= asset.serial_number %></td>
+              <td><%= asset.status_name %></td>
+              <td><%= asset.location %></td>
+              <td><%= new Date(asset.purchase_date).toLocaleDateString() %></td>
+            </tr>
+            <% }); %>
+            <% } %>
+          </tbody>
+        </table>
+
+        
+
+      </div>
+
+      <div class="pagination-controls">
+          <select id="page-size">
+            <option value="20">20 per page</option>
+            <option value="30">30 per page</option>
+            <option value="50">50 per page</option>
+          </select>
+          <button id="prev-btn" class="btn" <%= pagination.hasPrevPage ? '' : 'disabled' %>>Previous</button>
+          <span id="page-info">Page <%= pagination.currentPage %> of <%= pagination.totalPages %> (<%= totalAssets %> total)</span>
+          <button id="next-btn" class="btn" <%= pagination.hasNextPage ? '' : 'disabled' %>>Next</button>
+        </div>
+    </div>
+
+  </section>
 </div>
 
-<%- include('partials/footer', { jsFile: 'asset-report' }) %>
+<%- include('partials/footer', { jsFile: 'assets-report' }) %>

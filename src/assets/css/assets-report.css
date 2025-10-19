@@ -1,76 +1,177 @@
-/* General container and heading styles */
+/* Root Variables */
+:root {
+    --primary-color: #F37635;
+    --primary-light: #f38d35;
+    --success-color: #28a745;
+    --success-light: #2dc653;
+    --gray-100: #f8f9fa;
+    --gray-200: #e9ecef;
+    --gray-300: #dee2e6;
+    --gray-400: #ced4da;
+    --gray-500: #adb5bd;
+    --gray-600: #6c757d;
+    --gray-700: #495057;
+    --border-color: #e0e0e0;
+    --shadow-sm: 0 1px 3px rgba(0, 0, 0, 0.05);
+    --shadow-md: 0 2px 8px rgba(243, 118, 53, 0.08);
+    --transition: all 0.2s ease;
+}
+
+/* Layout & Container Styles */
+.content-area {
+    /* Setting content area height */
+    height: calc(100vh - 60px);
+    /* Implementing vertical page scroll */
+    overflow-y: auto; 
+    padding: clamp(10px, 2vw, 20px);
+    width: 100%;
+}
+
 .assets-container {
-    padding: 20px;
+    /* Setting container height */
+    height: auto; 
+    padding: clamp(10px, 2vw, 20px);
     background-color: #ffffff;
     border-radius: 8px;
-    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
+    box-shadow: var(--shadow-md);
+    width: 100%;
+    /* Structuring container as a flex column for vertical layout */
+    display: flex; 
+    flex-direction: column;
+    /* Ensuring the container fills the available height in content-area */
+    min-height: calc(100vh - 60px - 2 * clamp(10px, 2vw, 20px)); 
 }
 
+/* Header Styles */
 .assets-container h3 {
-    color: #333;
-    border-bottom: 2px solid #eee;
+    color: var(--gray-700);
+    border-bottom: 2px solid var(--gray-200);
     padding-bottom: 10px;
     margin-bottom: 20px;
-    font-size: 1.5em;
+    font-size: clamp(1.2em, 2vw, 1.5em);
 }
 
-/* Filters and Export Layout */
+/* Filter Section */
 .filters {
-    display: flex;
-    flex-wrap: wrap;
-    gap: 15px;
-    align-items: center;
-    margin-bottom: 20px;
+    /* Making filters sticky */
+    position: sticky;
+    top: 0;
+    background-color: #ffffff;
     padding: 15px;
-    background-color: #f9f9f9;
     border-radius: 6px;
+    box-shadow: var(--shadow-sm);
+    margin-bottom: 20px;
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+    gap: 12px;
+    z-index: 2;
+    align-items: start;
+    /* Preventing filters from shrinking/growing */
+    flex-shrink: 0; 
 }
 
-.filters input[type="text"],
-.filters select {
-    padding: 10px 12px;
-    border: 1px solid #ccc;
-    border-radius: 4px;
+/* Date Filter Group */
+.date-filters {
+    grid-column: 1 / -1;
+    display: grid;
+    grid-template-columns: auto 1fr 1fr;
+    gap: 12px;
+    align-items: center;
+}
+
+.date-filters label {
+    color: var(--gray-700);
     font-size: 0.9em;
-    flex: 1 1 150px; /* Allows flexibility but ensures minimum width */
-    transition: border-color 0.3s;
+    font-weight: 500;
+    white-space: nowrap;
 }
 
-.filters input:focus,
-.filters select:focus {
-    border-color: #F37635;
+/* Form Controls */
+.filters select,
+.filters input[type="date"],
+.filters input[type="text"] {
+    appearance: none;
+    background-color: #ffffff;
+    padding: 8px 12px;
+    height: 36px;
+    border: 1px solid var(--border-color);
+    border-radius: 6px;
+    font-size: 0.9em;
+    width: 100%;
+    transition: var(--transition);
+}
+
+.filters select {
+    /* Adding dropdown arrow SVG */
+    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' fill='%23F37635' viewBox='0 0 16 16'%3E%3Cpath d='M7.247 11.14L2.451 5.658C1.885 5.013 2.345 4 3.204 4h9.592a1 1 0 0 1 .753 1.659l-4.796 5.48a1 1 0 0 1-1.506 0z'/%3E%3C/svg%3E");
+    background-repeat: no-repeat;
+    background-position: calc(100% - 12px) center;
+    padding-right: 35px;
+}
+
+/* Form Control States */
+.filters select:hover,
+.filters input:hover {
+    border-color: var(--primary-color);
+}
+
+.filters select:focus,
+.filters input:focus {
+    border-color: var(--primary-color);
+    box-shadow: 0 0 0 2px rgba(243, 118, 53, 0.15);
     outline: none;
-    box-shadow: 0 0 0 2px rgba(0, 123, 255, 0.2);
 }
 
-/* Button Styles (for Search and Export) */
+/* Buttons */
 .btn {
-    padding: 10px 20px;
+    height: 36px;
+    padding: 0 15px;
     border: none;
-    border-radius: 4px;
+    border-radius: 6px;
     cursor: pointer;
     font-weight: 600;
-    transition: background-color 0.3s, transform 0.1s;
+    font-size: 0.9em;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    transition: var(--transition);
+    color: #fff;
 }
 
-.btn-view,
-.btn-export {
-    background-color: #F37635;
-    color: white;
+.btn-view {
+    background-color: var(--primary-color);
 }
 
 .btn-export {
-    background-color: #28a745; /* Green for success/export */
+    background-color: var(--success-color);
 }
 
 .btn:hover {
-    opacity: 0.9;
     transform: translateY(-1px);
+    opacity: 0.95;
 }
 
-/* Report Table Styles */
+/* Table Container */
+.report-table-wrapper {
+    /* Implementing horizontal scrolling */
+    overflow-x: auto;
+    /* Allowing wrapper to grow vertically */
+    flex: 1; 
+    /* Ensuring content can scroll inside a flex container */
+    min-height: 0;
+    /* Adding touch scrolling support */
+    -webkit-overflow-scrolling: touch;
+    /* Matching padding/margin to container for full width table */
+    margin: 0 -15px;
+    padding: 0 15px;
+    position: relative;
+}
+
+/* Table Styles */
 .report-table {
     width: 100%;
+    /* Setting minimum width for horizontal scrolling on smaller screens */
+    min-width: 800px; 
     border-collapse: collapse;
     margin-top: 20px;
     font-size: 0.9em;
@@ -79,69 +180,172 @@
 .report-table th,
 .report-table td {
     padding: 12px 15px;
-    border: 1px solid #ddd;
+    border: 1px solid var(--gray-300);
     text-align: left;
+    /* Implementing text truncation */
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    max-width: 150px;
+}
+
+.report-table thead {
+    /* Making header sticky */
+    position: sticky;
+    top: 0;
+    background-color: #fff;
+    z-index: 1;
 }
 
 .report-table thead th {
-    background-color: #f1f1f1;
-    color: #333;
-    font-weight: 700;
+    background-color: var(--gray-100);
+    color: var(--gray-700);
+    font-weight: 600;
     text-transform: uppercase;
     font-size: 0.85em;
 }
 
 .report-table tbody tr:nth-child(even) {
-    background-color: #f8f8f8;
+    background-color: var(--gray-100);
 }
 
 .report-table tbody tr:hover {
-    background-color: #eef;
+    background-color: rgba(243, 118, 53, 0.05);
 }
 
-/* ========================================= */
-/* Pagination Controls */
-/* ========================================= */
+/* Pagination */
 .pagination-controls {
+    /* Ensuring pagination is visible below table */
+    position: relative; 
+    background-color: #ffffff;
     display: flex;
     justify-content: flex-end;
     align-items: center;
     gap: 10px;
     margin-top: 20px;
-    padding: 10px 0;
-    border-top: 1px solid #eee;
+    padding: 15px;
+    border-top: 1px solid var(--gray-200);
+    width: 100%;
+    /* Preventing pagination from shrinking/growing */
+    flex-shrink: 0; 
 }
 
 .pagination-controls .btn {
-    padding: 8px 15px;
-    background-color: #6c757d;
-    color: white;
-    font-weight: normal;
+    background-color: var(--gray-600);
+    width: auto;
 }
 
 .pagination-controls .btn:disabled {
-    background-color: #e9ecef;
-    color: #6c757d;
+    background-color: var(--gray-200);
+    color: var(--gray-600);
     cursor: not-allowed;
     transform: none;
-    opacity: 1;
 }
 
 #page-size {
     padding: 8px 10px;
-    border: 1px solid #ccc;
+    border: 1px solid var(--border-color);
     border-radius: 4px;
 }
 
 #page-info {
     font-weight: 600;
-    color: #495057;
+    color: var(--gray-700);
 }
 
-@media (max-width: 600px) {
+/* Responsive Design */
+@media (max-width: 768px) {
+    .filters {
+        /* Removing sticky filters on small screen */
+        position: static;
+        grid-template-columns: 1fr;
+        gap: 10px;
+    }
+
+    .date-filters {
+        grid-template-columns: 1fr;
+        gap: 8px;
+    }
+
+    .date-filters label {
+        grid-column: 1 / -1;
+    }
+
+    .report-table-wrapper {
+        margin: 0 -10px;
+        padding: 0 10px;
+    }
+
+    .report-table th,
+    .report-table td {
+        padding: 8px 10px;
+        font-size: 0.85em;
+        max-width: 120px;
+    }
+
     .pagination-controls {
-        justify-content: space-between;
-        gap: 5px;
-        flex-wrap: wrap;
+        bottom: 0;
+        /* Ensuring it's above other elements */
+        z-index: 3; 
+        justify-content: center;
+        padding: 10px;
+    }
+
+    #page-info {
+        order: -1;
+        width: 100%;
+        text-align: center;
+        margin-bottom: 10px;
+    }
+}
+
+@media (max-width: 576px) {
+    .content-area,
+    .assets-container {
+        padding: 10px;
+    }
+
+    .report-table-wrapper {
+        margin: 0 -5px;
+        padding: 0 5px;
+    }
+
+    .report-table td {
+        max-width: 100px;
+    }
+
+    .pagination-controls {
+        /* Stacking pagination elements vertically */
+        flex-direction: column; 
+        align-items: stretch;
+        gap: 8px;
+        padding: 10px 5px;
+    }
+
+    .pagination-controls .btn {
+        width: 100%;
+    }
+}
+
+/* Print Styles */
+@media print {
+    .filters,
+    .pagination-controls {
+        display: none;
+    }
+
+    .content-area {
+        height: auto;
+        overflow: visible;
+    }
+
+    .report-table-wrapper {
+        margin: 0;
+        padding: 0;
+        overflow: visible;
+    }
+
+    .report-table {
+        font-size: 10pt;
     }
 }

@@ -1,7 +1,7 @@
 import db from '../config/database';
 
 
-// Define the expected structure for the data returned by the join query
+// Defining the expected structure for the data returned by the join query
 interface AssetReportData {
     id: number;
     asset_tag: string;
@@ -13,7 +13,7 @@ interface AssetReportData {
     location: string;
     department: string;
     purchase_date: Date;
-    // Add other fields you need for the full report
+    // Add other fields needed for the full report
 }
 class AssetModel {
     static async create(assetData: any) {
@@ -27,30 +27,63 @@ class AssetModel {
         return result.rows[0];
     }
 
-    static async findAll() {
+    static async count(): Promise<number> {
         const query = `
-        Select
-            assets.id,
-            assets.asset_tag,
-            assets.asset_type,
-            assets.manufacturer,
-            assets.model,
-            assets.serial_number,
-            assets.status,
-            assets.location,
-            assets.purchase_date,
-            assets.purchase_price,
-            assets.notes,
-            asset_types.name As type_name,
-            asset_statuses.name As status_name
-        From
-            assets Inner Join
-            asset_types On assets.asset_type_id = asset_types.id Inner Join
-            asset_statuses On assets.asset_status_id = asset_statuses.id
-        Order By
-            assets.purchase_date Desc LIMIT 20;`;
-        const result = await db.query(query);
-        return result.rows;
+        SELECT COUNT(*) as count 
+        FROM assets;
+    `;
+
+        try {
+            const result = await db.query(query);
+            return parseInt(result.rows[0].count);
+        } catch (error) {
+            console.error('Error counting assets:', error);
+            throw new Error('Failed to count assets');
+        }
+    }
+
+    static async findAll(page: number = 1, itemsPerPage: number = 20) {
+        const offset = (page - 1) * itemsPerPage;
+        const query = `
+    Select
+        assets.id,
+        assets.asset_tag,
+        assets.asset_type,
+        assets.manufacturer,
+        assets.model,
+        assets.serial_number,
+        assets.status,
+        assets.purchase_date,
+        assets.purchase_price,
+        assets.notes,
+        asset_types.name As type_name,
+        asset_statuses.name As status_name,
+        branches.name As location
+    From
+        assets Inner Join
+        asset_types On assets.asset_type_id = asset_types.id Inner Join
+        asset_statuses On assets.asset_status_id = asset_statuses.id Inner Join
+        branches On assets.branch_id = branches.id
+    Order By
+        assets.purchase_date Desc
+    Limit $1 Offset $2;`;
+
+        const countQuery = `
+    Select Count(*) 
+    From assets`;
+
+        const [result, countResult] = await Promise.all([
+            db.query(query, [itemsPerPage, offset]),
+            db.query(countQuery)
+        ]);
+
+        return {
+            assets: result.rows,
+            total: parseInt(countResult.rows[0].count),
+            page,
+            itemsPerPage,
+            totalPages: Math.ceil(parseInt(countResult.rows[0].count) / itemsPerPage)
+        };
     }
 
     static async findById(id: number) {
@@ -58,18 +91,18 @@ class AssetModel {
         const result = await db.query(query, [id]);
         return result.rows[0];
     }
-    
+
     static async update(id: number, updateData: any) {
 
-        console.log('Updating asset with data:', updateData);
-        
-        
+        // console.log('Updating asset with data:', updateData);
+
+
         // asset_tag: document.getElementById('edit_tag').value,
         // serial_number: document.getElementById('edit_serial').value,
         // status: document.getElementById('edit_status').value,
         // purchase_price: parseFloat(document.getElementById('edit_price').value),
         // notes:
-        
+
         const query = `
             UPDATE assets SET asset_tag = $1, serial_number = $2, status = $3, purchase_price = $4, notes = $5
             WHERE id = $6
@@ -96,82 +129,92 @@ class AssetModel {
         return result.rows;
     }
 
-    /**
-     * Fetches all assets, applying dynamic filters. Designed for full reports (no LIMIT/OFFSET).
-     * @param filters - An object containing filtering criteria (e.g., { type: 'Laptop', location: 'NY' }).
-     * @returns A promise resolving to an array of all matching asset records.
-     */
     static async findAllFiltered(filters: any): Promise<AssetReportData[]> {
         const queryParams: any[] = [];
         const whereClauses: string[] = [];
         let paramIndex = 1;
 
-        // Base Query: Perform necessary joins to get all required report fields
+        // console.log('Filtering Asset Report with filters:', filters);
+
+        // Base Query: Performing necessary joins to get all required report fields
         let query = `
             SELECT
-                a.id,
-                a.asset_tag,
-                at.name AS type_name,
-                a.manufacturer,
-                a.model,
-                a.serial_number,
-                ast.name AS status_name,
-                l.name AS location,
-                d.name AS department,
-                a.purchase_date
+                assets.id,
+                assets.asset_tag,
+                assets.manufacturer,
+                assets.model,
+                assets.serial_number,
+                assets.purchase_date,
+                assets.purchase_price,
+                assets.notes,
+                asset_types.name AS type_name,
+                asset_statuses.name AS status_name,
+                branches.name AS location
             FROM
-                assets a
-            LEFT JOIN asset_types at ON a.asset_type_id = at.id
-            LEFT JOIN asset_statuses ast ON a.asset_status_id = ast.id
-            LEFT JOIN locations l ON a.location_id = l.id
-            LEFT JOIN departments d ON a.department_id = d.id
+                assets
+            INNER JOIN
+                asset_types ON assets.asset_type_id = asset_types.id
+            INNER JOIN
+                asset_statuses ON assets.asset_status_id = asset_statuses.id
+            LEFT JOIN
+                assignments ON assignments.asset_id = assets.id
+            LEFT JOIN
+                employees ON assignments.employee_id = employees.id
+            LEFT JOIN
+                branches ON assets.branch_id = branches.id
         `;
-        
+
         // --- Dynamic Filtering ---
 
-        // Filter by Asset Type Name
+        // Filtering by Asset Type Name
         if (filters.type) {
-            whereClauses.push(`at.name ILIKE $${paramIndex++}`);
+            whereClauses.push(`asset_types.name ILIKE $${paramIndex++}`);
             queryParams.push(`%${filters.type}%`);
         }
 
-        // Filter by Location Name
+        // Filtering by Location Name
         if (filters.location) {
-            whereClauses.push(`l.name ILIKE $${paramIndex++}`);
+            whereClauses.push(`branches.name ILIKE $${paramIndex++}`);
             queryParams.push(`%${filters.location}%`);
         }
 
-        // Filter by Department Name
-        if (filters.department) {
-            whereClauses.push(`d.name ILIKE $${paramIndex++}`);
-            queryParams.push(`%${filters.department}%`);
-        }
-        
-        // Filter by Asset Status Name (Example if you add this filter later)
+        // Filtering by Asset Status Name
         if (filters.status) {
-            whereClauses.push(`ast.name ILIKE $${paramIndex++}`);
+            whereClauses.push(`asset_statuses.name ILIKE $${paramIndex++}`);
             queryParams.push(`%${filters.status}%`);
         }
 
-        // Filter by Asset Tag (Partial or Exact Match)
+        // Filtering by Asset Tag (Partial or Exact Match)
         if (filters.asset_tag) {
-            whereClauses.push(`a.asset_tag ILIKE $${paramIndex++}`);
+            whereClauses.push(`assets.asset_tag ILIKE $${paramIndex++}`);
             queryParams.push(`%${filters.asset_tag}%`);
         }
 
+        // Filtering by Purchase Date Range
+        if (filters.from_date) {
+            whereClauses.push(`assets.purchase_date >= $${paramIndex++}`);
+            queryParams.push(filters.from_date);
+        }
 
-        // --- Assemble the final WHERE clause ---
+        if (filters.to_date) {
+            whereClauses.push(`assets.purchase_date <= $${paramIndex++}`);
+            queryParams.push(filters.to_date);
+        }
+
+        // --- Assembling the final WHERE clause ---
         if (whereClauses.length > 0) {
             query += ` WHERE ${whereClauses.join(' AND ')}`;
         }
 
-        // Add final ordering
-        query += ` ORDER BY a.asset_tag ASC;`;
-        
-        // --- Execute Query ---
+        // Adding final ordering
+        query += ` ORDER BY assets.asset_tag ASC;`;
+
+        // --- Executing Query ---
         try {
-            console.log('Executing Report Query:', query);
+            // console.log('Executing Report Query:', query);
+            // console.log('With Parameters:', queryParams);
             const result = await db.query(query, queryParams);
+            // console.log('Report Query Result Count:', result.rowCount);
             return result.rows;
         } catch (error) {
             console.error('Error fetching filtered asset report data:', error);

@@ -3,7 +3,7 @@ import { AssetModel, EmployeeModel, ReportModel, AssignmentModel, AssetTypeModel
 import { AuthenticatedRequest } from '../types';
 
 class ViewsController {
-    
+
     // Rendering the login page
     async renderLogin(req: Request, res: Response) {
         res.render('login');
@@ -23,7 +23,7 @@ class ViewsController {
             // });
 
             // Pass the data to the EJS template
-            res.render('dashboard', { 
+            res.render('dashboard', {
                 user: req.user,
                 assetStats: {
                     totalAssets: totalAssets,
@@ -55,7 +55,7 @@ class ViewsController {
             const assets = await AssetModel.findAll();
             const assetTypes = await AssetTypeModel.findAll();
             // console.log('Rendering view-assets with assets:', assets);
-            res.render('view-assets', { 
+            res.render('view-assets', {
                 user: req.user,
                 pageTitle: 'View Assets',
                 assets: assets,
@@ -67,7 +67,7 @@ class ViewsController {
             return;
         }
     }
-    
+
     // Rendering the page for assigning assets. Requires lists of assets and employees.
     async renderAssignAssets(req: Request, res: Response) {
         try {
@@ -120,8 +120,24 @@ class ViewsController {
         const branches = await LocationModel.findAll();
         const departments = await DepartmentModel.findAll();
         const assetStatuses = await AssetStatusModel.findAll();
-        const assets = await AssetModel.findAll();
-        res.render('assets-report', { user: req.user, assetTypes, branches, departments, assetStatuses, assets });
+
+        const page = 1;
+        const itemsPerPage = 20;
+
+        // Get total count of assets for pagination
+        const totalAssets = await AssetModel.count();
+        const totalPages = Math.ceil(totalAssets / itemsPerPage);
+        const pagination = {
+            currentPage: page,
+            itemsPerPage: itemsPerPage,
+            totalPages: totalPages
+        };
+
+        // Get paginated assets
+        const result = await AssetModel.findAll(page, itemsPerPage);
+        const assets = result.assets;
+        // const assets = await AssetModel.findAll();
+        res.render('assets-report', { user: req.user, assetTypes, branches, departments, assetStatuses, assets, pagination, totalAssets });
     }
 }
 
