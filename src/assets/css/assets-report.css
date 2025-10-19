@@ -77,6 +77,7 @@
     grid-template-columns: auto 1fr 1fr;
     gap: 12px;
     align-items: center;
+    color: var(--gray-70);
 }
 
 .date-filters label {
@@ -153,7 +154,6 @@
 
 /* Table Container */
 .report-table-wrapper {
-    /* Implementing horizontal scrolling */
     overflow-x: auto;
     /* Allowing wrapper to grow vertically */
     flex: 1; 
@@ -329,6 +329,9 @@
 
 /* Print Styles */
 @media print {
+    .navbar,
+    .side-bar,
+    aside,
     .filters,
     .pagination-controls {
         display: none;
@@ -347,5 +350,16 @@
 
     .report-table {
         font-size: 10pt;
+    }
+
+    .report-table th {
+        background-color: #e0e0e0 !important;
+        -webkit-print-color-adjust: exact;
+        color: #000;
+        border-top: 1px solid #000;
+        border-bottom: 1px solid #000;
+        border-left: 1px solid #000;
+        border-right: 1px solid #000;
+        font-weight: bold;
     }
 }

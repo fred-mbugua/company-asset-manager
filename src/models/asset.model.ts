@@ -207,7 +207,7 @@ class AssetModel {
         }
 
         // Adding final ordering
-        query += ` ORDER BY assets.asset_tag ASC;`;
+        query += ` ORDER BY assets.asset_tag DESC;`;
 
         // --- Executing Query ---
         try {
