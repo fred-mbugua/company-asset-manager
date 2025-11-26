@@ -49,8 +49,9 @@ class AuthController {
                 sameSite: 'strict',
                 maxAge: 7 * 24 * 60 * 60 * 1000
             });
+            // console.log('Access token:', accessToken);
             logger_1.default.info(`User logged in successfully: ${user.email}`);
-            (0, response_1.successResponse)(res, 200, 'Logged in successfully', { user });
+            (0, response_1.successResponse)(res, 200, 'Logged in successfully', { user, accessToken, refreshToken });
         }
         catch (error) {
             logger_1.default.error(`Login failed: ${error.message}`, { email: req.body.email, error });

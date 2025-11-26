@@ -17,7 +17,7 @@ class AssignmentController {
         }
         catch (error) {
             logger_1.default.error('Failed to assign asset:', error);
-            (0, response_1.errorResponse)(res, 400, 'Failed to assign asset');
+            (0, response_1.errorResponse)(res, 400, `Failed to assign asset: ${error.message}`);
         }
     }
     async returnAsset(req, res) {

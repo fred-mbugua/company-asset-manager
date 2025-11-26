@@ -42,20 +42,24 @@ class AssignmentModel {
     }
     static async findAll() {
         const query = `Select
-            ass.id as id,
-            asts.asset_tag as asset_tag,
-            emps.first_name as employee_first_name,
-            emps.middle_name as employee_middle_name,
-            emps.last_name as employee_last_name,
-            ass.assignment_date as assignment_date,
-            ass.return_date as return_date,
-            ass.notes
-        From
-            assignments ass Inner Join
-            assets asts On ass.asset_id = asts.id Inner Join
-            employees emps On ass.employee_id = emps.id
-        Order By
-            ass.assignment_date Desc`;
+                            ass.id As id,
+                            asts.asset_tag As asset_tag,
+                            emps.first_name As employee_first_name,
+                            emps.middle_name As employee_middle_name,
+                            emps.last_name As employee_last_name,
+                            ass.assignment_date As assignment_date,
+                            ass.return_date As return_date,
+                            ass.notes,
+                            asts.model,
+                            asts.serial_number,
+                            asts.manufacturer,
+                            asts.asset_type
+                        From
+                            assignments ass Inner Join
+                            assets asts On ass.asset_id = asts.id Inner Join
+                            employees emps On ass.employee_id = emps.id
+                        Order By
+                            assignment_date Desc`;
         const result = await database_1.default.query(query);
         return result.rows;
     }

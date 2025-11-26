@@ -5,8 +5,11 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
 Object.defineProperty(exports, "__esModule", { value: true });
 const express_1 = require("express");
 const controllers_1 = require("../controllers");
+const controllers_2 = require("../controllers");
 const middlewares_1 = require("../middlewares");
 const express_async_handler_1 = __importDefault(require("express-async-handler"));
 const router = (0, express_1.Router)();
 router.post('/', middlewares_1.authenticate, (0, middlewares_1.authorize)(['Admin']), (0, express_async_handler_1.default)(controllers_1.ExpenseController.addExpense));
+router.post('/expense-types/create', middlewares_1.authenticate, (0, middlewares_1.authorize)(['Admin']), (0, express_async_handler_1.default)(controllers_2.ExpenseTypeController.createExpenseType));
+router.get('/expense-types/all', middlewares_1.authenticate, (0, express_async_handler_1.default)(controllers_2.ExpenseTypeController.getAllExpenseTypes));
 exports.default = router;

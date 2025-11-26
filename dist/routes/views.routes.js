@@ -16,5 +16,7 @@ router.get('/assets/view', auth_middleware_1.authenticate, (0, express_async_han
 router.get('/assets/assign', auth_middleware_1.authenticate, (0, express_async_handler_1.default)(controllers_1.ViewsController.renderAssignAssets));
 router.get('/expenses/create', auth_middleware_1.authenticate, (0, express_async_handler_1.default)(controllers_1.ViewsController.renderCreateExpenses));
 router.get('/users/create', auth_middleware_1.authenticate, (0, express_async_handler_1.default)(controllers_1.ViewsController.renderCreateUser));
-router.get('/reports', auth_middleware_1.authenticate, (0, express_async_handler_1.default)(controllers_1.ViewsController.renderReports));
+router.get('/reports/assets', auth_middleware_1.authenticate, (0, express_async_handler_1.default)(controllers_1.ViewsController.renderAssetsReport));
+router.get('/reports/expenses', auth_middleware_1.authenticate, (0, express_async_handler_1.default)(controllers_1.ViewsController.renderAssetExpenseReport));
+router.get('/reports/assignments', auth_middleware_1.authenticate, (0, express_async_handler_1.default)(controllers_1.ViewsController.renderAssetAssignmentReport));
 exports.default = router;
