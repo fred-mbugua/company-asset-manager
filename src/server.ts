@@ -2,17 +2,38 @@ import express from 'express';
 import cookieParser from 'cookie-parser';
 import path from 'path';
 import cors from 'cors';
+import { connectDB, pool } from './config/database';
 import session from 'express-session';
+import connectPgSimple from 'connect-pg-simple';
+
+// Initialize the PostgreSQL Session Store
+const PgSession = connectPgSimple(session);
+
 const app = express();
+// app.use(session({
+//     secret: 'assetManager@2025', // strong secret key
+//     resave: false,
+//     saveUninitialized: true,
+//     cookie: { secure: process.env.NODE_ENV === 'production' }
+// }));
+
 app.use(session({
-    secret: 'assetManager@2025', // strong secret key
+    secret: process.env.SESSION_SECRET || 'assetManager@2025', // Must be secure
     resave: false,
-    saveUninitialized: true,
-    cookie: { secure: process.env.NODE_ENV === 'production' }
+    saveUninitialized: false,
+    // Use the external PostgreSQL store
+    store: new PgSession({
+        pool: pool, // Use the existing PG connection pool
+        tableName: 'session', // The name of the table to store sessions
+    }),
+    cookie: {
+        secure: process.env.NODE_ENV === 'production',
+        httpOnly: true,
+        maxAge: 1000 * 60 * 60 * 24 // 24 hours
+    }
 }));
 
 import { mainRoutes, viewsRoutes } from './routes';
-import { connectDB } from './config/database';
 import { PORT } from './config';
 import logger from './utils/logger';
 import 'express-async-errors'; // Handles async errors in Express

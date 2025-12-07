@@ -13,3 +13,6 @@ export { default as AssetStatusModel } from './assetStatus.model';
 export { default as ExpenseTypeModel } from './expenseType.model';
 export { default as LocationModel } from './branch.model';
 export { default as AssetReportModel } from './assetReport.model';
+export { default as ExpenseReportModel } from './expenseReport.model';
+export { default as LookupModel } from './lookup.model';
+export { default as AssignmentReportModel } from './assignmentReport.model';

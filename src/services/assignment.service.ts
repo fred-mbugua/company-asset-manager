@@ -1,5 +1,6 @@
 import AssignmentModel from '../models/assignment.model';
 import ActionLogService from './actionLog.service';
+import AssignmentReportModel, { IAssignmentReportFilters } from '../models/assignmentReport.model';
 import logger from '../utils/logger';
 
 class AssignmentService {
@@ -85,6 +86,14 @@ class AssignmentService {
         );
 
         return { message: 'Assignment deleted successfully.' };
+    }
+
+    async getPaginatedAssignments(filters: IAssignmentReportFilters, limit: number, offset: number) {
+        return AssignmentReportModel.findPaginatedAndCount(filters, { limit, offset });
+    }
+    
+    async getAllFilteredAssignments(filters: IAssignmentReportFilters) {
+        return AssignmentReportModel.findAllFiltered(filters);
     }
 }
 

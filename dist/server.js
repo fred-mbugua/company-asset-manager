@@ -7,16 +7,34 @@ const express_1 = __importDefault(require("express"));
 const cookie_parser_1 = __importDefault(require("cookie-parser"));
 const path_1 = __importDefault(require("path"));
 const cors_1 = __importDefault(require("cors"));
+const database_1 = require("./config/database");
 const express_session_1 = __importDefault(require("express-session"));
+const connect_pg_simple_1 = __importDefault(require("connect-pg-simple"));
+// Initialize the PostgreSQL Session Store
+const PgSession = (0, connect_pg_simple_1.default)(express_session_1.default);
 const app = (0, express_1.default)();
+// app.use(session({
+//     secret: 'assetManager@2025', // strong secret key
+//     resave: false,
+//     saveUninitialized: true,
+//     cookie: { secure: process.env.NODE_ENV === 'production' }
+// }));
 app.use((0, express_session_1.default)({
-    secret: 'assetManager@2025', // strong secret key
+    secret: process.env.SESSION_SECRET || 'assetManager@2025', // Must be secure
     resave: false,
-    saveUninitialized: true,
-    cookie: { secure: process.env.NODE_ENV === 'production' }
+    saveUninitialized: false,
+    // Use the external PostgreSQL store
+    store: new PgSession({
+        pool: database_1.pool, // Use the existing PG connection pool
+        tableName: 'session', // The name of the table to store sessions
+    }),
+    cookie: {
+        secure: process.env.NODE_ENV === 'production',
+        httpOnly: true,
+        maxAge: 1000 * 60 * 60 * 24 // 24 hours
+    }
 }));
 const routes_1 = require("./routes");
-const database_1 = require("./config/database");
 const config_1 = require("./config");
 const logger_1 = __importDefault(require("./utils/logger"));
 require("express-async-errors"); // Handles async errors in Express

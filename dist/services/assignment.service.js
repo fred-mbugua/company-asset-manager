@@ -5,6 +5,7 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
 Object.defineProperty(exports, "__esModule", { value: true });
 const assignment_model_1 = __importDefault(require("../models/assignment.model"));
 const actionLog_service_1 = __importDefault(require("./actionLog.service"));
+const assignmentReport_model_1 = __importDefault(require("../models/assignmentReport.model"));
 class AssignmentService {
     async assignAsset(assignmentData, userId) {
         // checking if the asset is already assigned
@@ -50,6 +51,12 @@ class AssignmentService {
         await assignment_model_1.default.delete(id);
         await actionLog_service_1.default.logAction(userId, 'DELETE', 'Assignment', id);
         return { message: 'Assignment deleted successfully.' };
+    }
+    async getPaginatedAssignments(filters, limit, offset) {
+        return assignmentReport_model_1.default.findPaginatedAndCount(filters, { limit, offset });
+    }
+    async getAllFilteredAssignments(filters) {
+        return assignmentReport_model_1.default.findAllFiltered(filters);
     }
 }
 exports.default = new AssignmentService();

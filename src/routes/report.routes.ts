@@ -17,4 +17,37 @@ router.get(
     asyncHandler(ReportController.exportAssetReport)
 );
 
+// Expense Report Data Endpoint
+// URL: /api/reports/expenses
+router.get(
+    '/expenses', 
+    authenticate, // Ensure the user is authenticated
+    asyncHandler(ReportController.getExpenseReportData) // The new function for filtering/pagination
+);
+
+// Expense Report Export Endpoint
+// URL: /api/reports/expenses/export
+router.get(
+    '/expenses/export', 
+    authenticate, 
+    asyncHandler(ReportController.exportExpenseReport)
+);
+
+// Assignment Report Export Endpoint
+// URL: GET /api/reports/assignments?asset_tag=...&limit=20&offset=0
+router.get(
+    '/assignments', 
+    authenticate, // Requires authentication/authorization
+    asyncHandler(ReportController.getAssignmentReportData) 
+);
+
+// Assignment Report Export Endpoint
+// API Endpoint for Export (Export to Excel button)
+// URL: GET /api/reports/assignments/export?asset_tag=...&from_date=...
+router.get(
+    '/assignments/export', 
+    authenticate, // Requires authentication/authorization
+    asyncHandler(ReportController.exportAssignmentReport)
+);
+
 export default router;

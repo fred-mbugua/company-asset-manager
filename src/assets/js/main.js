@@ -64,9 +64,11 @@
 
  function loadContent(contentType) {
    const content = document.getElementById('dashboard-content');
+   if (!content) return;
+
    const currentPage = content.getAttribute("data-current-page");
 
-   if (currentPage === contentType) {
+   if (currentPage && (currentPage === contentType)) {
      console.log(`Module ${contentType} already loaded, skipping reload`);
      return;
    }

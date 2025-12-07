@@ -3,16 +3,16 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
     return (mod && mod.__esModule) ? mod : { "default": mod };
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.connectDB = void 0;
+exports.connectDB = exports.pool = void 0;
 const pg_1 = require("pg");
 const index_1 = require("./index");
 const logger_1 = __importDefault(require("../utils/logger"));
-const pool = new pg_1.Pool({
+exports.pool = new pg_1.Pool({
     connectionString: index_1.DATABASE_URL,
 });
 const connectDB = async () => {
     try {
-        await pool.connect();
+        await exports.pool.connect();
         logger_1.default.info('Database connected successfully!');
     }
     catch (error) {
@@ -21,4 +21,4 @@ const connectDB = async () => {
     }
 };
 exports.connectDB = connectDB;
-exports.default = pool;
+exports.default = exports.pool;

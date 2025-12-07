@@ -8,23 +8,43 @@
             <h3>Asset Expenses Report</h3>
 
             <div class="filters">
+                
                 <select id="filter-tag">
                     <option value="">Asset Tags</option>
-                    <% // Populate asset tags here %>
+                    <% if (locals.assetTags && locals.assetTags.length) { %>
+                        <% locals.assetTags.forEach(tag => { %>
+                            <option value="<%= tag %>"><%= tag %></option>
+                        <% }); %>
+                    <% } %>
                 </select>
                 
                 <select id="filter-type">
                     <option value="">All Expense Types</option>
-                    <% // Populate expense types here %>
+                    <% if (locals.expenseTypes && locals.expenseTypes.length) { %>
+                        <% locals.expenseTypes.forEach(type => { %>
+                            <option value="<%= type.name %>"><%= type.name %></option>
+                        <% }); %>
+                    <% } %>
                 </select>
+                
                 <select id="filter-department">
                     <option value="">All Department</option>
-                    <% // Populate departments here %>
+                    <% if (locals.departments && locals.departments.length) { %>
+                        <% locals.departments.forEach(dept => { %>
+                            <option value="<%= dept.name %>"><%= dept.name %></option>
+                        <% }); %>
+                    <% } %>
                 </select>
+                
                 <select id="filter-location">
                     <option value="">Location</option>
-                    <% // Populate locations here %>
+                    <% if (locals.locations && locals.locations.length) { %>
+                        <% locals.locations.forEach(loc => { %>
+                            <option value="<%= loc.name %>"><%= loc.name %></option>
+                        <% }); %>
+                    <% } %>
                 </select>
+                
                 <input type="date" id="filter-from-date" placeholder="From Date">
                 <input type="date" id="filter-to-date" placeholder="To Date">
 
@@ -48,21 +68,41 @@
                     </tr>
                 </thead>
                 <tbody id="expenses-table-body">
-                    </tbody>
+                    <% if (locals.initialExpenses && locals.initialExpenses.length > 0) { %>
+                        <% locals.initialExpenses.forEach(expense => { %>
+                            <tr>
+                                <td><%= expense.id %></td>
+                                <td><%= expense.asset_tag %></td>
+                                <td><%= expense.expense_type_name %></td>
+                                <td><%= new Date(expense.date).toLocaleDateString() %></td>
+                                <td><%= expense.amount %></td>
+                                <td><%= expense.vendor || 'N/A' %></td>
+                                <td><%= expense.invoice_no || 'N/A' %></td>
+                                <td><%= expense.department || 'N/A' %></td>
+                                <td><%= expense.location || 'N/A' %></td>
+                                <td title="<%= expense.notes || '' %>"><%= expense.notes ? expense.notes.substring(0, 50) + '...' : 'N/A' %></td>
+                            </tr>
+                        <% }); %>
+                    <% } else { %>
+                        <tr>
+                            <td colspan="10" style="text-align:center;color:#888;">No expenses found.</td>
+                        </tr>
+                    <% } %>
+                </tbody>
             </table>
 
             <div class="pagination-controls">
                 <select id="page-size">
-                    <option value="20">20 per page</option>
-                    <option value="30">30 per page</option>
-                    <option value="50">50 per page</option>
+                    <option value="20" <%= locals.pagination.itemsPerPage === 20 ? 'selected' : '' %>>20 per page</option>
+                    <option value="30" <%= locals.pagination.itemsPerPage === 30 ? 'selected' : '' %>>30 per page</option>
+                    <option value="50" <%= locals.pagination.itemsPerPage === 50 ? 'selected' : '' %>>50 per page</option>
                 </select>
-                <button id="prev-btn" class="btn" disabled>Previous</button>
-                <span id="page-info">Page 1 of ?</span>
-                <button id="next-btn" class="btn">Next</button>
+                <button id="prev-btn" class="btn" <%= locals.pagination.currentPage === 1 ? 'disabled' : '' %>>Previous</button>
+                <span id="page-info">Page <%= locals.pagination.currentPage %> of <%= locals.pagination.totalPages %> (<%= locals.totalExpenses %> total)</span>
+                <button id="next-btn" class="btn" <%= locals.pagination.currentPage >= locals.pagination.totalPages ? 'disabled' : '' %>>Next</button>
             </div>
         </div>
     </section>
 </div>
 
-<%- include('partials/footer', { jsFile: 'expenses-report' }) %>
+<%- include('partials/footer', { jsFile: 'expenses-report' }) %> 

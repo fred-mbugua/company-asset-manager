@@ -37,5 +37,23 @@ class ExpenseService {
         await actionLog_service_1.default.logAction(userId, 'DELETE', 'Expense', id);
         return { message: 'Expense deleted successfully.' };
     }
+    /**
+     * Fetches paginated expense data and the total count.
+     * @param filters - Filtering criteria (asset_tag, expense_type, dates, etc.)
+     * @param limit - Number of records per page.
+     * @param offset - Starting offset for pagination.
+     */
+    async getPaginatedExpenses(filters, limit, offset) {
+        // Calls the model function created previously
+        return models_1.ExpenseReportModel.findPaginatedAndCount(filters, { limit, offset });
+    }
+    /**
+     * Fetches ALL filtered expense data (used primarily for Excel export).
+     * @param filters - Filtering criteria.
+     */
+    async getAllFilteredExpenses(filters) {
+        // Calls the model function created previously
+        return models_1.ExpenseReportModel.findAllFiltered(filters);
+    }
 }
 exports.default = new ExpenseService();

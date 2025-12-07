@@ -490,3 +490,47 @@ pagination is not defined
     at ServerResponse.render (F:\WORK DOCS\JS\JSL_SYSTEM\Asset Management Application\app\node_modules\express\lib\response.js:1049:7)
     at renderAssetsReport (F:\WORK DOCS\JS\JSL_SYSTEM\Asset Management Application\app\src\controllers\view.controller.ts:135:13)
     at processTicksAndRejections (node:internal/process/task_queues:95:5)
+2025-12-03 15:29:54 error: TypeError: F:\WORK DOCS\JS\JSL_SYSTEM\Asset Management Application\app\src\views\create-expenses.ejs:23
+    21|               <option value="">Select Asset</option>
+    22|               <% if (locals.assets) { %>
+ >> 23|                 <% locals.assets.forEach(asset => { %>
+    24|                 <option value="<%= asset.id %>">
+    25|                   <%= asset.asset_tag %> - <%= asset.manufacturer %> - <%= asset.model %>
+    26|                 </option>
+
+locals.assets.forEach is not a function
+    at eval (eval at compile (F:\WORK DOCS\JS\JSL_SYSTEM\Asset Management Application\app\node_modules\ejs\lib\ejs.js:673:12), <anonymous>:22:22)
+    at create-expenses (F:\WORK DOCS\JS\JSL_SYSTEM\Asset Management Application\app\node_modules\ejs\lib\ejs.js:703:17)
+    at tryHandleCache (F:\WORK DOCS\JS\JSL_SYSTEM\Asset Management Application\app\node_modules\ejs\lib\ejs.js:274:36)
+    at View.exports.renderFile [as engine] (F:\WORK DOCS\JS\JSL_SYSTEM\Asset Management Application\app\node_modules\ejs\lib\ejs.js:491:10)
+    at View.render (F:\WORK DOCS\JS\JSL_SYSTEM\Asset Management Application\app\node_modules\express\lib\view.js:135:8)
+    at tryRender (F:\WORK DOCS\JS\JSL_SYSTEM\Asset Management Application\app\node_modules\express\lib\application.js:657:10)
+    at Function.render (F:\WORK DOCS\JS\JSL_SYSTEM\Asset Management Application\app\node_modules\express\lib\application.js:609:3)
+    at ServerResponse.render (F:\WORK DOCS\JS\JSL_SYSTEM\Asset Management Application\app\node_modules\express\lib\response.js:1049:7)
+    at renderCreateExpenses (F:\WORK DOCS\JS\JSL_SYSTEM\Asset Management Application\app\src\controllers\view.controller.ts:93:17)
+    at processTicksAndRejections (node:internal/process/task_queues:95:5)
+2025-12-04 10:14:33 error: TypeError: F:\WORK DOCS\JS\JSL_SYSTEM\Asset Management Application\app\src\views\assignments-report.ejs:93
+    91|             <div class="pagination-controls">
+    92|                 <select id="page-size">
+ >> 93|                     <option value="20" <%= locals.pagination.itemsPerPage === 20 ? 'selected' : '' %>>20 per page</option>
+    94|                     <option value="30" <%= locals.pagination.itemsPerPage === 30 ? 'selected' : '' %>>30 per page</option>
+    95|                     <option value="50" <%= locals.pagination.itemsPerPage === 50 ? 'selected' : '' %>>50 per page</option>
+    96|                 </select>
+
+Cannot read properties of undefined (reading 'itemsPerPage')
+    at eval (eval at compile (F:\WORK DOCS\JS\JSL_SYSTEM\Asset Management Application\app\node_modules\ejs\lib\ejs.js:673:12), <anonymous>:131:44)
+    at assignments-report (F:\WORK DOCS\JS\JSL_SYSTEM\Asset Management Application\app\node_modules\ejs\lib\ejs.js:703:17)
+    at tryHandleCache (F:\WORK DOCS\JS\JSL_SYSTEM\Asset Management Application\app\node_modules\ejs\lib\ejs.js:274:36)
+    at View.exports.renderFile [as engine] (F:\WORK DOCS\JS\JSL_SYSTEM\Asset Management Application\app\node_modules\ejs\lib\ejs.js:491:10)
+    at View.render (F:\WORK DOCS\JS\JSL_SYSTEM\Asset Management Application\app\node_modules\express\lib\view.js:135:8)
+    at tryRender (F:\WORK DOCS\JS\JSL_SYSTEM\Asset Management Application\app\node_modules\express\lib\application.js:657:10)
+    at Function.render (F:\WORK DOCS\JS\JSL_SYSTEM\Asset Management Application\app\node_modules\express\lib\application.js:609:3)
+    at ServerResponse.render (F:\WORK DOCS\JS\JSL_SYSTEM\Asset Management Application\app\node_modules\express\lib\response.js:1049:7)
+    at renderAssetAssignmentReport (F:\WORK DOCS\JS\JSL_SYSTEM\Asset Management Application\app\src\controllers\view.controller.ts:115:13)
+    at asyncUtilWrap (F:\WORK DOCS\JS\JSL_SYSTEM\Asset Management Application\app\node_modules\express-async-handler\index.js:3:20)
+    at Layer.handle [as handle_request] (F:\WORK DOCS\JS\JSL_SYSTEM\Asset Management Application\app\node_modules\express\lib\router\layer.js:95:5)
+    at next (F:\WORK DOCS\JS\JSL_SYSTEM\Asset Management Application\app\node_modules\express\lib\router\route.js:149:13)
+    at authenticate (F:\WORK DOCS\JS\JSL_SYSTEM\Asset Management Application\app\src\middlewares\auth.middleware.ts:75:20)
+    at Layer.handle [as handle_request] (F:\WORK DOCS\JS\JSL_SYSTEM\Asset Management Application\app\node_modules\express\lib\router\layer.js:95:5)
+    at next (F:\WORK DOCS\JS\JSL_SYSTEM\Asset Management Application\app\node_modules\express\lib\router\route.js:149:13)
+    at Route.dispatch (F:\WORK DOCS\JS\JSL_SYSTEM\Asset Management Application\app\node_modules\express\lib\router\route.js:119:3)

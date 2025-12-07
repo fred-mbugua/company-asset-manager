@@ -93,6 +93,111 @@ class ReportExportService {
             : Buffer.from(arrayBufferOrBuffer);
         return buffer;
     }
+    /**
+     * Generating an Excel workbook buffer for the Expense Report.
+     */
+    async generateExpenseReport(filters) {
+        const data = await models_1.ExpenseReportModel.findAllFiltered(filters);
+        const workbook = new ExcelJS.Workbook();
+        const worksheet = workbook.addWorksheet('Expenses Report');
+        // Defining Columns (Headers must match the frontend table and model fields)
+        worksheet.columns = [
+            { header: 'ID', key: 'id', width: 10 },
+            { header: 'Asset Tag', key: 'asset_tag', width: 15 },
+            { header: 'Expense Type', key: 'expense_type_name', width: 20 },
+            { header: 'Date', key: 'expense_date', width: 15 },
+            // Using Excel number format for currency consistency
+            { header: 'Amount', key: 'amount', width: 15, style: { numFmt: '"$"#,##0.00' } },
+            { header: 'Vendor', key: 'vendor', width: 20 },
+            { header: 'Invoice No.', key: 'invoice_no', width: 15 },
+            { header: 'Department', key: 'department', width: 20 },
+            { header: 'Location', key: 'location', width: 15 },
+            { header: 'Notes', key: 'notes', width: 40 },
+        ];
+        // Style the Header Row
+        worksheet.getRow(1).eachCell(cell => {
+            cell.font = { bold: true, color: { argb: 'FFFFFF' } };
+            cell.fill = {
+                type: 'pattern',
+                pattern: 'solid',
+                fgColor: { argb: '28a745' } // green fill
+            };
+            cell.alignment = { vertical: 'middle', horizontal: 'center' };
+            cell.border = {
+                top: { style: 'thin' },
+                left: { style: 'thin' },
+                bottom: { style: 'thin' },
+                right: { style: 'thin' }
+            };
+        });
+        //  Add Data Rows
+        data.forEach(expense => {
+            const formattedExpense = {
+                ...expense,
+                // Ensure date is string formatted for readability
+                expense_date: expense.expense_date ? new Date(expense.expense_date).toLocaleDateString() : 'N/A',
+            };
+            worksheet.addRow(formattedExpense);
+        });
+        //  Generating Buffer
+        const arrayBufferOrBuffer = await workbook.xlsx.writeBuffer();
+        // If ExcelJS returned a Node Buffer use it directly, otherwise convert the ArrayBuffer/Uint8Array to a Node Buffer
+        const buffer = Buffer.isBuffer(arrayBufferOrBuffer)
+            ? arrayBufferOrBuffer
+            : Buffer.from(arrayBufferOrBuffer);
+        return buffer;
+    }
+    /**
+     * Generates an Excel workbook buffer for the Assignment Report.
+     */
+    async generateAssignmentReport(filters) {
+        const data = await models_1.AssignmentReportModel.findAllFiltered(filters);
+        const workbook = new ExcelJS.Workbook();
+        const worksheet = workbook.addWorksheet('Assignment Report');
+        worksheet.columns = [
+            { header: 'ID', key: 'id', width: 10 },
+            { header: 'Asset Tag', key: 'asset_tag', width: 15 },
+            { header: 'Manufacturer', key: 'manufacturer', width: 20 },
+            { header: 'Model Name', key: 'model', width: 20 },
+            { header: 'Employee', key: 'employee_name', width: 25 },
+            { header: 'Department', key: 'department', width: 20 },
+            { header: 'Assigned Date', key: 'assigned_date', width: 15 },
+            { header: 'Return Date', key: 'returned_date', width: 15 },
+            { header: 'Notes', key: 'notes', width: 40 },
+        ];
+        // Style the Header Row
+        worksheet.getRow(1).eachCell(cell => {
+            cell.font = { bold: true, color: { argb: 'FFFFFF' } };
+            cell.fill = {
+                type: 'pattern',
+                pattern: 'solid',
+                fgColor: { argb: '28a745' } // green fill
+            };
+            cell.alignment = { vertical: 'middle', horizontal: 'center' };
+            cell.border = {
+                top: { style: 'thin' },
+                left: { style: 'thin' },
+                bottom: { style: 'thin' },
+                right: { style: 'thin' }
+            };
+        });
+        data.forEach(assignment => {
+            const formattedAssignment = {
+                ...assignment,
+                assigned_date: assignment.assignment_date ? new Date(assignment.assignment_date).toLocaleDateString() : 'N/A',
+                returned_date: assignment.return_date ? new Date(assignment.return_date).toLocaleDateString() : 'Active',
+                notes: assignment.notes || 'N/A',
+            };
+            worksheet.addRow(formattedAssignment);
+        });
+        //  Generating Buffer
+        const arrayBufferOrBuffer = await workbook.xlsx.writeBuffer();
+        // If ExcelJS returned a Node Buffer use it directly, otherwise convert the ArrayBuffer/Uint8Array to a Node Buffer
+        const buffer = Buffer.isBuffer(arrayBufferOrBuffer)
+            ? arrayBufferOrBuffer
+            : Buffer.from(arrayBufferOrBuffer);
+        return buffer;
+    }
 }
 exports.ReportExportService = ReportExportService;
 exports.default = new ReportExportService();

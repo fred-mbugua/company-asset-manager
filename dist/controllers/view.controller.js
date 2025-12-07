@@ -1,6 +1,12 @@
 "use strict";
+var __importDefault = (this && this.__importDefault) || function (mod) {
+    return (mod && mod.__esModule) ? mod : { "default": mod };
+};
 Object.defineProperty(exports, "__esModule", { value: true });
+const lookup_service_1 = __importDefault(require("../services/lookup.service"));
+const services_1 = require("../services");
 const models_1 = require("../models");
+const currencyFormatter = new Intl.NumberFormat('en-US', { style: 'currency', currency: 'KES' });
 class ViewsController {
     // Rendering the login page
     async renderLogin(req, res) {
@@ -48,12 +54,13 @@ class ViewsController {
         // res.render('view-assets');
         try {
             const assets = await models_1.AssetModel.findAll();
+            // console.log('Assets fetched:', assets);
             const assetTypes = await models_1.AssetTypeModel.findAll();
             // console.log('Rendering view-assets with assets:', assets);
             res.render('view-assets', {
                 user: req.user,
                 pageTitle: 'View Assets',
-                assets: assets,
+                assets: assets.assets,
                 assetTypes: assetTypes
             });
         }
@@ -84,7 +91,7 @@ class ViewsController {
             const expenseTypes = await models_1.ExpenseTypeModel.findAll();
             const expenses = await models_1.ReportModel.getExpenseDetailForAllAssets();
             // console.log('Rendering create-expenses with data:', { assets, expenseTypes, expenses });
-            res.render('create-expenses', { user: req.user, assets, expenseTypes, expenses });
+            res.render('create-expenses', { user: req.user, assets: assets.assets, expenseTypes, expenses });
         }
         catch (error) {
             console.error('Error rendering create-expenses page:', error);
@@ -100,11 +107,108 @@ class ViewsController {
     //     const assignments = await AssignmentModel.findAll();
     //     res.render('reports', { user: req.user, assignments });
     // }
+    // async renderAssetAssignmentReport(req: Request, res: Response) {
+    //     res.render('assignments-report', { user: req.user });
+    // }
+    /**
+         * Renders the Assignments Report EJS view, loading initial filters and data for the first page.
+         */
     async renderAssetAssignmentReport(req, res) {
-        res.render('assignments-report', { user: req.user });
+        try {
+            const page = 1;
+            const itemsPerPage = 20;
+            const limit = itemsPerPage;
+            const offset = (page - 1) * itemsPerPage;
+            const initialFilters = {};
+            const filterData = await lookup_service_1.default.getAssignmentFilters();
+            const { assignments, totalCount } = await services_1.AssignmentService.getPaginatedAssignments(initialFilters, limit, offset);
+            const formattedAssignments = assignments.map(a => ({
+                ...a,
+                assignment_date: new Date(a.assignment_date).toLocaleDateString(),
+                return_date: a.return_date ? new Date(a.return_date).toLocaleDateString() : 'Active',
+            }));
+            const totalPages = Math.ceil(totalCount / itemsPerPage);
+            const pagination = {
+                currentPage: page,
+                itemsPerPage: itemsPerPage,
+                totalPages: totalPages,
+                totalItems: totalCount
+            };
+            res.render('assignments-report', {
+                user: req.user,
+                ...filterData, // assetTags, departments, employees, locations
+                initialAssignments: formattedAssignments,
+                pagination,
+                totalAssignments: totalCount
+            });
+        }
+        catch (error) {
+            console.error('Error rendering assignments report page:', error);
+            res.status(500).send('Failed to load assignments report page.');
+        }
     }
+    // async renderAssetExpenseReport(req: Request, res: Response) {
+    //     // Fetching lookup data from services/models
+    //     const lookupData = await LookupService.getExpenseFilters(); 
+    //     res.render('expense-report', {
+    //         pageTitle: 'Expenses Report',
+    //         user: req.user,
+    //         // Data passed to locals:
+    //         assetTags: lookupData.assetTags,
+    //         expenseTypes: lookupData.expenseTypes,
+    //         departments: lookupData.departments,
+    //         locations: lookupData.locations,
+    //     });
+    // }
+    /**
+     * Rendering the Expenses Report EJS view, loading initial filters and data for the first page.
+     */
     async renderAssetExpenseReport(req, res) {
-        res.render('expense-report', { user: req.user });
+        try {
+            const page = 1;
+            const itemsPerPage = 20;
+            const limit = itemsPerPage;
+            const offset = (page - 1) * itemsPerPage;
+            const initialFilters = {}; // Start with no filters on load
+            //  Fetching filter lookup data
+            const filterData = await lookup_service_1.default.getExpenseFilters();
+            //  Fetching initial paginated expenses
+            const { expenses, totalCount } = await services_1.ExpenseService.getPaginatedExpenses(initialFilters, limit, offset);
+            //  Formatting initial data for EJS rendering
+            const formattedExpenses = expenses.map((e) => ({
+                ...e,
+                // Ensuring date is a friendly string
+                expense_date: new Date(e.expense_date).toLocaleDateString(),
+                // Ensuring amount is formatted as currency
+                amount: currencyFormatter.format(e.amount),
+            }));
+            // console.log('Rendering expenses report with data:', formattedExpenses);
+            // Calculating pagination metadata
+            const totalPages = Math.ceil(totalCount / itemsPerPage);
+            const pagination = {
+                currentPage: page,
+                itemsPerPage: itemsPerPage,
+                totalPages: totalPages,
+                totalItems: totalCount
+            };
+            //  Rendering the EJS view
+            res.render('expense-report', {
+                user: req.user,
+                // Filters
+                assetTags: filterData.assetTags,
+                expenseTypes: filterData.expenseTypes,
+                departments: filterData.departments,
+                locations: filterData.locations,
+                // Initial Data
+                initialExpenses: formattedExpenses, // Renamed for clarity in EJS
+                pagination,
+                totalExpenses: totalCount
+            });
+        }
+        catch (error) {
+            console.error('Error rendering expenses report page:', error);
+            res.status(500).send('Failed to load expenses report page.');
+        }
     }
     async renderAssetsReport(req, res) {
         const assetTypes = await models_1.AssetTypeModel.findAll();

@@ -2,7 +2,7 @@ import { Pool } from 'pg';
 import { DATABASE_URL } from './index';
 import logger from '../utils/logger';
 
-const pool = new Pool({
+export const pool = new Pool({
   connectionString: DATABASE_URL,
 });
 

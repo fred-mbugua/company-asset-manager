@@ -16,4 +16,21 @@ router.get('/assets/employee/:employeeId', middlewares_1.authenticate, (0, expre
 router.get('/assets/branch/:location', middlewares_1.authenticate, (0, express_async_handler_1.default)(controllers_1.ReportController.getAssetsByBranch));
 router.get('/expenses/time-period', middlewares_1.authenticate, (0, middlewares_1.authorize)(['Admin']), (0, express_async_handler_1.default)(controllers_1.ReportController.getExpensesByTimePeriod));
 router.get('/assets/export', middlewares_1.authenticate, (0, express_async_handler_1.default)(controllers_1.ReportController.exportAssetReport));
+// Expense Report Data Endpoint
+// URL: /api/reports/expenses
+router.get('/expenses', middlewares_1.authenticate, // Ensure the user is authenticated
+(0, express_async_handler_1.default)(controllers_1.ReportController.getExpenseReportData) // The new function for filtering/pagination
+);
+// Expense Report Export Endpoint
+// URL: /api/reports/expenses/export
+router.get('/expenses/export', middlewares_1.authenticate, (0, express_async_handler_1.default)(controllers_1.ReportController.exportExpenseReport));
+// Assignment Report Export Endpoint
+// URL: GET /api/reports/assignments?asset_tag=...&limit=20&offset=0
+router.get('/assignments', middlewares_1.authenticate, // Requires authentication/authorization
+(0, express_async_handler_1.default)(controllers_1.ReportController.getAssignmentReportData));
+// Assignment Report Export Endpoint
+// API Endpoint for Export (Export to Excel button)
+// URL: GET /api/reports/assignments/export?asset_tag=...&from_date=...
+router.get('/assignments/export', middlewares_1.authenticate, // Requires authentication/authorization
+(0, express_async_handler_1.default)(controllers_1.ReportController.exportAssignmentReport));
 exports.default = router;

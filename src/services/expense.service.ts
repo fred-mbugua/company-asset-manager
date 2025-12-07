@@ -1,4 +1,5 @@
-import { ExpenseModel } from '../models';
+import { ExpenseModel, ExpenseReportModel } from '../models';
+import { IExpenseReportFilters } from '../models/expenseReport.model';
 import ActionLogService from './actionLog.service';
 class ExpenseService {
   async addExpense(expenseData: any, userId: number) {
@@ -60,6 +61,26 @@ class ExpenseService {
         );
 
         return { message: 'Expense deleted successfully.' };
+    }
+
+    /**
+     * Fetches paginated expense data and the total count.
+     * @param filters - Filtering criteria (asset_tag, expense_type, dates, etc.)
+     * @param limit - Number of records per page.
+     * @param offset - Starting offset for pagination.
+     */
+    async getPaginatedExpenses(filters: IExpenseReportFilters, limit: number, offset: number) {
+        // Calls the model function created previously
+        return ExpenseReportModel.findPaginatedAndCount(filters, { limit, offset });
+    }
+    
+    /**
+     * Fetches ALL filtered expense data (used primarily for Excel export).
+     * @param filters - Filtering criteria.
+     */
+    async getAllFilteredExpenses(filters: IExpenseReportFilters) {
+        // Calls the model function created previously
+        return ExpenseReportModel.findAllFiltered(filters);
     }
 }
 
