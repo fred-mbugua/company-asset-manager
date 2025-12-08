@@ -1432,3 +1432,5 @@ locals.assets.forEach is not a function
 2025-12-08 17:30:40 info: Database connected successfully!
 2025-12-08 17:32:05 info: Server running on port 4000
 2025-12-08 17:32:05 info: Database connected successfully!
+2025-12-08 17:33:01 info: Server running on port 4000
+2025-12-08 17:33:01 info: Database connected successfully!
