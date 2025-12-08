@@ -40,6 +40,26 @@ export class LookupService {
             locations  // Array of { id, name }
         };
     }
+
+    /**
+     * Fetching all required lists for the users page.
+     */
+    async getUserFilters(): Promise<any> {
+        // Run all promises concurrently for fast loading
+        const [departments, locations, employees, userRoles] = await Promise.all([
+            LookupModel.getAllDepartments(),
+            LookupModel.getAllBranches(),
+            LookupModel.getAllEmployeeDetails(),
+            LookupModel.getAllUserRoles()
+        ]);
+
+        return {
+            departments,
+            locations,
+            employees,
+            userRoles
+        };
+    }
 }
 
 export default new LookupService();

@@ -12,7 +12,25 @@ class UserModel {
   // }
 
   async findById(id: string) {
-    const query = 'SELECT u.*, r.name AS role FROM users u JOIN roles r ON u.role_id = r.id WHERE u.id = $1';
+    const query = `
+      Select
+          users.*,
+          branches.name,
+          branches.location,
+          roles.name As role_name,
+          departments.name As department_name,
+          employees.first_name As employee_first_name,
+          employees.middle_name As employee_middle_name,
+          employees.last_name As employee_last_name,
+          departments.id As departmnt_id
+      From
+          users Inner Join
+          branches On users.branch_id = branches.id Inner Join
+          roles On users.role_id = roles.id Inner Join
+          employees On users.employee_id = employees.id Inner Join
+          departments On employees.department_id = departments.id
+      Where users.id = $1;   
+    `;
     const result = await pool.query(query, [id]);
     return result.rows[0];
   }
@@ -73,14 +91,45 @@ class UserModel {
     return result.rows;
   }
 
+  async findAllUserDetails() {
+    const query = `
+          
+                Select
+                    users.*,
+                    branches.name As branch_name,
+                    branches.location,
+                    roles.name As role_name,
+                    departments.name As department_name,
+                    employees.first_name As employee_first_name,
+                    employees.middle_name As employee_middle_name,
+                    employees.last_name As employee_last_name
+                From
+                    users Inner Join
+                    branches On users.branch_id = branches.id Inner Join
+                    roles On users.role_id = roles.id Inner Join
+                    employees On users.employee_id = employees.id Inner Join
+                    departments On employees.department_id = departments.id
+          `;
+
+    const result = await pool.query(query);
+    return result.rows;
+  }
+
 
   async update(id: string, updateData: any) {
     const query = `
-            UPDATE users SET first_name = $1, middle_name = $2, last_name = $3, email = $4, password = $5, role = $6, department_id = $7
-            WHERE id = $8
-            RETURNING id, first_name, middle_name, last_name, email, role, department_id;
-        `;
-    const values = [updateData.first_name, updateData.middle_name, updateData.last_name, updateData.email, updateData.password_hash, updateData.role, updateData.department_id, id];
+      UPDATE users SET
+      first_name = COALESCE($1, first_name),
+      middle_name = COALESCE($2, middle_name),
+      last_name = COALESCE($3, last_name),
+      email = COALESCE($4, email),
+      password = COALESCE($5, password),
+      role_id = COALESCE($6, role_id),
+      department_id = COALESCE($7, department_id)
+      WHERE id = $8
+      RETURNING id, first_name, middle_name, last_name, email, role_id, department_id;
+    `;
+    const values = [updateData.first_name, updateData.middle_name, updateData.last_name, updateData.email, updateData.password_hash, updateData.role_id, updateData.department_id, id];
     const result = await pool.query(query, values);
     return result.rows[0];
   }

@@ -1,6 +1,6 @@
 import { Request, Response } from 'express';
 import LookupService from '../services/lookup.service';
-import { ExpenseService, AssignmentService } from '../services';
+import { ExpenseService, AssignmentService, UserService } from '../services';
 import { AssetModel, EmployeeModel, ReportModel, AssignmentModel, AssetTypeModel, AssetStatusModel, ExpenseTypeModel, ExpenseModel, LocationModel, DepartmentModel } from '../models';
 import { AuthenticatedRequest } from '../types';
 
@@ -102,7 +102,25 @@ class ViewsController {
 
     // Rendering the page for creating and managing users
     async renderCreateUser(req: Request, res: Response) {
-        res.render('create-user', { user: req.user });
+        try {
+            // Fetch all users with linked department/branch/employee names
+            const users = await UserService.getAllUsersDetails();
+            const filterData = await LookupService.getUserFilters(); 
+            
+
+            // Render the EJS view
+            res.render('manage-users', {
+                user: req.user, // Current authenticated user
+                users: users,
+               ...filterData // departments, locations, employees, userRoles
+
+            });
+
+        } catch (error) {
+            console.error('Error rendering manage users page:', error);
+            res.status(500).send('Failed to load user management page.');
+        }
+        
     }
 
     // Rendering the reports page

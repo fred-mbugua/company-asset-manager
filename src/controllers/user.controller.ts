@@ -4,7 +4,7 @@ import { successResponse, errorResponse } from '../utils/response';
 import logger from '../utils/logger';
 import { AuthenticatedRequest } from '../types';
 
-export class UserController {
+class UserController {
     
     async getAll(req: Request, res: Response) {
         try {
@@ -46,3 +46,5 @@ export class UserController {
         }
     }
 }
+
+export default new UserController();

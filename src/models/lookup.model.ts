@@ -67,6 +67,29 @@ export class LookupModel {
         const result = await db.query(query);
         return result.rows;
     }
+
+    /**
+     * Fetches all employee names.
+     */
+    async getAllEmployeeDetails(): Promise<{ full_name: string }[]> {
+        const query = `
+            SELECT *
+            FROM employees
+            ORDER BY first_name ASC;
+        `;
+        const result = await db.query(query);
+        return result.rows;
+    }
+
+    async getAllUserRoles(): Promise<{ id: number, name: string }[]> {
+        const query = `
+            SELECT id, name
+            FROM roles
+            ORDER BY name ASC;
+        `;
+        const result = await db.query(query);
+        return result.rows;
+    }
 }
 
 export default new LookupModel();

@@ -1,0 +1,129 @@
+<%- include('partials/header', { pageTitle: 'Manage Users', cssFile: 'manage-users' }) %>
+<%- include('partials/navbar', { user: locals.user }) %>
+
+<div class="main">
+    <%- include('partials/sidebar') %>
+    <section class="content-area">
+        <div class="user-management-container">
+            <h3>User Management</h3>
+            
+            <button id="add-user-btn" class="btn btn-add">
+                <i class="uil-plus"></i> Add New User
+            </button>
+
+            <div id="user-form-modal" class="modal">
+                <div class="modal-content">
+                    <span class="close-btn">&times;</span>
+                    <h4><span id="modal-title">Add New User</span></h4>
+                    
+                    <form id="user-form">
+                        <input type="hidden" id="user-id" name="id"> 
+                        <input type="hidden" id="employee_id" name="employee_id"> 
+
+                        <label for="first_name">First Name:</label>
+                        <input type="text" id="first_name" name="first_name" required>
+
+                        <label for="middle_name">Middle Name:</label>
+                        <input type="text" id="middle_name" name="middle_name" >
+
+                        <label for="last_name">Last Name:</label>
+                        <input type="text" id="last_name" name="last_name" required>
+
+                        <label for="email">Email (Username):</label>
+                        <input type="text" id="email" name="email" required>
+
+                        <label for="phone">Phone:</label>
+                        <input type="text" id="phone" name="phone" required>
+                        
+                        <label for="password">Password:</label>
+                        <input type="password" id="password" name="password" autocomplete="new-password">
+
+                        <label for="password_confirm">Confirm Password:</label>
+                        <input type="password" id="password_confirm" name="password_confirm" autocomplete="new-password">
+                        
+                        <label for="role">Role:</label>
+                        <select id="role" name="role" required>
+                            <option value="">Select Role</option>
+                            <% if (locals.userRoles && locals.userRoles.length) { %>
+                                <% locals.userRoles.forEach(role => { %>
+                                    <option value="<%= role.id %>"><%= role.name %></option>
+                                <% }); %>
+                            <% } %>
+                        </select>
+
+                        <label for="department_id">Department:</label>
+                        <select id="department_id" name="department_id">
+                            <option value="">Select Department</option>
+                            <% if (locals.departments && locals.departments.length) { %>
+                                <% locals.departments.forEach(dept => { %>
+                                    <option value="<%= dept.id %>"><%= dept.name %></option>
+                                <% }); %>
+                            <% } %>
+                        </select>
+                        
+                        <label for="branch_id">Branch:</label>
+                        <select id="branch_id" name="branch_id">
+                            <option value="">Select Branch</option>
+                            <% if (locals.locations && locals.locations.length) { %>
+                                <% locals.locations.forEach(branch => { %>
+                                    <option value="<%= branch.id %>"><%= branch.name %></option>
+                                <% }); %>
+                            <% } %>
+                        </select>
+                        
+                        
+
+                        <button type="submit" class="btn btn-primary mt-3"><i class="uil-plus"></i> Save User</button>
+                    </form>
+                </div>
+            </div>
+            
+            <div class="user-list-section mt-5">
+                <h4>Existing Users</h4>
+                <table class="data-table">
+                    <thead>
+                        <tr>
+                            <th>ID</th>
+                            <th>Email</th>
+                            <th>Role</th>
+                            <th>Department</th>
+                            <th>Branch</th>
+                            <th>Employee Link</th>
+                            <th>Status</th>
+                            <th>Actions</th>
+                        </tr>
+                    </thead>
+                    <tbody id="users-table-body">
+                        <% if (locals.users && locals.users.length > 0) { %>
+                            <% locals.users.forEach(user => { %>
+                                <tr data-user-id="<%= user.id %>">
+                                    <td data-label="ID"><%= user.id %></td>
+                                    <td data-label="Email"><%= user.email %></td>
+                                    <td data-label="Role"><%= user.role_name %></td>
+                                    <td data-label="Department"><%= user.department_name || 'N/A' %></td>
+                                    <td data-label="Branch"><%= user.branch_name || 'N/A' %></td>
+                                    <td data-label="Employee Link"><%= (user.employee_first_name + ' ' + user.employee_middle_name + ' ' + user.employee_last_name) || 'Unlinked' %></td>
+                                    <td data-label="Status"><%= user.is_active ? 'Active' : 'Disabled' %></td>
+                                    <td data-label="Actions">
+                                        <button class="btn btn-sm btn-edit" data-id="<%= user.id %>">Edit</button>
+                                        <button class="btn btn-sm btn-reset-password" data-id="<%= user.id %>">Reset Pwd</button>
+                                        <button class="btn btn-sm btn-toggle-status" data-id="<%= user.id %>" data-status="<%= user.is_active %>">
+                                            <%= user.is_active ? 'Disable' : 'Enable' %>
+                                        </button>
+                                    </td>
+                                </tr>
+                            <% }); %>
+                        <% } else { %>
+                            <tr>
+                                <td colspan="8" style="text-align:center;">No users found.</td>
+                            </tr>
+                        <% } %>
+                    </tbody>
+                </table>
+            </div>
+
+        </div>
+    </section>
+</div>
+
+<%- include('partials/footer', { jsFile: 'manage-users' }) %>

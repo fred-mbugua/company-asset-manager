@@ -1,4 +1,4 @@
-import { UserModel } from '../models';
+import { UserModel, EmployeeModel } from '../models';
 import bcrypt from 'bcryptjs';
 import logger from '../utils/logger';
 import ActionLogService from './actionLog.service';
@@ -46,6 +46,11 @@ class UserService {
     return UserModel.findAll();
   }
 
+  async getAllUsersDetails() {
+    return UserModel.findAllUserDetails();
+  }
+
+
 
   async getUserById(id: string) {
     const user = await UserModel.findById(id);
@@ -71,6 +76,9 @@ class UserService {
     }
 
     const changes = { old_data: user, new_data: updateData };
+
+    // Update the employee record first
+    await EmployeeModel.update({ id, ...updateData }); // Passed client
 
     // Hash the new password
     if (updateData.password) {
