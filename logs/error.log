@@ -553,3 +553,4 @@ locals.assets.forEach is not a function
     at ServerResponse.render (F:\WORK DOCS\JS\JSL_SYSTEM\Asset Management Application\app\node_modules\express\lib\response.js:1049:7)
     at renderAssignAssets (F:\WORK DOCS\JS\JSL_SYSTEM\Asset Management Application\app\src\controllers\view.controller.ts:82:17)
     at processTicksAndRejections (node:internal/process/task_queues:95:5)
+2025-12-09 10:38:49 error: Failed to update branch: column "address" does not exist

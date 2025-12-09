@@ -1,8 +1,9 @@
 import { Request, Response } from 'express';
 import LookupService from '../services/lookup.service';
-import { ExpenseService, AssignmentService, UserService } from '../services';
+import { ExpenseService, AssignmentService, UserService, BranchService, DepartmentService } from '../services';
 import { AssetModel, EmployeeModel, ReportModel, AssignmentModel, AssetTypeModel, AssetStatusModel, ExpenseTypeModel, ExpenseModel, LocationModel, DepartmentModel } from '../models';
 import { AuthenticatedRequest } from '../types';
+import { logger } from '../utils';
 
 const currencyFormatter = new Intl.NumberFormat('en-US', { style: 'currency', currency: 'KES' });
 class ViewsController {
@@ -18,6 +19,17 @@ class ViewsController {
             // Fetch necessary data for the dashboard
             const totalAssets = await ReportModel.getTotalAssetCount();
             const totalExpenses = await ReportModel.getTotalExpenseSum();
+            const totalAssetValue = await ReportModel.getTotalAssetValue();
+            
+            // Fetch analytics data
+            const assetsByType = await ReportModel.getAssetsByType();
+            const assetsByStatus = await ReportModel.getAssetsByStatus();
+            const assetsByBranch = await ReportModel.getAssetsByBranch();
+            const monthlyExpenses = await ReportModel.getMonthlyExpenses(6);
+            const recentAssignments = await ReportModel.getRecentAssignments(10);
+            const topExpensiveAssets = await ReportModel.getTopExpensiveAssets(5);
+            const assignmentStats = await ReportModel.getAssignmentStats();
+            const recentExpenses = await ReportModel.getRecentExpenses(10);
 
             // console.log('Rendering dashboard with data:', { 
             //     user: req.user,
@@ -30,7 +42,19 @@ class ViewsController {
                 user: req.user,
                 assetStats: {
                     totalAssets: totalAssets,
-                    totalExpenses: totalExpenses
+                    totalExpenses: totalExpenses || 0,
+                    totalAssetValue: totalAssetValue || 0,
+                    activeAssignments: assignmentStats.active_assignments || 0,
+                    returnedAssignments: assignmentStats.returned_assignments || 0
+                },
+                analytics: {
+                    assetsByType: assetsByType,
+                    assetsByStatus: assetsByStatus,
+                    assetsByBranch: assetsByBranch,
+                    monthlyExpenses: monthlyExpenses,
+                    recentAssignments: recentAssignments,
+                    topExpensiveAssets: topExpensiveAssets,
+                    recentExpenses: recentExpenses
                 }
             });
         } catch (error) {
@@ -100,28 +124,6 @@ class ViewsController {
         }
     }
 
-    // Rendering the page for creating and managing users
-    async renderCreateUser(req: Request, res: Response) {
-        try {
-            // Fetch all users with linked department/branch/employee names
-            const users = await UserService.getAllUsersDetails();
-            const filterData = await LookupService.getUserFilters(); 
-            
-
-            // Render the EJS view
-            res.render('manage-users', {
-                user: req.user, // Current authenticated user
-                users: users,
-               ...filterData // departments, locations, employees, userRoles
-
-            });
-
-        } catch (error) {
-            console.error('Error rendering manage users page:', error);
-            res.status(500).send('Failed to load user management page.');
-        }
-        
-    }
 
     // Rendering the reports page
     // async renderReports(req: Request, res: Response) {
@@ -273,6 +275,62 @@ class ViewsController {
         const assets = result.assets;
         // const assets = await AssetModel.findAll();
         res.render('assets-report', { user: req.user, assetTypes, branches, departments, assetStatuses, assets, pagination, totalAssets });
+    }
+
+    // Rendering the page for creating and managing users
+    async renderCreateUser(req: Request, res: Response) {
+        try {
+            // Fetch all users with linked department/branch/employee names
+            const users = await UserService.getAllUsersDetails();
+            const filterData = await LookupService.getUserFilters(); 
+            
+
+            // Render the EJS view
+            res.render('manage-users', {
+                user: req.user, // Current authenticated user
+                users: users,
+               ...filterData // departments, locations, employees, userRoles
+
+            });
+
+        } catch (error) {
+            console.error('Error rendering manage users page:', error);
+            res.status(500).send('Failed to load user management page.');
+        }
+        
+    }
+
+    async renderManageBranches(req: Request, res: Response): Promise<void> {
+        try {
+            const branches = await BranchService.findAll();
+            
+            res.render('manage-branches', {
+                user: req.user,
+                branches: branches,
+            });
+
+        } catch (error) {
+            console.error('Error rendering manage branches page:', error);
+            res.status(500).send('Failed to load branch management page.');
+        }
+    }
+
+    /**
+     * Rendering the Manage Departments EJS view.
+     */
+    async renderManageDepartments(req: Request, res: Response): Promise<void> {
+        try {
+            const departments = await DepartmentService.getAll();
+            
+            res.render('manage-departments', {
+                user: req.user,
+                departments: departments,
+            });
+
+        } catch (error) {
+            logger.error('Error rendering manage departments page:', error);
+            res.status(500).send('Failed to load department management page.');
+        }
     }
 }
 

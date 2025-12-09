@@ -13,6 +13,8 @@ router.get('/assets/view', authenticate, asyncHandler(ViewsController.renderView
 router.get('/assets/assign', authenticate, asyncHandler(ViewsController.renderAssignAssets));
 router.get('/expenses/create', authenticate, asyncHandler(ViewsController.renderCreateExpenses));
 router.get('/users/manage', authenticate, asyncHandler(ViewsController.renderCreateUser));
+router.get('/branches/manage', authenticate, asyncHandler(ViewsController.renderManageBranches));
+router.get('/departments/manage', authenticate, asyncHandler(ViewsController.renderManageDepartments));
 router.get('/reports/assets', authenticate, asyncHandler(ViewsController.renderAssetsReport));
 router.get('/reports/expenses', authenticate, asyncHandler(ViewsController.renderAssetExpenseReport));
 router.get('/reports/assignments', authenticate, asyncHandler(ViewsController.renderAssetAssignmentReport));

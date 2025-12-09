@@ -29,7 +29,7 @@ document.addEventListener('DOMContentLoaded', () => {
         };
     };
 
-    console.log('Filters: ', getFilters());
+    // console.log('Filters: ', getFilters());
 
     /**
      * Fetches and renders the asset data based on current state.

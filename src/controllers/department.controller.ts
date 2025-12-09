@@ -59,9 +59,9 @@ export class DepartmentController {
             const departmentId = Number(req.params.id);
             const updateData = req.body;
 
-            const updatedDepartment = await DepartmentService.update(departmentId, updateData, userId);
+            const updatedDepartment = await DepartmentService.updateDepartment(departmentId, userId, updateData);
             
-            logger.info(`Department updated successfully: ${updatedDepartment.name}`);
+            logger.info(`Department updated successfully: ${updatedDepartment?.name}`);
             successResponse(res, 200, 'Department updated successfully', updatedDepartment);
         } catch (error: any) {
             logger.error(`Failed to update department with ID ${req.params.id}: ${(error as Error).message}`, { error });

@@ -51,42 +51,44 @@
                 <button class="btn btn-export" id="export-btn">Export to Excel</button>
             </div>
 
-            <table class="report-table">
-                <thead>
-                    <tr>
-                        <th>ID</th>
-                        <th>Asset Tag</th>
-                        <th>Manufacturer</th>
-                        <th>Model Name</th>
-                        <th>Employee</th>
-                        <th>Department</th>
-                        <th>Assigned Date</th>
-                        <th>Notes</th>
-                        <th>Return Date</th>
-                    </tr>
-                </thead>
-                <tbody id="assignments-table-body">
-                    <% if (locals.initialAssignments && locals.initialAssignments.length > 0) { %>
-                        <% locals.initialAssignments.forEach(assignment => { %>
-                            <tr>
-                                <td><%= assignment.id %></td>
-                                <td><%= assignment.asset_tag %></td>
-                                <td><%= assignment.manufacturer %></td>
-                                <td><%= assignment.model %></td>
-                                <td><%= assignment.employee_name %></td>
-                                <td><%= assignment.department %></td>
-                                <td><%= new Date(assignment.assignment_date).toLocaleDateString() %></td>
-                                <td title="<%= assignment.notes || '' %>"><%= assignment.notes ? assignment.notes.substring(0, 50) + '...' : 'N/A' %></td>
-                                <td><%= assignment.return_date ? new Date(assignment.return_date).toLocaleDateString() : 'N/A' %></td>
-                            </tr>
-                        <% }); %>
-                    <% } else { %>
+            <div class="table-wrapper">
+                <table class="report-table">
+                    <thead>
                         <tr>
-                            <td colspan="10" style="text-align:center;color:#888;">No assignments found.</td>
+                            <th>ID</th>
+                            <th>Asset Tag</th>
+                            <th>Manufacturer</th>
+                            <th>Model Name</th>
+                            <th>Employee</th>
+                            <th>Department</th>
+                            <th>Assigned Date</th>
+                            <th>Notes</th>
+                            <th>Return Date</th>
                         </tr>
-                    <% } %>
-                </tbody>
-            </table>
+                    </thead>
+                    <tbody id="assignments-table-body">
+                        <% if (locals.initialAssignments && locals.initialAssignments.length > 0) { %>
+                            <% locals.initialAssignments.forEach(assignment => { %>
+                                <tr>
+                                    <td><%= assignment.id %></td>
+                                    <td><%= assignment.asset_tag %></td>
+                                    <td><%= assignment.manufacturer %></td>
+                                    <td><%= assignment.model %></td>
+                                    <td><%= assignment.employee_name %></td>
+                                    <td><%= assignment.department %></td>
+                                    <td><%= new Date(assignment.assignment_date).toLocaleDateString() %></td>
+                                    <td title="<%= assignment.notes || '' %>"><%= assignment.notes ? assignment.notes.substring(0, 50) + '...' : 'N/A' %></td>
+                                    <td><%= assignment.return_date ? new Date(assignment.return_date).toLocaleDateString() : 'N/A' %></td>
+                                </tr>
+                            <% }); %>
+                        <% } else { %>
+                            <tr>
+                                <td colspan="10" style="text-align:center;color:#888;">No assignments found.</td>
+                            </tr>
+                        <% } %>
+                    </tbody>
+                </table>
+            </div>
 
             <div class="pagination-controls">
                 <select id="page-size">

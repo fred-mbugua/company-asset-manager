@@ -52,44 +52,46 @@
                 <button class="btn btn-export" id="export-btn">Export to Excel</button>
             </div>
 
-            <table class="report-table">
-                <thead>
-                    <tr>
-                        <th>ID</th>
-                        <th>Asset Tag</th>
-                        <th>Expense Type</th>
-                        <th>Date</th>
-                        <th>Amount</th>
-                        <th>Vendor</th>
-                        <th>Invoice No.</th>
-                        <th>Department</th>
-                        <th>Location</th>
-                        <th>Notes</th>
-                    </tr>
-                </thead>
-                <tbody id="expenses-table-body">
-                    <% if (locals.initialExpenses && locals.initialExpenses.length > 0) { %>
-                        <% locals.initialExpenses.forEach(expense => { %>
-                            <tr>
-                                <td><%= expense.id %></td>
-                                <td><%= expense.asset_tag %></td>
-                                <td><%= expense.expense_type_name %></td>
-                                <td><%= new Date(expense.date).toLocaleDateString() %></td>
-                                <td><%= expense.amount %></td>
-                                <td><%= expense.vendor || 'N/A' %></td>
-                                <td><%= expense.invoice_no || 'N/A' %></td>
-                                <td><%= expense.department || 'N/A' %></td>
-                                <td><%= expense.location || 'N/A' %></td>
-                                <td title="<%= expense.notes || '' %>"><%= expense.notes ? expense.notes.substring(0, 50) + '...' : 'N/A' %></td>
-                            </tr>
-                        <% }); %>
-                    <% } else { %>
+            <div class="table-wrapper">
+                <table class="report-table">
+                    <thead>
                         <tr>
-                            <td colspan="10" style="text-align:center;color:#888;">No expenses found.</td>
+                            <th>ID</th>
+                            <th>Asset Tag</th>
+                            <th>Expense Type</th>
+                            <th>Date</th>
+                            <th>Amount</th>
+                            <th>Vendor</th>
+                            <th>Invoice No.</th>
+                            <th>Department</th>
+                            <th>Location</th>
+                            <th>Notes</th>
                         </tr>
-                    <% } %>
-                </tbody>
-            </table>
+                    </thead>
+                    <tbody id="expenses-table-body">
+                        <% if (locals.initialExpenses && locals.initialExpenses.length > 0) { %>
+                            <% locals.initialExpenses.forEach(expense => { %>
+                                <tr>
+                                    <td><%= expense.id %></td>
+                                    <td><%= expense.asset_tag %></td>
+                                    <td><%= expense.expense_type_name %></td>
+                                    <td><%= new Date(expense.date).toLocaleDateString() %></td>
+                                    <td><%= expense.amount %></td>
+                                    <td><%= expense.vendor || 'N/A' %></td>
+                                    <td><%= expense.invoice_no || 'N/A' %></td>
+                                    <td><%= expense.department || 'N/A' %></td>
+                                    <td><%= expense.location || 'N/A' %></td>
+                                    <td title="<%= expense.notes || '' %>"><%= expense.notes ? expense.notes.substring(0, 50) + '...' : 'N/A' %></td>
+                                </tr>
+                            <% }); %>
+                        <% } else { %>
+                            <tr>
+                                <td colspan="10" style="text-align:center;color:#888;">No expenses found.</td>
+                            </tr>
+                        <% } %>
+                    </tbody>
+                </table>
+            </div>
 
             <div class="pagination-controls">
                 <select id="page-size">

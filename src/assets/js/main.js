@@ -6,6 +6,24 @@
    sidebar.classList.toggle("open");
  });
 
+ // Admin dropdown toggle
+ const adminDropdown = document.querySelector(".admin-info-dropdown");
+ const adminToggle = document.querySelector(".admin-info-toggle");
+ 
+ if (adminToggle) {
+   adminToggle.addEventListener("click", (e) => {
+     e.stopPropagation();
+     adminDropdown.classList.toggle("open");
+   });
+   
+   // Close dropdown when clicking outside
+   document.addEventListener("click", (e) => {
+     if (!adminDropdown.contains(e.target)) {
+       adminDropdown.classList.remove("open");
+     }
+   });
+ }
+
  // Accordion logic for main menu items
  const items = document.querySelectorAll(".has-sub");
  items.forEach(item => {

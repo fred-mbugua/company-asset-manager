@@ -178,7 +178,7 @@ document.addEventListener('DOMContentLoaded', () => {
                 Object.entries(formData).filter(([, v]) => v !== null && v !== undefined)
             );
 
-            console.log('Submitting user data:', payload);
+            // console.log('Submitting user data:', payload);
 
             if (isUpdate) {
                 // Update existing user

@@ -3,9 +3,20 @@
 %>
 <div class="navbar">
     <span class="menu-toggle"><i class="fa fa-bars"></i></span>
-    <h1>ASSET MANAGEMENT SYSTEM - AMS</h1>
-    <div class="admin-info">
-        <i class="fa fa-user-circle"></i> <%= userName %>
-        <a href="#" id="logout-link" style="margin-left: 10px; color: #fff;">(Logout)</a>
+    <h1>Asset Management System - JSL</h1>
+    <div class="admin-info-dropdown">
+        <div class="admin-info-toggle">
+            <i class="fa fa-user-circle"></i>
+            <span class="user-name"><%= userName %></span>
+            <i class="fa fa-chevron-down dropdown-arrow"></i>
+        </div>
+        <div class="admin-dropdown-menu">
+            <div class="dropdown-item user-email">
+                <i class="fa fa-envelope"></i> <%= userName %>
+            </div>
+            <a href="#" id="logout-link" class="dropdown-item">
+                <i class="fa fa-sign-out"></i> Logout
+            </a>
+        </div>
     </div>
 </div>

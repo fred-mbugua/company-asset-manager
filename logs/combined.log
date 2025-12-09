@@ -1434,3 +1434,93 @@ locals.assets.forEach is not a function
 2025-12-08 17:32:05 info: Database connected successfully!
 2025-12-08 17:33:01 info: Server running on port 4000
 2025-12-08 17:33:01 info: Database connected successfully!
+2025-12-09 09:34:28 info: Server running on port 4000
+2025-12-09 09:34:28 info: Database connected successfully!
+2025-12-09 09:37:00 info: User logged in successfully: fmbugua@jiranismart.com
+2025-12-09 09:41:16 info: Server running on port 4000
+2025-12-09 09:41:17 info: Database connected successfully!
+2025-12-09 09:41:31 info: Retrieved 1 branches.
+2025-12-09 09:48:38 info: Retrieved 1 branches.
+2025-12-09 09:55:14 info: Retrieved 1 branches.
+2025-12-09 09:56:04 info: Retrieved 1 branches.
+2025-12-09 10:06:43 info: Retrieved 1 branches.
+2025-12-09 10:22:00 info: Retrieved 1 branches.
+2025-12-09 10:22:40 info: Branch created successfully: Mwatate
+2025-12-09 10:22:41 info: Retrieved 2 branches.
+2025-12-09 10:23:38 info: Retrieved 2 branches.
+2025-12-09 10:34:02 info: Retrieved 2 branches.
+2025-12-09 10:38:25 info: Server running on port 4000
+2025-12-09 10:38:25 info: Database connected successfully!
+2025-12-09 10:38:30 info: Retrieved 2 branches.
+2025-12-09 10:38:49 error: Failed to update branch: column "address" does not exist
+2025-12-09 11:14:31 info: Server running on port 4000
+2025-12-09 11:14:32 info: Database connected successfully!
+2025-12-09 11:14:37 info: Retrieved 2 branches.
+2025-12-09 11:14:44 info: Retrieved 2 branches.
+2025-12-09 11:14:54 info: Retrieved 2 branches.
+2025-12-09 11:15:47 info: Server running on port 4000
+2025-12-09 11:15:47 info: Database connected successfully!
+2025-12-09 11:15:48 info: Retrieved 2 branches.
+2025-12-09 11:16:03 info: Retrieved 2 branches.
+2025-12-09 11:16:19 info: Retrieved 1 branches.
+2025-12-09 11:16:22 info: Retrieved 1 branches.
+2025-12-09 11:16:26 info: Retrieved 1 branches.
+2025-12-09 11:16:42 info: Branch created successfully: Mwatate
+2025-12-09 11:16:44 info: Retrieved 2 branches.
+2025-12-09 11:16:46 info: Retrieved 2 branches.
+2025-12-09 11:16:57 info: Retrieved 2 branches.
+2025-12-09 11:16:59 info: Retrieved 2 branches.
+2025-12-09 11:20:39 info: Server running on port 4000
+2025-12-09 11:20:39 info: Database connected successfully!
+2025-12-09 11:26:28 info: User logged in successfully: fmbugua@jiranismart.com
+2025-12-09 11:26:35 info: Retrieved 2 branches.
+2025-12-09 11:29:12 info: Server running on port 4000
+2025-12-09 11:29:12 info: Database connected successfully!
+2025-12-09 11:41:24 info: Server running on port 4000
+2025-12-09 11:41:24 info: Database connected successfully!
+2025-12-09 11:48:50 info: Server running on port 4000
+2025-12-09 11:48:50 info: Database connected successfully!
+2025-12-09 11:49:33 info: Server running on port 4000
+2025-12-09 11:49:34 info: Database connected successfully!
+2025-12-09 11:50:19 info: Server running on port 4000
+2025-12-09 11:50:19 info: Database connected successfully!
+2025-12-09 11:51:13 info: Server running on port 4000
+2025-12-09 11:51:13 info: Database connected successfully!
+2025-12-09 12:04:29 info: Department retrieved successfully: 1
+2025-12-09 12:05:32 info: Department retrieved successfully: 1
+2025-12-09 12:44:16 info: Department retrieved successfully: 1
+2025-12-09 12:44:41 info: User logged out successfully
+2025-12-09 12:44:43 info: User logged in successfully: fmbugua@jiranismart.com
+2025-12-09 12:44:52 info: Department created successfully: test
+2025-12-09 12:45:00 info: Department deleted successfully with ID: 14
+2025-12-09 12:45:08 info: Department created successfully: test
+2025-12-09 12:45:13 info: Department deleted successfully with ID: 15
+2025-12-09 12:45:39 info: Department created successfully: test
+2025-12-09 12:45:43 info: Department retrieved successfully: 16
+2025-12-09 12:45:47 info: Department updated successfully: test 2
+2025-12-09 12:45:57 info: Department deleted successfully with ID: 16
+2025-12-09 12:46:05 info: Department deleted successfully with ID: 9
+2025-12-09 12:46:26 info: Department created successfully: Finance/Admin
+2025-12-09 12:46:36 info: Retrieved 2 branches.
+2025-12-09 14:06:01 info: User logged out successfully
+2025-12-09 14:06:03 info: User logged in successfully: fmbugua@jiranismart.com
+2025-12-09 14:45:14 info: User logged out successfully
+2025-12-09 14:45:17 info: User logged in successfully: fmbugua@jiranismart.com
+2025-12-09 14:49:22 info: Server running on port 4000
+2025-12-09 14:49:23 info: Database connected successfully!
+2025-12-09 14:55:08 info: Server running on port 4000
+2025-12-09 14:55:08 info: Database connected successfully!
+2025-12-09 14:58:05 info: Server running on port 4000
+2025-12-09 14:58:05 info: Database connected successfully!
+2025-12-09 15:08:19 info: Server running on port 4000
+2025-12-09 15:08:19 info: Database connected successfully!
+2025-12-09 15:15:58 info: Server running on port 4000
+2025-12-09 15:15:58 info: Database connected successfully!
+2025-12-09 15:25:20 info: User logged out successfully
+2025-12-09 15:25:23 info: User logged in successfully: fmbugua@jiranismart.com
+2025-12-09 15:29:16 info: Server running on port 4000
+2025-12-09 15:29:17 info: Database connected successfully!
+2025-12-09 15:35:16 info: Server running on port 4000
+2025-12-09 15:35:16 info: Database connected successfully!
+2025-12-09 15:51:47 info: Server running on port 4000
+2025-12-09 15:51:47 info: Database connected successfully!

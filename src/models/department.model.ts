@@ -1,7 +1,9 @@
-// src/models/department.model.ts
-
 import db from '../config/database';
 
+interface IDepartment {
+    id?: number;
+    name: string;
+}
 class DepartmentModel {
     /**
      * Creates a new department in the database.
@@ -46,14 +48,47 @@ class DepartmentModel {
     /**
      * Updates an existing department's details.
      */
-    static async update(id: number, updateData: any) {
+    // static async update(id: number, updateData: any) {
+    //     const query = `
+    //         UPDATE departments SET name = COALESCE($1, name)
+    //         WHERE id = $2
+    //         RETURNING *;
+    //     `;
+    //     const result = await db.query(query, [updateData.name, id]);
+    //     return result.rows[0];
+    // }
+
+    /**
+     * Updating an existing department.
+     */
+    static async update(id: number, deptData: Partial<IDepartment>): Promise<IDepartment | null> {
+        const setClauses: string[] = [];
+        const values: any[] = [];
+        let index = 1;
+
+        // Dynamically building SET clause
+        for (const key in deptData) {
+            if (Object.prototype.hasOwnProperty.call(deptData, key) && key !== 'id') {
+                setClauses.push(`${key} = $${index++}`);
+                values.push((deptData as any)[key]);
+            }
+        }
+
+        if (setClauses.length === 0) {
+            // Nothing to update
+            return this.findById(id); 
+        }
+
+        values.push(id); // ID is the last parameter
         const query = `
-            UPDATE departments SET name = COALESCE($1, name)
-            WHERE id = $2
-            RETURNING *;
+            UPDATE departments
+            SET ${setClauses.join(', ')}
+            WHERE id = $${index}
+            RETURNING id, name;
         `;
-        const result = await db.query(query, [updateData.name, id]);
-        return result.rows[0];
+
+        const result = await db.query(query, values);
+        return result.rows[0] || null;
     }
 
     /**
@@ -70,3 +105,4 @@ class DepartmentModel {
 }
 
 export default DepartmentModel;
+export { IDepartment };

@@ -1,4 +1,4 @@
-import BranchModel from '../models/branch.model';
+import BranchModel, { IBranch } from '../models/branch.model';
 import logger from '../utils/logger';
 import ActionLogService from './actionLog.service';
 
@@ -25,9 +25,17 @@ class BranchService {
     async findById(id: number) {
         const branch = await BranchModel.findById(id);
         if (!branch) {
-            throw new Error('Branch not found.');
+            logger.warn(`Branch with ID ${id} not found.`);
         }
         return branch;
+    }
+
+    async updateBranch(id: number, branchData: Partial<IBranch>): Promise<IBranch | null> {
+        return BranchModel.update(id, branchData);
+    }
+    
+    async deleteBranch(id: number): Promise<boolean> {
+        return BranchModel.delete(id);
     }
 }
 

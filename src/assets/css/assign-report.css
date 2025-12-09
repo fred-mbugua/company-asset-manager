@@ -82,6 +82,12 @@
 /* ========================================= */
 /* Report Table Styles                       */
 /* ========================================= */
+.table-wrapper {
+    overflow-x: auto;
+    -webkit-overflow-scrolling: touch;
+    margin-bottom: 10px;
+}
+
 .report-table {
     width: 100%;
     border-collapse: collapse;
@@ -97,12 +103,17 @@
     text-align: left;
     text-transform: uppercase;
     border: 1px solid #dee2e6;
+    white-space: nowrap;
 }
 
 .report-table tbody td {
     padding: 12px 15px;
     border: 1px solid #dee2e6;
     vertical-align: top;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    max-width: 200px;
 }
 
 .report-table tbody tr:nth-child(even) {
@@ -152,10 +163,206 @@
     color: #495057;
 }
 
-@media (max-width: 600px) {
+/* ========================================= */
+/* RESPONSIVE STYLES - Mobile & Tablet       */
+/* ========================================= */
+
+/* Tablet (max-width: 1024px) */
+@media (max-width: 1024px) {
+    .report-container {
+        padding: 20px;
+        margin: 15px auto;
+    }
+
+    .report-container h3 {
+        font-size: 1.4em;
+    }
+
+    .filters {
+        padding: 12px;
+        gap: 10px;
+    }
+
+    .filters input,
+    .filters select {
+        flex: 1 1 140px;
+        font-size: 0.85em;
+    }
+}
+
+/* Mobile Landscape and Tablets (max-width: 768px) */
+@media (max-width: 768px) {
+    .report-container {
+        padding: 15px;
+        margin: 10px;
+        border-radius: 6px;
+    }
+
+    .report-container h3 {
+        font-size: 1.3em;
+        margin-bottom: 20px;
+    }
+
+    /* Stack filter inputs vertically on smaller screens */
+    .filters {
+        flex-direction: column;
+        align-items: stretch;
+        padding: 12px;
+    }
+
+    .filters input,
+    .filters select {
+        flex: 1 1 auto;
+        width: 100%;
+        font-size: 0.9em;
+    }
+
+    .btn {
+        width: 100%;
+        margin-left: 0;
+        padding: 12px;
+    }
+
+    /* Table wrapper for horizontal scrolling */
+    .table-wrapper {
+        overflow-x: auto;
+        -webkit-overflow-scrolling: touch;
+    }
+
+    .report-table {
+        min-width: 900px; /* Ensures table maintains minimum width for scrolling */
+        font-size: 0.85em;
+    }
+
+    .report-table thead th,
+    .report-table tbody td {
+        padding: 10px 12px;
+    }
+
+    /* Pagination adjustments */
     .pagination-controls {
         justify-content: space-between;
-        gap: 5px;
+        gap: 8px;
         flex-wrap: wrap;
+    }
+
+    .pagination-controls .btn {
+        width: auto;
+        padding: 8px 12px;
+        font-size: 0.85em;
+    }
+
+    #page-size {
+        font-size: 0.85em;
+    }
+
+    #page-info {
+        font-size: 0.85em;
+        flex-basis: 100%;
+        text-align: center;
+        order: -1;
+        margin-bottom: 8px;
+    }
+}
+
+/* Mobile Portrait (max-width: 480px) */
+@media (max-width: 480px) {
+    .report-container {
+        padding: 12px;
+        margin: 8px;
+        box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
+    }
+
+    .report-container h3 {
+        font-size: 1.2em;
+        padding-bottom: 10px;
+        margin-bottom: 15px;
+    }
+
+    .filters {
+        padding: 10px;
+        gap: 8px;
+    }
+
+    .filters input,
+    .filters select {
+        padding: 10px;
+        font-size: 16px; /* Prevents iOS auto-zoom */
+    }
+
+    .btn {
+        padding: 12px;
+        font-size: 0.9em;
+    }
+
+    /* Smaller table for very small screens */
+    .report-table {
+        min-width: 800px;
+        font-size: 0.8em;
+    }
+
+    .report-table thead th,
+    .report-table tbody td {
+        padding: 8px 10px;
+        max-width: 150px;
+    }
+
+    .pagination-controls {
+        gap: 5px;
+    }
+
+    .pagination-controls .btn {
+        padding: 8px 10px;
+        font-size: 0.8em;
+    }
+
+    #page-size {
+        padding: 8px;
+        font-size: 0.8em;
+    }
+
+    #page-info {
+        font-size: 0.8em;
+    }
+}
+
+/* Very Small Devices (max-width: 360px) */
+@media (max-width: 360px) {
+    .report-container {
+        padding: 10px;
+        margin: 5px;
+    }
+
+    .report-container h3 {
+        font-size: 1.1em;
+    }
+
+    .filters {
+        padding: 8px;
+    }
+
+    .btn {
+        font-size: 0.85em;
+        padding: 10px;
+    }
+
+    .report-table {
+        min-width: 750px;
+        font-size: 0.75em;
+    }
+
+    .report-table thead th,
+    .report-table tbody td {
+        padding: 6px 8px;
+    }
+
+    .pagination-controls .btn {
+        font-size: 0.75em;
+        padding: 6px 8px;
+    }
+
+    #page-size,
+    #page-info {
+        font-size: 0.75em;
     }
 }

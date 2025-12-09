@@ -1,4 +1,4 @@
-import DepartmentModel from '../models/department.model';
+import DepartmentModel, { IDepartment } from '../models/department.model';
 import ActionLogService from './actionLog.service';
 import logger from '../utils/logger';
 
@@ -21,23 +21,43 @@ class DepartmentService {
         return newDepartment;
     }
 
-    async update(id: number, updateData: any, userId: number) {
+    // async update(id: number, updateData: any, userId: number) {
+    //     // Check if the department exists before updating
+    //     const existingDepartment = await DepartmentModel.findById(id);
+    //     if (!existingDepartment) {
+    //         throw new Error('Department not found.');
+    //     }
+        
+    //     const changes = { old_data: existingDepartment, new_data: updateData };
+
+    //     const updatedDepartment = await DepartmentModel.update(id, updateData);
+
+    //     await ActionLogService.logAction(
+    //         userId,
+    //         'UPDATE',
+    //         'Department',
+    //         id,
+    //         changes
+    //     );
+
+    //     return updatedDepartment;
+    // }
+
+    async updateDepartment(id: number, userId: number, deptData: Partial<IDepartment>): Promise<IDepartment | null> {
         // Check if the department exists before updating
         const existingDepartment = await DepartmentModel.findById(id);
         if (!existingDepartment) {
             throw new Error('Department not found.');
         }
-        
-        const changes = { old_data: existingDepartment, new_data: updateData };
 
-        const updatedDepartment = await DepartmentModel.update(id, updateData);
+        const updatedDepartment = await DepartmentModel.update(id, deptData);
 
         await ActionLogService.logAction(
             userId,
             'UPDATE',
             'Department',
             id,
-            changes
+            updatedDepartment
         );
 
         return updatedDepartment;
