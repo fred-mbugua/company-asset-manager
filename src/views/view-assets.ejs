@@ -20,37 +20,39 @@
                 <input type="text" id="filter-location" placeholder="Location">
                 <button class="btn btn-view" id="search-btn">Search</button>
             </div>
-            <table>
-                <thead>
-                    <tr>
-                        <th>ID</th><th>Asset Tag</th><th>Type</th><th>Manufacturer</th>
-                        <th>Model</th><th>Serial</th><th>Status</th><th>Location</th>
-                        <th>Purchase Date</th><th>Actions</th>
-                    </tr>
-                </thead>
-                <tbody id="asset-table-body">
-                    <% if (locals.assets && locals.assets.length > 0) { %>
-                        <% locals.assets.forEach(asset => { %>
-                            <tr data-id="<%= asset.id %>">
-                                <td><%= asset.id %></td>
-                                <td><%= asset.asset_tag %></td>
-                                <td><%= asset.asset_type %></td>
-                                <td><%= asset.manufacturer %></td>
-                                <td><%= asset.model %></td>
-                                <td><%= asset.serial_number %></td>
-                                <td><%= asset.status %></td>
-                                <td><%= asset.location %></td>
-                                <td><%= new Date(asset.purchase_date).toLocaleDateString() %></td>
-                                <td>
-                                    <button class="btn btn-edit" onclick="showAssetDetails(<%= asset.id %>)">View/Edit</button>
-                                </td>
-                            </tr>
-                        <% }); %>
-                    <% } else { %>
-                         <tr><td colspan="10" style="text-align:center;color:#888;">No assets found.</td></tr>
-                    <% } %>
-                </tbody>
-            </table>
+            <div class="table-wrapper">
+                <table>
+                    <thead>
+                        <tr>
+                            <th>ID</th><th>Asset Tag</th><th>Type</th><th>Manufacturer</th>
+                            <th>Model</th><th>Serial</th><th>Status</th><th>Location</th>
+                            <th>Purchase Date</th><th>Actions</th>
+                        </tr>
+                    </thead>
+                    <tbody id="asset-table-body">
+                        <% if (locals.assets && locals.assets.length > 0) { %>
+                            <% locals.assets.forEach(asset => { %>
+                                <tr data-id="<%= asset.id %>">
+                                    <td><%= asset.id %></td>
+                                    <td><%= asset.asset_tag %></td>
+                                    <td><%= asset.asset_type %></td>
+                                    <td><%= asset.manufacturer %></td>
+                                    <td><%= asset.model %></td>
+                                    <td><%= asset.serial_number %></td>
+                                    <td><%= asset.status %></td>
+                                    <td><%= asset.location %></td>
+                                    <td><%= new Date(asset.purchase_date).toLocaleDateString() %></td>
+                                    <td>
+                                        <button class="btn btn-edit" onclick="showAssetDetails(<%= asset.id %>)">View/Edit</button>
+                                    </td>
+                                </tr>
+                            <% }); %>
+                        <% } else { %>
+                             <tr><td colspan="10" style="text-align:center;color:#888;">No assets found.</td></tr>
+                        <% } %>
+                    </tbody>
+                </table>
+            </div>
         </div>
 
         <div class="assets-container" id="asset-detail-section" style="display:none;">

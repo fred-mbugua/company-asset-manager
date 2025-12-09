@@ -1532,3 +1532,11 @@ locals.assets.forEach is not a function
 2025-12-09 18:17:21 info: Database connected successfully!
 2025-12-09 18:18:29 info: Server running on port 4000
 2025-12-09 18:18:29 info: Database connected successfully!
+2025-12-09 18:19:07 info: Server running on port 4000
+2025-12-09 18:19:08 info: Database connected successfully!
+2025-12-09 18:24:06 error: error: invalid input value for enum asset_status: "1"
+    at F:\WORK DOCS\JS\JSL_SYSTEM\Asset Management Application\app\node_modules\pg-pool\index.js:45:11
+    at processTicksAndRejections (node:internal/process/task_queues:95:5)
+    at async Function.update (F:\WORK DOCS\JS\JSL_SYSTEM\Asset Management Application\app\src\models\asset.model.ts:105:24)
+    at async AssetService.update (F:\WORK DOCS\JS\JSL_SYSTEM\Asset Management Application\app\src\services\asset.service.ts:36:30)
+    at async update (F:\WORK DOCS\JS\JSL_SYSTEM\Asset Management Application\app\src\controllers\asset.controller.ts:43:34)
