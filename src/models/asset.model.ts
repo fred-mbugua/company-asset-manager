@@ -214,6 +214,12 @@ class AssetModel {
             throw new Error('Database error during report generation.');
         }
     }
+
+    static async getAssetStatuses() {
+        const query = `SELECT * FROM asset_statuses ORDER BY name;`;
+        const result = await db.query(query);
+        return result.rows;
+    }    
 }
 
 export default AssetModel;

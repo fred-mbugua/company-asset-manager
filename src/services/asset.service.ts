@@ -64,6 +64,10 @@ class AssetService {
     async search(query: any) {
         return AssetModel.search(query);
     }
+
+    async statusList() {
+        return AssetModel.getAssetStatuses();
+    }
 }
 
 export default new AssetService();

@@ -7,24 +7,34 @@ let currentAssetId = null;
 
 async function showAssetDetails(id) {
     try {
-        const response = await API.get(`/assets/${id}`);
-        const asset = response.data;
+        const [assetResponse, statusesResponse] = await Promise.all([
+            API.get(`/assets/${id}`),
+            API.get('/assets/statuses/list')
+        ]);
+        
+        const asset = assetResponse.data;
+        const statuses = statusesResponse.data;
+
+        // console.log('Asset Details:', statuses);
         currentAssetId = id;
+
+        // Generate status options from database
+        const statusOptions = statuses.map(status => 
+            `<option value="${status.id}" data-name="${status.name}">${status.name}</option>`
+        ).join('');
 
         // Form generation for viewing/editing
         detailForm.innerHTML = `
             <div class="form-field"><label>Asset Tag:</label><input type="text" id="edit_tag" value="${asset.asset_tag}" required></div>
             <div class="form-field"><label>Serial Number:</label><input type="text" id="edit_serial" value="${asset.serial_number}" required></div>
-            <div class="form-field"><label>Status:</label><select id="edit_status" required>
-                <option value="In Stock">In Stock</option>
-                <option value="In Use">In Use</option>
-                <option value="Under Repair">Under Repair</option>
-                <option value="Disposed">Disposed</option>
+            <div class="form-field"><label>Status:</label>
+            <select id="edit_status" required>
+                ${statusOptions}
             </select></div>
             <div class="form-field"><label>Purchase Price:</label><input type="number" step="0.01" id="edit_price" value="${asset.purchase_price}" required></div>
             <div class="form-field full-width"><label>Notes:</label><textarea id="edit_desc" rows="3">${asset.notes}</textarea></div>
         `;
-        document.getElementById('edit_status').value = asset.status;
+        document.getElementById('edit_status').value = asset.asset_status_id;
         
         listSection.style.display = 'none';
         detailSection.style.display = 'block';
@@ -40,7 +50,8 @@ document.getElementById('save-asset-btn').addEventListener('click', async () => 
     const updatedData = {
         asset_tag: document.getElementById('edit_tag').value,
         serial_number: document.getElementById('edit_serial').value,
-        status: document.getElementById('edit_status').value,
+        status: document.getElementById('edit_status').selectedOptions[0].dataset.name,
+        asset_status_id: parseInt(document.getElementById('edit_status').value),
         purchase_price: parseFloat(document.getElementById('edit_price').value),
         notes: document.getElementById('edit_desc').value,
         // Include other fields as needed
