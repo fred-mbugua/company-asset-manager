@@ -1808,3 +1808,23 @@ Or, if you meant to create an async function, pass `async: true` as an option.
     at async AssetModel.create (C:\Users\HomePC\Documents\JSL\JSL SYSTEMS\asset-manager\src\models\asset.model.ts:26:24)
     at async AssetService.create (C:\Users\HomePC\Documents\JSL\JSL SYSTEMS\asset-manager\src\services\asset.service.ts:7:26)
     at async create (C:\Users\HomePC\Documents\JSL\JSL SYSTEMS\asset-manager\src\controllers\asset.controller.ts:32:30)
+2025-12-10 17:06:00 info: Server running on port 4000
+2025-12-10 17:06:01 info: Database connected successfully!
+2025-12-10 17:06:48 error: error: invalid input value for enum asset_status: "3"
+    at C:\Users\HomePC\Documents\JSL\JSL SYSTEMS\asset-manager\node_modules\pg-pool\index.js:45:11
+    at processTicksAndRejections (node:internal/process/task_queues:103:5)
+    at async AssetModel.create (C:\Users\HomePC\Documents\JSL\JSL SYSTEMS\asset-manager\src\models\asset.model.ts:26:24)
+    at async AssetService.create (C:\Users\HomePC\Documents\JSL\JSL SYSTEMS\asset-manager\src\services\asset.service.ts:7:26)
+    at async create (C:\Users\HomePC\Documents\JSL\JSL SYSTEMS\asset-manager\src\controllers\asset.controller.ts:32:30)
+2025-12-10 17:14:44 error: error: invalid input value for enum asset_status: "3"
+    at C:\Users\HomePC\Documents\JSL\JSL SYSTEMS\asset-manager\node_modules\pg-pool\index.js:45:11
+    at processTicksAndRejections (node:internal/process/task_queues:103:5)
+    at async AssetModel.create (C:\Users\HomePC\Documents\JSL\JSL SYSTEMS\asset-manager\src\models\asset.model.ts:26:24)
+    at async AssetService.create (C:\Users\HomePC\Documents\JSL\JSL SYSTEMS\asset-manager\src\services\asset.service.ts:7:26)
+    at async create (C:\Users\HomePC\Documents\JSL\JSL SYSTEMS\asset-manager\src\controllers\asset.controller.ts:32:30)
+2025-12-10 17:18:58 error: error: null value in column "asset_id" of relation "expenses" violates not-null constraint
+    at C:\Users\HomePC\Documents\JSL\JSL SYSTEMS\asset-manager\node_modules\pg-pool\index.js:45:11
+    at processTicksAndRejections (node:internal/process/task_queues:103:5)
+    at async AssetModel.delete (C:\Users\HomePC\Documents\JSL\JSL SYSTEMS\asset-manager\src\models\asset.model.ts:111:9)
+    at async AssetService.delete (C:\Users\HomePC\Documents\JSL\JSL SYSTEMS\asset-manager\src\services\asset.service.ts:51:9)
+    at async delete (C:\Users\HomePC\Documents\JSL\JSL SYSTEMS\asset-manager\src\controllers\asset.controller.ts:54:28)
