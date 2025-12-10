@@ -560,3 +560,23 @@ locals.assets.forEach is not a function
     at async Function.update (F:\WORK DOCS\JS\JSL_SYSTEM\Asset Management Application\app\src\models\asset.model.ts:105:24)
     at async AssetService.update (F:\WORK DOCS\JS\JSL_SYSTEM\Asset Management Application\app\src\services\asset.service.ts:36:30)
     at async update (F:\WORK DOCS\JS\JSL_SYSTEM\Asset Management Application\app\src\controllers\asset.controller.ts:43:34)
+2025-12-10 10:57:09 error: Error: SASL: SCRAM-SERVER-FIRST-MESSAGE: client password must be a string
+    at C:\Users\HomePC\Documents\JSL\JSL SYSTEMS\asset-manager\node_modules\pg-pool\index.js:45:11
+    at processTicksAndRejections (node:internal/process/task_queues:103:5)
+    at async connectDB (C:\Users\HomePC\Documents\JSL\JSL SYSTEMS\asset-manager\src\config\database.ts:11:5)
+2025-12-10 12:06:37 error: error: relation "session" does not exist
+    at C:\Users\HomePC\Documents\JSL\JSL SYSTEMS\asset-manager\node_modules\pg-pool\index.js:45:11
+    at processTicksAndRejections (node:internal/process/task_queues:103:5)
+    at async PGStore._asyncQuery (C:\Users\HomePC\Documents\JSL\JSL SYSTEMS\asset-manager\node_modules\connect-pg-simple\index.js:322:21)
+2025-12-10 12:06:37 error: error: relation "session" does not exist
+    at C:\Users\HomePC\Documents\JSL\JSL SYSTEMS\asset-manager\node_modules\pg-pool\index.js:45:11
+    at processTicksAndRejections (node:internal/process/task_queues:103:5)
+    at async PGStore._asyncQuery (C:\Users\HomePC\Documents\JSL\JSL SYSTEMS\asset-manager\node_modules\connect-pg-simple\index.js:322:21)
+2025-12-10 12:06:37 error: error: relation "session" does not exist
+    at C:\Users\HomePC\Documents\JSL\JSL SYSTEMS\asset-manager\node_modules\pg-pool\index.js:45:11
+    at processTicksAndRejections (node:internal/process/task_queues:103:5)
+    at async PGStore._asyncQuery (C:\Users\HomePC\Documents\JSL\JSL SYSTEMS\asset-manager\node_modules\connect-pg-simple\index.js:322:21)
+2025-12-10 12:06:38 error: error: relation "session" does not exist
+    at C:\Users\HomePC\Documents\JSL\JSL SYSTEMS\asset-manager\node_modules\pg-pool\index.js:45:11
+    at processTicksAndRejections (node:internal/process/task_queues:103:5)
+    at async PGStore._asyncQuery (C:\Users\HomePC\Documents\JSL\JSL SYSTEMS\asset-manager\node_modules\connect-pg-simple\index.js:322:21)
