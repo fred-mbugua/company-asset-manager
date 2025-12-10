@@ -1,6 +1,7 @@
 // src/services/actionLog.service.ts
 
 import ActionLogModel from '../models/actionLog.model';
+import ActionLogReportModel, { IActionLogReportFilters } from '../models/actionLogReport.model';
 
 class ActionLogService {
     /**
@@ -29,6 +30,24 @@ class ActionLogService {
         // Call the model to save the data.
         // The `await` keyword is important to ensure the log is created.
         await ActionLogModel.create(logData);
+    }
+
+    /**
+     * Fetches paginated action log data and the total count.
+     * @param filters - Filtering criteria (action_type, entity_type, dates, etc.)
+     * @param limit - Number of records per page.
+     * @param offset - Starting offset for pagination.
+     */
+    async getPaginatedActionLogs(filters: IActionLogReportFilters, limit: number, offset: number) {
+        return ActionLogReportModel.findPaginatedAndCount(filters, { limit, offset });
+    }
+    
+    /**
+     * Fetches ALL filtered action log data (used primarily for Excel export).
+     * @param filters - Filtering criteria.
+     */
+    async getAllFilteredActionLogs(filters: IActionLogReportFilters) {
+        return ActionLogReportModel.findAllFiltered(filters);
     }
 }
 

@@ -90,6 +90,45 @@ export class LookupModel {
         const result = await db.query(query);
         return result.rows;
     }
+
+    /**
+     * Fetches all users for filter dropdown.
+     */
+    async getAllUsers(): Promise<{ id: number, user_name: string }[]> {
+        const query = `
+            SELECT id, first_name || ' ' || last_name AS user_name
+            FROM users
+            ORDER BY first_name ASC, last_name ASC;
+        `;
+        const result = await db.query(query);
+        return result.rows;
+    }
+
+    /**
+     * Fetches all distinct action types from action_logs.
+     */
+    async getAllActionTypes(): Promise<string[]> {
+        const query = `
+            SELECT DISTINCT action_type
+            FROM action_logs
+            ORDER BY action_type ASC;
+        `;
+        const result = await db.query(query);
+        return result.rows.map(row => row.action_type);
+    }
+
+    /**
+     * Fetches all distinct entity types from action_logs.
+     */
+    async getAllEntityTypes(): Promise<string[]> {
+        const query = `
+            SELECT DISTINCT entity_type
+            FROM action_logs
+            ORDER BY entity_type ASC;
+        `;
+        const result = await db.query(query);
+        return result.rows.map(row => row.entity_type);
+    }
 }
 
 export default new LookupModel();

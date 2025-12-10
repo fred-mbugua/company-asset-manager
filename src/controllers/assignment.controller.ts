@@ -21,14 +21,15 @@ export class AssignmentController {
         try {
             const userId = req.user?.id;
             const { id } = req.params;
-            const returnedAssignment = await AssignmentService.returnAsset(Number(id), userId);
+            const returnData = req.body; // Contains return_date and return_notes
+            const returnedAssignment = await AssignmentService.returnAsset(Number(id), userId, returnData);
             if (!returnedAssignment) {
                 return errorResponse(res, 404, 'Assignment not found');
             }
             successResponse(res, 200, 'Asset returned successfully', returnedAssignment);
         } catch (error: any) {
             logger.error(`Failed to return asset with assignment ID ${req.params.id}:`, error);
-            errorResponse(res, 500, 'Failed to return asset');
+            errorResponse(res, 500, error.message || 'Failed to return asset');
         }
     }
 

@@ -18,5 +18,6 @@ router.get('/departments/manage', authenticate, asyncHandler(ViewsController.ren
 router.get('/reports/assets', authenticate, asyncHandler(ViewsController.renderAssetsReport));
 router.get('/reports/expenses', authenticate, asyncHandler(ViewsController.renderAssetExpenseReport));
 router.get('/reports/assignments', authenticate, asyncHandler(ViewsController.renderAssetAssignmentReport));
+router.get('/reports/action-logs', authenticate, asyncHandler(ViewsController.renderActionLogReport));
 
 export default router;

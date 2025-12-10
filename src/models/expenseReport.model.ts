@@ -11,9 +11,9 @@ interface IReportQueryOptions {
 interface ExpenseReportData {
     id: number;
     amount: number;
-    expense_date: Date;
+    date: Date;
     vendor: string;
-    invoice_no: string;
+    invoice_number: string;
     notes: string;
     asset_tag: string;
     expense_type_name: string;

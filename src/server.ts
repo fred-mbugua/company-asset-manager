@@ -37,6 +37,7 @@ import { mainRoutes, viewsRoutes } from './routes';
 import { PORT } from './config';
 import logger from './utils/logger';
 import 'express-async-errors'; // Handles async errors in Express
+import { currentPathMiddleware } from './middlewares';
 
 
 
@@ -44,6 +45,7 @@ import 'express-async-errors'; // Handles async errors in Express
 app.use(express.json());
 app.use(cookieParser());
 app.use(cors());
+app.use(currentPathMiddleware); // Add current path to all requests
 
 // Connecting to database
 connectDB();

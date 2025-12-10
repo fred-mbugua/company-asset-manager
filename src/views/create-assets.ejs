@@ -1,4 +1,6 @@
 <%- include('partials/header', { pageTitle: 'Create Asset', cssFile: 'assets' }) %>
+<!-- Select2 CSS -->
+<link href="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/css/select2.min.css" rel="stylesheet" />
 <%- include('partials/navbar') %>
 
 <div class="main">
@@ -44,8 +46,13 @@
                 </div>
 
                 <div class="form-field">
-                    <label for="location">Location</label>
-                    <input type="text" id="location" required> 
+                    <label for="branch_id">Location</label>
+                    <select id="branch_id" class="select2-dropdown" required>
+                        <option value="">-- Select location --</option>
+                        <% branches.forEach(function(branch) { %>
+                            <option value="<%= branch.id %>"><%= branch.name %></option>
+                        <% }); %>
+                    </select>
                 </div>
                 <div class="form-field">
                     <label for="purchase_date">Purchase Date</label>
@@ -69,5 +76,19 @@
         </div>
     </section>
 </div>
+
+<!-- jQuery (required for Select2) -->
+<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+<!-- Select2 JS -->
+<script src="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/js/select2.min.js"></script>
+<script>
+$(document).ready(function() {
+    $('.select2-dropdown').select2({
+        placeholder: 'Type to search...',
+        allowClear: true,
+        width: '100%'
+    });
+});
+</script>
 
 <%- include('partials/footer', { jsFile: 'assets' }) %>

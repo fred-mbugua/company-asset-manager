@@ -223,7 +223,7 @@
 2025-09-19 14:47:33 info: Server running on port 3000
 2025-09-19 14:47:34 info: Database connected successfully!
 2025-09-19 14:49:10 info: User logged in successfully: fmbugua@jiranismart.com
-2025-09-19 14:49:29 error: error: column "returned_date" does not exist
+2025-09-19 14:49:29 error: error: column "return_date" does not exist
     at F:\WORK DOCS\JS\JSL_SYSTEM\Asset Management Application\app\node_modules\pg-pool\index.js:45:11
     at processTicksAndRejections (node:internal/process/task_queues:95:5)
     at async Function.findActiveByAssetId (F:\WORK DOCS\JS\JSL_SYSTEM\Asset Management Application\app\src\models\assignment.model.ts:81:24)
@@ -1566,3 +1566,245 @@ locals.assets.forEach is not a function
 2025-12-10 12:09:12 info: Server running on port 4000
 2025-12-10 12:09:12 info: Database connected successfully!
 2025-12-10 12:09:21 info: User logged in successfully: fmbugua@jiranismart.com
+2025-12-10 12:15:26 info: Server running on port 4000
+2025-12-10 12:15:27 info: Database connected successfully!
+2025-12-10 12:30:10 info: Server running on port 4000
+2025-12-10 12:30:11 info: Database connected successfully!
+2025-12-10 12:31:07 info: User logged out successfully
+2025-12-10 12:31:09 info: User logged in successfully: fmbugua@jiranismart.com
+2025-12-10 12:31:33 error: TypeError: C:\Users\HomePC\Documents\JSL\JSL SYSTEMS\asset-manager\src\views\assign-assets.ejs:22
+    20|                         <select id="asset_id" required>
+    21|                             <option value="">-- Select Asset --</option>
+ >> 22|                             <% locals.assets.forEach(asset => { %>
+    23|                             <option value="<%= asset.id %>">
+    24|                                 <%= asset.asset_tag %> - <%= asset.manufacturer %> <%= asset.model %>
+    25|                             </option>
+
+locals.assets.forEach is not a function
+    at eval (eval at compile (C:\Users\HomePC\Documents\JSL\JSL SYSTEMS\asset-manager\node_modules\ejs\lib\ejs.js:673:12), <anonymous>:19:22)
+    at assign-assets (C:\Users\HomePC\Documents\JSL\JSL SYSTEMS\asset-manager\node_modules\ejs\lib\ejs.js:703:17)
+    at tryHandleCache (C:\Users\HomePC\Documents\JSL\JSL SYSTEMS\asset-manager\node_modules\ejs\lib\ejs.js:274:36)
+    at View.exports.renderFile [as engine] (C:\Users\HomePC\Documents\JSL\JSL SYSTEMS\asset-manager\node_modules\ejs\lib\ejs.js:491:10)
+    at View.render (C:\Users\HomePC\Documents\JSL\JSL SYSTEMS\asset-manager\node_modules\express\lib\view.js:135:8)
+    at tryRender (C:\Users\HomePC\Documents\JSL\JSL SYSTEMS\asset-manager\node_modules\express\lib\application.js:657:10)
+    at app.render (C:\Users\HomePC\Documents\JSL\JSL SYSTEMS\asset-manager\node_modules\express\lib\application.js:609:3)
+    at ServerResponse.render (C:\Users\HomePC\Documents\JSL\JSL SYSTEMS\asset-manager\node_modules\express\lib\response.js:1049:7)
+    at renderAssignAssets (C:\Users\HomePC\Documents\JSL\JSL SYSTEMS\asset-manager\src\controllers\view.controller.ts:106:17)
+    at processTicksAndRejections (node:internal/process/task_queues:103:5)
+2025-12-10 12:32:26 info: Retrieved 1 branches.
+2025-12-10 12:41:29 error: TypeError: C:\Users\HomePC\Documents\JSL\JSL SYSTEMS\asset-manager\src\views\assign-assets.ejs:22
+    20|                         <select id="asset_id" required>
+    21|                             <option value="">-- Select Asset --</option>
+ >> 22|                             <% locals.assets.forEach(asset => { %>
+    23|                             <option value="<%= asset.id %>">
+    24|                                 <%= asset.asset_tag %> - <%= asset.manufacturer %> <%= asset.model %>
+    25|                             </option>
+
+locals.assets.forEach is not a function
+    at eval (eval at compile (C:\Users\HomePC\Documents\JSL\JSL SYSTEMS\asset-manager\node_modules\ejs\lib\ejs.js:673:12), <anonymous>:19:22)
+    at assign-assets (C:\Users\HomePC\Documents\JSL\JSL SYSTEMS\asset-manager\node_modules\ejs\lib\ejs.js:703:17)
+    at tryHandleCache (C:\Users\HomePC\Documents\JSL\JSL SYSTEMS\asset-manager\node_modules\ejs\lib\ejs.js:274:36)
+    at View.exports.renderFile [as engine] (C:\Users\HomePC\Documents\JSL\JSL SYSTEMS\asset-manager\node_modules\ejs\lib\ejs.js:491:10)
+    at View.render (C:\Users\HomePC\Documents\JSL\JSL SYSTEMS\asset-manager\node_modules\express\lib\view.js:135:8)
+    at tryRender (C:\Users\HomePC\Documents\JSL\JSL SYSTEMS\asset-manager\node_modules\express\lib\application.js:657:10)
+    at app.render (C:\Users\HomePC\Documents\JSL\JSL SYSTEMS\asset-manager\node_modules\express\lib\application.js:609:3)
+    at ServerResponse.render (C:\Users\HomePC\Documents\JSL\JSL SYSTEMS\asset-manager\node_modules\express\lib\response.js:1049:7)
+    at renderAssignAssets (C:\Users\HomePC\Documents\JSL\JSL SYSTEMS\asset-manager\src\controllers\view.controller.ts:106:17)
+    at processTicksAndRejections (node:internal/process/task_queues:103:5)
+2025-12-10 12:45:32 info: User logged out successfully
+2025-12-10 12:45:33 info: User logged in successfully: fmbugua@jiranismart.com
+2025-12-10 12:46:28 error: TypeError: C:\Users\HomePC\Documents\JSL\JSL SYSTEMS\asset-manager\src\views\assign-assets.ejs:22
+    20|                         <select id="asset_id" required>
+    21|                             <option value="">-- Select Asset --</option>
+ >> 22|                             <% locals.assets.forEach(asset => { %>
+    23|                             <option value="<%= asset.id %>">
+    24|                                 <%= asset.asset_tag %> - <%= asset.manufacturer %> <%= asset.model %>
+    25|                             </option>
+
+locals.assets.forEach is not a function
+    at eval (eval at compile (C:\Users\HomePC\Documents\JSL\JSL SYSTEMS\asset-manager\node_modules\ejs\lib\ejs.js:673:12), <anonymous>:19:22)
+    at assign-assets (C:\Users\HomePC\Documents\JSL\JSL SYSTEMS\asset-manager\node_modules\ejs\lib\ejs.js:703:17)
+    at tryHandleCache (C:\Users\HomePC\Documents\JSL\JSL SYSTEMS\asset-manager\node_modules\ejs\lib\ejs.js:274:36)
+    at View.exports.renderFile [as engine] (C:\Users\HomePC\Documents\JSL\JSL SYSTEMS\asset-manager\node_modules\ejs\lib\ejs.js:491:10)
+    at View.render (C:\Users\HomePC\Documents\JSL\JSL SYSTEMS\asset-manager\node_modules\express\lib\view.js:135:8)
+    at tryRender (C:\Users\HomePC\Documents\JSL\JSL SYSTEMS\asset-manager\node_modules\express\lib\application.js:657:10)
+    at app.render (C:\Users\HomePC\Documents\JSL\JSL SYSTEMS\asset-manager\node_modules\express\lib\application.js:609:3)
+    at ServerResponse.render (C:\Users\HomePC\Documents\JSL\JSL SYSTEMS\asset-manager\node_modules\express\lib\response.js:1049:7)
+    at renderAssignAssets (C:\Users\HomePC\Documents\JSL\JSL SYSTEMS\asset-manager\src\controllers\view.controller.ts:106:17)
+    at processTicksAndRejections (node:internal/process/task_queues:103:5)
+2025-12-10 12:47:23 info: Retrieved 1 branches.
+2025-12-10 12:47:32 info: Department retrieved successfully: 1
+2025-12-10 12:47:34 info: Department retrieved successfully: 2
+2025-12-10 12:50:32 error: TypeError: C:\Users\HomePC\Documents\JSL\JSL SYSTEMS\asset-manager\src\views\assign-assets.ejs:22
+    20|                         <select id="asset_id" required>
+    21|                             <option value="">-- Select Asset --</option>
+ >> 22|                             <% locals.assets.forEach(asset => { %>
+    23|                             <option value="<%= asset.id %>">
+    24|                                 <%= asset.asset_tag %> - <%= asset.manufacturer %> <%= asset.model %>
+    25|                             </option>
+
+locals.assets.forEach is not a function
+    at eval (eval at compile (C:\Users\HomePC\Documents\JSL\JSL SYSTEMS\asset-manager\node_modules\ejs\lib\ejs.js:673:12), <anonymous>:19:22)
+    at assign-assets (C:\Users\HomePC\Documents\JSL\JSL SYSTEMS\asset-manager\node_modules\ejs\lib\ejs.js:703:17)
+    at tryHandleCache (C:\Users\HomePC\Documents\JSL\JSL SYSTEMS\asset-manager\node_modules\ejs\lib\ejs.js:274:36)
+    at View.exports.renderFile [as engine] (C:\Users\HomePC\Documents\JSL\JSL SYSTEMS\asset-manager\node_modules\ejs\lib\ejs.js:491:10)
+    at View.render (C:\Users\HomePC\Documents\JSL\JSL SYSTEMS\asset-manager\node_modules\express\lib\view.js:135:8)
+    at tryRender (C:\Users\HomePC\Documents\JSL\JSL SYSTEMS\asset-manager\node_modules\express\lib\application.js:657:10)
+    at app.render (C:\Users\HomePC\Documents\JSL\JSL SYSTEMS\asset-manager\node_modules\express\lib\application.js:609:3)
+    at ServerResponse.render (C:\Users\HomePC\Documents\JSL\JSL SYSTEMS\asset-manager\node_modules\express\lib\response.js:1049:7)
+    at renderAssignAssets (C:\Users\HomePC\Documents\JSL\JSL SYSTEMS\asset-manager\src\controllers\view.controller.ts:106:17)
+    at processTicksAndRejections (node:internal/process/task_queues:103:5)
+2025-12-10 12:51:25 error: TypeError: C:\Users\HomePC\Documents\JSL\JSL SYSTEMS\asset-manager\src\views\assign-assets.ejs:22
+    20|                         <select id="asset_id" required>
+    21|                             <option value="">-- Select Asset --</option>
+ >> 22|                             <% locals.assets.forEach(asset => { %>
+    23|                             <option value="<%= asset.id %>">
+    24|                                 <%= asset.asset_tag %> - <%= asset.manufacturer %> <%= asset.model %>
+    25|                             </option>
+
+locals.assets.forEach is not a function
+    at eval (eval at compile (C:\Users\HomePC\Documents\JSL\JSL SYSTEMS\asset-manager\node_modules\ejs\lib\ejs.js:673:12), <anonymous>:19:22)
+    at assign-assets (C:\Users\HomePC\Documents\JSL\JSL SYSTEMS\asset-manager\node_modules\ejs\lib\ejs.js:703:17)
+    at tryHandleCache (C:\Users\HomePC\Documents\JSL\JSL SYSTEMS\asset-manager\node_modules\ejs\lib\ejs.js:274:36)
+    at View.exports.renderFile [as engine] (C:\Users\HomePC\Documents\JSL\JSL SYSTEMS\asset-manager\node_modules\ejs\lib\ejs.js:491:10)
+    at View.render (C:\Users\HomePC\Documents\JSL\JSL SYSTEMS\asset-manager\node_modules\express\lib\view.js:135:8)
+    at tryRender (C:\Users\HomePC\Documents\JSL\JSL SYSTEMS\asset-manager\node_modules\express\lib\application.js:657:10)
+    at app.render (C:\Users\HomePC\Documents\JSL\JSL SYSTEMS\asset-manager\node_modules\express\lib\application.js:609:3)
+    at ServerResponse.render (C:\Users\HomePC\Documents\JSL\JSL SYSTEMS\asset-manager\node_modules\express\lib\response.js:1049:7)
+    at renderAssignAssets (C:\Users\HomePC\Documents\JSL\JSL SYSTEMS\asset-manager\src\controllers\view.controller.ts:106:17)
+    at processTicksAndRejections (node:internal/process/task_queues:103:5)
+2025-12-10 12:53:16 info: Server running on port 4000
+2025-12-10 12:53:16 info: Database connected successfully!
+2025-12-10 12:57:02 info: Retrieved 1 branches.
+2025-12-10 12:57:45 info: Server running on port 4000
+2025-12-10 12:57:46 info: Database connected successfully!
+2025-12-10 14:07:18 info: User logged out successfully
+2025-12-10 14:07:20 info: User logged in successfully: fmbugua@jiranismart.com
+2025-12-10 14:15:01 info: Retrieved 1 branches.
+2025-12-10 14:49:48 info: Server running on port 4000
+2025-12-10 14:49:48 info: Database connected successfully!
+2025-12-10 14:52:15 info: Server running on port 4000
+2025-12-10 14:52:15 info: Database connected successfully!
+2025-12-10 14:52:38 info: Server running on port 4000
+2025-12-10 14:52:38 info: Database connected successfully!
+2025-12-10 14:56:49 info: User logged out successfully
+2025-12-10 14:56:51 info: User logged in successfully: fmbugua@jiranismart.com
+2025-12-10 14:57:42 info: Server running on port 4000
+2025-12-10 14:57:42 info: Database connected successfully!
+2025-12-10 15:18:12 info: Server running on port 4000
+2025-12-10 15:18:12 info: Database connected successfully!
+2025-12-10 15:18:26 info: Server running on port 4000
+2025-12-10 15:18:26 info: Database connected successfully!
+2025-12-10 15:18:37 info: Server running on port 4000
+2025-12-10 15:18:37 info: Database connected successfully!
+2025-12-10 15:28:03 info: Server running on port 4000
+2025-12-10 15:28:03 info: Database connected successfully!
+2025-12-10 15:30:10 info: User logged out successfully
+2025-12-10 15:30:12 info: User logged in successfully: fmbugua@jiranismart.com
+2025-12-10 15:36:13 info: Server running on port 4000
+2025-12-10 15:36:13 info: Database connected successfully!
+2025-12-10 15:37:33 info: Server running on port 4000
+2025-12-10 15:37:33 info: Database connected successfully!
+2025-12-10 15:45:31 info: Server running on port 4000
+2025-12-10 15:45:32 info: Database connected successfully!
+2025-12-10 15:47:32 info: Server running on port 4000
+2025-12-10 15:47:32 info: Database connected successfully!
+2025-12-10 15:47:57 info: Server running on port 4000
+2025-12-10 15:47:57 info: Database connected successfully!
+2025-12-10 15:48:07 info: Server running on port 4000
+2025-12-10 15:48:07 info: Database connected successfully!
+2025-12-10 15:48:20 info: Server running on port 4000
+2025-12-10 15:48:20 info: Database connected successfully!
+2025-12-10 16:10:00 info: Server running on port 4000
+2025-12-10 16:10:00 info: Database connected successfully!
+2025-12-10 16:17:24 info: User logged out successfully
+2025-12-10 16:17:26 info: User logged in successfully: fmbugua@jiranismart.com
+2025-12-10 16:22:03 info: Server running on port 4000
+2025-12-10 16:22:04 info: Database connected successfully!
+2025-12-10 16:23:16 info: Server running on port 4000
+2025-12-10 16:23:17 info: Database connected successfully!
+2025-12-10 16:27:30 info: Server running on port 4000
+2025-12-10 16:27:30 info: Database connected successfully!
+2025-12-10 16:29:59 error: error: column "assignment_date" does not exist
+    at C:\Users\HomePC\Documents\JSL\JSL SYSTEMS\asset-manager\node_modules\pg-pool\index.js:45:11
+    at processTicksAndRejections (node:internal/process/task_queues:103:5)
+    at async AssignmentModel.update (C:\Users\HomePC\Documents\JSL\JSL SYSTEMS\asset-manager\src\models\assignment.model.ts:84:24)
+    at async AssignmentService.returnAsset (C:\Users\HomePC\Documents\JSL\JSL SYSTEMS\asset-manager\src\services\assignment.service.ts:63:35)
+    at async returnAsset (C:\Users\HomePC\Documents\JSL\JSL SYSTEMS\asset-manager\src\controllers\assignment.controller.ts:25:40)
+2025-12-10 16:30:52 info: Server running on port 4000
+2025-12-10 16:30:52 info: Database connected successfully!
+2025-12-10 16:31:03 info: Server running on port 4000
+2025-12-10 16:31:04 info: Database connected successfully!
+2025-12-10 16:31:22 info: Server running on port 4000
+2025-12-10 16:31:22 info: Database connected successfully!
+2025-12-10 16:31:32 info: Server running on port 4000
+2025-12-10 16:31:32 info: Database connected successfully!
+2025-12-10 16:31:49 info: Server running on port 4000
+2025-12-10 16:31:49 info: Database connected successfully!
+2025-12-10 16:32:32 info: Server running on port 4000
+2025-12-10 16:32:32 info: Database connected successfully!
+2025-12-10 16:32:53 info: Server running on port 4000
+2025-12-10 16:32:53 info: Database connected successfully!
+2025-12-10 16:46:59 info: Server running on port 4000
+2025-12-10 16:46:59 info: Database connected successfully!
+2025-12-10 16:47:23 info: Server running on port 4000
+2025-12-10 16:47:23 info: Database connected successfully!
+2025-12-10 16:48:43 error: SyntaxError: Identifier 'userRole' has already been declared in C:\Users\HomePC\Documents\JSL\JSL SYSTEMS\asset-manager\src\views\view-assets.ejs while compiling ejs
+
+If the above error is not helpful, you may want to try EJS-Lint:
+https://github.com/RyanZim/EJS-Lint
+Or, if you meant to create an async function, pass `async: true` as an option.
+    at new Function (<anonymous>)
+    at Template.compile (C:\Users\HomePC\Documents\JSL\JSL SYSTEMS\asset-manager\node_modules\ejs\lib\ejs.js:673:12)
+    at Object.compile (C:\Users\HomePC\Documents\JSL\JSL SYSTEMS\asset-manager\node_modules\ejs\lib\ejs.js:398:16)
+    at handleCache (C:\Users\HomePC\Documents\JSL\JSL SYSTEMS\asset-manager\node_modules\ejs\lib\ejs.js:235:18)
+    at tryHandleCache (C:\Users\HomePC\Documents\JSL\JSL SYSTEMS\asset-manager\node_modules\ejs\lib\ejs.js:274:16)
+    at View.exports.renderFile [as engine] (C:\Users\HomePC\Documents\JSL\JSL SYSTEMS\asset-manager\node_modules\ejs\lib\ejs.js:491:10)
+    at View.render (C:\Users\HomePC\Documents\JSL\JSL SYSTEMS\asset-manager\node_modules\express\lib\view.js:135:8)
+    at tryRender (C:\Users\HomePC\Documents\JSL\JSL SYSTEMS\asset-manager\node_modules\express\lib\application.js:657:10)
+    at app.render (C:\Users\HomePC\Documents\JSL\JSL SYSTEMS\asset-manager\node_modules\express\lib\application.js:609:3)
+    at ServerResponse.render (C:\Users\HomePC\Documents\JSL\JSL SYSTEMS\asset-manager\node_modules\express\lib\response.js:1049:7)
+    at renderViewAssets (C:\Users\HomePC\Documents\JSL\JSL SYSTEMS\asset-manager\src\controllers\view.controller.ts:106:17)
+    at processTicksAndRejections (node:internal/process/task_queues:103:5)
+2025-12-10 16:50:17 info: User logged out successfully
+2025-12-10 16:50:18 info: User logged in successfully: fmbugua@jiranismart.com
+2025-12-10 16:52:08 error: error: column "location" of relation "assets" does not exist
+    at C:\Users\HomePC\Documents\JSL\JSL SYSTEMS\asset-manager\node_modules\pg-pool\index.js:45:11
+    at processTicksAndRejections (node:internal/process/task_queues:103:5)
+    at async AssetModel.create (C:\Users\HomePC\Documents\JSL\JSL SYSTEMS\asset-manager\src\models\asset.model.ts:26:24)
+    at async AssetService.create (C:\Users\HomePC\Documents\JSL\JSL SYSTEMS\asset-manager\src\services\asset.service.ts:7:26)
+    at async create (C:\Users\HomePC\Documents\JSL\JSL SYSTEMS\asset-manager\src\controllers\asset.controller.ts:32:30)
+2025-12-10 16:53:29 info: Server running on port 4000
+2025-12-10 16:53:29 info: Database connected successfully!
+2025-12-10 16:53:52 info: Server running on port 4000
+2025-12-10 16:53:52 info: Database connected successfully!
+2025-12-10 16:54:13 info: Server running on port 4000
+2025-12-10 16:54:13 info: Database connected successfully!
+2025-12-10 16:57:43 info: Server running on port 4000
+2025-12-10 16:57:43 info: Database connected successfully!
+2025-12-10 16:59:08 error: error: invalid input value for enum asset_status: "3"
+    at C:\Users\HomePC\Documents\JSL\JSL SYSTEMS\asset-manager\node_modules\pg-pool\index.js:45:11
+    at processTicksAndRejections (node:internal/process/task_queues:103:5)
+    at async AssetModel.create (C:\Users\HomePC\Documents\JSL\JSL SYSTEMS\asset-manager\src\models\asset.model.ts:26:24)
+    at async AssetService.create (C:\Users\HomePC\Documents\JSL\JSL SYSTEMS\asset-manager\src\services\asset.service.ts:7:26)
+    at async create (C:\Users\HomePC\Documents\JSL\JSL SYSTEMS\asset-manager\src\controllers\asset.controller.ts:32:30)
+2025-12-10 17:01:03 info: Server running on port 4000
+2025-12-10 17:01:03 info: Database connected successfully!
+2025-12-10 17:01:55 info: Server running on port 4000
+2025-12-10 17:01:55 info: Database connected successfully!
+2025-12-10 17:03:53 error: error: column "branch_id" specified more than once
+    at C:\Users\HomePC\Documents\JSL\JSL SYSTEMS\asset-manager\node_modules\pg-pool\index.js:45:11
+    at processTicksAndRejections (node:internal/process/task_queues:103:5)
+    at async AssetModel.create (C:\Users\HomePC\Documents\JSL\JSL SYSTEMS\asset-manager\src\models\asset.model.ts:26:24)
+    at async AssetService.create (C:\Users\HomePC\Documents\JSL\JSL SYSTEMS\asset-manager\src\services\asset.service.ts:7:26)
+    at async create (C:\Users\HomePC\Documents\JSL\JSL SYSTEMS\asset-manager\src\controllers\asset.controller.ts:32:30)
+2025-12-10 17:04:59 info: Server running on port 4000
+2025-12-10 17:04:59 info: Database connected successfully!
+2025-12-10 17:05:08 info: Server running on port 4000
+2025-12-10 17:05:08 info: Database connected successfully!
+2025-12-10 17:05:40 error: error: INSERT has more expressions than target columns
+    at C:\Users\HomePC\Documents\JSL\JSL SYSTEMS\asset-manager\node_modules\pg-pool\index.js:45:11
+    at processTicksAndRejections (node:internal/process/task_queues:103:5)
+    at async AssetModel.create (C:\Users\HomePC\Documents\JSL\JSL SYSTEMS\asset-manager\src\models\asset.model.ts:26:24)
+    at async AssetService.create (C:\Users\HomePC\Documents\JSL\JSL SYSTEMS\asset-manager\src\services\asset.service.ts:7:26)
+    at async create (C:\Users\HomePC\Documents\JSL\JSL SYSTEMS\asset-manager\src\controllers\asset.controller.ts:32:30)

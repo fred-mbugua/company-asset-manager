@@ -60,6 +60,23 @@ export class LookupService {
             userRoles
         };
     }
+
+    /**
+     * Fetches all required lists for the Action Log Report filters.
+     */
+    async getActionLogFilters(): Promise<any> {
+        const [users, actionTypes, entityTypes] = await Promise.all([
+            LookupModel.getAllUsers(),
+            LookupModel.getAllActionTypes(),
+            LookupModel.getAllEntityTypes()
+        ]);
+
+        return {
+            users,
+            actionTypes,
+            entityTypes
+        };
+    }
 }
 
 export default new LookupService();

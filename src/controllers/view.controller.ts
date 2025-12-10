@@ -1,6 +1,6 @@
 import { Request, Response } from 'express';
 import LookupService from '../services/lookup.service';
-import { ExpenseService, AssignmentService, UserService, BranchService, DepartmentService } from '../services';
+import { ExpenseService, AssignmentService, UserService, BranchService, DepartmentService, ActionLogService } from '../services';
 import { AssetModel, EmployeeModel, ReportModel, AssignmentModel, AssetTypeModel, AssetStatusModel, ExpenseTypeModel, ExpenseModel, LocationModel, DepartmentModel } from '../models';
 import { AuthenticatedRequest } from '../types';
 import { logger } from '../utils';
@@ -68,7 +68,8 @@ class ViewsController {
         try {
             const assetTypes = await AssetTypeModel.findAll();
             const assetStatuses = await AssetStatusModel.findAll();
-            res.render('create-assets', { user: req.user, assetTypes, assetStatuses });
+            const branches = await LocationModel.findAll();
+            res.render('create-assets', { user: req.user, assetTypes, assetStatuses, branches });
         } catch (error) {
             console.error('Error rendering create-assets page:', error);
             res.status(500).send('Error loading asset types.');
@@ -79,15 +80,39 @@ class ViewsController {
     async renderViewAssets(req: Request, res: Response) {
         // res.render('view-assets');
         try {
-            const assets = await AssetModel.findAll();
-            // console.log('Assets fetched:', assets);
+            const page = 1;
+            const itemsPerPage = 20;
+            
+            // Fetch filter data
             const assetTypes = await AssetTypeModel.findAll();
+            const branches = await LocationModel.findAll();
+            const assetStatuses = await AssetStatusModel.findAll();
+            
+            // Get total count of assets for pagination
+            const totalAssets = await AssetModel.count();
+            const totalPages = Math.ceil(totalAssets / itemsPerPage);
+            const pagination = {
+                currentPage: page,
+                itemsPerPage: itemsPerPage,
+                totalPages: totalPages,
+                hasPrevPage: page > 1,
+                hasNextPage: page < totalPages
+            };
+            
+            // Get paginated assets
+            const result = await AssetModel.findAll(page, itemsPerPage);
+            const assets = result.assets;
+            
             // console.log('Rendering view-assets with assets:', assets);
             res.render('view-assets', {
                 user: req.user,
                 pageTitle: 'View Assets',
-                assets: assets.assets,
-                assetTypes: assetTypes
+                assets: assets,
+                assetTypes: assetTypes,
+                branches: branches,
+                assetStatuses: assetStatuses,
+                pagination: pagination,
+                totalAssets: totalAssets
             });
         } catch (error) {
             console.error('Error rendering view-assets page:', error);
@@ -103,7 +128,7 @@ class ViewsController {
             const employees = await EmployeeModel.findEmployeesSpecificData();
             const assignments = await AssignmentModel.findAll();
             // console.log('Rendering assign-assets with data:', { assets, employees, assignments });
-            res.render('assign-assets', { user: req.user, assets, employees, assignments });
+            res.render('assign-assets', { user: req.user, assets: assets.assets, employees, assignments });
         } catch (error) {
             console.error('Error rendering assign-assets page:', error);
             res.status(500).send('Error loading data for asset assignment.');
@@ -215,7 +240,7 @@ class ViewsController {
             const formattedExpenses = expenses.map((e: any) => ({
                 ...e,
                 // Ensuring date is a friendly string
-                expense_date: new Date(e.expense_date).toLocaleDateString(),
+                date: new Date(e.date).toLocaleDateString(),
                 // Ensuring amount is formatted as currency
                 amount: currencyFormatter.format(e.amount),
             }));
@@ -330,6 +355,59 @@ class ViewsController {
         } catch (error) {
             logger.error('Error rendering manage departments page:', error);
             res.status(500).send('Failed to load department management page.');
+        }
+    }
+
+    /**
+     * Rendering the Action Log Report EJS view, loading initial filters and data for the first page.
+     */
+    async renderActionLogReport(req: Request, res: Response): Promise<void> {
+        try {
+            const page = 1;
+            const itemsPerPage = 20;
+            const limit = itemsPerPage;
+            const offset = (page - 1) * itemsPerPage;
+            const initialFilters = {}; // Start with no filters on load
+
+            // Fetching filter lookup data
+            const filterData = await LookupService.getActionLogFilters();
+            
+            // Fetching initial paginated action logs
+            const { logs, totalCount } = await ActionLogService.getPaginatedActionLogs(initialFilters, limit, offset);
+
+            // Formatting initial data for EJS rendering
+            const formattedLogs = logs.map((log: any) => ({
+                ...log,
+                created_at: new Date(log.created_at).toLocaleString(),
+                details: log.details ? JSON.stringify(log.details) : 'N/A',
+            }));
+
+            // Calculating pagination metadata
+            const totalPages = Math.ceil(totalCount / itemsPerPage);
+            const pagination = {
+                currentPage: page,
+                itemsPerPage: itemsPerPage,
+                totalPages: totalPages,
+                totalItems: totalCount
+            };
+            
+            // Rendering the EJS view
+            res.render('action-log-report', { 
+                user: req.user, 
+                // Filters
+                users: filterData.users,
+                actionTypes: filterData.actionTypes,
+                entityTypes: filterData.entityTypes,
+                
+                // Initial Data
+                initialLogs: formattedLogs,
+                pagination,
+                totalLogs: totalCount 
+            });
+
+        } catch (error) {
+            console.error('Error rendering action log report page:', error);
+            res.status(500).send('Failed to load action log report page.');
         }
     }
 }

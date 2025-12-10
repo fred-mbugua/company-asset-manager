@@ -1,5 +1,5 @@
 :root {
-    --sidebar-bg:#F8F8F8;
+    --sidebar-bg:#f8f8f8;
     --sidebar-dark:#e8eef1;
     --sidebar-hover:#ffffff;
     --submenu-bg:#ffffff;
@@ -144,7 +144,7 @@
   
   /* Sidebar */
   .sidebar {
-    width:230px;
+    width:150px;
     background:var(--sidebar-bg);
     color:var(--text);
     overflow-y:auto;
@@ -173,6 +173,11 @@
     font-size:13px;
     display:block;
   }
+
+  .sidebar ul li > a{
+    color: #000;
+    text-decoration: none;
+  }
   
   /* Submenu */
   .submenu { display:none; background:var(--submenu-bg); }
@@ -183,9 +188,39 @@
     padding-left:40px;
     border-bottom:1px solid rgba(0,0,0,.05);
     cursor:pointer;
+    transition: background 0.2s ease;
+  }
+  .submenu li a {
+    text-decoration: none;
+    color: var(--text);
+    display: block;
+    width: 100%;
+    transition: color 0.2s ease;
   }
   .submenu li:hover { background:var(--sidebar-hover); }
+  .submenu li.active {
+    background: rgba(255, 152, 0, 0.1);
+  }
+  .submenu li.active a {
+    color: #ff9800;
+    font-weight: 500;
+  }
   .has-sub.active .submenu { display:block; }
+  .has-sub.expanded .submenu { display:block; }
+  .has-sub.expanded {
+    background-color: #ffffff;
+  }
+  .has-sub.expanded > i,
+  .has-sub.expanded > span {
+    color: #ff9800;
+  }
+  .sidebar ul li.active {
+    background: rgba(255, 152, 0, 0.1);
+  }
+  .sidebar ul li.active i,
+  .sidebar ul li.active span {
+    color: #ff9800;
+  }
   
   /* Dashboard area */
   .dashboard {

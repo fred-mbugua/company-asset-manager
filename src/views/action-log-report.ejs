@@ -1,0 +1,96 @@
+<%- include('partials/header', { pageTitle: 'Action Logs Report', cssFile: 'action-log-report' }) %>
+<%- include('partials/navbar', { user: locals.user }) %>
+
+<div class="main">
+    <%- include('partials/sidebar') %>
+    <section class="content-area">
+        <div class="report-container">
+            <h3>Action Logs Report</h3>
+
+            <div class="filters">
+                
+                <select id="filter-user">
+                    <option value="">All Users</option>
+                    <% if (locals.users && locals.users.length) { %>
+                        <% locals.users.forEach(user => { %>
+                            <option value="<%= user.id %>"><%= user.user_name %></option>
+                        <% }); %>
+                    <% } %>
+                </select>
+                
+                <select id="filter-action-type">
+                    <option value="">All Action Types</option>
+                    <% if (locals.actionTypes && locals.actionTypes.length) { %>
+                        <% locals.actionTypes.forEach(type => { %>
+                            <option value="<%= type %>"><%= type %></option>
+                        <% }); %>
+                    <% } %>
+                </select>
+                
+                <select id="filter-entity-type">
+                    <option value="">All Entity Types</option>
+                    <% if (locals.entityTypes && locals.entityTypes.length) { %>
+                        <% locals.entityTypes.forEach(type => { %>
+                            <option value="<%= type %>"><%= type %></option>
+                        <% }); %>
+                    <% } %>
+                </select>
+                
+                <input type="date" id="filter-from-date" placeholder="From Date">
+                <input type="date" id="filter-to-date" placeholder="To Date">
+
+                <button class="btn btn-view" id="search-btn">Search</button>
+                <button class="btn btn-export" id="export-btn">Export to Excel</button>
+            </div>
+
+            <div class="table-wrapper">
+                <table class="report-table">
+                    <thead>
+                        <tr>
+                            <th>ID</th>
+                            <th>User</th>
+                            <th>Action Type</th>
+                            <th>Entity Type</th>
+                            <th>Entity ID</th>
+                            <th>Details</th>
+                            <th>Date & Time</th>
+                        </tr>
+                    </thead>
+                    <tbody id="logs-table-body">
+                        <% if (locals.initialLogs && locals.initialLogs.length > 0) { %>
+                            <% locals.initialLogs.forEach(log => { %>
+                                <tr>
+                                    <td><%= log.id %></td>
+                                    <td><%= log.user_name || 'N/A' %></td>
+                                    <td><%= log.action_type %></td>
+                                    <td><%= log.entity_type %></td>
+                                    <td><%= log.entity_id || 'N/A' %></td>
+                                    <td title="<%= log.details %>"><%= log.details.length > 50 ? log.details.substring(0, 50) + '...' : log.details %></td>
+                                    <td><%= log.created_at %></td>
+                                </tr>
+                            <% }); %>
+                        <% } else { %>
+                            <tr>
+                                <td colspan="7" style="text-align:center;color:#888;">No action logs found.</td>
+                            </tr>
+                        <% } %>
+                    </tbody>
+                </table>
+            </div>
+
+            <div class="pagination-controls">
+                <select id="page-size">
+                    <option value="20" <%= locals.pagination.itemsPerPage === 20 ? 'selected' : '' %>>20 per page</option>
+                    <option value="30" <%= locals.pagination.itemsPerPage === 30 ? 'selected' : '' %>>30 per page</option>
+                    <option value="50" <%= locals.pagination.itemsPerPage === 50 ? 'selected' : '' %>>50 per page</option>
+                    <option value="100" <%= locals.pagination.itemsPerPage === 100 ? 'selected' : '' %>>100 per page</option>
+                </select>
+                <button id="prev-btn" class="btn" <%= locals.pagination.currentPage === 1 ? 'disabled' : '' %>>Previous</button>
+                <span id="page-info">Page <%= locals.pagination.currentPage %> of <%= locals.pagination.totalPages %> (<%= locals.totalLogs %> total)</span>
+                <button id="next-btn" class="btn" <%= locals.pagination.currentPage >= locals.pagination.totalPages ? 'disabled' : '' %>>Next</button>
+            </div>
+        </div>
+    </section>
+</div>
+
+<%- include('partials/footer', { jsFile: 'action-log-report' }) %> 

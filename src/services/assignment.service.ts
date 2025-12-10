@@ -11,35 +11,70 @@ class AssignmentService {
             return Promise.reject(new Error('Asset is already assigned to another employee.'));
         }
 
+        // Get the "In Use" status ID from asset_statuses table
+        const inUseStatus = await AssignmentModel.getInUseStatus();
+        if (!inUseStatus) {
+            throw new Error('In Use status not found in database.');
+        }
+
         const newAssignment = await AssignmentModel.create(assignmentData);
+
+        // Update the asset status to "In Use"
+        await AssignmentModel.updateAssetStatus(assignmentData.asset_id, inUseStatus.id, inUseStatus.name);
 
         await ActionLogService.logAction(
             userId,
             'ASSIGN ASSET',
             'Assignment',
             newAssignment.id,
-            { asset_id: newAssignment.asset_id, employee_id: newAssignment.employee_id }
+            { 
+                asset_id: newAssignment.asset_id, 
+                employee_id: newAssignment.employee_id,
+                asset_status_updated: 'In Use'
+            }
         );
 
         return newAssignment;
     }
 
-    async returnAsset(id: number, userId: number) {
+    async returnAsset(id: number, userId: number, returnData?: { return_date?: string, return_notes?: string }) {
         // Check if the assignment exists
         const assignment = await AssignmentModel.findById(id);
         if (!assignment) {
             throw new Error('Assignment not found.');
         }
 
-        // Update the returned_date
-        const updatedAssignment = await AssignmentModel.update(id, { returned_date: new Date() });
+        // Get the "In Stock" status ID from asset_statuses table
+        const inStockStatus = await AssignmentModel.getInStockStatus();
+        if (!inStockStatus) {
+            throw new Error('In Stock status not found in database.');
+        }
+
+        // Prepare update data
+        const updatePayload: any = {
+            return_date: returnData?.return_date ? new Date(returnData.return_date) : new Date()
+        };
+
+        if (returnData?.return_notes) {
+            updatePayload.return_notes = returnData.return_notes;
+        }
+
+        // Update the assignment with return date and notes
+        const updatedAssignment = await AssignmentModel.update(id, updatePayload);
+
+        // Update the asset status to "In Stock"
+        await AssignmentModel.updateAssetStatus(assignment.asset_id, inStockStatus.id, inStockStatus.name);
 
         await ActionLogService.logAction(
             userId,
-            'RETURN ASSET', // Use a specific action type
+            'RETURN ASSET',
             'Assignment',
             id,
-            { returned_date: updatedAssignment.returned_date }
+            { 
+                return_date: updatedAssignment.return_date,
+                return_notes: returnData?.return_notes,
+                asset_status_updated: 'In Stock'
+            }
         );
 
         return updatedAssignment;

@@ -161,8 +161,8 @@ class ReportExportService {
             { header: 'Model Name', key: 'model', width: 20 },
             { header: 'Employee', key: 'employee_name', width: 25 },
             { header: 'Department', key: 'department', width: 20 },
-            { header: 'Assigned Date', key: 'assigned_date', width: 15 },
-            { header: 'Return Date', key: 'returned_date', width: 15 },
+            { header: 'Assigned Date', key: 'assignment_date', width: 15 },
+            { header: 'Return Date', key: 'return_date', width: 15 },
             { header: 'Notes', key: 'notes', width: 40 },
         ];
         // Style the Header Row
@@ -184,8 +184,8 @@ class ReportExportService {
         data.forEach(assignment => {
             const formattedAssignment = {
                 ...assignment,
-                assigned_date: assignment.assignment_date ? new Date(assignment.assignment_date).toLocaleDateString() : 'N/A',
-                returned_date: assignment.return_date ? new Date(assignment.return_date).toLocaleDateString() : 'Active',
+                assignment_date: assignment.assignment_date ? new Date(assignment.assignment_date).toLocaleDateString() : 'N/A',
+                return_date: assignment.return_date ? new Date(assignment.return_date).toLocaleDateString() : 'Active',
                 notes: assignment.notes || 'N/A',
             };
             worksheet.addRow(formattedAssignment);

@@ -23,10 +23,10 @@ class AssignmentService {
         if (!assignment) {
             throw new Error('Assignment not found.');
         }
-        // Update the returned_date
-        const updatedAssignment = await assignment_model_1.default.update(id, { returned_date: new Date() });
+        // Update the return_date
+        const updatedAssignment = await assignment_model_1.default.update(id, { return_date: new Date() });
         await actionLog_service_1.default.logAction(userId, 'RETURN ASSET', // Use a specific action type
-        'Assignment', id, { returned_date: updatedAssignment.returned_date });
+        'Assignment', id, { return_date: updatedAssignment.return_date });
         return updatedAssignment;
     }
     async getAll() {

@@ -50,4 +50,20 @@ router.get(
     asyncHandler(ReportController.exportAssignmentReport)
 );
 
+// Action Log Report Data Endpoint
+// URL: GET /api/reports/action-logs?action_type=...&limit=20&offset=0
+router.get(
+    '/action-logs', 
+    authenticate,
+    asyncHandler(ReportController.getActionLogReportData) 
+);
+
+// Action Log Report Export Endpoint
+// URL: GET /api/reports/action-logs/export?action_type=...&from_date=...
+router.get(
+    '/action-logs/export', 
+    authenticate,
+    asyncHandler(ReportController.exportActionLogReport)
+);
+
 export default router;

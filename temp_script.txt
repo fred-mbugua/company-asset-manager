@@ -1,0 +1,11 @@
+<script>
+// Initialize Select2 immediately after library loads
+$(document).ready(function() {
+    $('.select2-dropdown').select2({
+        placeholder: 'Select an option',
+        allowClear: true,
+        width: '100%'
+    });
+});
+</script>
+

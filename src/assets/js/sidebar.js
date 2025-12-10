@@ -1,56 +1,130 @@
-// public/assets/js/sidebar.js
-
 document.addEventListener('DOMContentLoaded', () => {
     const sidebar = document.getElementById('sidebar');
 
-    if (!sidebar) return; // Exit if sidebar element isn't found
+    if (!sidebar) {
+        console.error('Sidebar element not found');
+        return;
+    }
+
+    const currentPath = window.location.pathname;
+    
+    // Get the 'from' parameter from URL
+    const urlParams = new URLSearchParams(window.location.search);
+    const fromParam = urlParams.get('from');
+
+    // console.log('Sidebar initialized:', { currentPath, fromParam });
 
     /**
-     * Toggles the visibility of the submenu when a parent link is clicked.
+     * Initializing sidebar state on page load
+     */
+    function initializeSidebar() {
+        // Finding all parent menus that have matching URLs
+        const menusWithMatch = [];
+        
+        sidebar.querySelectorAll('.has-sub').forEach(parentLi => {
+            const menuId = parentLi.getAttribute('data-menu-id');
+            const hasMatch = parentLi.getAttribute('data-has-match') === 'true';
+            
+            if (hasMatch) {
+                menusWithMatch.push({ element: parentLi, menuId: menuId });
+            }
+        });
+
+        // console.log('Menus with match:', menusWithMatch.map(m => m.menuId));
+
+        if (menusWithMatch.length === 0) {
+            // console.log('No matching menus found');
+            return;
+        }
+
+        // When there is a 'from' parameter, use it to determine which menu to expand
+        if (fromParam) {
+            const targetMenu = menusWithMatch.find(m => m.menuId === fromParam);
+            
+            if (targetMenu) {
+                // console.log('Expanding menu from parameter:', fromParam);
+                expandMenu(targetMenu.element);
+                highlightActiveLink(targetMenu.element, currentPath);
+                return;
+            }
+        }
+        
+        // Otherwise, expand the first matching menu
+        // console.log('Expanding first matching menu');
+        expandMenu(menusWithMatch[0].element);
+        highlightActiveLink(menusWithMatch[0].element, currentPath);
+    }
+
+    /**
+     * Expanding a specific menu
+     */
+    function expandMenu(parentLi) {
+        console.log('Expanding menu:', parentLi.getAttribute('data-menu-id'));
+        parentLi.classList.add('expanded');
+        const submenu = parentLi.querySelector('.submenu');
+        if (submenu) {
+            submenu.style.display = 'block';
+        }
+    }
+
+    /**
+     * Highlighting the active link in a specific parent menu
+     */
+    function highlightActiveLink(parentLi, path) {
+        const submenu = parentLi.querySelector('.submenu');
+        if (!submenu) return;
+
+        // console.log('Highlighting active link in menu for path:', path);
+        
+        submenu.querySelectorAll('li').forEach(li => {
+            const link = li.querySelector('a');
+            if (link) {
+                const linkPath = new URL(link.href, window.location.origin).pathname;
+                // console.log('Checking link:', linkPath, 'against', path);
+                if (linkPath === path) {
+                    // console.log('Adding active class to:', link.textContent);
+                    li.classList.add('active');
+                } else {
+                    li.classList.remove('active');
+                }
+            }
+        });
+    }
+
+    /**
+     * Toggling the visibility of the submenu when a parent link is clicked.
      * This handles the run-time expansion/collapse behavior.
      */
     sidebar.querySelectorAll('.has-sub > span, .has-sub > i').forEach(element => {
-        // Find the closest parent li.has-sub
         const parentLi = element.closest('.has-sub');
         if (!parentLi) return;
 
-        // Attach event listener to the parent span or icon
         element.addEventListener('click', (e) => {
-            // Stop propagation to prevent any unintended link following
             e.stopPropagation(); 
             
-            // Get the submenu element
             const submenu = parentLi.querySelector('.submenu');
 
             if (submenu) {
-                // Toggle the 'expanded' class on the parent LI
                 parentLi.classList.toggle('expanded');
                 
-                // Toggle display for the submenu for smooth transition (using CSS transitions is better, but inline works)
                 if (submenu.style.display === 'block') {
-                    // Collapse
                     submenu.style.display = 'none';
                 } else {
-                    // Expand
                     submenu.style.display = 'block';
                 }
             }
         });
     });
     
-    // Optional: Add event listener to the main LI to handle clicks anywhere on the header row
+    // Handling clicks anywhere on the parent LI
     sidebar.querySelectorAll('.has-sub').forEach(parentLi => {
         parentLi.addEventListener('click', (e) => {
-            // If the click wasn't directly on an anchor link, simulate a click on the span/icon
             if (!e.target.closest('a') && !e.target.closest('.submenu')) {
                 parentLi.querySelector('span')?.click();
             }
         });
     });
 
-    /**
-     * Ensure the initial expanded state is set correctly from EJS/CSS.
-     * The EJS code already handles adding the 'expanded' class and inline style,
-     * so this JS primarily provides the interactive toggle behavior.
-     */
+    // Initializing the sidebar on page load
+    initializeSidebar();
 });

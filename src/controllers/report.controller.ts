@@ -1,6 +1,7 @@
 import { Request, Response } from 'express';
-import { ReportService, ReportExportService, ExpenseService, AssignmentService } from '../services';
+import { ReportService, ReportExportService, ExpenseService, AssignmentService, ActionLogService } from '../services';
 import { IExpenseReportFilters } from '../models/expenseReport.model';
+import { IActionLogReportFilters } from '../models/actionLogReport.model';
 import LookupService from '../services/lookup.service'; 
 import { IAssignmentReportFilters } from '../models/assignmentReport.model';
 import { successResponse, errorResponse } from '../utils/response';
@@ -131,7 +132,7 @@ class ReportController {
             const formattedExpenses = expenses.map(e => ({
                 ...e,
                 // Ensure date is a friendly string
-                expense_date: new Date(e.expense_date).toLocaleDateString(),
+                date: new Date(e.date).toLocaleDateString(),
                 // Ensure amount is formatted as currency string
                 amount: currencyFormatter.format(e.amount),
             }));
@@ -245,6 +246,66 @@ class ReportController {
         } catch (error) {
             console.error('Exporting Assignment Report failed:', error);
             res.status(500).send('Failed to generate assignment report.');
+        }
+    }
+
+    /**
+     * Handles fetching paginated and filtered action logs for the frontend table.
+     * Route: GET /api/reports/action-logs
+     */
+    async getActionLogReportData(req: Request, res: Response): Promise<void> {
+        try {
+            const limit = parseInt((req.query.limit || '20') as string, 10);
+            const offset = parseInt((req.query.offset || '0') as string, 10);
+            
+            if (isNaN(limit) || isNaN(offset) || limit < 1 || offset < 0) {
+                res.status(400).json({ success: false, message: 'Invalid pagination parameters.' });
+                return;
+            }
+
+            const { limit: _, offset: __, ...filters } = req.query;
+            const actionLogFilters = filters as unknown as IActionLogReportFilters;
+
+            const { logs, totalCount } = await ActionLogService.getPaginatedActionLogs(actionLogFilters, limit, offset);
+
+            const formattedLogs = logs.map(log => ({
+                ...log,
+                created_at: new Date(log.created_at).toLocaleString(),
+                details: log.details ? JSON.stringify(log.details) : 'N/A',
+            }));
+
+            res.status(200).json({
+                success: true,
+                data: {
+                    logs: formattedLogs,
+                    totalCount: totalCount
+                }
+            });
+
+        } catch (error) {
+            console.error('Error fetching action log report data:', error);
+            res.status(500).json({ success: false, message: 'Failed to retrieve action log report data.' });
+        }
+    }
+
+    /**
+     * Handling the request to export the Action Logs Report to Excel.
+     * Route: GET /api/reports/action-logs/export
+     */
+    async exportActionLogReport(req: Request, res: Response): Promise<void> {
+        try {
+            const filters = req.query; 
+
+            const excelBuffer = await ReportExportService.generateActionLogReport(filters); 
+
+            const date = new Date().toISOString().slice(0, 10);
+            res.setHeader('Content-Type', 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet');
+            res.setHeader('Content-Disposition', `attachment; filename=Action_Logs_Report_${date}.xlsx`);
+            res.send(excelBuffer);
+
+        } catch (error) {
+            console.error('Exporting Action Log Report failed:', error);
+            res.status(500).send('Failed to generate action log report.');
         }
     }
 }

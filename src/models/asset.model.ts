@@ -10,7 +10,7 @@ interface AssetReportData {
     model: string;
     serial_number: string;
     status_name: string;
-    location: string;
+    branch_id: string;
     department: string;
     purchase_date: Date;
     // Add other fields needed for the full report
@@ -18,11 +18,11 @@ interface AssetReportData {
 class AssetModel {
     static async create(assetData: any) {
         const query = `
-            INSERT INTO assets (asset_tag, asset_type, manufacturer, model, serial_number, status, location, purchase_date, purchase_price, notes)
-            VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10)
+            INSERT INTO assets (asset_tag, asset_type, manufacturer, model, serial_number, status, purchase_date, purchase_price, notes, asset_type_id, asset_status_id, branch_id)
+            VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11, $12)
             RETURNING *;
         `;
-        const values = [assetData.asset_tag, assetData.asset_type, assetData.manufacturer, assetData.model, assetData.serial_number, assetData.status, assetData.location, assetData.purchase_date, assetData.purchase_price, assetData.notes];
+        const values = [assetData.asset_tag, assetData.asset_type, assetData.manufacturer, assetData.model, assetData.serial_number, assetData.status, assetData.purchase_date, assetData.purchase_price, assetData.notes, assetData.asset_type_id, assetData.asset_status_id, assetData.branch_id];
         const result = await db.query(query, values);
         return result.rows[0];
     }
@@ -112,14 +112,102 @@ class AssetModel {
         return true;
     }
 
-    static async search(query: any) {
-        const searchQuery = `%${query.searchTerm}%`;
-        const sql = `
-            SELECT * FROM assets
-            WHERE asset_tag ILIKE $1 OR description ILIKE $1;
+    static async search(filters: any) {
+        const queryParams: any[] = [];
+        const whereClauses: string[] = [];
+        let paramIndex = 1;
+
+        // Base Query with joins
+        let query = `
+            SELECT
+                assets.id,
+                assets.asset_tag,
+                assets.manufacturer,
+                assets.model,
+                assets.serial_number,
+                assets.purchase_date,
+                assets.purchase_price,
+                assets.notes,
+                asset_types.name AS type_name,
+                assets.asset_type,
+                asset_statuses.name AS status_name,
+                assets.status,
+                branches.name AS location
+            FROM
+                assets
+            INNER JOIN
+                asset_types ON assets.asset_type_id = asset_types.id
+            INNER JOIN
+                asset_statuses ON assets.asset_status_id = asset_statuses.id
+            LEFT JOIN
+                branches ON assets.branch_id = branches.id
         `;
-        const result = await db.query(sql, [searchQuery]);
-        return result.rows;
+
+        // Dynamic Filtering
+        if (filters.asset_tag) {
+            whereClauses.push(`assets.asset_tag ILIKE $${paramIndex++}`);
+            queryParams.push(`%${filters.asset_tag}%`);
+        }
+
+        if (filters.serial_number) {
+            whereClauses.push(`assets.serial_number ILIKE $${paramIndex++}`);
+            queryParams.push(`%${filters.serial_number}%`);
+        }
+
+        if (filters.type) {
+            whereClauses.push(`asset_types.name ILIKE $${paramIndex++}`);
+            queryParams.push(`%${filters.type}%`);
+        }
+
+        if (filters.status) {
+            whereClauses.push(`asset_statuses.name ILIKE $${paramIndex++}`);
+            queryParams.push(`%${filters.status}%`);
+        }
+
+        if (filters.location) {
+            whereClauses.push(`branches.name ILIKE $${paramIndex++}`);
+            queryParams.push(`%${filters.location}%`);
+        }
+
+        if (filters.from_date) {
+            whereClauses.push(`assets.purchase_date >= $${paramIndex++}`);
+            queryParams.push(filters.from_date);
+        }
+
+        if (filters.to_date) {
+            whereClauses.push(`assets.purchase_date <= $${paramIndex++}`);
+            queryParams.push(filters.to_date);
+        }
+
+        // Assemble WHERE clause
+        if (whereClauses.length > 0) {
+            query += ` WHERE ${whereClauses.join(' AND ')}`;
+        }
+
+        // Get total count before pagination
+        const countQuery = query.replace(/SELECT[\s\S]*FROM/, 'SELECT COUNT(*) FROM');
+        const countResult = await db.query(countQuery, queryParams);
+        const totalCount = parseInt(countResult.rows[0].count);
+
+        // Add ordering and pagination
+        query += ` ORDER BY assets.purchase_date DESC`;
+        
+        if (filters.limit) {
+            query += ` LIMIT $${paramIndex++}`;
+            queryParams.push(filters.limit);
+        }
+
+        if (filters.offset) {
+            query += ` OFFSET $${paramIndex++}`;
+            queryParams.push(filters.offset);
+        }
+
+        const result = await db.query(query, queryParams);
+        
+        return {
+            assets: result.rows,
+            totalCount: totalCount
+        };
     }
 
     static async findAllFiltered(filters: any): Promise<AssetReportData[]> {

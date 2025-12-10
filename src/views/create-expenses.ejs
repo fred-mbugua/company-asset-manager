@@ -1,4 +1,6 @@
 <%- include('partials/header', { pageTitle: 'Create Expense', cssFile: 'expenses' }) %>
+<!-- Select2 CSS -->
+<link href="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/css/select2.min.css" rel="stylesheet" />
 <%- include('partials/navbar') %>
 
 <div class="main">
@@ -17,7 +19,7 @@
         <div class="form-grid">
           <div class="form-group">
             <label for="asset_id">Asset</label>
-            <select id="asset_id" name="asset_id" required>
+            <select id="asset_id" name="asset_id" class="select2-dropdown" required>
               <option value="">Select Asset</option>
               <% if (locals.assets) { %>
                 <% locals.assets.forEach(asset => { %>
@@ -31,7 +33,7 @@
 
           <div class="form-group">
             <label for="expense_type">Expense Type</label>
-            <select id="expense_type_id" name="expense_type_id" required>
+            <select id="expense_type_id" name="expense_type_id" class="select2-dropdown" required>
               <option value="">Select Type</option>
               <% if (locals.expenseTypes) { %>
                 <% locals.expenseTypes.forEach(type => { %>
@@ -122,5 +124,19 @@
     </div>
   </section>
 </div>
+
+<!-- jQuery (required for Select2) -->
+<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+<!-- Select2 JS -->
+<script src="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/js/select2.min.js"></script>
+<script>
+$(document).ready(function() {
+    $('.select2-dropdown').select2({
+        placeholder: 'Type to search...',
+        allowClear: true,
+        width: '100%'
+    });
+});
+</script>
 
 <%- include('partials/footer', { jsFile: 'expenses' }) %>

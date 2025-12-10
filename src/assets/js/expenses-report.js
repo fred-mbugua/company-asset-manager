@@ -195,7 +195,7 @@ document.addEventListener('DOMContentLoaded', () => {
                 <td>${new Date(expense.date).toLocaleDateString()}</td> 
                 <td>${expense.amount}</td> 
                 <td>${expense.vendor || 'N/A'}</td>
-                <td>${expense.invoice_no || 'N/A'}</td>
+                <td>${expense.invoice_number || 'N/A'}</td>
                 <td>${expense.department || 'N/A'}</td>
                 <td>${expense.location || 'N/A'}</td>
                 <td title="${expense.notes || ''}">${expense.notes ? expense.notes.substring(0, 50) + '...' : 'N/A'}</td>

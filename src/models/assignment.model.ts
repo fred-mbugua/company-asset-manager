@@ -76,11 +76,11 @@ class AssignmentModel {
 
     static async update(id: number, updateData: any) {
         const query = `
-            UPDATE assignments SET asset_id = COALESCE($1, asset_id), employee_id = COALESCE($2, employee_id), assigned_date = COALESCE($3, assigned_date), returned_date = COALESCE($4, returned_date), notes = COALESCE($5, notes)
+            UPDATE assignments SET asset_id = COALESCE($1, asset_id), employee_id = COALESCE($2, employee_id), assignment_date = COALESCE($3, assignment_date), return_date = COALESCE($4, return_date), notes = COALESCE($5, notes)
             WHERE id = $6
             RETURNING *;
         `;
-        const values = [updateData.asset_id, updateData.employee_id, updateData.assigned_date, updateData.returned_date, updateData.notes, id];
+        const values = [updateData.asset_id, updateData.employee_id, updateData.assignment_date, updateData.return_date, updateData.notes, id];
         const result = await db.query(query, values);
         return result.rows[0];
     }
@@ -128,6 +128,37 @@ class AssignmentModel {
         `;
         const result = await db.query(query, [employeeId]);
         return result.rows;
+    }
+
+    static async getInStockStatus() {
+        const query = `
+            SELECT id, name FROM asset_statuses 
+            WHERE LOWER(name) = 'in stock' 
+            LIMIT 1;
+        `;
+        const result = await db.query(query);
+        return result.rows[0];
+    }
+
+    static async getInUseStatus() {
+        const query = `
+            SELECT id, name FROM asset_statuses 
+            WHERE LOWER(name) = 'in use' OR LOWER(name) = 'inuse'
+            LIMIT 1;
+        `;
+        const result = await db.query(query);
+        return result.rows[0];
+    }
+
+    static async updateAssetStatus(assetId: number, statusId: number, statusName: string) {
+        const query = `
+            UPDATE assets 
+            SET asset_status_id = $1, status = $2
+            WHERE id = $3
+            RETURNING *;
+        `;
+        const result = await db.query(query, [statusId, statusName, assetId]);
+        return result.rows[0];
     }
 }
 

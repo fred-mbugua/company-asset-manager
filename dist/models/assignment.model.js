@@ -70,11 +70,11 @@ class AssignmentModel {
     }
     static async update(id, updateData) {
         const query = `
-            UPDATE assignments SET asset_id = COALESCE($1, asset_id), employee_id = COALESCE($2, employee_id), assigned_date = COALESCE($3, assigned_date), returned_date = COALESCE($4, returned_date), notes = COALESCE($5, notes)
+            UPDATE assignments SET asset_id = COALESCE($1, asset_id), employee_id = COALESCE($2, employee_id), assignment_date = COALESCE($3, assignment_date), return_date = COALESCE($4, return_date), notes = COALESCE($5, notes)
             WHERE id = $6
             RETURNING *;
         `;
-        const values = [updateData.asset_id, updateData.employee_id, updateData.assigned_date, updateData.returned_date, updateData.notes, id];
+        const values = [updateData.asset_id, updateData.employee_id, updateData.assignment_date, updateData.return_date, updateData.notes, id];
         const result = await database_1.default.query(query, values);
         return result.rows[0];
     }

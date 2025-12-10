@@ -10,17 +10,18 @@ import uploadRoutes from './upload.routes';
 import departmentRoutes from './departments.routes';
 import branchRoutes from './branches.routes';
 
+import { authenticate } from '../middlewares/auth.middleware'; 
+
 const router = Router();
 
-router.use('/auth', authRoutes);
-router.use('/assets', assetRoutes);
-router.use('/assignments', assignmentRoutes);
-router.use('/users', userRoutes);
-router.use('/employees', employeeRoutes);
-router.use('/expenses', expenseRoutes);
-router.use('/reports', reportRoutes);
-router.use('/upload', uploadRoutes);
-router.use('/departments', departmentRoutes);
-router.use('/branches', branchRoutes);
-
+router.use('/auth', authenticate, authRoutes);
+router.use('/assets', authenticate, assetRoutes);
+router.use('/assignments', authenticate, assignmentRoutes);
+router.use('/users', authenticate, userRoutes);
+router.use('/employees', authenticate, employeeRoutes);
+router.use('/expenses', authenticate, expenseRoutes);
+router.use('/reports', authenticate, reportRoutes);
+router.use('/upload', authenticate, uploadRoutes);
+router.use('/departments', authenticate, departmentRoutes);
+router.use('/branches', authenticate, branchRoutes);
 export default router;
