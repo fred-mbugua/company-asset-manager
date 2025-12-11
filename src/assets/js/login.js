@@ -7,15 +7,13 @@ document.getElementById('login-button').addEventListener('click', async function
 
     console.log('Login button clicked with email:', email);
 
-    
-
     try {
         const payload = { email, password };
         const response = await API.post('/auth/login', payload);
         
-        // Login successful - redirect logic is handled server-side 
-        // using the 'returnTo' session variable, but we redirect to the dashboard as a fallback.
-        window.location.href = '/dashboard'; 
+        // Redirect to the returnTo URL if available, otherwise to dashboard
+        const redirectUrl = response.data?.returnTo || '/dashboard';
+        window.location.href = redirectUrl;
 
     } catch (error) {
         errorElement.textContent = error.message || 'Login failed. Please check your credentials.';

@@ -45,6 +45,36 @@ class UserController {
             errorResponse(res, 404, (error as Error).message);
         }
     }
+
+    async resetPassword(req: AuthenticatedRequest, res: Response) {
+        try {
+            const userId = req.user?.id;
+            const { password } = req.body;
+            
+            if (!password || password.length < 6) {
+                return errorResponse(res, 400, 'Password must be at least 6 characters long');
+            }
+
+            await UserService.resetPassword(req.params.id, password, userId);
+            successResponse(res, 200, 'Password reset successfully');
+        } catch (error) {
+            logger.error(`Password reset failed: ${(error as Error).message}`, { error });
+            errorResponse(res, 500, (error as Error).message);
+        }
+    }
+
+    async toggleStatus(req: AuthenticatedRequest, res: Response) {
+        try {
+            const userId = req.user?.id;
+            const { is_active } = req.body;
+            
+            const result = await UserService.toggleUserStatus(req.params.id, is_active, userId);
+            successResponse(res, 200, 'User status updated successfully', result);
+        } catch (error) {
+            logger.error(`Toggle status failed: ${(error as Error).message}`, { error });
+            errorResponse(res, 500, (error as Error).message);
+        }
+    }
 }
 
 export default new UserController();

@@ -116,6 +116,49 @@ class UserService {
     return { message: 'User deleted successfully.' };
   }
 
+  async resetPassword(id: string, newPassword: string, userId: number) {
+    const user = await UserModel.findById(id);
+    if (!user) {
+      throw new Error('User not found');
+    }
+
+    const hashedPassword = await bcrypt.hash(newPassword, this.SALT_ROUNDS);
+    await UserModel.updatePassword(id, hashedPassword);
+
+    await ActionLogService.logAction(
+      userId,
+      'RESET_PASSWORD',
+      'User',
+      Number(id),
+      { email: user.email }
+    );
+
+    logger.info(`Password reset for user ID: ${id}`);
+  }
+
+  async toggleUserStatus(id: string, isActive: boolean, userId: number) {
+    const user = await UserModel.findById(id);
+    if (!user) {
+      throw new Error('User not found');
+    }
+
+    const updatedUser = await UserModel.updateStatus(id, isActive);
+
+    await ActionLogService.logAction(
+      userId,
+      'UPDATE',
+      'User',
+      Number(id),
+      { 
+        email: user.email,
+        status_change: { from: user.is_active, to: isActive }
+      }
+    );
+
+    logger.info(`User ${id} status changed to ${isActive ? 'Active' : 'Disabled'}`);
+    return updatedUser;
+  }
+
 }
 
 export default new UserService();

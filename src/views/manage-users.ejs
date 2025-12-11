@@ -103,12 +103,12 @@
                                     <td data-label="Department"><%= user.department_name || 'N/A' %></td>
                                     <td data-label="Branch"><%= user.branch_name || 'N/A' %></td>
                                     <td data-label="Employee Link"><%= (user.employee_first_name + ' ' + user.employee_middle_name + ' ' + user.employee_last_name) || 'Unlinked' %></td>
-                                    <td data-label="Status"><%= user.is_active ? 'Active' : 'Disabled' %></td>
+                                    <td data-label="Status"><%= user.is_active === true ? 'Active' : (user.is_active === false ? 'Disabled' : 'N/A') %></td>
                                     <td data-label="Actions">
                                         <button class="btn btn-sm btn-edit" data-id="<%= user.id %>">Edit</button>
                                         <button class="btn btn-sm btn-reset-password" data-id="<%= user.id %>">Reset Pwd</button>
                                         <button class="btn btn-sm btn-toggle-status" data-id="<%= user.id %>" data-status="<%= user.is_active %>">
-                                            <%= user.is_active ? 'Disable' : 'Enable' %>
+                                            <%= user.is_active === true ? 'Disable' : 'Enable' %>
                                         </button>
                                     </td>
                                 </tr>

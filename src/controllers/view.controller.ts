@@ -10,7 +10,8 @@ class ViewsController {
 
     // Rendering the login page
     async renderLogin(req: Request, res: Response) {
-        res.render('login');
+        const returnTo = (req.session as any).returnTo || '';
+        res.render('login', { returnTo });
     }
 
     // Rendering the dashboard page with dynamic data
@@ -409,6 +410,11 @@ class ViewsController {
             console.error('Error rendering action log report page:', error);
             res.status(500).send('Failed to load action log report page.');
         }
+    }
+
+    // Rendering the 404 error page
+    async render404(req: Request, res: Response) {
+        res.status(404).render('404');
     }
 }
 

@@ -1828,3 +1828,44 @@ Or, if you meant to create an async function, pass `async: true` as an option.
     at async AssetModel.delete (C:\Users\HomePC\Documents\JSL\JSL SYSTEMS\asset-manager\src\models\asset.model.ts:111:9)
     at async AssetService.delete (C:\Users\HomePC\Documents\JSL\JSL SYSTEMS\asset-manager\src\services\asset.service.ts:51:9)
     at async delete (C:\Users\HomePC\Documents\JSL\JSL SYSTEMS\asset-manager\src\controllers\asset.controller.ts:54:28)
+2025-12-11 14:36:15 info: Server running on port 4000
+2025-12-11 14:36:15 info: Database connected successfully!
+2025-12-11 14:36:41 info: User logged in successfully: fmbugua@jiranismart.com
+2025-12-11 14:53:57 info: Server running on port 4000
+2025-12-11 14:53:57 info: Database connected successfully!
+2025-12-11 14:54:09 info: Server running on port 4000
+2025-12-11 14:54:09 info: Database connected successfully!
+2025-12-11 14:57:02 info: User 9 status changed to Active
+2025-12-11 14:57:35 info: Server running on port 4000
+2025-12-11 14:57:35 info: Database connected successfully!
+2025-12-11 14:57:40 info: User 9 status changed to Disabled
+2025-12-11 14:58:41 info: Password reset for user ID: 9
+2025-12-11 14:58:52 info: Password reset for user ID: 9
+2025-12-11 14:59:03 info: Password reset for user ID: 9
+2025-12-11 15:00:47 info: Server running on port 4000
+2025-12-11 15:00:47 info: Database connected successfully!
+2025-12-11 15:10:47 info: Server running on port 4000
+2025-12-11 15:10:47 info: Database connected successfully!
+2025-12-11 15:10:56 info: User 9 status changed to Active
+2025-12-11 15:11:19 info: Password reset for user ID: 9
+2025-12-11 15:12:48 info: Server running on port 4000
+2025-12-11 15:12:48 info: Database connected successfully!
+2025-12-11 15:13:07 info: Server running on port 4000
+2025-12-11 15:13:07 info: Database connected successfully!
+2025-12-11 15:21:06 info: Server running on port 4000
+2025-12-11 15:21:06 info: Database connected successfully!
+2025-12-11 15:22:31 info: Server running on port 4000
+2025-12-11 15:22:31 info: Database connected successfully!
+2025-12-11 15:24:36 info: Server running on port 4000
+2025-12-11 15:24:36 info: Database connected successfully!
+2025-12-11 15:25:46 info: Server running on port 4000
+2025-12-11 15:25:46 info: Database connected successfully!
+2025-12-11 15:26:41 info: Server running on port 4000
+2025-12-11 15:26:42 info: Database connected successfully!
+2025-12-11 15:27:09 info: Server running on port 4000
+2025-12-11 15:27:09 info: Database connected successfully!
+2025-12-11 15:31:30 info: User logged in successfully: fmbugua@jiranismart.com
+2025-12-11 15:39:38 info: Server running on port 4000
+2025-12-11 15:39:38 info: Database connected successfully!
+2025-12-11 15:40:19 info: Server running on port 4000
+2025-12-11 15:40:19 info: Database connected successfully!

@@ -151,6 +151,18 @@ class UserModel {
     const query = 'DELETE FROM refresh_tokens WHERE token = $1';
     await pool.query(query, [token]);
   }
+
+  async updatePassword(id: string, hashedPassword: string) {
+    const query = 'UPDATE users SET password = $1 WHERE id = $2 RETURNING id, email';
+    const result = await pool.query(query, [hashedPassword, id]);
+    return result.rows[0];
+  }
+
+  async updateStatus(id: string, isActive: boolean) {
+    const query = 'UPDATE users SET is_active = $1 WHERE id = $2 RETURNING id, email, is_active';
+    const result = await pool.query(query, [isActive, id]);
+    return result.rows[0];
+  }
 }
 
 export default new UserModel();

@@ -68,6 +68,11 @@ app.get('/', (req, res) => {
     res.redirect('/login');
 });
 
+// 404 handler - must be after all other routes
+app.use((req: express.Request, res: express.Response) => {
+    res.status(404).render('404');
+});
+
 // Global error handler
 app.use((err: any, req: express.Request, res: express.Response, next: express.NextFunction) => {
   logger.error(err.stack);

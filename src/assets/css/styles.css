@@ -626,7 +626,7 @@
   
     .navbar h1 {
       font-size: 15px;
-      display: none; /* Hide title on mobile */
+      /* display: none; Hide title on mobile */
     }
     
     .admin-info-dropdown {
@@ -655,7 +655,7 @@
   @media (max-width: 480px) {
     .navbar h1 {
       font-size: 14px;
-      display: none;
+      /* display: none; */
     }
 
     .kpi-grid {

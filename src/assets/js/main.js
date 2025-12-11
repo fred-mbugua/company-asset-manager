@@ -2,9 +2,13 @@
  const sidebar = document.getElementById("sidebar");
  const toggleBtn = document.querySelector(".menu-toggle");
 
- toggleBtn.addEventListener("click", () => {
-   sidebar.classList.toggle("open");
- });
+ if (!sidebar || !toggleBtn) {
+   console.error("Sidebar or toggle button not found in the DOM.");
+ } else {
+   toggleBtn.addEventListener("click", () => {
+     sidebar.classList.toggle("open");
+   });
+ }
 
  // Admin dropdown toggle
  const adminDropdown = document.querySelector(".admin-info-dropdown");

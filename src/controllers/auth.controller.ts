@@ -52,10 +52,12 @@ class AuthController {
                 maxAge: 7 * 24 * 60 * 60 * 1000
             });
 
-            // console.log('Access token:', accessToken);
+            // Get the returnTo URL from session and clear it
+            const returnTo = (req.session as any).returnTo || '/dashboard';
+            delete (req.session as any).returnTo;
 
             logger.info(`User logged in successfully: ${user.email}`);
-            successResponse(res, 200, 'Logged in successfully', { user , accessToken, refreshToken });
+            successResponse(res, 200, 'Logged in successfully', { user , accessToken, refreshToken, returnTo });
         } catch (error) {
             logger.error(`Login failed: ${(error as Error).message}`, { email: req.body.email, error });
             errorResponse(res, 401, (error as Error).message);

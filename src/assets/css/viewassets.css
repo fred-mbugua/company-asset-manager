@@ -353,7 +353,7 @@
     }
     
     .filter-field {
-      flex: 1 1 180px;
+      /* flex: 1 1 180px; */
       max-width: none;
     }
   }
@@ -375,6 +375,7 @@
     
     .filter-field {
       width: 100%;
+      max-height: fit-content;
       max-width: none;
       min-width: auto;
     }

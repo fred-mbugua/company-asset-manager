@@ -96,8 +96,8 @@ document.addEventListener('DOMContentLoaded', () => {
         }
 
         try {
-            // Assumed API call to a specific password reset endpoint
-            await API.post(`/reset-password/${id}`, { password: newPassword });
+            // API call to the password reset endpoint
+            await API.post(`/users/reset-password/${id}`, { password: newPassword });
             alert('Password reset successfully!');
         } catch (error) {
             console.error('Password reset failed:', error);
@@ -117,8 +117,8 @@ document.addEventListener('DOMContentLoaded', () => {
         }
 
         try {
-            // Assumed API call to toggle status
-            await API.post(`${API_ENDPOINT}/toggle-status/${id}`, { is_active: newStatus });
+            // API call to toggle status endpoint
+            await API.post(`/users/toggle-status/${id}`, { is_active: newStatus });
             
             alert(`User status changed to ${newStatus ? 'Active' : 'Disabled'}.`);
             
