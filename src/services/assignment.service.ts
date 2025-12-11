@@ -1,6 +1,7 @@
 import AssignmentModel from '../models/assignment.model';
 import ActionLogService from './actionLog.service';
 import AssignmentReportModel, { IAssignmentReportFilters } from '../models/assignmentReport.model';
+import AssetModel from '../models/asset.model';
 import logger from '../utils/logger';
 
 class AssignmentService {
@@ -9,6 +10,11 @@ class AssignmentService {
         const existingAssignment = await AssignmentModel.findActiveByAssetId(assignmentData.asset_id);
         if (existingAssignment) {
             return Promise.reject(new Error('Asset is already assigned to another employee.'));
+        }
+
+        // Handle branch transfer if requested
+        if (assignmentData.transfer_asset === true) {
+            await this.transferAssetBranch(assignmentData.asset_id, assignmentData.employee_id, userId);
         }
 
         // Get the "In Use" status ID from asset_statuses table
@@ -30,11 +36,51 @@ class AssignmentService {
             { 
                 asset_id: newAssignment.asset_id, 
                 employee_id: newAssignment.employee_id,
-                asset_status_updated: 'In Use'
+                asset_status_updated: 'In Use',
+                branch_transferred: assignmentData.transfer_asset || false
             }
         );
 
         return newAssignment;
+    }
+
+    async transferAssetBranch(assetId: number, employeeId: number, userId: number) {
+        // Get asset and employee details
+        const asset = await AssetModel.findById(assetId);
+        if (!asset) {
+            throw new Error('Asset not found.');
+        }
+
+        // Get employee details to find their branch
+        const employeeQuery = await AssignmentModel.getEmployeeById(employeeId);
+        if (!employeeQuery) {
+            throw new Error('Employee not found.');
+        }
+
+        const oldBranchId = asset.branch_id;
+        const newBranchId = employeeQuery.branch_id;
+
+        if (oldBranchId === newBranchId) {
+            return; // No transfer needed
+        }
+
+        // Update asset branch
+        await AssetModel.updateBranch(assetId, newBranchId);
+
+        // Log the branch transfer action
+        await ActionLogService.logAction(
+            userId,
+            'TRANSFER ASSET BRANCH',
+            'Asset',
+            assetId,
+            {
+                old_branch_id: oldBranchId,
+                new_branch_id: newBranchId,
+                reason: 'Asset transferred to match employee branch during assignment'
+            }
+        );
+
+        logger.info(`Asset ${assetId} transferred from branch ${oldBranchId} to ${newBranchId} by user ${userId}`);
     }
 
     async returnAsset(id: number, userId: number, returnData?: { return_date?: string, return_notes?: string }) {

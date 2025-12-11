@@ -5,6 +5,7 @@ import asyncHandler from 'express-async-handler';
 
 const router = Router();
 
+router.get('/:id', authenticate, asyncHandler(EmployeeController.getById));
 router.get('/:employeeId/assets', authenticate, asyncHandler(EmployeeController.getAssetsByEmployee));
 
 export default router;

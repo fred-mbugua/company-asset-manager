@@ -2,6 +2,7 @@ import { Request, Response } from 'express';
 import { successResponse, errorResponse } from '../utils/response';
 import logger from '../utils/logger';
 import AssignmentService from '../services/assignment.service';
+import AssignmentModel from '../models/assignment.model';
 import { AuthenticatedRequest } from '../types';
 
 export class AssignmentController {
@@ -73,6 +74,17 @@ export class AssignmentController {
         } catch (error) {
           logger.error(`Failed to delete assignment with ID ${req.params.id}:`, error);
             errorResponse(res, 404, (error as Error).message);
+        }
+    }
+
+    async getAssetHistory(req: Request, res: Response) {
+        try {
+            const { assetId } = req.params;
+            const history = await AssignmentModel.getAssetHistory(Number(assetId));
+            successResponse(res, 200, 'Asset history retrieved successfully', history);
+        } catch (error: any) {
+            logger.error(`Failed to retrieve asset history for asset ${req.params.assetId}:`, error);
+            errorResponse(res, 500, `Failed to retrieve asset history: ${error.message}`);
         }
     }
 }

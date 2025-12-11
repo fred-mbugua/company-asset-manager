@@ -8,6 +8,7 @@
     <section class="content-area">
         <div class="assets-container" id="assets-list-section">
             <h3>All Assets</h3>
+            
             <div class="filters">
                 <div class="filter-field">
                     <label for="filter-tag">Asset Tag</label>
@@ -85,6 +86,7 @@
                                     <td><%= new Date(asset.purchase_date).toLocaleDateString() %></td>
                                     <td>
                                         <button class="btn btn-edit" onclick="showAssetDetails(<%= asset.id %>)">View/Edit</button>
+                                        <button class="btn btn-view" onclick="showAssignmentHistory(<%= asset.id %>, '<%= asset.asset_tag %>')">History</button>
                                         <% if (isAdmin) { %>
                                         <button class="btn btn-delete" onclick="confirmDelete(<%= asset.id %>, '<%= asset.asset_tag %>')">Delete</button>
                                         <% } %>
@@ -130,6 +132,22 @@
         <div class="modal-actions">
             <button class="btn btn-danger" id="confirm-delete-btn">Delete</button>
             <button class="btn btn-cancel" id="cancel-delete-btn">Cancel</button>
+        </div>
+    </div>
+</div>
+
+<!-- Assignment History Modal -->
+<div id="historyModal" class="modal">
+    <div class="modal-content history-modal">
+        <div class="modal-header">
+            <h3>Assignment History</h3>
+            <span class="close" onclick="closeHistoryModal()">&times;</span>
+        </div>
+        <div class="modal-body">
+            <p id="history-asset-info" style="margin-bottom: 20px; font-weight: 600; color: #333;"></p>
+            <div id="history-content">
+                <p style="text-align: center; color: #888;">Loading history...</p>
+            </div>
         </div>
     </div>
 </div>

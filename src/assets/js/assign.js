@@ -21,6 +21,15 @@ document.addEventListener('DOMContentLoaded', () => {
     const assignmentDate = document.getElementById('assignment_date');
     const notesField = document.getElementById('notes');
 
+    // Branch transfer dialog elements
+    const branchTransferOverlay = document.getElementById('branchTransferOverlay');
+    const cancelTransferBtn = document.getElementById('cancelTransferBtn');
+    const proceedWithoutTransferBtn = document.getElementById('proceedWithoutTransferBtn');
+    const confirmTransferBtn = document.getElementById('confirmTransferBtn');
+
+    let pendingAssignment = null;
+    let assetBranchMismatch = null;
+
     // Set today's date as default for convenience
     assignmentDate.value = new Date().toISOString().substring(0, 10);
     
@@ -50,23 +59,132 @@ document.addEventListener('DOMContentLoaded', () => {
             }
 
             try {
-                
-                const response = await API.post('/assignments', formData);
-                
-                showMessage('success', response.message || 'Asset assigned successfully! Reloading data...');
-                
-                // Clear the form fields after successful submission
-                assignmentForm.reset();
-                assignmentDate.value = new Date().toISOString().substring(0, 10); // Reset date to today
-                
-                // Reload data or reload the page to update the current assignments table
-                window.location.reload(); 
+                // Check for branch mismatch before submitting
+                const [assetResponse, employeeResponse] = await Promise.all([
+                    API.get(`/assets/${formData.asset_id}`),
+                    API.get(`/employees/${formData.employee_id}`)
+                ]);
+
+                const asset = assetResponse.data;
+                const employee = employeeResponse.data;
+
+                // Check if asset and employee are in different branches
+                if (asset.branch_id !== employee.branch_id) {
+                    // Store pending assignment data
+                    pendingAssignment = formData;
+                    
+                    // Format branch information
+                    const assetBranchDisplay = asset.branch_name 
+                        ? `${asset.branch_name}${asset.location ? ' - ' + asset.location : ''}`
+                        : 'Unknown';
+                    const employeeBranchDisplay = employee.branch_location 
+                        ? employee.branch_location 
+                        : 'Unknown';
+                    
+                    assetBranchMismatch = {
+                        asset: asset,
+                        employee: employee,
+                        assetBranch: assetBranchDisplay,
+                        employeeBranch: employeeBranchDisplay
+                    };
+
+                    // Show branch transfer dialog
+                    showBranchTransferDialog();
+                    return;
+                }
+
+                // If branches match, proceed with assignment
+                await submitAssignment(formData, false);
 
             } catch (error) {
                 showMessage('error', error.message || 'Failed to assign asset.');
             }
         });
     }
+
+    // Function to show branch transfer dialog
+    function showBranchTransferDialog() {
+        if (!assetBranchMismatch) return;
+
+        document.getElementById('transfer-asset-name').textContent = 
+            `${assetBranchMismatch.asset.asset_tag} - ${assetBranchMismatch.asset.manufacturer} ${assetBranchMismatch.asset.model}`;
+        document.getElementById('transfer-asset-branch').textContent = assetBranchMismatch.assetBranch;
+        document.getElementById('transfer-employee-name').textContent = 
+            `${assetBranchMismatch.employee.first_name} ${assetBranchMismatch.employee.last_name}`;
+        document.getElementById('transfer-employee-branch').textContent = assetBranchMismatch.employeeBranch;
+
+        branchTransferOverlay.classList.add('active');
+    }
+
+    // Function to hide branch transfer dialog
+    function hideBranchTransferDialog() {
+        branchTransferOverlay.classList.remove('active');
+        pendingAssignment = null;
+        assetBranchMismatch = null;
+    }
+
+    // Function to submit assignment
+    async function submitAssignment(formData, transferAsset = false) {
+        try {
+            console.log('Submitting assignment:', formData, 'Transfer:', transferAsset);
+            const payload = { ...formData, transfer_asset: transferAsset };
+            console.log('Payload:', payload);
+            const response = await API.post('/assignments', payload);
+            console.log('Response:', response);
+            
+            showMessage('success', response.message || 'Asset assigned successfully!');
+            
+            // Clear the form fields after successful submission
+            assignmentForm.reset();
+            assignmentDate.value = new Date().toISOString().substring(0, 10);
+            
+            // Reload to update the assignments table
+            setTimeout(() => {
+                window.location.reload();
+            }, 1000);
+
+        } catch (error) {
+            console.error('Assignment error:', error);
+            showMessage('error', error.message || 'Failed to assign asset.');
+        }
+    }
+
+    // Dialog button handlers
+    if (cancelTransferBtn) {
+        cancelTransferBtn.addEventListener('click', () => {
+            hideBranchTransferDialog();
+            showMessage('info', 'Assignment cancelled.');
+        });
+    }
+
+    if (proceedWithoutTransferBtn) {
+        proceedWithoutTransferBtn.addEventListener('click', async () => {
+            console.log('Proceed without transfer clicked', pendingAssignment);
+            if (pendingAssignment) {
+                const assignmentData = { ...pendingAssignment };
+                hideBranchTransferDialog();
+                await submitAssignment(assignmentData, false);
+            }
+        });
+    }
+
+    if (confirmTransferBtn) {
+        confirmTransferBtn.addEventListener('click', async () => {
+            console.log('Confirm transfer clicked', pendingAssignment);
+            if (pendingAssignment) {
+                const assignmentData = { ...pendingAssignment };
+                hideBranchTransferDialog();
+                await submitAssignment(assignmentData, true);
+            }
+        });
+    }
+
+    // Close dialog when clicking outside
+    branchTransferOverlay?.addEventListener('click', (e) => {
+        if (e.target === branchTransferOverlay) {
+            hideBranchTransferDialog();
+        }
+    });
     
     
     // --- Return Asset Logic ---

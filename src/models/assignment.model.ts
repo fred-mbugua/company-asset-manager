@@ -62,6 +62,8 @@ class AssignmentModel {
                             assignments ass Inner Join
                             assets asts On ass.asset_id = asts.id Inner Join
                             employees emps On ass.employee_id = emps.id
+                        Where
+                            ass.return_date IS NULL
                         Order By
                             assignment_date Desc`;
         const result = await db.query(query);
@@ -159,6 +161,46 @@ class AssignmentModel {
         `;
         const result = await db.query(query, [statusId, statusName, assetId]);
         return result.rows[0];
+    }
+
+    static async getEmployeeById(employeeId: number) {
+        const query = `
+            SELECT 
+                employees.*,
+                branches.name AS branch_name,
+                branches.location AS branch_location
+            FROM employees
+            LEFT JOIN branches ON employees.branch_id = branches.id
+            WHERE employees.id = $1;
+        `;
+        const result = await db.query(query, [employeeId]);
+        return result.rows[0];
+    }
+
+    static async getAssetHistory(assetId: number) {
+        const query = `
+            SELECT 
+                ass.id,
+                ass.assignment_date,
+                ass.return_date,
+                ass.notes,
+                emps.first_name,
+                emps.middle_name,
+                emps.last_name,
+                branches.name AS branch_name,
+                branches.location AS branch_location,
+                users.first_name AS assigned_by_first_name,
+                users.last_name AS assigned_by_last_name
+            FROM assignments ass
+            INNER JOIN employees emps ON ass.employee_id = emps.id
+            LEFT JOIN branches ON emps.branch_id = branches.id
+            LEFT JOIN action_logs al ON al.entity_type = 'Assignment' AND al.entity_id = ass.id AND al.action_type = 'ASSIGN ASSET'
+            LEFT JOIN users ON al.user_id = users.id
+            WHERE ass.asset_id = $1
+            ORDER BY ass.assignment_date DESC;
+        `;
+        const result = await db.query(query, [assetId]);
+        return result.rows;
     }
 }
 

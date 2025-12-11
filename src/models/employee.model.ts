@@ -74,7 +74,15 @@ class EmployeeModel {
     }
 
     async findById(id: string) {
-        const query = 'SELECT * FROM employees WHERE id = $1';
+        const query = `
+            SELECT 
+                employees.*,
+                branches.name AS branch_name,
+                branches.location AS branch_location
+            FROM employees
+            LEFT JOIN branches ON employees.branch_id = branches.id
+            WHERE employees.id = $1
+        `;
         const result = await pool.query(query, [id]);
         return result.rows[0];
     }

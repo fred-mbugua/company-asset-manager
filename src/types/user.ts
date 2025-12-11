@@ -34,4 +34,5 @@ export interface IUpdateUser {
   password?: string;
   role_id?: number;
   department_id?: number; // Optional department association
+  branch_id?: number; // Optional branch association
 }

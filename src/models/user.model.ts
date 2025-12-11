@@ -126,11 +126,12 @@ class UserModel {
       email = COALESCE($4, email),
       password = COALESCE($5, password),
       role_id = COALESCE($6, role_id),
-      department_id = COALESCE($7, department_id)
-      WHERE id = $8
-      RETURNING id, first_name, middle_name, last_name, email, role_id, department_id;
+      department_id = COALESCE($7, department_id),
+      branch_id = COALESCE($8, branch_id)
+      WHERE id = $9
+      RETURNING id, first_name, middle_name, last_name, email, role_id, department_id, branch_id;
     `;
-    const values = [updateData.first_name, updateData.middle_name, updateData.last_name, updateData.email, updateData.password_hash, updateData.role_id, updateData.department_id, id];
+    const values = [updateData.first_name, updateData.middle_name, updateData.last_name, updateData.email, updateData.password_hash, updateData.role_id, updateData.department_id, updateData.branch_id, id];
     const result = await pool.query(query, values);
     return result.rows[0];
   }

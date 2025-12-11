@@ -87,7 +87,20 @@ class AssetModel {
     }
 
     static async findById(id: number) {
-        const query = `SELECT * FROM assets WHERE id = $1;`;
+        const query = `
+            SELECT 
+                assets.*,
+                asset_types.name AS type_name,
+                asset_statuses.name AS status_name,
+                branches.id AS branch_id,
+                branches.name AS branch_name,
+                branches.location AS location
+            FROM assets
+            LEFT JOIN asset_types ON assets.asset_type_id = asset_types.id
+            LEFT JOIN asset_statuses ON assets.asset_status_id = asset_statuses.id
+            LEFT JOIN branches ON assets.branch_id = branches.id
+            WHERE assets.id = $1;
+        `;
         const result = await db.query(query, [id]);
         return result.rows[0];
     }
@@ -97,12 +110,39 @@ class AssetModel {
         // console.log('Updating asset with data:', updateData);
 
         const query = `
-            UPDATE assets SET asset_tag = $1, serial_number = $2, status = $3, purchase_price = $4, notes = $5, asset_status_id = $6
-            WHERE id = $7
+            UPDATE assets SET 
+                asset_tag = $1, 
+                serial_number = $2, 
+                status = $3, 
+                purchase_price = $4, 
+                notes = $5, 
+                asset_status_id = $6,
+                branch_id = COALESCE($7, branch_id)
+            WHERE id = $8
             RETURNING *;
         `;
-        const values = [updateData.asset_tag, updateData.serial_number, updateData.status, updateData.purchase_price, updateData.notes, updateData.asset_status_id, id];
+        const values = [
+            updateData.asset_tag, 
+            updateData.serial_number, 
+            updateData.status, 
+            updateData.purchase_price, 
+            updateData.notes, 
+            updateData.asset_status_id,
+            updateData.branch_id,
+            id
+        ];
         const result = await db.query(query, values);
+        return result.rows[0];
+    }
+
+    static async updateBranch(id: number, branchId: number) {
+        const query = `
+            UPDATE assets 
+            SET branch_id = $1
+            WHERE id = $2
+            RETURNING *;
+        `;
+        const result = await db.query(query, [branchId, id]);
         return result.rows[0];
     }
 

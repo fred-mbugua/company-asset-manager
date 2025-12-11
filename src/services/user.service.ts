@@ -3,7 +3,7 @@ import bcrypt from 'bcryptjs';
 import logger from '../utils/logger';
 import ActionLogService from './actionLog.service';
 import { ICreateUser, IUpdateUser } from '../types/index';
-import { DepartmentModel } from '../models';
+import { DepartmentModel, LocationModel } from '../models';
 
 class UserService {
   private SALT_ROUNDS = 10;
@@ -67,6 +67,13 @@ class UserService {
       const department = await DepartmentModel.findById(updateData.department_id);
       if (!department) {
         throw new Error('Department not found.');
+      }
+    }
+
+    if (updateData.branch_id) {
+      const branch = await LocationModel.findById(updateData.branch_id);
+      if (!branch) {
+        throw new Error('Branch not found.');
       }
     }
 

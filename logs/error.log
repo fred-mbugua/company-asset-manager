@@ -740,3 +740,75 @@ Or, if you meant to create an async function, pass `async: true` as an option.
     at async AssetModel.delete (C:\Users\HomePC\Documents\JSL\JSL SYSTEMS\asset-manager\src\models\asset.model.ts:111:9)
     at async AssetService.delete (C:\Users\HomePC\Documents\JSL\JSL SYSTEMS\asset-manager\src\services\asset.service.ts:51:9)
     at async delete (C:\Users\HomePC\Documents\JSL\JSL SYSTEMS\asset-manager\src\controllers\asset.controller.ts:54:28)
+2025-12-11 17:06:15 error: error: null value in column "asset_tag" of relation "assets" violates not-null constraint
+    at C:\Users\HomePC\Documents\JSL\JSL SYSTEMS\asset-manager\node_modules\pg-pool\index.js:45:11
+    at processTicksAndRejections (node:internal/process/task_queues:103:5)
+    at async AssetModel.update (C:\Users\HomePC\Documents\JSL\JSL SYSTEMS\asset-manager\src\models\asset.model.ts:134:24)
+    at async AssignmentService.transferAssetBranch (C:\Users\HomePC\Documents\JSL\JSL SYSTEMS\asset-manager\src\services\assignment.service.ts:68:9)
+    at async AssignmentService.assignAsset (C:\Users\HomePC\Documents\JSL\JSL SYSTEMS\asset-manager\src\services\assignment.service.ts:17:13)
+    at async assignAsset (C:\Users\HomePC\Documents\JSL\JSL SYSTEMS\asset-manager\src\controllers\assignment.controller.ts:12:35)
+2025-12-11 17:32:39 error: error: column al.action does not exist
+    at C:\Users\HomePC\Documents\JSL\JSL SYSTEMS\asset-manager\node_modules\pg-pool\index.js:45:11
+    at processTicksAndRejections (node:internal/process/task_queues:103:5)
+    at async AssignmentModel.getAssetHistory (C:\Users\HomePC\Documents\JSL\JSL SYSTEMS\asset-manager\src\models\assignment.model.ts:203:24)
+    at async getAssetHistory (C:\Users\HomePC\Documents\JSL\JSL SYSTEMS\asset-manager\src\controllers\assignment.controller.ts:83:29)
+2025-12-11 17:32:43 error: error: column al.action does not exist
+    at C:\Users\HomePC\Documents\JSL\JSL SYSTEMS\asset-manager\node_modules\pg-pool\index.js:45:11
+    at processTicksAndRejections (node:internal/process/task_queues:103:5)
+    at async AssignmentModel.getAssetHistory (C:\Users\HomePC\Documents\JSL\JSL SYSTEMS\asset-manager\src\models\assignment.model.ts:203:24)
+    at async getAssetHistory (C:\Users\HomePC\Documents\JSL\JSL SYSTEMS\asset-manager\src\controllers\assignment.controller.ts:83:29)
+2025-12-11 17:32:45 error: error: column al.action does not exist
+    at C:\Users\HomePC\Documents\JSL\JSL SYSTEMS\asset-manager\node_modules\pg-pool\index.js:45:11
+    at processTicksAndRejections (node:internal/process/task_queues:103:5)
+    at async AssignmentModel.getAssetHistory (C:\Users\HomePC\Documents\JSL\JSL SYSTEMS\asset-manager\src\models\assignment.model.ts:203:24)
+    at async getAssetHistory (C:\Users\HomePC\Documents\JSL\JSL SYSTEMS\asset-manager\src\controllers\assignment.controller.ts:83:29)
+2025-12-11 17:32:52 error: error: column al.action does not exist
+    at C:\Users\HomePC\Documents\JSL\JSL SYSTEMS\asset-manager\node_modules\pg-pool\index.js:45:11
+    at processTicksAndRejections (node:internal/process/task_queues:103:5)
+    at async AssignmentModel.getAssetHistory (C:\Users\HomePC\Documents\JSL\JSL SYSTEMS\asset-manager\src\models\assignment.model.ts:203:24)
+    at async getAssetHistory (C:\Users\HomePC\Documents\JSL\JSL SYSTEMS\asset-manager\src\controllers\assignment.controller.ts:83:29)
+2025-12-11 17:34:52 error: error: column al.action does not exist
+    at C:\Users\HomePC\Documents\JSL\JSL SYSTEMS\asset-manager\node_modules\pg-pool\index.js:45:11
+    at processTicksAndRejections (node:internal/process/task_queues:103:5)
+    at async AssignmentModel.getAssetHistory (C:\Users\HomePC\Documents\JSL\JSL SYSTEMS\asset-manager\src\models\assignment.model.ts:203:24)
+    at async getAssetHistory (C:\Users\HomePC\Documents\JSL\JSL SYSTEMS\asset-manager\src\controllers\assignment.controller.ts:83:29)
+2025-12-11 17:35:23 error: error: column al.action does not exist
+    at C:\Users\HomePC\Documents\JSL\JSL SYSTEMS\asset-manager\node_modules\pg-pool\index.js:45:11
+    at processTicksAndRejections (node:internal/process/task_queues:103:5)
+    at async AssignmentModel.getAssetHistory (C:\Users\HomePC\Documents\JSL\JSL SYSTEMS\asset-manager\src\models\assignment.model.ts:203:24)
+    at async getAssetHistory (C:\Users\HomePC\Documents\JSL\JSL SYSTEMS\asset-manager\src\controllers\assignment.controller.ts:83:29)
+2025-12-11 17:35:28 error: error: column al.action does not exist
+    at C:\Users\HomePC\Documents\JSL\JSL SYSTEMS\asset-manager\node_modules\pg-pool\index.js:45:11
+    at processTicksAndRejections (node:internal/process/task_queues:103:5)
+    at async AssignmentModel.getAssetHistory (C:\Users\HomePC\Documents\JSL\JSL SYSTEMS\asset-manager\src\models\assignment.model.ts:203:24)
+    at async getAssetHistory (C:\Users\HomePC\Documents\JSL\JSL SYSTEMS\asset-manager\src\controllers\assignment.controller.ts:83:29)
+2025-12-11 17:35:31 error: error: column al.action does not exist
+    at C:\Users\HomePC\Documents\JSL\JSL SYSTEMS\asset-manager\node_modules\pg-pool\index.js:45:11
+    at processTicksAndRejections (node:internal/process/task_queues:103:5)
+    at async AssignmentModel.getAssetHistory (C:\Users\HomePC\Documents\JSL\JSL SYSTEMS\asset-manager\src\models\assignment.model.ts:203:24)
+    at async getAssetHistory (C:\Users\HomePC\Documents\JSL\JSL SYSTEMS\asset-manager\src\controllers\assignment.controller.ts:83:29)
+2025-12-11 17:36:14 error: error: column al.action does not exist
+    at C:\Users\HomePC\Documents\JSL\JSL SYSTEMS\asset-manager\node_modules\pg-pool\index.js:45:11
+    at processTicksAndRejections (node:internal/process/task_queues:103:5)
+    at async AssignmentModel.getAssetHistory (C:\Users\HomePC\Documents\JSL\JSL SYSTEMS\asset-manager\src\models\assignment.model.ts:203:24)
+    at async getAssetHistory (C:\Users\HomePC\Documents\JSL\JSL SYSTEMS\asset-manager\src\controllers\assignment.controller.ts:83:29)
+2025-12-11 17:39:53 error: error: column emps.emp_email does not exist
+    at C:\Users\HomePC\Documents\JSL\JSL SYSTEMS\asset-manager\node_modules\pg-pool\index.js:45:11
+    at processTicksAndRejections (node:internal/process/task_queues:103:5)
+    at async AssignmentModel.getAssetHistory (C:\Users\HomePC\Documents\JSL\JSL SYSTEMS\asset-manager\src\models\assignment.model.ts:203:24)
+    at async getAssetHistory (C:\Users\HomePC\Documents\JSL\JSL SYSTEMS\asset-manager\src\controllers\assignment.controller.ts:83:29)
+2025-12-11 17:40:01 error: error: column emps.emp_email does not exist
+    at C:\Users\HomePC\Documents\JSL\JSL SYSTEMS\asset-manager\node_modules\pg-pool\index.js:45:11
+    at processTicksAndRejections (node:internal/process/task_queues:103:5)
+    at async AssignmentModel.getAssetHistory (C:\Users\HomePC\Documents\JSL\JSL SYSTEMS\asset-manager\src\models\assignment.model.ts:203:24)
+    at async getAssetHistory (C:\Users\HomePC\Documents\JSL\JSL SYSTEMS\asset-manager\src\controllers\assignment.controller.ts:83:29)
+2025-12-11 17:40:04 error: error: column emps.emp_email does not exist
+    at C:\Users\HomePC\Documents\JSL\JSL SYSTEMS\asset-manager\node_modules\pg-pool\index.js:45:11
+    at processTicksAndRejections (node:internal/process/task_queues:103:5)
+    at async AssignmentModel.getAssetHistory (C:\Users\HomePC\Documents\JSL\JSL SYSTEMS\asset-manager\src\models\assignment.model.ts:203:24)
+    at async getAssetHistory (C:\Users\HomePC\Documents\JSL\JSL SYSTEMS\asset-manager\src\controllers\assignment.controller.ts:83:29)
+2025-12-11 17:40:21 error: error: column emps.emp_email does not exist
+    at C:\Users\HomePC\Documents\JSL\JSL SYSTEMS\asset-manager\node_modules\pg-pool\index.js:45:11
+    at processTicksAndRejections (node:internal/process/task_queues:103:5)
+    at async AssignmentModel.getAssetHistory (C:\Users\HomePC\Documents\JSL\JSL SYSTEMS\asset-manager\src\models\assignment.model.ts:203:24)
+    at async getAssetHistory (C:\Users\HomePC\Documents\JSL\JSL SYSTEMS\asset-manager\src\controllers\assignment.controller.ts:83:29)
