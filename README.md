@@ -7,40 +7,6 @@ All API responses follow a standard JSON format:
 * **Successful Response:** `{"success": true, "message": "...", "data": {...}}`
 * **Unsuccessful Response:** `{"success": false, "message": "..."}`
 
----
-
-## 📅 Date and Timezone Handling
-
-**All dates in the system are automatically displayed in the user's local timezone.**
-
-### How It Works
-- **Database**: All dates stored in UTC
-- **API Responses**: Dates returned in ISO 8601 format (UTC)
-- **Client Display**: Automatically converted to user's browser timezone
-- **User Input**: Date selections automatically handled in user's timezone
-
-### Implementation Details
-See [TIMEZONE_IMPLEMENTATION.md](./TIMEZONE_IMPLEMENTATION.md) for complete documentation.
-
-### Key Features
-- ✅ Automatic timezone conversion on all pages
-- ✅ Consistent date formatting across the application
-- ✅ Date inputs respect user's local date
-- ✅ No server-side timezone configuration needed
-
-### Quick Example
-```javascript
-// EJS Template - dates auto-format to user's timezone
-<span data-date="<%= asset.created_at %>"></span>
-
-// JavaScript - use DateUtils for dynamic content
-DateUtils.formatDate(asset.created_at)      // "Dec 13, 2025"
-DateUtils.formatDateTime(log.created_at)    // "Dec 13, 2025, 3:30 PM"
-```
-
-For testing, visit: `/views/timezone-test.html`
-
----
 
 ## 1. Authentication (`/api/auth`)
 
