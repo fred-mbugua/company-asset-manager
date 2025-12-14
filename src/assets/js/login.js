@@ -12,6 +12,9 @@ document.getElementById('login-button').addEventListener('click', async function
         const response = await API.post('/auth/login', payload);
         
         // Redirect to the returnTo URL if available, otherwise to dashboard
+        if (response.status !== 200) {
+            throw new Error(response.data?.message || 'Login failed');
+        }
         const redirectUrl = response.data?.returnTo || '/dashboard';
         window.location.href = redirectUrl;
 

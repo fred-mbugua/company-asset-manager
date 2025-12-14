@@ -25,6 +25,10 @@ class AuthController {
             const { email, password } = req.body;
             const { accessToken, refreshToken, user } = await AuthService.login({email, password});
 
+            if (!user) {
+                logger.warn(`Login failed: User not found for email ${email}`);
+                return errorResponse(res, 401, 'Invalid email or password');
+            }
             res.cookie('accessToken', accessToken, {
                 httpOnly: true,
                 secure: process.env.NODE_ENV === 'production',
