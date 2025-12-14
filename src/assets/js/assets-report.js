@@ -89,7 +89,7 @@ document.addEventListener('DOMContentLoaded', () => {
                 <td>${asset.serial_number}</td>
                 <td>${asset.status_name || 'N/A'}</td>
                 <td>${asset.location || 'N/A'}</td>
-                <td>${new Date(asset.purchase_date).toLocaleDateString()}</td>
+                <td>${DateUtils.formatDate(asset.purchase_date)}</td>
             </tr>
         `).join('');
     };

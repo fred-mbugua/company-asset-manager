@@ -74,7 +74,7 @@ export const authenticate = async (req: AuthenticatedRequest, res: Response, nex
             req.user = decoded; // User is authenticated
             return next();
         } catch (accessError) {
-            console.log('Access token verification failed:', accessError);
+            // console.log('Access token verification failed:', accessError);
             // Access token expired or invalid. Continue to refresh flow.
         }
     }

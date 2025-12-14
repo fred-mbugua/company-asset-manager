@@ -19,7 +19,8 @@ document.addEventListener('DOMContentLoaded', () => {
     $('.select2-dropdown').select2({
         placeholder: 'Select an option',
         allowClear: true,
-        width: '100%'
+        width: 'style',
+        minimumResultsForSearch: 0
     });
     
     // Load initial data
@@ -100,7 +101,7 @@ const renderTable = (data) => {
             <td>${asset.serial_number}</td>
             <td>${asset.status || asset.status_name || 'N/A'}</td>
             <td>${asset.location || 'N/A'}</td>
-            <td>${new Date(asset.purchase_date).toLocaleDateString()}</td>
+            <td>${DateUtils.formatDate(asset.purchase_date)}</td>
             <td>
                 <button class="btn btn-edit" onclick="showAssetDetails(${asset.id})">View/Edit</button>
                 <button class="btn btn-view" onclick="showAssignmentHistory(${asset.id}, '${asset.asset_tag}')">History</button>
@@ -183,11 +184,11 @@ async function showAssetDetails(id) {
             <div class="form-field"><label>Asset Tag:</label><input type="text" id="edit_tag" value="${asset.asset_tag}" required></div>
             <div class="form-field"><label>Serial Number:</label><input type="text" id="edit_serial" value="${asset.serial_number}" required></div>
             <div class="form-field"><label>Status:</label>
-            <select id="edit_status" required>
+            <select id="edit_status" class="status-select" required style="width: 100%;">
                 ${statusOptions}
             </select></div>
             <div class="form-field"><label>Location (Branch):</label>
-            <select id="edit_location" class="location-select" required>
+            <select id="edit_location" class="location-select" required style="width: 100%;">
                 ${branchOptions}
             </select></div>
             <div class="form-field"><label>Purchase Price:</label><input type="number" step="0.01" id="edit_price" value="${asset.purchase_price}" required></div>
@@ -196,12 +197,20 @@ async function showAssetDetails(id) {
         document.getElementById('edit_status').value = asset.asset_status_id;
         document.getElementById('edit_location').value = asset.branch_id;
         
-        // Initialize Select2 for the location dropdown
+        // Initialize Select2 for the dropdowns
         if (typeof $ !== 'undefined' && typeof $.fn.select2 !== 'undefined') {
+            $('.status-select').select2({
+                placeholder: 'Select a status',
+                allowClear: false,
+                width: 'style',
+                minimumResultsForSearch: 0
+            });
+            
             $('.location-select').select2({
                 placeholder: 'Select a branch',
                 allowClear: false,
-                width: '100%'
+                width: 'style',
+                minimumResultsForSearch: 0
             });
         }
         
@@ -326,9 +335,9 @@ async function showAssignmentHistory(assetId, assetTag) {
                         const assignedBy = record.assigned_by_first_name 
                             ? `${record.assigned_by_first_name} ${record.assigned_by_last_name}`
                             : 'N/A';
-                        const assignedDate = new Date(record.assignment_date).toLocaleDateString();
+                        const assignedDate = DateUtils.formatDate(record.assignment_date);
                         const returnedDate = record.return_date 
-                            ? new Date(record.return_date).toLocaleDateString()
+                            ? DateUtils.formatDate(record.return_date)
                             : '<span style="color: #4A9D5F; font-weight: 600;">Currently Assigned</span>';
                         const status = record.return_date ? 'returned' : 'active';
                         

@@ -21,5 +21,25 @@ router.get(
     asyncHandler(ExpenseTypeController.getAllExpenseTypes)
 );
 
+router.get(
+    '/expense-types/:id',
+    authenticate,
+    asyncHandler(ExpenseTypeController.getExpenseTypeById)
+);
+
+router.put(
+    '/expense-types/:id',
+    authenticate,
+    authorize(['Admin']),
+    asyncHandler(ExpenseTypeController.updateExpenseType)
+);
+
+router.delete(
+    '/expense-types/:id',
+    authenticate,
+    authorize(['Admin']),
+    asyncHandler(ExpenseTypeController.deleteExpenseType)
+);
+
 
 export default router;

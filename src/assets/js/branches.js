@@ -68,8 +68,8 @@ async function loadBranches() {
           <td>${branch.id}</td>
           <td>${branch.name}</td>
           <td>${branch.location}</td>
-          <td>${new Date(branch.created_at).toLocaleString()}</td>
-          <td>${new Date(branch.updated_at).toLocaleString()}</td>
+          <td>${DateUtils.formatDateTime(branch.created_at)}</td>
+          <td>${DateUtils.formatDateTime(branch.updated_at)}</td>
           <td>
             <button class="action-btn btn-edit" onclick="editBranch(${branch.id})">Edit</button>
             <button class="action-btn btn-delete" onclick="deleteBranch(${branch.id})">Delete</button>

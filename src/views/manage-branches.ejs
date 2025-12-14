@@ -33,7 +33,7 @@
             <div class="branch-list-section mt-5">
                 <h4>Existing Branches</h4>
                 <div class="responsive-table-wrapper">
-                    <table class="data-table">
+                    <table id="branches-table" class="data-table">
                         <thead>
                             <tr>
                                 <th>ID</th>
@@ -57,11 +57,24 @@
                                 <% }); %>
                             <% } else { %>
                                 <tr>
-                                    <td colspan="7" style="text-align:center;">No branches found.</td>
+                                    <td colspan="4" style="text-align:center;">No branches found.</td>
                                 </tr>
                             <% } %>
                         </tbody>
                     </table>
+                </div>
+                
+                <div class="pagination-controls" style="display: flex; justify-content: space-between; align-items: center; margin-top: 15px; padding: 10px;">
+                    <select id="page-size" style="padding: 8px; border: 1px solid #ccc; border-radius: 4px;">
+                        <option value="10" selected>10 per page</option>
+                        <option value="20">20 per page</option>
+                        <option value="50">50 per page</option>
+                    </select>
+                    <div style="display: flex; gap: 10px; align-items: center;">
+                        <button id="prev-btn" class="btn" disabled>Previous</button>
+                        <span id="page-info">Page 1 of 1 (0 total)</span>
+                        <button id="next-btn" class="btn" disabled>Next</button>
+                    </div>
                 </div>
             </div>
         </div>

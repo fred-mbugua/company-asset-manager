@@ -1,4 +1,6 @@
 <%- include('partials/header', { pageTitle: 'Assignment Report', cssFile: 'assign-report' }) %>
+<!-- Select2 CSS -->
+<link href="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/css/select2.min.css" rel="stylesheet" />
 <%- include('partials/navbar', { user: locals.user }) %>
 
 <div class="main">
@@ -8,47 +10,71 @@
             <h3>Asset Assignments Report</h3>
 
             <div class="filters">
-                <select id="filter-tag">
-                    <option value="">Asset Tags</option>
-                    <% if (locals.assetTags && locals.assetTags.length) { %>
-                        <% locals.assetTags.forEach(tag => { %>
-                            <option value="<%= tag %>"><%= tag %></option>
-                        <% }); %>
-                    <% } %>
-                </select>
+                <div class="filter-row">
+                    <div class="filter-group">
+                        <label for="filter-tag">Asset Tag:</label>
+                        <select id="filter-tag" class="select2-dropdown" style="width: 200px;">
+                            <option value="">All Tags</option>
+                            <% if (locals.assetTags && locals.assetTags.length) { %>
+                                <% locals.assetTags.forEach(tag => { %>
+                                    <option value="<%= tag %>"><%= tag %></option>
+                                <% }); %>
+                            <% } %>
+                        </select>
+                    </div>
+                    
+                    <div class="filter-group">
+                        <label for="filter-department">Department:</label>
+                        <select id="filter-department" class="select2-dropdown" style="width: 200px;">
+                            <option value="">All Departments</option>
+                            <% if (locals.departments && locals.departments.length) { %>
+                                <% locals.departments.forEach(dept => { %>
+                                    <option value="<%= dept.name %>"><%= dept.name %></option>
+                                <% }); %>
+                            <% } %>
+                        </select>
+                    </div>
+                    
+                    <div class="filter-group">
+                        <label for="filter-employee">Employee:</label>
+                        <select id="filter-employee" class="select2-dropdown" style="width: 200px;">
+                            <option value="">All Employees</option>
+                            <% if (locals.employees && locals.employees.length) { %>
+                                <% locals.employees.forEach(employee => { %>
+                                    <option value="<%= employee %>"><%= employee %></option>
+                                <% }); %>
+                            <% } %>
+                        </select>
+                    </div>
+                    
+                    <div class="filter-group">
+                        <label for="filter-location">Location:</label>
+                        <select id="filter-location" class="select2-dropdown" style="width: 200px;">
+                            <option value="">All Branches</option>
+                            <% if (locals.locations && locals.locations.length) { %>
+                                <% locals.locations.forEach(loc => { %>
+                                    <option value="<%= loc.name %>"><%= loc.name %></option>
+                                <% }); %>
+                            <% } %>
+                        </select>
+                    </div>
+                </div>
                 
-                <select id="filter-department">
-                    <option value="">All Department</option>
-                    <% if (locals.departments && locals.departments.length) { %>
-                        <% locals.departments.forEach(dept => { %>
-                            <option value="<%= dept.name %>"><%= dept.name %></option>
-                        <% }); %>
-                    <% } %>
-                </select>
-                
-                <select id="filter-employee">
-                    <option value="">Employees</option>
-                    <% if (locals.employees && locals.employees.length) { %>
-                        <% locals.employees.forEach(employee => { %>
-                            <option value="<%= employee %>"><%= employee %></option>
-                        <% }); %>
-                    <% } %>
-                </select>
-                
-                <select id="filter-location">
-                    <option value="">All Branches</option>
-                    <% if (locals.locations && locals.locations.length) { %>
-                        <% locals.locations.forEach(loc => { %>
-                            <option value="<%= loc.name %>"><%= loc.name %></option>
-                        <% }); %>
-                    <% } %>
-                </select>
-                
-                <input type="date" id="filter-from-date" placeholder="From Date">
-                <input type="date" id="filter-to-date" placeholder="To Date">
-    
-                <button class="btn btn-view" id="search-btn">Search</button>
-                <button class="btn btn-export" id="export-btn">Export to Excel</button>
+                <div class="filter-row">
+                    <div class="filter-group date-range">
+                        <label>Date Range:</label>
+                        <div class="date-inputs">
+                            <input type="date" id="filter-from-date" placeholder="From Date">
+                            <span class="date-separator">to</span>
+                            <input type="date" id="filter-to-date" placeholder="To Date">
+                        </div>
+                    </div>
+                    
+                    <div class="filter-actions">
+                        <button class="btn btn-view" id="search-btn">Search</button>
+                        <button class="btn btn-export" id="export-btn">Export to Excel</button>
+                    </div>
+                </div>
             </div>
 
             <div class="table-wrapper">
@@ -76,9 +102,9 @@
                                     <td><%= assignment.model %></td>
                                     <td><%= assignment.employee_name %></td>
                                     <td><%= assignment.department %></td>
-                                    <td><%= new Date(assignment.assignment_date).toLocaleDateString() %></td>
+                                    <td><span data-date="<%= assignment.assignment_date %>"></span></td>
                                     <td title="<%= assignment.notes || '' %>"><%= assignment.notes ? assignment.notes.substring(0, 50) + '...' : 'N/A' %></td>
-                                    <td><%= assignment.return_date ? new Date(assignment.return_date).toLocaleDateString() : 'N/A' %></td>
+                                    <td><% if (assignment.return_date != null) { %><span data-date="<%= assignment.return_date %>"></span><% } else { %>N/A<% } %></td>
                                 </tr>
                             <% }); %>
                         <% } else { %>
@@ -103,5 +129,20 @@
         </div>
     </section>
 </div>
+
+<!-- jQuery (required for Select2) -->
+<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+<!-- Select2 JS -->
+<script src="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/js/select2.min.js"></script>
+<script>
+$(document).ready(function() {
+    $('.select2-dropdown').select2({
+        placeholder: 'Select an option',
+        allowClear: true,
+        width: 'style',
+        minimumResultsForSearch: 0
+    });
+});
+</script>
 
 <%- include('partials/footer', { jsFile: 'assignment-report' }) %>

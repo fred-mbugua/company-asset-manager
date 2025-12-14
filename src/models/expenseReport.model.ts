@@ -1,5 +1,3 @@
-// src/models/expenseReport.model.ts
-
 import db from '../config/database';
 
 interface IReportQueryOptions {
@@ -22,7 +20,7 @@ interface ExpenseReportData {
 }
 
 /**
- * Defines the structure for filtering parameters used in expense report queries.
+ * Defining the structure for filtering parameters used in expense report queries.
  * All properties are optional (?) because the user may choose not to apply any filter.
  */
 export interface IExpenseReportFilters {
@@ -78,7 +76,7 @@ export class ExpenseReportModel {
     }
 
     /**
-     * Fetches paginated expenses and the total count.
+     * Fetching paginated expenses and the total count.
      */
     async findPaginatedAndCount(filters: IExpenseReportFilters, options: IReportQueryOptions): 
         Promise<{ expenses: ExpenseReportData[], totalCount: number }> 
@@ -88,7 +86,7 @@ export class ExpenseReportModel {
 
         // Fetch Paginated Data
         const dataQuery = `
-            SELECT
+            Select
                 expenses.id,
                 expenses.amount,
                 expenses.date,
@@ -96,16 +94,18 @@ export class ExpenseReportModel {
                 expenses.invoice_number,
                 expenses.notes,
                 assets.asset_tag,
-                expense_types.name AS expense_type_name,
-                COALESCE(employees.department, 'N/A') AS department,
-                branches.name AS location
-            FROM expenses
-            INNER JOIN assets ON expenses.asset_id = assets.id
-            INNER JOIN expense_types ON expenses.expense_type_id = expense_types.id
-            -- LEFT JOIN to get current assignment details (department)
-            LEFT JOIN assignments ON assignments.asset_id = assets.id AND assignments.return_date IS NULL
-            LEFT JOIN employees ON assignments.employee_id = employees.id
-            LEFT JOIN branches ON assets.branch_id = branches.id
+                expense_types.name As expense_type_name,
+                branches.name As location,
+                COALESCE(departments.name, 'N/A') AS department
+            From
+                expenses Inner Join
+                assets On expenses.asset_id = assets.id Inner Join
+                expense_types On expenses.expense_type_id = expense_types.id Left Join
+                assignments On assignments.asset_id = assets.id
+                        And assignments.return_date Is Null Left Join
+                employees On assignments.employee_id = employees.id Left Join
+                branches On assets.branch_id = branches.id Inner Join
+                departments On employees.department_id = departments.id
             ${where}
             ORDER BY expenses.date DESC
             LIMIT $${nextIndex} OFFSET $${nextIndex + 1};
@@ -142,18 +142,27 @@ export class ExpenseReportModel {
 
         // Uses the same main query but without LIMIT/OFFSET
         const query = `
-            SELECT
-                expenses.id, expenses.amount, expenses.date, expenses.vendor, 
-                expenses.invoice_number, expenses.notes, assets.asset_tag, 
-                expense_types.name AS expense_type_name,
-                COALESCE(employees.department, 'N/A') AS department,
-                branches.name AS location
-            FROM expenses
-            INNER JOIN assets ON expenses.asset_id = assets.id
-            INNER JOIN expense_types ON expenses.expense_type_id = expense_types.id
-            LEFT JOIN assignments ON assignments.asset_id = assets.id AND assignments.return_date IS NULL
-            LEFT JOIN employees ON assignments.employee_id = employees.id
-            LEFT JOIN branches ON assets.branch_id = branches.id
+            
+            Select
+                expenses.id,
+                expenses.amount,
+                expenses.date,
+                expenses.vendor,
+                expenses.invoice_number,
+                expenses.notes,
+                assets.asset_tag,
+                expense_types.name As expense_type_name,
+                Coalesce(departments.name, 'N/A') As department,
+                branches.name As location
+            From
+                expenses Inner Join
+                assets On expenses.asset_id = assets.id Inner Join
+                expense_types On expenses.expense_type_id = expense_types.id Left Join
+                assignments On assignments.asset_id = assets.id
+                        And assignments.return_date Is Null Left Join
+                employees On assignments.employee_id = employees.id Left Join
+                branches On assets.branch_id = branches.id Inner Join
+                departments On employees.department_id = departments.id
             ${where}
             ORDER BY expenses.date DESC;
         `;

@@ -1,4 +1,6 @@
 <%- include('partials/header', { pageTitle: 'Create / Manage Users', cssFile: 'users' }) %>
+<!-- Select2 CSS -->
+<link href="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/css/select2.min.css" rel="stylesheet" />
 <%- include('partials/navbar') %>
 
 <div class="main">
@@ -33,7 +35,7 @@
                     </div>
                     <div class="form-group">
                         <label for="role_id">Role</label>
-                        <select id="role_id" required>
+                        <select id="role_id" class="select2-dropdown" required style="width: 100%;">
                             <option value="">-- Select Role --</option>
                             <option value="1">Admin</option>
                             <option value="2">Standard User</option>
@@ -41,7 +43,7 @@
                     </div>
                     <div class="form-group">
                         <label for="department_id">Department</label>
-                        <select id="department_id" required>
+                        <select id="department_id" class="select2-dropdown" required style="width: 100%;">
                             <option value="">-- Select Department --</option>
                             <% if (locals.departments) { %>
                                 <% locals.departments.forEach(dept => { %>
@@ -52,7 +54,7 @@
                     </div>
                     <div class="form-group">
                         <label for="branch_id">Branch</label>
-                        <select id="branch_id" required>
+                        <select id="branch_id" class="select2-dropdown" required style="width: 100%;">
                             <option value="">-- Select Branch --</option>
                             <% if (locals.branches) { %>
                                 <% locals.branches.forEach(branch => { %>
@@ -105,5 +107,20 @@
         </div>
     </section>
 </div>
+
+<!-- jQuery (required for Select2) -->
+<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+<!-- Select2 JS -->
+<script src="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/js/select2.min.js"></script>
+<script>
+$(document).ready(function() {
+    $('.select2-dropdown').select2({
+        placeholder: 'Select an option',
+        allowClear: true,
+        width: 'style',
+        minimumResultsForSearch: 0
+    });
+});
+</script>
 
 <%- include('partials/footer', { jsFile: 'users' }) %>

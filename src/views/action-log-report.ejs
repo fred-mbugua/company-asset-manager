@@ -1,4 +1,6 @@
 <%- include('partials/header', { pageTitle: 'Action Logs Report', cssFile: 'action-log-report' }) %>
+<!-- Select2 CSS -->
+<link href="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/css/select2.min.css" rel="stylesheet" />
 <%- include('partials/navbar', { user: locals.user }) %>
 
 <div class="main">
@@ -8,39 +10,59 @@
             <h3>Action Logs Report</h3>
 
             <div class="filters">
+                <div class="filter-row">
+                    <div class="filter-group">
+                        <label for="filter-user">User:</label>
+                        <select id="filter-user" class="select2-dropdown" style="width: 200px;">
+                            <option value="">All Users</option>
+                            <% if (locals.users && locals.users.length) { %>
+                                <% locals.users.forEach(user => { %>
+                                    <option value="<%= user.id %>"><%= user.user_name %></option>
+                                <% }); %>
+                            <% } %>
+                        </select>
+                    </div>
+                    
+                    <div class="filter-group">
+                        <label for="filter-action-type">Action Type:</label>
+                        <select id="filter-action-type" class="select2-dropdown" style="width: 200px;">
+                            <option value="">All Action Types</option>
+                            <% if (locals.actionTypes && locals.actionTypes.length) { %>
+                                <% locals.actionTypes.forEach(type => { %>
+                                    <option value="<%= type %>"><%= type %></option>
+                                <% }); %>
+                            <% } %>
+                        </select>
+                    </div>
+                    
+                    <div class="filter-group">
+                        <label for="filter-entity-type">Entity Type:</label>
+                        <select id="filter-entity-type" class="select2-dropdown" style="width: 200px;">
+                            <option value="">All Entity Types</option>
+                            <% if (locals.entityTypes && locals.entityTypes.length) { %>
+                                <% locals.entityTypes.forEach(type => { %>
+                                    <option value="<%= type %>"><%= type %></option>
+                                <% }); %>
+                            <% } %>
+                        </select>
+                    </div>
+                </div>
                 
-                <select id="filter-user">
-                    <option value="">All Users</option>
-                    <% if (locals.users && locals.users.length) { %>
-                        <% locals.users.forEach(user => { %>
-                            <option value="<%= user.id %>"><%= user.user_name %></option>
-                        <% }); %>
-                    <% } %>
-                </select>
-                
-                <select id="filter-action-type">
-                    <option value="">All Action Types</option>
-                    <% if (locals.actionTypes && locals.actionTypes.length) { %>
-                        <% locals.actionTypes.forEach(type => { %>
-                            <option value="<%= type %>"><%= type %></option>
-                        <% }); %>
-                    <% } %>
-                </select>
-                
-                <select id="filter-entity-type">
-                    <option value="">All Entity Types</option>
-                    <% if (locals.entityTypes && locals.entityTypes.length) { %>
-                        <% locals.entityTypes.forEach(type => { %>
-                            <option value="<%= type %>"><%= type %></option>
-                        <% }); %>
-                    <% } %>
-                </select>
-                
-                <input type="date" id="filter-from-date" placeholder="From Date">
-                <input type="date" id="filter-to-date" placeholder="To Date">
-
-                <button class="btn btn-view" id="search-btn">Search</button>
-                <button class="btn btn-export" id="export-btn">Export to Excel</button>
+                <div class="filter-row">
+                    <div class="filter-group date-range">
+                        <label>Date Range:</label>
+                        <div class="date-inputs">
+                            <input type="date" id="filter-from-date" placeholder="From Date">
+                            <span class="date-separator">to</span>
+                            <input type="date" id="filter-to-date" placeholder="To Date">
+                        </div>
+                    </div>
+                    
+                    <div class="filter-actions">
+                        <button class="btn btn-view" id="search-btn">Search</button>
+                        <button class="btn btn-export" id="export-btn">Export to Excel</button>
+                    </div>
+                </div>
             </div>
 
             <div class="table-wrapper">
@@ -66,7 +88,7 @@
                                     <td><%= log.entity_type %></td>
                                     <td><%= log.entity_id || 'N/A' %></td>
                                     <td title="<%= log.details %>"><%= log.details.length > 50 ? log.details.substring(0, 50) + '...' : log.details %></td>
-                                    <td><%= log.created_at %></td>
+                                    <td><span data-date="<%= log.created_at %>"></span></td>
                                 </tr>
                             <% }); %>
                         <% } else { %>
@@ -92,5 +114,20 @@
         </div>
     </section>
 </div>
+
+<!-- jQuery (required for Select2) -->
+<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+<!-- Select2 JS -->
+<script src="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/js/select2.min.js"></script>
+<script>
+$(document).ready(function() {
+    $('.select2-dropdown').select2({
+        placeholder: 'Select an option',
+        allowClear: true,
+        width: 'style',
+        minimumResultsForSearch: 0
+    });
+});
+</script>
 
 <%- include('partials/footer', { jsFile: 'action-log-report' }) %> 

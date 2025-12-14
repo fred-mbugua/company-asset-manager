@@ -50,4 +50,48 @@ export default new class AssetStatusController {
             res.status(500).json({ success: false, message: 'Failed to retrieve asset statuses.' });
         }
     }
+
+    /**
+     * Retrieves a single asset status by ID.
+     */
+    async getAssetStatusById(req: Request, res: Response): Promise<void> {
+        try {
+            const id = parseInt(req.params.id);
+            const status = await AssetStatusService.findById(id);
+            res.status(200).json({ success: true, data: status });
+        } catch (error: any) {
+            res.status(404).json({ success: false, message: error.message });
+        }
+    }
+
+    /**
+     * Updates an asset status.
+     */
+    async updateAssetStatus(req: Request, res: Response): Promise<void> {
+        try {
+            const id = parseInt(req.params.id);
+            const { name, is_available, description } = req.body;
+            const updated = await AssetStatusService.update(id, { name, is_available, description });
+            res.status(200).json({ success: true, message: 'Asset status updated successfully.', data: updated });
+        } catch (error: any) {
+            if (error.message.startsWith('Duplicate asset status:')) {
+                res.status(409).json({ success: false, message: error.message });
+                return;
+            }
+            res.status(500).json({ success: false, message: error.message });
+        }
+    }
+
+    /**
+     * Deletes an asset status.
+     */
+    async deleteAssetStatus(req: Request, res: Response): Promise<void> {
+        try {
+            const id = parseInt(req.params.id);
+            await AssetStatusService.delete(id);
+            res.status(200).json({ success: true, message: 'Asset status deleted successfully.' });
+        } catch (error: any) {
+            res.status(500).json({ success: false, message: error.message });
+        }
+    }
 }

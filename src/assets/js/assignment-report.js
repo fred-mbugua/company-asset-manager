@@ -69,9 +69,9 @@ document.addEventListener('DOMContentLoaded', () => {
                 <td>${assignment.model}</td>
                 <td>${assignment.employee_name}</td>
                 <td>${assignment.department}</td>
-                <td>${new Date(assignment.assignment_date).toLocaleDateString()}</td> 
+                <td>${DateUtils.formatDate(assignment.assignment_date)}</td> 
                 <td title="${assignment.notes || ''}">${assignment.notes ? assignment.notes.substring(0, 50) + '...' : 'N/A'}</td>
-                <td>${assignment.return_date ? new Date(assignment.return_date).toLocaleDateString() : 'N/A'}</td> 
+                <td>${assignment.return_date ? DateUtils.formatDate(assignment.return_date) : 'N/A'}</td> 
             </tr>
         `).join('');
     };

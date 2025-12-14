@@ -15,7 +15,7 @@
                 </div>
                 <div class="form-field">
                     <label for="asset_type">Asset Type</label>
-                    <select id="asset_type" required>
+                    <select id="asset_type" class="select2-dropdown" required style="width: 100%;">
                         <option value="">-- Select type --</option>
                         <% assetTypes.forEach(function(type) { %>
                             <option value="<%= type.id %>"><%= type.name %></option>
@@ -37,7 +37,7 @@
                 </div>
                 <div class="form-field">
                     <label for="status">Status</label>
-                    <select id="status" required>
+                    <select id="status" class="select2-dropdown" required style="width: 100%;">
                         <option value="">-- Select status --</option>
                         <% assetStatuses.forEach(function(status) { %>
                             <option value="<%= status.id %>"><%= status.name %></option>
@@ -47,7 +47,7 @@
 
                 <div class="form-field">
                     <label for="branch_id">Location</label>
-                    <select id="branch_id" class="select2-dropdown" required>
+                    <select id="branch_id" class="select2-dropdown" required style="width: 100%;">
                         <option value="">-- Select location --</option>
                         <% branches.forEach(function(branch) { %>
                             <option value="<%= branch.id %>"><%= branch.name %></option>
@@ -57,6 +57,10 @@
                 <div class="form-field">
                     <label for="purchase_date">Purchase Date</label>
                     <input type="date" id="purchase_date" required>
+                    <script>
+                        // Set max date to today in user's timezone
+                        document.getElementById('purchase_date').setAttribute('max', DateUtils.getTodayForInput());
+                    </script>
                 </div>
                 <div class="form-field">
                     <label for="purchase_price">Purchase Price</label>
@@ -86,7 +90,8 @@ $(document).ready(function() {
     $('.select2-dropdown').select2({
         placeholder: 'Type to search...',
         allowClear: true,
-        width: '100%'
+        width: 'style',
+        minimumResultsForSearch: 0
     });
 });
 </script>

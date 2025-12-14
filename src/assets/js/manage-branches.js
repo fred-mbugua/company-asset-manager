@@ -131,4 +131,89 @@ document.addEventListener('DOMContentLoaded', () => {
             handleDelete(id, name);
         }
     });
+
+    // --- Pagination Logic ---
+    const branchesTable = document.getElementById('branches-table');
+    const pageSizeSelect = document.getElementById('page-size');
+    const prevBtn = document.getElementById('prev-btn');
+    const nextBtn = document.getElementById('next-btn');
+    const pageInfo = document.getElementById('page-info');
+
+    let currentPage = 1;
+    let itemsPerPage = 10;
+    let allBranches = [];
+
+    // Store all branch rows when page loads
+    if (branchesTableBody) {
+        const rows = Array.from(branchesTableBody.querySelectorAll('tr'));
+        allBranches = rows;
+
+        // Initialize pagination
+        updatePagination();
+
+        // Page size change handler
+        if (pageSizeSelect) {
+            pageSizeSelect.addEventListener('change', (e) => {
+                itemsPerPage = parseInt(e.target.value);
+                currentPage = 1;
+                updatePagination();
+            });
+        }
+
+        // Previous button handler
+        if (prevBtn) {
+            prevBtn.addEventListener('click', () => {
+                if (currentPage > 1) {
+                    currentPage--;
+                    updatePagination();
+                }
+            });
+        }
+
+        // Next button handler
+        if (nextBtn) {
+            nextBtn.addEventListener('click', () => {
+                const totalPages = Math.ceil(allBranches.length / itemsPerPage);
+                if (currentPage < totalPages) {
+                    currentPage++;
+                    updatePagination();
+                }
+            });
+        }
+    }
+
+    function updatePagination() {
+        // Filter out "No branches found" row
+        const validBranches = allBranches.filter(row => !row.textContent.includes('No branches found'));
+        
+        const totalItems = validBranches.length;
+        const totalPages = Math.ceil(totalItems / itemsPerPage) || 1;
+        
+        // Calculate start and end indices
+        const startIndex = (currentPage - 1) * itemsPerPage;
+        const endIndex = startIndex + itemsPerPage;
+        
+        // Clear table body
+        branchesTableBody.innerHTML = '';
+        
+        if (totalItems === 0) {
+            // Show no data message
+            const noDataRow = document.createElement('tr');
+            noDataRow.innerHTML = '<td colspan="4" style="text-align:center;">No branches found.</td>';
+            branchesTableBody.appendChild(noDataRow);
+        } else {
+            // Show only the rows for the current page
+            const pageBranches = validBranches.slice(startIndex, endIndex);
+            pageBranches.forEach(row => {
+                branchesTableBody.appendChild(row);
+            });
+        }
+        
+        // Update page info
+        pageInfo.textContent = `Page ${currentPage} of ${totalPages} (${totalItems} total)`;
+        
+        // Update button states
+        prevBtn.disabled = currentPage === 1;
+        nextBtn.disabled = currentPage >= totalPages;
+    }
 });

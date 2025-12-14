@@ -69,7 +69,7 @@ document.addEventListener('DOMContentLoaded', () => {
             return;
         }
         
-        // Data coming from the controller already have formatted dates and details.
+        // Data coming from the controller - format dates using DateUtils
         tableBody.innerHTML = data.map(log => `
             <tr>
                 <td>${log.id}</td>
@@ -78,7 +78,7 @@ document.addEventListener('DOMContentLoaded', () => {
                 <td>${log.entity_type}</td>
                 <td>${log.entity_id || 'N/A'}</td>
                 <td title="${log.details}">${log.details.length > 50 ? log.details.substring(0, 50) + '...' : log.details}</td>
-                <td>${log.created_at}</td>
+                <td>${DateUtils.formatDateTime(log.created_at)}</td>
             </tr>
         `).join('');
     };
@@ -129,7 +129,16 @@ document.addEventListener('DOMContentLoaded', () => {
         window.open(`/api/reports/action-logs/export?${exportQuery}`, '_blank'); 
     });
 
-    // Initial load
+    // Initial load - enable pagination for server-rendered initial data
     currentFilters = getFilters();
-    // fetchAndRenderData(); // Uncomment to load data on page load, or rely on server-side initial data
+    
+    // If there's initial data, set up pagination state
+    if (tableBody.querySelector('tr')) {
+        const pageInfo = pageInfoSpan.textContent;
+        const match = pageInfo.match(/Page (\d+) of (\d+)/);
+        if (match) {
+            currentPage = parseInt(match[1]);
+            totalPages = parseInt(match[2]);
+        }
+    }
 });

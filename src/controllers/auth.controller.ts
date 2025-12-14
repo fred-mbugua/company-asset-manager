@@ -5,19 +5,6 @@ import { AuthenticatedRequest } from '../types';
 import logger from '../utils/logger'; // Import the logger
 
 class AuthController {
-    // async register(req: Request, res: Response) {
-    //     // console.log('Registered user:', req.body);
-    //     try {
-    //         const newUser = await AuthService.register(req.body);
-    //         const { password, ...user } = newUser;
-
-    //         logger.info(`User registered successfully: ${user.email}`);
-    //         successResponse(res, 201, 'User registered successfully', { user });
-    //     } catch (error) {
-    //         logger.error(`Registration failed: ${(error as Error).message}`, { error });
-    //         errorResponse(res, 400, (error as Error).message);
-    //     }
-    // }
 
     async register(req: Request, res: Response) {
         logger.info('Received request to register a new user.');
@@ -110,22 +97,6 @@ class AuthController {
             errorResponse(res, 401, (error as Error).message);
         }
     }
-
-    // async userRoles(req: AuthenticatedRequest, res: Response) {
-    //     try {
-    //         const userId = req.user?.id;
-    //         if (!userId) {
-    //             logger.warn('Fetching user roles failed: User ID not found in request');
-    //             return errorResponse(res, 400, 'User ID not found');
-    //         }
-
-    //         const roles = await AuthService.(userId);
-    //         successResponse(res, 200, 'User roles fetched successfully', { roles });
-    //     } catch (error) {
-    //         logger.error(`Fetching user roles failed: ${(error as Error).message}`, { error });
-    //         errorResponse(res, 500, (error as Error).message);
-    //     }
-    // }
 
     async getAllUserRoles(req: Request, res: Response) {
         try {

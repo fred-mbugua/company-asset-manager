@@ -229,4 +229,89 @@ document.addEventListener('DOMContentLoaded', () => {
             handleToggleStatus(id, currentStatus, target);
         }
     });
+
+    // --- Pagination Logic ---
+    const usersTable = document.getElementById('users-table');
+    const pageSizeSelect = document.getElementById('page-size');
+    const prevBtn = document.getElementById('prev-btn');
+    const nextBtn = document.getElementById('next-btn');
+    const pageInfo = document.getElementById('page-info');
+
+    let currentPage = 1;
+    let itemsPerPage = 10;
+    let allUsers = [];
+
+    // Store all user rows when page loads
+    if (usersTableBody) {
+        const rows = Array.from(usersTableBody.querySelectorAll('tr'));
+        allUsers = rows;
+
+        // Initialize pagination
+        updatePagination();
+
+        // Page size change handler
+        if (pageSizeSelect) {
+            pageSizeSelect.addEventListener('change', (e) => {
+                itemsPerPage = parseInt(e.target.value);
+                currentPage = 1;
+                updatePagination();
+            });
+        }
+
+        // Previous button handler
+        if (prevBtn) {
+            prevBtn.addEventListener('click', () => {
+                if (currentPage > 1) {
+                    currentPage--;
+                    updatePagination();
+                }
+            });
+        }
+
+        // Next button handler
+        if (nextBtn) {
+            nextBtn.addEventListener('click', () => {
+                const totalPages = Math.ceil(allUsers.length / itemsPerPage);
+                if (currentPage < totalPages) {
+                    currentPage++;
+                    updatePagination();
+                }
+            });
+        }
+    }
+
+    function updatePagination() {
+        // Filter out "No users found" row
+        const validUsers = allUsers.filter(row => !row.textContent.includes('No users found'));
+        
+        const totalItems = validUsers.length;
+        const totalPages = Math.ceil(totalItems / itemsPerPage) || 1;
+        
+        // Calculate start and end indices
+        const startIndex = (currentPage - 1) * itemsPerPage;
+        const endIndex = startIndex + itemsPerPage;
+        
+        // Clear table body
+        usersTableBody.innerHTML = '';
+        
+        if (totalItems === 0) {
+            // Show no data message
+            const noDataRow = document.createElement('tr');
+            noDataRow.innerHTML = '<td colspan="8" style="text-align:center;">No users found.</td>';
+            usersTableBody.appendChild(noDataRow);
+        } else {
+            // Show only the rows for the current page
+            const pageUsers = validUsers.slice(startIndex, endIndex);
+            pageUsers.forEach(row => {
+                usersTableBody.appendChild(row);
+            });
+        }
+        
+        // Update page info
+        pageInfo.textContent = `Page ${currentPage} of ${totalPages} (${totalItems} total)`;
+        
+        // Update button states
+        prevBtn.disabled = currentPage === 1;
+        nextBtn.disabled = currentPage >= totalPages;
+    }
 });

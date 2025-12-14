@@ -1,6 +1,6 @@
 import { Request, Response } from 'express';
 import LookupService from '../services/lookup.service';
-import { ExpenseService, AssignmentService, UserService, BranchService, DepartmentService, ActionLogService } from '../services';
+import { ExpenseService, AssignmentService, UserService, BranchService, DepartmentService, ActionLogService, AssetStatusService, AssetTypeService, ExpenseTypeService } from '../services';
 import { AssetModel, EmployeeModel, ReportModel, AssignmentModel, AssetTypeModel, AssetStatusModel, ExpenseTypeModel, ExpenseModel, LocationModel, DepartmentModel } from '../models';
 import { AuthenticatedRequest } from '../types';
 import { logger } from '../utils';
@@ -178,8 +178,8 @@ class ViewsController {
     
                 const formattedAssignments = assignments.map(a => ({
                     ...a,
-                    assignment_date: new Date(a.assignment_date).toLocaleDateString(),
-                    return_date: a.return_date ? new Date(a.return_date).toLocaleDateString() : 'Active',
+                    // assignment_date: a.assignment_date ? new Date(a.assignment_date).toLocaleDateString() : null,
+                    // return_date: a.return_date ? new Date(a.return_date).toLocaleDateString() : null,
                 }));
     
                 const totalPages = Math.ceil(totalCount / itemsPerPage);
@@ -241,7 +241,7 @@ class ViewsController {
             const formattedExpenses = expenses.map((e: any) => ({
                 ...e,
                 // Ensuring date is a friendly string
-                date: new Date(e.date).toLocaleDateString(),
+                // date: new Date(e.date).toLocaleDateString(),
                 // Ensuring amount is formatted as currency
                 amount: currencyFormatter.format(e.amount),
             }));
@@ -360,6 +360,60 @@ class ViewsController {
     }
 
     /**
+     * Rendering the Manage Asset Statuses EJS view.
+     */
+    async renderManageAssetStatuses(req: Request, res: Response): Promise<void> {
+        try {
+            const assetStatuses = await AssetStatusService.findAll();
+            
+            res.render('manage-asset-statuses', {
+                user: req.user,
+                assetStatuses: assetStatuses,
+            });
+
+        } catch (error) {
+            logger.error('Error rendering manage asset statuses page:', error);
+            res.status(500).send('Failed to load asset status management page.');
+        }
+    }
+
+    /**
+     * Rendering the Manage Asset Types EJS view.
+     */
+    async renderManageAssetTypes(req: Request, res: Response): Promise<void> {
+        try {
+            const assetTypes = await AssetTypeService.findAll();
+            
+            res.render('manage-asset-types', {
+                user: req.user,
+                assetTypes: assetTypes,
+            });
+
+        } catch (error) {
+            logger.error('Error rendering manage asset types page:', error);
+            res.status(500).send('Failed to load asset type management page.');
+        }
+    }
+
+    /**
+     * Rendering the Manage Expense Types EJS view.
+     */
+    async renderManageExpenseTypes(req: Request, res: Response): Promise<void> {
+        try {
+            const expenseTypes = await ExpenseTypeService.findAll();
+            
+            res.render('manage-expense-types', {
+                user: req.user,
+                expenseTypes: expenseTypes,
+            });
+
+        } catch (error) {
+            logger.error('Error rendering manage expense types page:', error);
+            res.status(500).send('Failed to load expense type management page.');
+        }
+    }
+
+    /**
      * Rendering the Action Log Report EJS view, loading initial filters and data for the first page.
      */
     async renderActionLogReport(req: Request, res: Response): Promise<void> {
@@ -379,7 +433,7 @@ class ViewsController {
             // Formatting initial data for EJS rendering
             const formattedLogs = logs.map((log: any) => ({
                 ...log,
-                created_at: new Date(log.created_at).toLocaleString(),
+                // created_at: new Date(log.created_at).toLocaleString(),
                 details: log.details ? JSON.stringify(log.details) : 'N/A',
             }));
 

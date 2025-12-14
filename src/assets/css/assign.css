@@ -11,7 +11,7 @@
 }
 
 .page-header h2 {
-    color: #2c3e50;
+    color: #000;
     font-size: 24px;
     font-weight: 600;
 }
@@ -33,7 +33,7 @@
 }
 
 .section-header h3 {
-    color: #34495e;
+    color: #0000;
     font-size: 18px;
     font-weight: 600;
 }
@@ -58,7 +58,7 @@
 .form-group label {
     display: block;
     margin-bottom: 8px;
-    color: #486581;
+    color: #495057;
     font-weight: 500;
 }
 
@@ -86,9 +86,9 @@
 .form-group select:focus,
 .form-group input:focus,
 .form-group textarea:focus {
-    border-color: #4299e1;
+    border-color: #ff9800;
     outline: none;
-    box-shadow: 0 0 0 2px rgba(66, 153, 225, 0.2);
+    box-shadow: 0 0 0 2px rgba(255, 152, 0, 0.2);
 }
 
 /* Table Styling */
@@ -103,27 +103,27 @@ table {
 }
 
 th {
-    background-color: #f8fafc;
-    color: #486581;
+    background-color: #f8f8f8;
+    color: #0000;
     font-weight: 600;
     text-align: left;
     padding: 12px;
-    border-bottom: 2px solid #e2e8f0;
+    border-bottom: 2px solid #f8f8f8;
 }
 
 td {
     padding: 12px;
-    border-bottom: 1px solid #e2e8f0;
+    border-bottom: 1px solid #f8f8f8;
     color: #4a5568;
 }
 
 tr:hover {
-    background-color: #f8fafc;
+    background-color: #f8f8f8;
 }
 
 .no-data {
     text-align: center;
-    color: #a0aec0;
+    color: #f2f2f2;
     padding: 20px;
 }
 
@@ -137,13 +137,13 @@ tr:hover {
 }
 
 .btn-primary {
-    background-color: #4299e1;
+    background-color: #F37635;
     color: white;
     border: none;
 }
 
 .btn-primary:hover {
-    background-color: #3182ce;
+    background-color: #e06525;
 }
 
 .btn-return {
@@ -211,7 +211,7 @@ tr:hover {
 }
 
 .select2-container--default .select2-results__option--highlighted[aria-selected] {
-    background-color: #4299e1 !important;
+    background-color: #4A9D5F !important;
     color: white !important;
 }
 

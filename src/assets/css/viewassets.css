@@ -294,7 +294,7 @@
   /* Select2 Dropdown Styles */
   .select2-container {
     font-size: 14px;
-    width: 100% !important;
+    max-width: 100%;
   }
   
   .select2-container--default .select2-selection--single {

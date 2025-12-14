@@ -10,3 +10,4 @@ export { default as uploadRoutes } from './upload.routes';
 export { default as viewsRoutes } from './views.routes';
 export { default as departmentRoutes } from './departments.routes';
 export { default as branchRoutes } from './branches.routes';
+export { default as assetTypeRoutes } from './assetType.routes';

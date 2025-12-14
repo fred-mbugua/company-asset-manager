@@ -133,7 +133,7 @@ function resetForm() {
 function formatDate(dateStr) {
   if (!dateStr) return "-";
   const date = new Date(dateStr);
-  return date.toLocaleString();
+  return DateUtils.formatDateTime(dateStr);
 }
 
 // =====================

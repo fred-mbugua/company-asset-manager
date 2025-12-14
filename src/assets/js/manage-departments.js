@@ -125,4 +125,89 @@ document.addEventListener('DOMContentLoaded', () => {
             handleDelete(id, name);
         }
     });
+
+    // --- Pagination Logic ---
+    const departmentsTable = document.getElementById('departments-table');
+    const pageSizeSelect = document.getElementById('page-size');
+    const prevBtn = document.getElementById('prev-btn');
+    const nextBtn = document.getElementById('next-btn');
+    const pageInfo = document.getElementById('page-info');
+
+    let currentPage = 1;
+    let itemsPerPage = 10;
+    let allDepartments = [];
+
+    // Store all department rows when page loads
+    if (departmentsTableBody) {
+        const rows = Array.from(departmentsTableBody.querySelectorAll('tr'));
+        allDepartments = rows;
+
+        // Initialize pagination
+        updatePagination();
+
+        // Page size change handler
+        if (pageSizeSelect) {
+            pageSizeSelect.addEventListener('change', (e) => {
+                itemsPerPage = parseInt(e.target.value);
+                currentPage = 1;
+                updatePagination();
+            });
+        }
+
+        // Previous button handler
+        if (prevBtn) {
+            prevBtn.addEventListener('click', () => {
+                if (currentPage > 1) {
+                    currentPage--;
+                    updatePagination();
+                }
+            });
+        }
+
+        // Next button handler
+        if (nextBtn) {
+            nextBtn.addEventListener('click', () => {
+                const totalPages = Math.ceil(allDepartments.length / itemsPerPage);
+                if (currentPage < totalPages) {
+                    currentPage++;
+                    updatePagination();
+                }
+            });
+        }
+    }
+
+    function updatePagination() {
+        // Filter out "No departments found" row
+        const validDepartments = allDepartments.filter(row => !row.textContent.includes('No departments found'));
+        
+        const totalItems = validDepartments.length;
+        const totalPages = Math.ceil(totalItems / itemsPerPage) || 1;
+        
+        // Calculate start and end indices
+        const startIndex = (currentPage - 1) * itemsPerPage;
+        const endIndex = startIndex + itemsPerPage;
+        
+        // Clear table body
+        departmentsTableBody.innerHTML = '';
+        
+        if (totalItems === 0) {
+            // Show no data message
+            const noDataRow = document.createElement('tr');
+            noDataRow.innerHTML = '<td colspan="3" style="text-align:center;">No departments found.</td>';
+            departmentsTableBody.appendChild(noDataRow);
+        } else {
+            // Show only the rows for the current page
+            const pageDepartments = validDepartments.slice(startIndex, endIndex);
+            pageDepartments.forEach(row => {
+                departmentsTableBody.appendChild(row);
+            });
+        }
+        
+        // Update page info
+        pageInfo.textContent = `Page ${currentPage} of ${totalPages} (${totalItems} total)`;
+        
+        // Update button states
+        prevBtn.disabled = currentPage === 1;
+        nextBtn.disabled = currentPage >= totalPages;
+    }
 });

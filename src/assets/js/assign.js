@@ -5,7 +5,8 @@ document.addEventListener('DOMContentLoaded', () => {
             $('.select2-dropdown').select2({
                 placeholder: 'Select an option',
                 allowClear: true,
-                width: '100%'
+                width: 'style',
+                minimumResultsForSearch: 0
             });
         } else {
             // Retry after a short delay if not loaded yet
@@ -256,5 +257,91 @@ document.addEventListener('DOMContentLoaded', () => {
                 showMessage('error', error.message || 'Failed to return asset.');
             }
         });
+    }
+
+    // --- Pagination Logic ---
+    const assignmentTable = document.getElementById('assignment-table');
+    const assignmentTableBody = document.getElementById('assignment-table-body');
+    const pageSizeSelect = document.getElementById('page-size');
+    const prevBtn = document.getElementById('prev-btn');
+    const nextBtn = document.getElementById('next-btn');
+    const pageInfo = document.getElementById('page-info');
+
+    let currentPage = 1;
+    let itemsPerPage = 10;
+    let allAssignments = [];
+
+    // Store all assignment rows when page loads
+    if (assignmentTableBody) {
+        const rows = Array.from(assignmentTableBody.querySelectorAll('tr'));
+        allAssignments = rows;
+
+        // Initialize pagination
+        updatePagination();
+
+        // Page size change handler
+        if (pageSizeSelect) {
+            pageSizeSelect.addEventListener('change', (e) => {
+                itemsPerPage = parseInt(e.target.value);
+                currentPage = 1;
+                updatePagination();
+            });
+        }
+
+        // Previous button handler
+        if (prevBtn) {
+            prevBtn.addEventListener('click', () => {
+                if (currentPage > 1) {
+                    currentPage--;
+                    updatePagination();
+                }
+            });
+        }
+
+        // Next button handler
+        if (nextBtn) {
+            nextBtn.addEventListener('click', () => {
+                const totalPages = Math.ceil(allAssignments.length / itemsPerPage);
+                if (currentPage < totalPages) {
+                    currentPage++;
+                    updatePagination();
+                }
+            });
+        }
+    }
+
+    function updatePagination() {
+        // Filter out "No current assignments" row
+        const validAssignments = allAssignments.filter(row => !row.querySelector('.no-data'));
+        
+        const totalItems = validAssignments.length;
+        const totalPages = Math.ceil(totalItems / itemsPerPage) || 1;
+        
+        // Calculate start and end indices
+        const startIndex = (currentPage - 1) * itemsPerPage;
+        const endIndex = startIndex + itemsPerPage;
+        
+        // Clear table body
+        assignmentTableBody.innerHTML = '';
+        
+        if (totalItems === 0) {
+            // Show no data message
+            const noDataRow = document.createElement('tr');
+            noDataRow.innerHTML = '<td colspan="9" class="no-data">No current assignments</td>';
+            assignmentTableBody.appendChild(noDataRow);
+        } else {
+            // Show only the rows for the current page
+            const pageAssignments = validAssignments.slice(startIndex, endIndex);
+            pageAssignments.forEach(row => {
+                assignmentTableBody.appendChild(row);
+            });
+        }
+        
+        // Update page info
+        pageInfo.textContent = `Page ${currentPage} of ${totalPages} (${totalItems} total)`;
+        
+        // Update button states
+        prevBtn.disabled = currentPage === 1;
+        nextBtn.disabled = currentPage >= totalPages;
     }
 });

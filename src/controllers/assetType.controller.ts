@@ -49,4 +49,48 @@ export default new class AssetTypeController {
             res.status(500).json({ success: false, message: 'Failed to retrieve asset types.' });
         }
     }
+
+    /**
+     * Retrieves a single asset type by ID.
+     */
+    async getAssetTypeById(req: Request, res: Response): Promise<void> {
+        try {
+            const id = parseInt(req.params.id);
+            const type = await AssetTypeService.findById(id);
+            res.status(200).json({ success: true, data: type });
+        } catch (error: any) {
+            res.status(404).json({ success: false, message: error.message });
+        }
+    }
+
+    /**
+     * Updates an asset type.
+     */
+    async updateAssetType(req: Request, res: Response): Promise<void> {
+        try {
+            const id = parseInt(req.params.id);
+            const { name, description } = req.body;
+            const updated = await AssetTypeService.update(id, { name, description });
+            res.status(200).json({ success: true, message: 'Asset type updated successfully.', data: updated });
+        } catch (error: any) {
+            if (error.message.startsWith('Duplicate asset type:')) {
+                res.status(409).json({ success: false, message: error.message });
+                return;
+            }
+            res.status(500).json({ success: false, message: error.message });
+        }
+    }
+
+    /**
+     * Deletes an asset type.
+     */
+    async deleteAssetType(req: Request, res: Response): Promise<void> {
+        try {
+            const id = parseInt(req.params.id);
+            await AssetTypeService.delete(id);
+            res.status(200).json({ success: true, message: 'Asset type deleted successfully.' });
+        } catch (error: any) {
+            res.status(500).json({ success: false, message: error.message });
+        }
+    }
 }

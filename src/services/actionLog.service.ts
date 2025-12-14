@@ -1,5 +1,3 @@
-// src/services/actionLog.service.ts
-
 import ActionLogModel from '../models/actionLog.model';
 import ActionLogReportModel, { IActionLogReportFilters } from '../models/actionLogReport.model';
 

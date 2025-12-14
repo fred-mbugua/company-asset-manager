@@ -1,6 +1,15 @@
 document.getElementById('assetForm').addEventListener('submit', async function(e) {
     e.preventDefault();
 
+    // Validate purchase date is not in the future
+    const purchaseDateInput = document.getElementById('purchase_date');
+    const selectedDate = new Date(purchaseDateInput.value);
+    const today = new Date();
+    today.setHours(0, 0, 0, 0);
+    if (selectedDate > today) {
+        return showMessage('error', 'Purchase date cannot be in the future.');
+    }
+
     const formData = {
         asset_tag: document.getElementById('asset_tag').value,
         asset_type: document.getElementById('asset_type').selectedOptions[0].text,

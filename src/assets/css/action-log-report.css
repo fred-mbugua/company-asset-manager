@@ -24,14 +24,63 @@
 /* ========================================= */
 .filters {
     display: flex;
-    flex-wrap: wrap;
-    gap: 12px;
-    align-items: center;
+    flex-direction: column;
+    gap: 15px;
     margin-bottom: 25px;
-    padding: 15px;
+    padding: 20px;
     background-color: #f8f8f8;
     border-radius: 6px;
     border: 1px solid #eee;
+}
+
+.filter-row {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 15px;
+    align-items: flex-end;
+}
+
+.filter-group {
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+    flex: 0 1 auto;
+}
+
+.filter-group label {
+    font-size: 0.85em;
+    font-weight: 600;
+    color: #555;
+    margin-bottom: 2px;
+}
+
+.filter-group.date-range {
+    flex: 1 1 auto;
+}
+
+.date-range label {
+    display: block;
+    margin-bottom: 6px;
+}
+
+.date-inputs {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+}
+
+.date-separator {
+    color: #666;
+    font-size: 0.9em;
+    font-weight: 500;
+    padding: 0 5px;
+}
+
+.filter-actions {
+    display: flex;
+    gap: 10px;
+    margin-left: auto;
+    align-items: flex-end;
 }
 
 .filters input,
@@ -40,15 +89,16 @@
     border: 1px solid #ccc;
     border-radius: 4px;
     font-size: 0.9em;
-    flex: 1 1 150px; /* Ensures inputs take up space nicely */
+    min-width: 180px;
     transition: border-color 0.2s;
+    background-color: white;
 }
 
 .filters input:focus,
 .filters select:focus {
     border-color: #F37635;
     outline: none;
-    box-shadow: 0 0 0 1px #F37635;
+    box-shadow: 0 0 0 2px rgba(243, 118, 53, 0.1);
 }
 
 /* ========================================= */

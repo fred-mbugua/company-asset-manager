@@ -132,7 +132,7 @@ class ReportController {
             const formattedExpenses = expenses.map(e => ({
                 ...e,
                 // Ensure date is a friendly string
-                date: new Date(e.date).toLocaleDateString(),
+                // date: new Date(e.date).toLocaleDateString(),
                 // Ensure amount is formatted as currency string
                 amount: currencyFormatter.format(e.amount),
             }));
@@ -270,7 +270,7 @@ class ReportController {
 
             const formattedLogs = logs.map(log => ({
                 ...log,
-                created_at: new Date(log.created_at).toLocaleString(),
+                // created_at: new Date(log.created_at).toLocaleString(),
                 details: log.details ? JSON.stringify(log.details) : 'N/A',
             }));
 

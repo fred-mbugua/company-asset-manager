@@ -38,5 +38,25 @@ router.get(
     asyncHandler(AssetStatusController.getAllAssetStatuses) // Can be accessed by most authenticated users
 );
 
+router.get(
+    '/asset-statuses/:id',
+    authenticate,
+    asyncHandler(AssetStatusController.getAssetStatusById)
+);
+
+router.put(
+    '/asset-statuses/:id',
+    authenticate,
+    authorize(['Admin', 'Super Admin']),
+    asyncHandler(AssetStatusController.updateAssetStatus)
+);
+
+router.delete(
+    '/asset-statuses/:id',
+    authenticate,
+    authorize(['Admin', 'Super Admin']),
+    asyncHandler(AssetStatusController.deleteAssetStatus)
+);
+
 
 export default router;

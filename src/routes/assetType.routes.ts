@@ -20,4 +20,24 @@ router.get(
     asyncHandler(AssetTypeController.getAllAssetTypes)
 );
 
+router.get(
+    '/asset-types/:id',
+    authenticate,
+    asyncHandler(AssetTypeController.getAssetTypeById)
+);
+
+router.put(
+    '/asset-types/:id',
+    authenticate,
+    authorize(['Admin']),
+    asyncHandler(AssetTypeController.updateAssetType)
+);
+
+router.delete(
+    '/asset-types/:id',
+    authenticate,
+    authorize(['Admin']),
+    asyncHandler(AssetTypeController.deleteAssetType)
+);
+
 export default router;

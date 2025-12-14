@@ -124,7 +124,7 @@
                             <tbody>
                                 <% locals.analytics.recentExpenses.forEach(expense => { %>
                                     <tr>
-                                        <td><%= new Date(expense.expense_date).toLocaleDateString() %></td>
+                                        <td><span data-date="<%= expense.expense_date %>"></span></td>
                                         <td><span class="badge badge-primary"><%= expense.asset_tag %></span></td>
                                         <td><%= expense.expense_type %></td>
                                         <td><%= expense.vendor || 'N/A' %></td>
@@ -159,7 +159,7 @@
                             <tbody>
                                 <% locals.analytics.recentAssignments.forEach(assignment => { %>
                                     <tr>
-                                        <td><%= new Date(assignment.assignment_date).toLocaleDateString() %></td>
+                                        <td><span data-date="<%= assignment.assignment_date %>"></span></td>
                                         <td><%= assignment.employee_name %></td>
                                         <td><span class="badge badge-primary"><%= assignment.asset_tag %></span></td>
                                         <td><%= assignment.asset_type %></td>

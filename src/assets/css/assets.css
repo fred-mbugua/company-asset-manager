@@ -39,7 +39,7 @@ body { font-family: 'Poppins', sans-serif; background:#fff; margin:0; }
     
     /* Select2 Custom Styling */
     .select2-container {
-      width: 100% !important;
+      max-width: 100%;
     }
     
     .select2-container--default .select2-selection--single {
@@ -73,7 +73,8 @@ body { font-family: 'Poppins', sans-serif; background:#fff; margin:0; }
     }
     
     .select2-container--default .select2-results__option--highlighted[aria-selected] {
-      background-color: #F37635 !important;
+      background-color: #4A9D5F !important;
+      color: white !important;
     }
     
     .select2-container--default .select2-search--dropdown .select2-search__field {

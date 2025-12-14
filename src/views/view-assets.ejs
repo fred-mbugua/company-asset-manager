@@ -20,7 +20,7 @@
                 </div>
                 <div class="filter-field">
                     <label for="filter-type">Asset Type</label>
-                    <select id="filter-type" class="select2-dropdown">
+                    <select id="filter-type" class="select2-dropdown" style="width: 100%;">
                         <option value="">All Types</option>
                         <% if (locals.assetTypes && locals.assetTypes.length > 0) { %>
                             <% locals.assetTypes.forEach(type => { %>
@@ -31,7 +31,7 @@
                 </div>
                 <div class="filter-field">
                     <label for="filter-status">Status</label>
-                    <select id="filter-status" class="select2-dropdown">
+                    <select id="filter-status" class="select2-dropdown" style="width: 100%;">
                         <option value="">All Statuses</option>
                         <% if (locals.assetStatuses && locals.assetStatuses.length > 0) { %>
                             <% locals.assetStatuses.forEach(status => { %>
@@ -42,7 +42,7 @@
                 </div>
                 <div class="filter-field">
                     <label for="filter-location">Location</label>
-                    <select id="filter-location" class="select2-dropdown">
+                    <select id="filter-location" class="select2-dropdown" style="width: 100%;">
                         <option value="">All Locations</option>
                         <% if (locals.branches && locals.branches.length > 0) { %>
                             <% locals.branches.forEach(branch => { %>
@@ -83,7 +83,7 @@
                                     <td><%= asset.serial_number %></td>
                                     <td><%= asset.status %></td>
                                     <td><%= asset.location %></td>
-                                    <td><%= new Date(asset.purchase_date).toLocaleDateString() %></td>
+                                    <td><span data-date="<%= asset.purchase_date %>"></span></td>
                                     <td>
                                         <button class="btn btn-edit" onclick="showAssetDetails(<%= asset.id %>)">View/Edit</button>
                                         <button class="btn btn-view" onclick="showAssignmentHistory(<%= asset.id %>, '<%= asset.asset_tag %>')">History</button>

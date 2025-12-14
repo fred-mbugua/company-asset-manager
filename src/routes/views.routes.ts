@@ -15,6 +15,9 @@ router.get('/expenses/create', authenticate, authorize(['Admin', 'Standard User'
 router.get('/users/manage', authenticate, authorize(['Admin', 'Standard User']), asyncHandler(ViewsController.renderCreateUser));
 router.get('/branches/manage', authenticate, authorize(['Admin', 'Standard User']), asyncHandler(ViewsController.renderManageBranches));
 router.get('/departments/manage', authenticate, authorize(['Admin', 'Standard User']), asyncHandler(ViewsController.renderManageDepartments));
+router.get('/asset-statuses/manage', authenticate, authorize(['Admin', 'Standard User']), asyncHandler(ViewsController.renderManageAssetStatuses));
+router.get('/asset-types/manage', authenticate, authorize(['Admin', 'Standard User']), asyncHandler(ViewsController.renderManageAssetTypes));
+router.get('/expense-types/manage', authenticate, authorize(['Admin', 'Standard User']), asyncHandler(ViewsController.renderManageExpenseTypes));
 router.get('/reports/assets', authenticate, authorize(['Admin', 'Standard User']), asyncHandler(ViewsController.renderAssetsReport));
 router.get('/reports/expenses', authenticate, authorize(['Admin', 'Standard User']), asyncHandler(ViewsController.renderAssetExpenseReport));
 router.get('/reports/assignments', authenticate, authorize(['Admin', 'Standard User']), asyncHandler(ViewsController.renderAssetAssignmentReport));

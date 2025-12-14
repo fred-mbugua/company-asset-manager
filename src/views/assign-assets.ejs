@@ -16,7 +16,7 @@
                 <div class="form-row">
                     <div class="form-group">
                         <label for="asset_id">Asset</label>
-                        <select id="asset_id" class="select2-dropdown" required>
+                        <select id="asset_id" class="select2-dropdown" required style="width: 100%;">
                             <option value="">-- Select Asset --</option>
                             <% locals.assets.forEach(asset => { %>
                             <option value="<%= asset.id %>">
@@ -28,7 +28,7 @@
 
                     <div class="form-group">
                         <label for="employee_id">Employee</label>
-                        <select id="employee_id" class="select2-dropdown" required>
+                        <select id="employee_id" class="select2-dropdown" required style="width: 100%;">
                             <option value="">-- Select Employee --</option>
                             <% locals.employees.forEach(employee => { %>
                             <option value="<%= employee.id %>">
@@ -42,9 +42,13 @@
                 <div class="form-row">
                     <div class="form-group">
                         <label for="assignment_date">Assignment Date</label>
-                        <input type="date" id="assignment_date" required 
-                               value="<%= new Date().toISOString().substring(0, 10) %>"
-                               max="<%= new Date().toISOString().substring(0, 10) %>">
+                        <input type="date" id="assignment_date" required>
+                        <script>
+                            const assignDateInput = document.getElementById('assignment_date');
+                            const today = DateUtils.getTodayForInput();
+                            assignDateInput.setAttribute('max', today);
+                            assignDateInput.value = today;
+                        </script>
                     </div>
                     
                     <div class="form-group">
@@ -132,9 +136,13 @@
                 <input type="hidden" id="return_assignment_id">
                 <div class="form-group">
                     <label for="return_date">Return Date</label>
-                    <input type="date" id="return_date" required 
-                           value="<%= new Date().toISOString().substring(0, 10) %>"
-                           max="<%= new Date().toISOString().substring(0, 10) %>">
+                    <input type="date" id="return_date" required>
+                    <script>
+                        const returnDateInput = document.getElementById('return_date');
+                        const todayForReturn = DateUtils.getTodayForInput();
+                        returnDateInput.setAttribute('max', todayForReturn);
+                        returnDateInput.value = todayForReturn;
+                    </script>
                 </div>
                 <div class="form-group">
                     <label for="return_notes">Return Notes</label>
@@ -159,7 +167,8 @@ $(document).ready(function() {
     $('.select2-dropdown').select2({
         placeholder: 'Select an option',
         allowClear: true,
-        width: '100%'
+        width: 'style',
+        minimumResultsForSearch: 0
     });
 });
 </script>

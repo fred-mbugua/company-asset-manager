@@ -1,5 +1,5 @@
 <div class="table-responsive">
-                <table>
+                <table id="assignment-table">
                     <thead>
                         <tr>
                             <th>ID</th>
@@ -26,11 +26,11 @@
                                     <%= assignment.employee_middle_name ? assignment.employee_middle_name : '' %>
                                     <%= assignment.employee_last_name %>
                                 </td>
-                                <td><%= new Date(assignment.assignment_date).toLocaleDateString() %></td>
+                                <td><span data-date="<%= assignment.assignment_date %>"></span></td>
                                 <td><%= assignment.notes || 'N/A' %></td>
                                 <td>
                                     <%= assignment.return_date ? 
-                                        new Date(assignment.return_date).toLocaleDateString() : 'N/A' %>
+                                        '<span data-date="' + assignment.return_date + '"></span>' : 'N/A' %>
                                 </td>
                                 <td>
                                     <% if (!assignment.return_date) { %>
@@ -43,9 +43,22 @@
                             <% }); %>
                         <% } else { %>
                             <tr>
-                                <td colspan="7" class="no-data">No current assignments</td>
+                                <td colspan="9" class="no-data">No current assignments</td>
                             </tr>
                         <% } %>
                     </tbody>
                 </table>
+            </div>
+            
+            <div class="pagination-controls" style="display: flex; justify-content: space-between; align-items: center; margin-top: 15px; padding: 10px;">
+                <select id="page-size" style="padding: 8px; border: 1px solid #ccc; border-radius: 4px;">
+                    <option value="10" selected>10 per page</option>
+                    <option value="20">20 per page</option>
+                    <option value="50">50 per page</option>
+                </select>
+                <div style="display: flex; gap: 10px; align-items: center;">
+                    <button id="prev-btn" class="btn" disabled>Previous</button>
+                    <span id="page-info">Page 1 of 1 (0 total)</span>
+                    <button id="next-btn" class="btn" disabled>Next</button>
+                </div>
             </div>

@@ -19,7 +19,7 @@
         <div class="form-grid">
           <div class="form-group">
             <label for="asset_id">Asset</label>
-            <select id="asset_id" name="asset_id" class="select2-dropdown" required>
+            <select id="asset_id" name="asset_id" class="select2-dropdown" required style="width: 100%;">
               <option value="">Select Asset</option>
               <% if (locals.assets) { %>
                 <% locals.assets.forEach(asset => { %>
@@ -33,7 +33,7 @@
 
           <div class="form-group">
             <label for="expense_type">Expense Type</label>
-            <select id="expense_type_id" name="expense_type_id" class="select2-dropdown" required>
+            <select id="expense_type_id" name="expense_type_id" class="select2-dropdown" required style="width: 100%;">
               <option value="">Select Type</option>
               <% if (locals.expenseTypes) { %>
                 <% locals.expenseTypes.forEach(type => { %>
@@ -82,7 +82,7 @@
       </div>
 
       <div class="table-responsive">
-        <table>
+        <table id="expense-table">
           <thead>
             <tr>
               <th>ID</th>
@@ -95,31 +95,44 @@
               <th>Amount</th>
             </tr>
           </thead>
-          <tbody>
+          <tbody id="expense-table-body">
             <% if (locals.expenses && locals.expenses.length > 0) { %>
               <% locals.expenses.forEach(expense => { %>
               <tr>
                 <td><%= expense.id %></td>
                 <td><%= expense.asset_tag %> - <%= expense.manufacturer %></td>
                 <td><%= expense.model %></td>
-                <td><%= new Date(expense.expense_date).toLocaleDateString() %></td>
+                <td><span data-date="<%= expense.expense_date %>"></span></td>
                 <td><%= expense.vendor %></td>
                 <td><%= expense.invoice_number %></td>
                 <td><%= expense.expense_notes || 'N/A' %></td>
                 <td>Ksh. <%= expense.expense_amount.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ',') %></td>
               </tr>
               <% }); %>
-              <tr>
+              <tr id="subtotal-row">
                 <td colspan="7" class="no-data" style="text-align: right;">Sub total: </td>
                 <td class="subtotal">Ksh. <%= locals.expenses[0].expense_subtotal.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ',') %></td>
               </tr>
             <% } else { %>
               <tr>
-                <td colspan="7" class="no-data">No expenses recorded</td>
+                <td colspan="8" class="no-data">No expenses recorded</td>
               </tr>
             <% } %>
           </tbody>
         </table>
+      </div>
+      
+      <div class="pagination-controls" style="display: flex; justify-content: space-between; align-items: center; margin-top: 15px; padding: 10px;">
+        <select id="page-size" style="padding: 8px; border: 1px solid #ccc; border-radius: 4px;">
+          <option value="10" selected>10 per page</option>
+          <option value="20">20 per page</option>
+          <option value="50">50 per page</option>
+        </select>
+        <div style="display: flex; gap: 10px; align-items: center;">
+          <button id="prev-btn" class="btn" disabled>Previous</button>
+          <span id="page-info">Page 1 of 1 (0 total)</span>
+          <button id="next-btn" class="btn" disabled>Next</button>
+        </div>
       </div>
     </div>
   </section>
@@ -134,7 +147,8 @@ $(document).ready(function() {
     $('.select2-dropdown').select2({
         placeholder: 'Type to search...',
         allowClear: true,
-        width: '100%'
+        width: 'style',
+        minimumResultsForSearch: 0
     });
 });
 </script>
