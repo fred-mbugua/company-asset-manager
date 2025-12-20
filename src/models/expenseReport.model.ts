@@ -98,13 +98,13 @@ export class ExpenseReportModel {
                 branches.name As location,
                 COALESCE(departments.name, 'N/A') AS department
             From
-                expenses Inner Join
-                assets On expenses.asset_id = assets.id Inner Join
+                expenses Left Join
+                assets On expenses.asset_id = assets.id Left Join
                 expense_types On expenses.expense_type_id = expense_types.id Left Join
                 assignments On assignments.asset_id = assets.id
                         And assignments.return_date Is Null Left Join
                 employees On assignments.employee_id = employees.id Left Join
-                branches On assets.branch_id = branches.id Inner Join
+                branches On assets.branch_id = branches.id Left Join
                 departments On employees.department_id = departments.id
             ${where}
             ORDER BY expenses.date DESC
