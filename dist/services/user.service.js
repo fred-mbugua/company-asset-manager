@@ -5,6 +5,7 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
 Object.defineProperty(exports, "__esModule", { value: true });
 const models_1 = require("../models");
 const bcryptjs_1 = __importDefault(require("bcryptjs"));
+const logger_1 = __importDefault(require("../utils/logger"));
 const actionLog_service_1 = __importDefault(require("./actionLog.service"));
 const models_2 = require("../models");
 class UserService {
@@ -35,6 +36,9 @@ class UserService {
     async getAllUsers() {
         return models_1.UserModel.findAll();
     }
+    async getAllUsersDetails() {
+        return models_1.UserModel.findAllUserDetails();
+    }
     async getUserById(id) {
         const user = await models_1.UserModel.findById(id);
         if (!user) {
@@ -49,11 +53,19 @@ class UserService {
                 throw new Error('Department not found.');
             }
         }
+        if (updateData.branch_id) {
+            const branch = await models_2.LocationModel.findById(updateData.branch_id);
+            if (!branch) {
+                throw new Error('Branch not found.');
+            }
+        }
         const user = await models_1.UserModel.findById(id);
         if (!user) {
             throw new Error('User not found');
         }
         const changes = { old_data: user, new_data: updateData };
+        // Update the employee record first
+        await models_1.EmployeeModel.update({ id, ...updateData }); // Passed client
         // Hash the new password
         if (updateData.password) {
             updateData.password = await bcryptjs_1.default.hash(updateData.password, 10);
@@ -70,6 +82,29 @@ class UserService {
         await models_1.UserModel.delete(id);
         await actionLog_service_1.default.logAction(userId, 'DELETE', 'User', Number(id), { deleted_user_email: user.email });
         return { message: 'User deleted successfully.' };
+    }
+    async resetPassword(id, newPassword, userId) {
+        const user = await models_1.UserModel.findById(id);
+        if (!user) {
+            throw new Error('User not found');
+        }
+        const hashedPassword = await bcryptjs_1.default.hash(newPassword, this.SALT_ROUNDS);
+        await models_1.UserModel.updatePassword(id, hashedPassword);
+        await actionLog_service_1.default.logAction(userId, 'RESET_PASSWORD', 'User', Number(id), { email: user.email });
+        logger_1.default.info(`Password reset for user ID: ${id}`);
+    }
+    async toggleUserStatus(id, isActive, userId) {
+        const user = await models_1.UserModel.findById(id);
+        if (!user) {
+            throw new Error('User not found');
+        }
+        const updatedUser = await models_1.UserModel.updateStatus(id, isActive);
+        await actionLog_service_1.default.logAction(userId, 'UPDATE', 'User', Number(id), {
+            email: user.email,
+            status_change: { from: user.is_active, to: isActive }
+        });
+        logger_1.default.info(`User ${id} status changed to ${isActive ? 'Active' : 'Disabled'}`);
+        return updatedUser;
     }
 }
 exports.default = new UserService();

@@ -47,4 +47,48 @@ exports.default = new class AssetStatusController {
             res.status(500).json({ success: false, message: 'Failed to retrieve asset statuses.' });
         }
     }
+    /**
+     * Retrieves a single asset status by ID.
+     */
+    async getAssetStatusById(req, res) {
+        try {
+            const id = parseInt(req.params.id);
+            const status = await services_1.AssetStatusService.findById(id);
+            res.status(200).json({ success: true, data: status });
+        }
+        catch (error) {
+            res.status(404).json({ success: false, message: error.message });
+        }
+    }
+    /**
+     * Updates an asset status.
+     */
+    async updateAssetStatus(req, res) {
+        try {
+            const id = parseInt(req.params.id);
+            const { name, is_available, description } = req.body;
+            const updated = await services_1.AssetStatusService.update(id, { name, is_available, description });
+            res.status(200).json({ success: true, message: 'Asset status updated successfully.', data: updated });
+        }
+        catch (error) {
+            if (error.message.startsWith('Duplicate asset status:')) {
+                res.status(409).json({ success: false, message: error.message });
+                return;
+            }
+            res.status(500).json({ success: false, message: error.message });
+        }
+    }
+    /**
+     * Deletes an asset status.
+     */
+    async deleteAssetStatus(req, res) {
+        try {
+            const id = parseInt(req.params.id);
+            await services_1.AssetStatusService.delete(id);
+            res.status(200).json({ success: true, message: 'Asset status deleted successfully.' });
+        }
+        catch (error) {
+            res.status(500).json({ success: false, message: error.message });
+        }
+    }
 };

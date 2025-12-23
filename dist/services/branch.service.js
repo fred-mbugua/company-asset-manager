@@ -22,9 +22,15 @@ class BranchService {
     async findById(id) {
         const branch = await branch_model_1.default.findById(id);
         if (!branch) {
-            throw new Error('Branch not found.');
+            logger_1.default.warn(`Branch with ID ${id} not found.`);
         }
         return branch;
+    }
+    async updateBranch(id, branchData) {
+        return branch_model_1.default.update(id, branchData);
+    }
+    async deleteBranch(id) {
+        return branch_model_1.default.delete(id);
     }
 }
 exports.default = new BranchService();

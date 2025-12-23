@@ -33,4 +33,10 @@ router.get('/assignments', middlewares_1.authenticate, // Requires authenticatio
 // URL: GET /api/reports/assignments/export?asset_tag=...&from_date=...
 router.get('/assignments/export', middlewares_1.authenticate, // Requires authentication/authorization
 (0, express_async_handler_1.default)(controllers_1.ReportController.exportAssignmentReport));
+// Action Log Report Data Endpoint
+// URL: GET /api/reports/action-logs?action_type=...&limit=20&offset=0
+router.get('/action-logs', middlewares_1.authenticate, (0, express_async_handler_1.default)(controllers_1.ReportController.getActionLogReportData));
+// Action Log Report Export Endpoint
+// URL: GET /api/reports/action-logs/export?action_type=...&from_date=...
+router.get('/action-logs/export', middlewares_1.authenticate, (0, express_async_handler_1.default)(controllers_1.ReportController.exportActionLogReport));
 exports.default = router;

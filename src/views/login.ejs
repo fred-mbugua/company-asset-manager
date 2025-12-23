@@ -1,8 +1,15 @@
 <%- include('partials/header', { pageTitle: 'Login', cssFile: 'login' }) %>
+<%
+    const appName = locals.systemConfig?.app_name || 'Asset Management System';
+    const companyLogo = locals.systemConfig?.company_logo_url || null;
+%>
 
   <div class="login-container">
     <div class="app-name">
-      <h1>Asset Management System</h1>
+      <% if (companyLogo) { %>
+        <img src="<%= companyLogo %>" alt="<%= appName %>" class="login-logo">
+      <% } %>
+      <h1><%= appName %></h1>
       <p class="app-subtitle">JSL-ICT</p>
     </div>
     <h2>Login</h2>

@@ -20,6 +20,14 @@ class ExpenseService {
         return ExpenseModel.findallAssets();
 }
 
+  async getExpenseById(id: number) {
+    const expense = await ExpenseModel.findById(id);
+    if (!expense) {
+      throw new Error('Expense not found');
+    }
+    return expense;
+  }
+
   async getExpensesByAssetId(assetId: number) {
     const expense = await ExpenseModel.findByAssetId(assetId);
     if (!expense) {

@@ -20,9 +20,46 @@ class BranchModel {
         return result.rows[0];
     }
     static async findAll() {
-        const query = `SELECT * FROM branches;`;
+        const query = `SELECT * FROM branches ORDER BY created_at;`;
         const result = await database_1.default.query(query);
         return result.rows;
+    }
+    /**
+     * Updating an existing branch.
+     */
+    static async update(id, branchData) {
+        const setClauses = [];
+        const values = [];
+        let index = 1;
+        // Dynamically building SET clause
+        for (const key in branchData) {
+            if (Object.prototype.hasOwnProperty.call(branchData, key) && key !== 'id') {
+                setClauses.push(`${key} = $${index++}`);
+                values.push(branchData[key]);
+            }
+        }
+        if (setClauses.length === 0) {
+            // Nothing to update
+            return this.findById(id);
+        }
+        values.push(id); // ID is the last parameter
+        const query = `
+            UPDATE branches
+            SET ${setClauses.join(', ')}
+            WHERE id = $${index}
+            RETURNING id, name, location, created_at, updated_at;
+        `;
+        const result = await database_1.default.query(query, values);
+        return result.rows[0] || null;
+    }
+    /**
+     * Deleting a branch.
+     */
+    static async delete(id) {
+        var _a;
+        const query = `DELETE FROM branches WHERE id = $1;`;
+        const result = await database_1.default.query(query, [id]);
+        return ((_a = result.rowCount) !== null && _a !== void 0 ? _a : 0) > 0;
     }
 }
 exports.default = BranchModel;

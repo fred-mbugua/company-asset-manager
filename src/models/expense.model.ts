@@ -16,6 +16,23 @@ class ExpenseModel {
     return result.rows[0];
   }
 
+  async findById(id: number) {
+    const query = `
+      SELECT 
+        e.*,
+        a.asset_tag,
+        a.manufacturer,
+        a.model,
+        et.name as expense_type_name
+      FROM expenses e
+      LEFT JOIN assets a ON e.asset_id = a.id
+      LEFT JOIN expense_types et ON e.expense_type_id = et.id
+      WHERE e.id = $1
+    `;
+    const result = await pool.query(query, [id]);
+    return result.rows[0];
+  }
+
   async findByAssetId(assetId: number) {
     const query = 'SELECT * FROM expenses WHERE asset_id = $1 ORDER BY date DESC';
     const result = await pool.query(query, [assetId]);

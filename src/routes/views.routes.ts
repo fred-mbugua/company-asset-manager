@@ -22,5 +22,6 @@ router.get('/reports/assets', authenticate, authorize(['Admin', 'Standard User']
 router.get('/reports/expenses', authenticate, authorize(['Admin', 'Standard User']), asyncHandler(ViewsController.renderAssetExpenseReport));
 router.get('/reports/assignments', authenticate, authorize(['Admin', 'Standard User']), asyncHandler(ViewsController.renderAssetAssignmentReport));
 router.get('/reports/action-logs', authenticate, authorize(['Admin', 'Standard User']), asyncHandler(ViewsController.renderActionLogReport));
+router.get('/settings/configuration', authenticate, authorize(['Admin']), asyncHandler(ViewsController.renderSystemConfiguration));
 
 export default router;

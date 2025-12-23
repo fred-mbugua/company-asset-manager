@@ -1,5 +1,4 @@
 "use strict";
-// src/models/department.model.ts
 var __importDefault = (this && this.__importDefault) || function (mod) {
     return (mod && mod.__esModule) ? mod : { "default": mod };
 };
@@ -45,14 +44,42 @@ class DepartmentModel {
     /**
      * Updates an existing department's details.
      */
-    static async update(id, updateData) {
+    // static async update(id: number, updateData: any) {
+    //     const query = `
+    //         UPDATE departments SET name = COALESCE($1, name)
+    //         WHERE id = $2
+    //         RETURNING *;
+    //     `;
+    //     const result = await db.query(query, [updateData.name, id]);
+    //     return result.rows[0];
+    // }
+    /**
+     * Updating an existing department.
+     */
+    static async update(id, deptData) {
+        const setClauses = [];
+        const values = [];
+        let index = 1;
+        // Dynamically building SET clause
+        for (const key in deptData) {
+            if (Object.prototype.hasOwnProperty.call(deptData, key) && key !== 'id') {
+                setClauses.push(`${key} = $${index++}`);
+                values.push(deptData[key]);
+            }
+        }
+        if (setClauses.length === 0) {
+            // Nothing to update
+            return this.findById(id);
+        }
+        values.push(id); // ID is the last parameter
         const query = `
-            UPDATE departments SET name = COALESCE($1, name)
-            WHERE id = $2
-            RETURNING *;
+            UPDATE departments
+            SET ${setClauses.join(', ')}
+            WHERE id = $${index}
+            RETURNING id, name;
         `;
-        const result = await database_1.default.query(query, [updateData.name, id]);
-        return result.rows[0];
+        const result = await database_1.default.query(query, values);
+        return result.rows[0] || null;
     }
     /**
      * Deletes a department from the database by ID.

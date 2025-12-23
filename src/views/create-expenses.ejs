@@ -79,6 +79,10 @@
     <div class="table-section">
       <div class="section-header">
         <h3>Expense History</h3>
+        <div class="search-container">
+          <i class="uil uil-search"></i>
+          <input type="text" id="expense-search" placeholder="Search expenses by asset, vendor, invoice, or notes..." />
+        </div>
       </div>
 
       <div class="table-responsive">
@@ -93,6 +97,7 @@
               <th>Invoice #</th>
               <th>Notes</th>
               <th>Amount</th>
+              <th>Actions</th>
             </tr>
           </thead>
           <tbody id="expense-table-body">
@@ -107,15 +112,18 @@
                 <td><%= expense.invoice_number %></td>
                 <td><%= expense.expense_notes || 'N/A' %></td>
                 <td>Ksh. <%= expense.expense_amount.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ',') %></td>
+                <td>
+                  <button class="btn btn-edit" onclick="showExpenseDetails(<%= expense.id %>)">View/Attachments</button>
+                </td>
               </tr>
               <% }); %>
               <tr id="subtotal-row">
-                <td colspan="7" class="no-data" style="text-align: right;">Sub total: </td>
+                <td colspan="8" class="no-data" style="text-align: right;">Sub total: </td>
                 <td class="subtotal">Ksh. <%= locals.expenses[0].expense_subtotal.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ',') %></td>
               </tr>
             <% } else { %>
               <tr>
-                <td colspan="8" class="no-data">No expenses recorded</td>
+                <td colspan="9" class="no-data">No expenses recorded</td>
               </tr>
             <% } %>
           </tbody>
@@ -138,10 +146,26 @@
   </section>
 </div>
 
+<!-- Expense Detail Modal -->
+<div id="expenseDetailModal" class="modal">
+  <div class="modal-content" style="max-width: 900px;">
+    <div class="modal-header">
+      <h3>Expense Details & Attachments</h3>
+      <span class="close" onclick="closeExpenseDetail()">&times;</span>
+    </div>
+    <div class="modal-body">
+      <div id="expense-detail-content">
+        <p style="text-align: center; color: #888;">Loading...</p>
+      </div>
+    </div>
+  </div>
+</div>
+
 <!-- jQuery (required for Select2) -->
 <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
 <!-- Select2 JS -->
 <script src="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/js/select2.min.js"></script>
+<script src="/assets/js/attachmentManager.js"></script>
 <script>
 $(document).ready(function() {
     $('.select2-dropdown').select2({

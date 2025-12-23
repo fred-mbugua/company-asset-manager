@@ -75,6 +75,16 @@ class AssetController {
             (0, response_1.errorResponse)(res, 500, 'Failed to search assets');
         }
     }
+    async statusList(req, res) {
+        try {
+            const assets = await asset_service_1.default.statusList();
+            (0, response_1.successResponse)(res, 200, 'Assets statuses retrieved successfully', assets);
+        }
+        catch (error) {
+            logger_1.default.error('Failed to search asset statuses:', error);
+            (0, response_1.errorResponse)(res, 500, 'Failed to search asset statuses');
+        }
+    }
 }
 exports.AssetController = AssetController;
 exports.default = new AssetController();

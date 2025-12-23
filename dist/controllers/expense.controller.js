@@ -31,11 +31,21 @@ class ExpenseController {
     }
     async getById(req, res) {
         try {
-            const expense = await services_1.ExpenseService.getExpensesByAssetId(Number(req.params.id));
+            const expense = await services_1.ExpenseService.getExpenseById(Number(req.params.id));
             (0, response_1.successResponse)(res, 200, 'Expense retrieved successfully', expense);
         }
         catch (error) {
             logger_1.default.error(`Failed to retrieve expense with ID ${req.params.id}:`, error);
+            (0, response_1.errorResponse)(res, 404, error.message);
+        }
+    }
+    async getByAssetId(req, res) {
+        try {
+            const expenses = await services_1.ExpenseService.getExpensesByAssetId(Number(req.params.assetId));
+            (0, response_1.successResponse)(res, 200, 'Expenses retrieved successfully', expenses);
+        }
+        catch (error) {
+            logger_1.default.error(`Failed to retrieve expenses for asset ID ${req.params.assetId}:`, error);
             (0, response_1.errorResponse)(res, 404, error.message);
         }
     }

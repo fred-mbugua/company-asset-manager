@@ -1,0 +1,148 @@
+<%- include('partials/header', { pageTitle: 'System Configuration', cssFile: 'system-configuration' }) %>
+<%- include('partials/navbar') %>
+
+<div class="main">
+    <%- include('partials/sidebar') %>
+    <section class="content-area">
+        <div class="config-container">
+            <h2>System Configuration</h2>
+            
+            <!-- Configuration Tabs -->
+            <div class="config-tabs">
+                <button class="tab-button active" data-tab="general">General Settings</button>
+                <button class="tab-button" data-tab="company">Company Information</button>
+                <button class="tab-button" data-tab="storage">Storage Settings</button>
+            </div>
+
+            <!-- General Settings Tab -->
+            <div class="tab-content active" id="general-tab">
+                <form id="generalSettingsForm" class="config-form">
+                    <h3>General Settings</h3>
+                    
+                    <div class="form-field">
+                        <label for="app_name">Application Name</label>
+                        <input type="text" id="app_name" name="app_name" required>
+                        <small>This name will appear in the header and login page</small>
+                    </div>
+
+                    <div class="form-buttons">
+                        <button type="submit" class="btn btn-save">Save Changes</button>
+                    </div>
+                </form>
+            </div>
+
+            <!-- Company Information Tab -->
+            <div class="tab-content" id="company-tab">
+                <form id="companyInfoForm" class="config-form">
+                    <h3>Company Information</h3>
+                    
+                    <div class="logo-section">
+                        <div class="logo-preview">
+                            <img id="logo_preview" src="" alt="Company Logo">
+                            <div id="logo_placeholder" class="logo-placeholder">
+                                <i class="uil uil-image"></i>
+                                <p>No logo uploaded</p>
+                            </div>
+                        </div>
+                        <div class="logo-upload">
+                            <label for="company_logo" class="btn btn-secondary">
+                                <i class="uil uil-upload"></i> Upload Logo
+                            </label>
+                            <input type="file" id="company_logo" name="company_logo" accept="image/*" style="display: none;">
+                            <small>Recommended size: 200x60px. Max size: 5MB</small>
+                        </div>
+                    </div>
+
+                    <div class="form-field">
+                        <label for="company_email">Company Email</label>
+                        <input type="email" id="company_email" name="company_email">
+                    </div>
+
+                    <div class="form-field">
+                        <label for="company_phone">Company Phone</label>
+                        <input type="tel" id="company_phone" name="company_phone">
+                    </div>
+
+                    <div class="form-field full-width">
+                        <label for="company_address">Company Address</label>
+                        <textarea id="company_address" name="company_address" rows="3"></textarea>
+                    </div>
+
+                    <div class="form-buttons">
+                        <button type="submit" class="btn btn-save">Save Changes</button>
+                    </div>
+                </form>
+            </div>
+
+            <!-- Storage Settings Tab -->
+            <div class="tab-content" id="storage-tab">
+                <form id="storageSettingsForm" class="config-form">
+                    <h3>Storage Configuration</h3>
+                    
+                    <div class="form-field">
+                        <label>Storage Type</label>
+                        <div class="radio-group">
+                            <label class="radio-label">
+                                <input type="radio" name="storage_type" value="server" checked>
+                                <span class="radio-custom"></span>
+                                <span class="radio-text">
+                                    <strong>Server Storage</strong>
+                                    <small>Store files on the server's local file system</small>
+                                </span>
+                            </label>
+                            <label class="radio-label">
+                                <input type="radio" name="storage_type" value="firebase">
+                                <span class="radio-custom"></span>
+                                <span class="radio-text">
+                                    <strong>Firebase Storage</strong>
+                                    <small>Store files in Google Firebase Cloud Storage</small>
+                                </span>
+                            </label>
+                        </div>
+                    </div>
+
+                    <div id="firebase-settings" class="firebase-settings" style="display: none;">
+                        <h4>Firebase Configuration</h4>
+                        <p class="info-text">Enter your Firebase project credentials below. These can be found in your Firebase project settings.</p>
+                        
+                        <div class="form-field">
+                            <label for="firebase_api_key">API Key</label>
+                            <input type="text" id="firebase_api_key" name="firebase_api_key">
+                        </div>
+
+                        <div class="form-field">
+                            <label for="firebase_auth_domain">Auth Domain</label>
+                            <input type="text" id="firebase_auth_domain" name="firebase_auth_domain">
+                        </div>
+
+                        <div class="form-field">
+                            <label for="firebase_project_id">Project ID</label>
+                            <input type="text" id="firebase_project_id" name="firebase_project_id">
+                        </div>
+
+                        <div class="form-field">
+                            <label for="firebase_storage_bucket">Storage Bucket</label>
+                            <input type="text" id="firebase_storage_bucket" name="firebase_storage_bucket">
+                        </div>
+
+                        <div class="form-field">
+                            <label for="firebase_messaging_sender_id">Messaging Sender ID</label>
+                            <input type="text" id="firebase_messaging_sender_id" name="firebase_messaging_sender_id">
+                        </div>
+
+                        <div class="form-field">
+                            <label for="firebase_app_id">App ID</label>
+                            <input type="text" id="firebase_app_id" name="firebase_app_id">
+                        </div>
+                    </div>
+
+                    <div class="form-buttons">
+                        <button type="submit" class="btn btn-save">Save Changes</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </section>
+</div>
+
+<%- include('partials/footer', { jsFile: 'system-configuration' }) %>

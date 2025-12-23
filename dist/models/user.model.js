@@ -13,7 +13,25 @@ class UserModel {
     //   return result.rows[0];
     // }
     async findById(id) {
-        const query = 'SELECT u.*, r.name AS role FROM users u JOIN roles r ON u.role_id = r.id WHERE u.id = $1';
+        const query = `
+      Select
+          users.*,
+          branches.name,
+          branches.location,
+          roles.name As role_name,
+          departments.name As department_name,
+          employees.first_name As employee_first_name,
+          employees.middle_name As employee_middle_name,
+          employees.last_name As employee_last_name,
+          departments.id As departmnt_id
+      From
+          users Inner Join
+          branches On users.branch_id = branches.id Inner Join
+          roles On users.role_id = roles.id Inner Join
+          employees On users.employee_id = employees.id Inner Join
+          departments On employees.department_id = departments.id
+      Where users.id = $1;   
+    `;
         const result = await database_1.default.query(query, [id]);
         return result.rows[0];
     }
@@ -31,8 +49,8 @@ class UserModel {
     async create(userData) {
         // console.log('Creating user:', userData);
         const query = `
-            INSERT INTO users (employee_id, first_name, middle_name, last_name, email, password, role_id, department_id, phone, branch_id)
-            VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10)
+            INSERT INTO users (employee_id, first_name, middle_name, last_name, email, password, role_id, department_id, phone, branch_id, is_active)
+            VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11)
             RETURNING id, employee_id, first_name, middle_name, last_name, email, phone;
         `;
         const values = [
@@ -45,7 +63,8 @@ class UserModel {
             userData.role_id,
             userData.department_id,
             userData.phone,
-            userData.branch_id
+            userData.branch_id,
+            true
         ];
         const result = await database_1.default.query(query, values);
         return result.rows[0];
@@ -67,13 +86,43 @@ class UserModel {
         const result = await database_1.default.query(query);
         return result.rows;
     }
+    async findAllUserDetails() {
+        const query = `
+          
+                Select
+                    users.*,
+                    branches.name As branch_name,
+                    branches.location,
+                    roles.name As role_name,
+                    departments.name As department_name,
+                    employees.first_name As employee_first_name,
+                    employees.middle_name As employee_middle_name,
+                    employees.last_name As employee_last_name
+                From
+                    users Inner Join
+                    branches On users.branch_id = branches.id Inner Join
+                    roles On users.role_id = roles.id Inner Join
+                    employees On users.employee_id = employees.id Inner Join
+                    departments On employees.department_id = departments.id
+          `;
+        const result = await database_1.default.query(query);
+        return result.rows;
+    }
     async update(id, updateData) {
         const query = `
-            UPDATE users SET first_name = $1, middle_name = $2, last_name = $3, email = $4, password = $5, role = $6, department_id = $7
-            WHERE id = $8
-            RETURNING id, first_name, middle_name, last_name, email, role, department_id;
-        `;
-        const values = [updateData.first_name, updateData.middle_name, updateData.last_name, updateData.email, updateData.password_hash, updateData.role, updateData.department_id, id];
+      UPDATE users SET
+      first_name = COALESCE($1, first_name),
+      middle_name = COALESCE($2, middle_name),
+      last_name = COALESCE($3, last_name),
+      email = COALESCE($4, email),
+      password = COALESCE($5, password),
+      role_id = COALESCE($6, role_id),
+      department_id = COALESCE($7, department_id),
+      branch_id = COALESCE($8, branch_id)
+      WHERE id = $9
+      RETURNING id, first_name, middle_name, last_name, email, role_id, department_id, branch_id;
+    `;
+        const values = [updateData.first_name, updateData.middle_name, updateData.last_name, updateData.email, updateData.password_hash, updateData.role_id, updateData.department_id, updateData.branch_id, id];
         const result = await database_1.default.query(query, values);
         return result.rows[0];
     }
@@ -89,6 +138,16 @@ class UserModel {
     async deleteRefreshToken(token) {
         const query = 'DELETE FROM refresh_tokens WHERE token = $1';
         await database_1.default.query(query, [token]);
+    }
+    async updatePassword(id, hashedPassword) {
+        const query = 'UPDATE users SET password = $1 WHERE id = $2 RETURNING id, email';
+        const result = await database_1.default.query(query, [hashedPassword, id]);
+        return result.rows[0];
+    }
+    async updateStatus(id, isActive) {
+        const query = 'UPDATE users SET is_active = $1 WHERE id = $2 RETURNING id, email, is_active';
+        const result = await database_1.default.query(query, [isActive, id]);
+        return result.rows[0];
     }
 }
 exports.default = new UserModel();

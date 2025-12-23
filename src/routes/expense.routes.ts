@@ -6,6 +6,8 @@ import asyncHandler from 'express-async-handler';
 
 const router = Router();
 
+router.get('/:id', authenticate, asyncHandler(ExpenseController.getById));
+
 router.post('/', authenticate, authorize(['Admin']), asyncHandler(ExpenseController.addExpense));
 
 router.post(

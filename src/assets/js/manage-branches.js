@@ -138,18 +138,44 @@ document.addEventListener('DOMContentLoaded', () => {
     const prevBtn = document.getElementById('prev-btn');
     const nextBtn = document.getElementById('next-btn');
     const pageInfo = document.getElementById('page-info');
+    const searchInput = document.getElementById('search-input');
 
     let currentPage = 1;
     let itemsPerPage = 10;
     let allBranches = [];
+    let filteredBranches = [];
 
     // Store all branch rows when page loads
     if (branchesTableBody) {
         const rows = Array.from(branchesTableBody.querySelectorAll('tr'));
-        allBranches = rows;
+        allBranches = rows.map(row => ({
+            element: row.cloneNode(true),
+            name: row.querySelector('td[data-label="Name"]')?.textContent.toLowerCase() || '',
+            location: row.querySelector('td[data-label="Location (City, State)"]')?.textContent.toLowerCase() || ''
+        }));
+        filteredBranches = [...allBranches];
 
         // Initialize pagination
         updatePagination();
+
+        // Search functionality
+        if (searchInput) {
+            searchInput.addEventListener('input', (e) => {
+                const searchTerm = e.target.value.toLowerCase().trim();
+                
+                if (!searchTerm) {
+                    filteredBranches = [...allBranches];
+                } else {
+                    filteredBranches = allBranches.filter(branch => 
+                        branch.name.includes(searchTerm) ||
+                        branch.location.includes(searchTerm)
+                    );
+                }
+                
+                currentPage = 1;
+                updatePagination();
+            });
+        }
 
         // Page size change handler
         if (pageSizeSelect) {
@@ -173,7 +199,18 @@ document.addEventListener('DOMContentLoaded', () => {
         // Next button handler
         if (nextBtn) {
             nextBtn.addEventListener('click', () => {
-                const totalPages = Math.ceil(allBranches.length / itemsPerPage);
+                const totalPages = Math.ceil(filteredBranches.length / itemsPerPage);
+                if (currentPage < totalPages) {
+                    currentPage++;
+                    updatePagination();
+                }
+            });
+        }
+
+        // Next button handler
+        if (nextBtn) {
+            nextBtn.addEventListener('click', () => {
+                const totalPages = Math.ceil(filteredBranches.length / itemsPerPage);
                 if (currentPage < totalPages) {
                     currentPage++;
                     updatePagination();
@@ -183,36 +220,28 @@ document.addEventListener('DOMContentLoaded', () => {
     }
 
     function updatePagination() {
-        // Filter out "No branches found" row
-        const validBranches = allBranches.filter(row => !row.textContent.includes('No branches found'));
+        const validBranches = filteredBranches.filter(branch => branch.name || branch.location);
         
         const totalItems = validBranches.length;
         const totalPages = Math.ceil(totalItems / itemsPerPage) || 1;
         
-        // Calculate start and end indices
         const startIndex = (currentPage - 1) * itemsPerPage;
         const endIndex = startIndex + itemsPerPage;
         
-        // Clear table body
         branchesTableBody.innerHTML = '';
         
         if (totalItems === 0) {
-            // Show no data message
             const noDataRow = document.createElement('tr');
             noDataRow.innerHTML = '<td colspan="4" style="text-align:center;">No branches found.</td>';
             branchesTableBody.appendChild(noDataRow);
         } else {
-            // Show only the rows for the current page
             const pageBranches = validBranches.slice(startIndex, endIndex);
-            pageBranches.forEach(row => {
-                branchesTableBody.appendChild(row);
+            pageBranches.forEach(branch => {
+                branchesTableBody.appendChild(branch.element.cloneNode(true));
             });
         }
         
-        // Update page info
         pageInfo.textContent = `Page ${currentPage} of ${totalPages} (${totalItems} total)`;
-        
-        // Update button states
         prevBtn.disabled = currentPage === 1;
         nextBtn.disabled = currentPage >= totalPages;
     }

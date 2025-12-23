@@ -41,6 +41,52 @@ class AssetStatusModel {
         const result = await database_1.default.query(query);
         return result.rows;
     }
+    /**
+     * Finds a single asset status by ID.
+     */
+    async findById(id) {
+        const query = `SELECT id, name, is_available, description FROM asset_statuses WHERE id = $1;`;
+        const result = await database_1.default.query(query, [id]);
+        return result.rows[0] || null;
+    }
+    /**
+     * Updates an asset status.
+     */
+    async update(id, data) {
+        const query = `
+            UPDATE asset_statuses
+            SET name = COALESCE($1, name),
+                is_available = COALESCE($2, is_available),
+                description = COALESCE($3, description),
+                updated_at = CURRENT_TIMESTAMP
+            WHERE id = $4
+            RETURNING id, name, is_available, description;
+        `;
+        const values = [data.name, data.is_available, data.description, id];
+        try {
+            const result = await database_1.default.query(query, values);
+            if (result.rows.length === 0) {
+                throw new Error('Asset status not found');
+            }
+            return result.rows[0];
+        }
+        catch (error) {
+            if (error.code === '23505') {
+                throw new Error(`Duplicate asset status: ${data.name}`);
+            }
+            throw error;
+        }
+    }
+    /**
+     * Deletes an asset status.
+     */
+    async delete(id) {
+        const query = `DELETE FROM asset_statuses WHERE id = $1;`;
+        const result = await database_1.default.query(query, [id]);
+        if (result.rowCount === 0) {
+            throw new Error('Asset status not found');
+        }
+    }
 }
 exports.AssetStatusModel = AssetStatusModel;
 exports.default = new AssetStatusModel();

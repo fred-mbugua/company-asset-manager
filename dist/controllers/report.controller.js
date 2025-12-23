@@ -114,7 +114,7 @@ class ReportController {
             const formattedExpenses = expenses.map(e => ({
                 ...e,
                 // Ensure date is a friendly string
-                expense_date: new Date(e.expense_date).toLocaleDateString(),
+                // date: new Date(e.date).toLocaleDateString(),
                 // Ensure amount is formatted as currency string
                 amount: currencyFormatter.format(e.amount),
             }));
@@ -206,6 +206,57 @@ class ReportController {
         catch (error) {
             console.error('Exporting Assignment Report failed:', error);
             res.status(500).send('Failed to generate assignment report.');
+        }
+    }
+    /**
+     * Handles fetching paginated and filtered action logs for the frontend table.
+     * Route: GET /api/reports/action-logs
+     */
+    async getActionLogReportData(req, res) {
+        try {
+            const limit = parseInt((req.query.limit || '20'), 10);
+            const offset = parseInt((req.query.offset || '0'), 10);
+            if (isNaN(limit) || isNaN(offset) || limit < 1 || offset < 0) {
+                res.status(400).json({ success: false, message: 'Invalid pagination parameters.' });
+                return;
+            }
+            const { limit: _, offset: __, ...filters } = req.query;
+            const actionLogFilters = filters;
+            const { logs, totalCount } = await services_1.ActionLogService.getPaginatedActionLogs(actionLogFilters, limit, offset);
+            const formattedLogs = logs.map(log => ({
+                ...log,
+                // created_at: new Date(log.created_at).toLocaleString(),
+                details: log.details ? JSON.stringify(log.details) : 'N/A',
+            }));
+            res.status(200).json({
+                success: true,
+                data: {
+                    logs: formattedLogs,
+                    totalCount: totalCount
+                }
+            });
+        }
+        catch (error) {
+            console.error('Error fetching action log report data:', error);
+            res.status(500).json({ success: false, message: 'Failed to retrieve action log report data.' });
+        }
+    }
+    /**
+     * Handling the request to export the Action Logs Report to Excel.
+     * Route: GET /api/reports/action-logs/export
+     */
+    async exportActionLogReport(req, res) {
+        try {
+            const filters = req.query;
+            const excelBuffer = await services_1.ReportExportService.generateActionLogReport(filters);
+            const date = new Date().toISOString().slice(0, 10);
+            res.setHeader('Content-Type', 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet');
+            res.setHeader('Content-Disposition', `attachment; filename=Action_Logs_Report_${date}.xlsx`);
+            res.send(excelBuffer);
+        }
+        catch (error) {
+            console.error('Exporting Action Log Report failed:', error);
+            res.status(500).send('Failed to generate action log report.');
         }
     }
 }

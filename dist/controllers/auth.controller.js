@@ -7,18 +7,6 @@ const services_1 = require("../services");
 const response_1 = require("../utils/response");
 const logger_1 = __importDefault(require("../utils/logger")); // Import the logger
 class AuthController {
-    // async register(req: Request, res: Response) {
-    //     // console.log('Registered user:', req.body);
-    //     try {
-    //         const newUser = await AuthService.register(req.body);
-    //         const { password, ...user } = newUser;
-    //         logger.info(`User registered successfully: ${user.email}`);
-    //         successResponse(res, 201, 'User registered successfully', { user });
-    //     } catch (error) {
-    //         logger.error(`Registration failed: ${(error as Error).message}`, { error });
-    //         errorResponse(res, 400, (error as Error).message);
-    //     }
-    // }
     async register(req, res) {
         var _a;
         logger_1.default.info('Received request to register a new user.');
@@ -37,6 +25,10 @@ class AuthController {
         try {
             const { email, password } = req.body;
             const { accessToken, refreshToken, user } = await services_1.AuthService.login({ email, password });
+            if (!user) {
+                logger_1.default.warn(`Login failed: User not found for email ${email}`);
+                return (0, response_1.errorResponse)(res, 401, 'Invalid email or password');
+            }
             res.cookie('accessToken', accessToken, {
                 httpOnly: true,
                 secure: process.env.NODE_ENV === 'production',
@@ -49,9 +41,11 @@ class AuthController {
                 sameSite: 'strict',
                 maxAge: 7 * 24 * 60 * 60 * 1000
             });
-            // console.log('Access token:', accessToken);
+            // Get the returnTo URL from session and clear it
+            const returnTo = req.session.returnTo || '/dashboard';
+            delete req.session.returnTo;
             logger_1.default.info(`User logged in successfully: ${user.email}`);
-            (0, response_1.successResponse)(res, 200, 'Logged in successfully', { user, accessToken, refreshToken });
+            (0, response_1.successResponse)(res, 200, 'Logged in successfully', { user, accessToken, refreshToken, returnTo });
         }
         catch (error) {
             logger_1.default.error(`Login failed: ${error.message}`, { email: req.body.email, error });
@@ -100,20 +94,6 @@ class AuthController {
             (0, response_1.errorResponse)(res, 401, error.message);
         }
     }
-    // async userRoles(req: AuthenticatedRequest, res: Response) {
-    //     try {
-    //         const userId = req.user?.id;
-    //         if (!userId) {
-    //             logger.warn('Fetching user roles failed: User ID not found in request');
-    //             return errorResponse(res, 400, 'User ID not found');
-    //         }
-    //         const roles = await AuthService.(userId);
-    //         successResponse(res, 200, 'User roles fetched successfully', { roles });
-    //     } catch (error) {
-    //         logger.error(`Fetching user roles failed: ${(error as Error).message}`, { error });
-    //         errorResponse(res, 500, (error as Error).message);
-    //     }
-    // }
     async getAllUserRoles(req, res) {
         try {
             const roles = await services_1.AuthService.getAllUserRoles();

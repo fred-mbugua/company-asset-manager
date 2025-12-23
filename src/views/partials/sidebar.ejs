@@ -42,6 +42,11 @@
                 { title: 'Expense Types', url: '/expense-types/manage', roles: ['Admin'] },
             ]
         },
+        { 
+            title: 'Settings', icon: 'uil-setting', roles: ['Admin'], id: 'settings-menu', submenu: [ // Restricted to Admin
+                { title: 'System Configuration', url: '/settings/configuration', roles: ['Admin'] },
+            ]
+        },
     ];
 
     const hasAccess = (requiredRoles) => requiredRoles.includes(userRole);

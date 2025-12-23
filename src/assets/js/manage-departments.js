@@ -132,18 +132,42 @@ document.addEventListener('DOMContentLoaded', () => {
     const prevBtn = document.getElementById('prev-btn');
     const nextBtn = document.getElementById('next-btn');
     const pageInfo = document.getElementById('page-info');
+    const searchInput = document.getElementById('search-input');
 
     let currentPage = 1;
     let itemsPerPage = 10;
     let allDepartments = [];
+    let filteredDepartments = [];
 
     // Store all department rows when page loads
     if (departmentsTableBody) {
         const rows = Array.from(departmentsTableBody.querySelectorAll('tr'));
-        allDepartments = rows;
+        allDepartments = rows.map(row => ({
+            element: row.cloneNode(true),
+            name: row.querySelector('td[data-label="Name"]')?.textContent.toLowerCase() || ''
+        }));
+        filteredDepartments = [...allDepartments];
 
         // Initialize pagination
         updatePagination();
+
+        // Search functionality
+        if (searchInput) {
+            searchInput.addEventListener('input', (e) => {
+                const searchTerm = e.target.value.toLowerCase().trim();
+                
+                if (!searchTerm) {
+                    filteredDepartments = [...allDepartments];
+                } else {
+                    filteredDepartments = allDepartments.filter(dept => 
+                        dept.name.includes(searchTerm)
+                    );
+                }
+                
+                currentPage = 1;
+                updatePagination();
+            });
+        }
 
         // Page size change handler
         if (pageSizeSelect) {
@@ -178,7 +202,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
     function updatePagination() {
         // Filter out "No departments found" row
-        const validDepartments = allDepartments.filter(row => !row.textContent.includes('No departments found'));
+        const validDepartments = filteredDepartments.filter(dept => dept.name);
         
         const totalItems = validDepartments.length;
         const totalPages = Math.ceil(totalItems / itemsPerPage) || 1;
@@ -198,8 +222,8 @@ document.addEventListener('DOMContentLoaded', () => {
         } else {
             // Show only the rows for the current page
             const pageDepartments = validDepartments.slice(startIndex, endIndex);
-            pageDepartments.forEach(row => {
-                departmentsTableBody.appendChild(row);
+            pageDepartments.forEach(dept => {
+                departmentsTableBody.appendChild(dept.element.cloneNode(true));
             });
         }
         

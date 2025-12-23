@@ -23,8 +23,62 @@ class EmployeeModel {
         const result = await database_1.default.query(query, values);
         return result.rows[0];
     }
+    async update(employeeData) {
+        const fields = [];
+        const values = [];
+        let paramCount = 1;
+        if (employeeData.first_name !== undefined) {
+            fields.push(`first_name = $${paramCount++}`);
+            values.push(employeeData.first_name);
+        }
+        if (employeeData.middle_name !== undefined) {
+            fields.push(`middle_name = $${paramCount++}`);
+            values.push(employeeData.middle_name);
+        }
+        if (employeeData.last_name !== undefined) {
+            fields.push(`last_name = $${paramCount++}`);
+            values.push(employeeData.last_name);
+        }
+        if (employeeData.branch_location !== undefined) {
+            fields.push(`branch_location = $${paramCount++}`);
+            values.push(employeeData.branch_location);
+        }
+        if (employeeData.department !== undefined) {
+            fields.push(`department = $${paramCount++}`);
+            values.push(employeeData.department);
+        }
+        if (employeeData.department_id !== undefined) {
+            fields.push(`department_id = $${paramCount++}`);
+            values.push(employeeData.department_id);
+        }
+        if (employeeData.branch_id !== undefined) {
+            fields.push(`branch_id = $${paramCount++}`);
+            values.push(employeeData.branch_id);
+        }
+        if (fields.length === 0) {
+            throw new Error('No fields to update');
+        }
+        values.push(employeeData.employee_id); // For WHERE clause
+        const query = `
+            UPDATE employees 
+            SET ${fields.join(', ')}
+            WHERE id = $${paramCount}
+            RETURNING *;
+        `;
+        const result = await database_1.default.query(query, values);
+        // console.log('Employee update query executed:', query, values);
+        return result.rows[0];
+    }
     async findById(id) {
-        const query = 'SELECT * FROM employees WHERE id = $1';
+        const query = `
+            SELECT 
+                employees.*,
+                branches.name AS branch_name,
+                branches.location AS branch_location
+            FROM employees
+            LEFT JOIN branches ON employees.branch_id = branches.id
+            WHERE employees.id = $1
+        `;
         const result = await database_1.default.query(query, [id]);
         return result.rows[0];
     }

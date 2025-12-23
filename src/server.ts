@@ -37,7 +37,7 @@ import { mainRoutes, viewsRoutes } from './routes';
 import { PORT } from './config';
 import logger from './utils/logger';
 import 'express-async-errors'; // Handles async errors in Express
-import { currentPathMiddleware } from './middlewares';
+import { currentPathMiddleware, systemConfigMiddleware } from './middlewares';
 
 
 
@@ -46,12 +46,14 @@ app.use(express.json());
 app.use(cookieParser());
 app.use(cors());
 app.use(currentPathMiddleware); // Add current path to all requests
+app.use(systemConfigMiddleware); // Add system configuration to all views
 
 // Connecting to database
 connectDB();
 
 // Serve static files (CSS, JS, images)
 app.use('/assets', express.static(path.join(__dirname, 'assets')));
+app.use('/uploads', express.static(path.join(process.cwd(), 'uploads')));
 
 // Configure EJS as the view engine
 app.set('view engine', 'ejs');

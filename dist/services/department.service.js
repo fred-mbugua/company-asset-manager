@@ -15,15 +15,31 @@ class DepartmentService {
         await actionLog_service_1.default.logAction(userId, 'CREATE', 'Department', newDepartment.id, { department_name: newDepartment.name });
         return newDepartment;
     }
-    async update(id, updateData, userId) {
+    // async update(id: number, updateData: any, userId: number) {
+    //     // Check if the department exists before updating
+    //     const existingDepartment = await DepartmentModel.findById(id);
+    //     if (!existingDepartment) {
+    //         throw new Error('Department not found.');
+    //     }
+    //     const changes = { old_data: existingDepartment, new_data: updateData };
+    //     const updatedDepartment = await DepartmentModel.update(id, updateData);
+    //     await ActionLogService.logAction(
+    //         userId,
+    //         'UPDATE',
+    //         'Department',
+    //         id,
+    //         changes
+    //     );
+    //     return updatedDepartment;
+    // }
+    async updateDepartment(id, userId, deptData) {
         // Check if the department exists before updating
         const existingDepartment = await department_model_1.default.findById(id);
         if (!existingDepartment) {
             throw new Error('Department not found.');
         }
-        const changes = { old_data: existingDepartment, new_data: updateData };
-        const updatedDepartment = await department_model_1.default.update(id, updateData);
-        await actionLog_service_1.default.logAction(userId, 'UPDATE', 'Department', id, changes);
+        const updatedDepartment = await department_model_1.default.update(id, deptData);
+        await actionLog_service_1.default.logAction(userId, 'UPDATE', 'Department', id, updatedDepartment);
         return updatedDepartment;
     }
     async getAll() {

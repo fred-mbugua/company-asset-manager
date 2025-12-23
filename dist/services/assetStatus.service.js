@@ -25,6 +25,36 @@ class AssetStatusService {
     async findAll() {
         return models_1.AssetStatusModel.findAll();
     }
+    /**
+     * Finds a single asset status by ID.
+     */
+    async findById(id) {
+        const status = await models_1.AssetStatusModel.findById(id);
+        if (!status) {
+            throw new Error('Asset status not found');
+        }
+        return status;
+    }
+    /**
+     * Updates an asset status.
+     */
+    async update(id, data) {
+        try {
+            return await models_1.AssetStatusModel.update(id, data);
+        }
+        catch (error) {
+            if (error.message.startsWith('Duplicate asset status:')) {
+                throw new Error(error.message);
+            }
+            throw error;
+        }
+    }
+    /**
+     * Deletes an asset status.
+     */
+    async delete(id) {
+        return models_1.AssetStatusModel.delete(id);
+    }
 }
 exports.AssetStatusService = AssetStatusService;
 exports.default = new AssetStatusService();

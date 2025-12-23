@@ -6,11 +6,13 @@ Object.defineProperty(exports, "__esModule", { value: true });
 const lookup_service_1 = __importDefault(require("../services/lookup.service"));
 const services_1 = require("../services");
 const models_1 = require("../models");
+const utils_1 = require("../utils");
 const currencyFormatter = new Intl.NumberFormat('en-US', { style: 'currency', currency: 'KES' });
 class ViewsController {
     // Rendering the login page
     async renderLogin(req, res) {
-        res.render('login');
+        const returnTo = req.session.returnTo || '';
+        res.render('login', { returnTo });
     }
     // Rendering the dashboard page with dynamic data
     async renderDashboard(req, res) {
@@ -18,6 +20,16 @@ class ViewsController {
             // Fetch necessary data for the dashboard
             const totalAssets = await models_1.ReportModel.getTotalAssetCount();
             const totalExpenses = await models_1.ReportModel.getTotalExpenseSum();
+            const totalAssetValue = await models_1.ReportModel.getTotalAssetValue();
+            // Fetch analytics data
+            const assetsByType = await models_1.ReportModel.getAssetsByType();
+            const assetsByStatus = await models_1.ReportModel.getAssetsByStatus();
+            const assetsByBranch = await models_1.ReportModel.getAssetsByBranch();
+            const monthlyExpenses = await models_1.ReportModel.getMonthlyExpenses(6);
+            const recentAssignments = await models_1.ReportModel.getRecentAssignments(10);
+            const topExpensiveAssets = await models_1.ReportModel.getTopExpensiveAssets(5);
+            const assignmentStats = await models_1.ReportModel.getAssignmentStats();
+            const recentExpenses = await models_1.ReportModel.getRecentExpenses(10);
             // console.log('Rendering dashboard with data:', { 
             //     user: req.user,
             //     totalAssets: totalAssets,
@@ -28,7 +40,19 @@ class ViewsController {
                 user: req.user,
                 assetStats: {
                     totalAssets: totalAssets,
-                    totalExpenses: totalExpenses
+                    totalExpenses: totalExpenses || 0,
+                    totalAssetValue: totalAssetValue || 0,
+                    activeAssignments: assignmentStats.active_assignments || 0,
+                    returnedAssignments: assignmentStats.returned_assignments || 0
+                },
+                analytics: {
+                    assetsByType: assetsByType,
+                    assetsByStatus: assetsByStatus,
+                    assetsByBranch: assetsByBranch,
+                    monthlyExpenses: monthlyExpenses,
+                    recentAssignments: recentAssignments,
+                    topExpensiveAssets: topExpensiveAssets,
+                    recentExpenses: recentExpenses
                 }
             });
         }
@@ -42,7 +66,8 @@ class ViewsController {
         try {
             const assetTypes = await models_1.AssetTypeModel.findAll();
             const assetStatuses = await models_1.AssetStatusModel.findAll();
-            res.render('create-assets', { user: req.user, assetTypes, assetStatuses });
+            const branches = await models_1.LocationModel.findAll();
+            res.render('create-assets', { user: req.user, assetTypes, assetStatuses, branches });
         }
         catch (error) {
             console.error('Error rendering create-assets page:', error);
@@ -53,15 +78,35 @@ class ViewsController {
     async renderViewAssets(req, res) {
         // res.render('view-assets');
         try {
-            const assets = await models_1.AssetModel.findAll();
-            // console.log('Assets fetched:', assets);
+            const page = 1;
+            const itemsPerPage = 20;
+            // Fetch filter data
             const assetTypes = await models_1.AssetTypeModel.findAll();
+            const branches = await models_1.LocationModel.findAll();
+            const assetStatuses = await models_1.AssetStatusModel.findAll();
+            // Get total count of assets for pagination
+            const totalAssets = await models_1.AssetModel.count();
+            const totalPages = Math.ceil(totalAssets / itemsPerPage);
+            const pagination = {
+                currentPage: page,
+                itemsPerPage: itemsPerPage,
+                totalPages: totalPages,
+                hasPrevPage: page > 1,
+                hasNextPage: page < totalPages
+            };
+            // Get paginated assets
+            const result = await models_1.AssetModel.findAll(page, itemsPerPage);
+            const assets = result.assets;
             // console.log('Rendering view-assets with assets:', assets);
             res.render('view-assets', {
                 user: req.user,
                 pageTitle: 'View Assets',
-                assets: assets.assets,
-                assetTypes: assetTypes
+                assets: assets,
+                assetTypes: assetTypes,
+                branches: branches,
+                assetStatuses: assetStatuses,
+                pagination: pagination,
+                totalAssets: totalAssets
             });
         }
         catch (error) {
@@ -77,7 +122,7 @@ class ViewsController {
             const employees = await models_1.EmployeeModel.findEmployeesSpecificData();
             const assignments = await models_1.AssignmentModel.findAll();
             // console.log('Rendering assign-assets with data:', { assets, employees, assignments });
-            res.render('assign-assets', { user: req.user, assets, employees, assignments });
+            res.render('assign-assets', { user: req.user, assets: assets.assets, employees, assignments });
         }
         catch (error) {
             console.error('Error rendering assign-assets page:', error);
@@ -97,10 +142,6 @@ class ViewsController {
             console.error('Error rendering create-expenses page:', error);
             res.status(500).send('Error loading data for expenses.');
         }
-    }
-    // Rendering the page for creating and managing users
-    async renderCreateUser(req, res) {
-        res.render('create-user', { user: req.user });
     }
     // Rendering the reports page
     // async renderReports(req: Request, res: Response) {
@@ -124,8 +165,8 @@ class ViewsController {
             const { assignments, totalCount } = await services_1.AssignmentService.getPaginatedAssignments(initialFilters, limit, offset);
             const formattedAssignments = assignments.map(a => ({
                 ...a,
-                assignment_date: new Date(a.assignment_date).toLocaleDateString(),
-                return_date: a.return_date ? new Date(a.return_date).toLocaleDateString() : 'Active',
+                // assignment_date: a.assignment_date ? new Date(a.assignment_date).toLocaleDateString() : null,
+                // return_date: a.return_date ? new Date(a.return_date).toLocaleDateString() : null,
             }));
             const totalPages = Math.ceil(totalCount / itemsPerPage);
             const pagination = {
@@ -178,7 +219,7 @@ class ViewsController {
             const formattedExpenses = expenses.map((e) => ({
                 ...e,
                 // Ensuring date is a friendly string
-                expense_date: new Date(e.expense_date).toLocaleDateString(),
+                // date: new Date(e.date).toLocaleDateString(),
                 // Ensuring amount is formatted as currency
                 amount: currencyFormatter.format(e.amount),
             }));
@@ -230,6 +271,163 @@ class ViewsController {
         const assets = result.assets;
         // const assets = await AssetModel.findAll();
         res.render('assets-report', { user: req.user, assetTypes, branches, departments, assetStatuses, assets, pagination, totalAssets });
+    }
+    // Rendering the page for creating and managing users
+    async renderCreateUser(req, res) {
+        try {
+            // Fetch all users with linked department/branch/employee names
+            const users = await services_1.UserService.getAllUsersDetails();
+            const filterData = await lookup_service_1.default.getUserFilters();
+            // Render the EJS view
+            res.render('manage-users', {
+                user: req.user, // Current authenticated user
+                users: users,
+                ...filterData // departments, locations, employees, userRoles
+            });
+        }
+        catch (error) {
+            console.error('Error rendering manage users page:', error);
+            res.status(500).send('Failed to load user management page.');
+        }
+    }
+    async renderManageBranches(req, res) {
+        try {
+            const branches = await services_1.BranchService.findAll();
+            res.render('manage-branches', {
+                user: req.user,
+                branches: branches,
+            });
+        }
+        catch (error) {
+            console.error('Error rendering manage branches page:', error);
+            res.status(500).send('Failed to load branch management page.');
+        }
+    }
+    /**
+     * Rendering the Manage Departments EJS view.
+     */
+    async renderManageDepartments(req, res) {
+        try {
+            const departments = await services_1.DepartmentService.getAll();
+            res.render('manage-departments', {
+                user: req.user,
+                departments: departments,
+            });
+        }
+        catch (error) {
+            utils_1.logger.error('Error rendering manage departments page:', error);
+            res.status(500).send('Failed to load department management page.');
+        }
+    }
+    /**
+     * Rendering the Manage Asset Statuses EJS view.
+     */
+    async renderManageAssetStatuses(req, res) {
+        try {
+            const assetStatuses = await services_1.AssetStatusService.findAll();
+            res.render('manage-asset-statuses', {
+                user: req.user,
+                assetStatuses: assetStatuses,
+            });
+        }
+        catch (error) {
+            utils_1.logger.error('Error rendering manage asset statuses page:', error);
+            res.status(500).send('Failed to load asset status management page.');
+        }
+    }
+    /**
+     * Rendering the Manage Asset Types EJS view.
+     */
+    async renderManageAssetTypes(req, res) {
+        try {
+            const assetTypes = await services_1.AssetTypeService.findAll();
+            res.render('manage-asset-types', {
+                user: req.user,
+                assetTypes: assetTypes,
+            });
+        }
+        catch (error) {
+            utils_1.logger.error('Error rendering manage asset types page:', error);
+            res.status(500).send('Failed to load asset type management page.');
+        }
+    }
+    /**
+     * Rendering the Manage Expense Types EJS view.
+     */
+    async renderManageExpenseTypes(req, res) {
+        try {
+            const expenseTypes = await services_1.ExpenseTypeService.findAll();
+            res.render('manage-expense-types', {
+                user: req.user,
+                expenseTypes: expenseTypes,
+            });
+        }
+        catch (error) {
+            utils_1.logger.error('Error rendering manage expense types page:', error);
+            res.status(500).send('Failed to load expense type management page.');
+        }
+    }
+    /**
+     * Rendering the Action Log Report EJS view, loading initial filters and data for the first page.
+     */
+    async renderActionLogReport(req, res) {
+        try {
+            const page = 1;
+            const itemsPerPage = 20;
+            const limit = itemsPerPage;
+            const offset = (page - 1) * itemsPerPage;
+            const initialFilters = {}; // Start with no filters on load
+            // Fetching filter lookup data
+            const filterData = await lookup_service_1.default.getActionLogFilters();
+            // Fetching initial paginated action logs
+            const { logs, totalCount } = await services_1.ActionLogService.getPaginatedActionLogs(initialFilters, limit, offset);
+            // Formatting initial data for EJS rendering
+            const formattedLogs = logs.map((log) => ({
+                ...log,
+                // created_at: new Date(log.created_at).toLocaleString(),
+                details: log.details ? JSON.stringify(log.details) : 'N/A',
+            }));
+            // Calculating pagination metadata
+            const totalPages = Math.ceil(totalCount / itemsPerPage);
+            const pagination = {
+                currentPage: page,
+                itemsPerPage: itemsPerPage,
+                totalPages: totalPages,
+                totalItems: totalCount
+            };
+            // Rendering the EJS view
+            res.render('action-log-report', {
+                user: req.user,
+                // Filters
+                users: filterData.users,
+                actionTypes: filterData.actionTypes,
+                entityTypes: filterData.entityTypes,
+                // Initial Data
+                initialLogs: formattedLogs,
+                pagination,
+                totalLogs: totalCount
+            });
+        }
+        catch (error) {
+            console.error('Error rendering action log report page:', error);
+            res.status(500).send('Failed to load action log report page.');
+        }
+    }
+    // Rendering the 404 error page
+    async render404(req, res) {
+        res.status(404).render('404');
+    }
+    // Rendering the system configuration page
+    async renderSystemConfiguration(req, res) {
+        try {
+            res.render('system-configuration', {
+                user: req.user
+            });
+        }
+        catch (error) {
+            console.error('Error rendering system configuration page:', error);
+            res.status(500).send('Failed to load system configuration page.');
+        }
     }
 }
 exports.default = new ViewsController();

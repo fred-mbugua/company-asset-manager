@@ -34,6 +34,19 @@
     padding:0 20px;
     flex-shrink:0;
   }
+  
+  .app-branding {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+  }
+  
+  .app-logo {
+    height: 40px;
+    max-width: 150px;
+    object-fit: contain;
+  }
+  
   .navbar h1 {
     font-size:18px;
     font-weight:600;

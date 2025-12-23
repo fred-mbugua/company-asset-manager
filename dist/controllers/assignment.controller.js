@@ -7,6 +7,7 @@ exports.AssignmentController = void 0;
 const response_1 = require("../utils/response");
 const logger_1 = __importDefault(require("../utils/logger"));
 const assignment_service_1 = __importDefault(require("../services/assignment.service"));
+const assignment_model_1 = __importDefault(require("../models/assignment.model"));
 class AssignmentController {
     async assignAsset(req, res) {
         var _a;
@@ -25,7 +26,8 @@ class AssignmentController {
         try {
             const userId = (_a = req.user) === null || _a === void 0 ? void 0 : _a.id;
             const { id } = req.params;
-            const returnedAssignment = await assignment_service_1.default.returnAsset(Number(id), userId);
+            const returnData = req.body; // Contains return_date and return_notes
+            const returnedAssignment = await assignment_service_1.default.returnAsset(Number(id), userId, returnData);
             if (!returnedAssignment) {
                 return (0, response_1.errorResponse)(res, 404, 'Assignment not found');
             }
@@ -33,7 +35,7 @@ class AssignmentController {
         }
         catch (error) {
             logger_1.default.error(`Failed to return asset with assignment ID ${req.params.id}:`, error);
-            (0, response_1.errorResponse)(res, 500, 'Failed to return asset');
+            (0, response_1.errorResponse)(res, 500, error.message || 'Failed to return asset');
         }
     }
     async getAll(req, res) {
@@ -79,6 +81,17 @@ class AssignmentController {
         catch (error) {
             logger_1.default.error(`Failed to delete assignment with ID ${req.params.id}:`, error);
             (0, response_1.errorResponse)(res, 404, error.message);
+        }
+    }
+    async getAssetHistory(req, res) {
+        try {
+            const { assetId } = req.params;
+            const history = await assignment_model_1.default.getAssetHistory(Number(assetId));
+            (0, response_1.successResponse)(res, 200, 'Asset history retrieved successfully', history);
+        }
+        catch (error) {
+            logger_1.default.error(`Failed to retrieve asset history for asset ${req.params.assetId}:`, error);
+            (0, response_1.errorResponse)(res, 500, `Failed to retrieve asset history: ${error.message}`);
         }
     }
 }

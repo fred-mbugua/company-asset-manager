@@ -105,11 +105,11 @@ class ReportExportService {
             { header: 'ID', key: 'id', width: 10 },
             { header: 'Asset Tag', key: 'asset_tag', width: 15 },
             { header: 'Expense Type', key: 'expense_type_name', width: 20 },
-            { header: 'Date', key: 'expense_date', width: 15 },
+            { header: 'Date', key: 'date', width: 15 },
             // Using Excel number format for currency consistency
             { header: 'Amount', key: 'amount', width: 15, style: { numFmt: '"$"#,##0.00' } },
             { header: 'Vendor', key: 'vendor', width: 20 },
-            { header: 'Invoice No.', key: 'invoice_no', width: 15 },
+            { header: 'Invoice No.', key: 'invoice_number', width: 15 },
             { header: 'Department', key: 'department', width: 20 },
             { header: 'Location', key: 'location', width: 15 },
             { header: 'Notes', key: 'notes', width: 40 },
@@ -135,7 +135,7 @@ class ReportExportService {
             const formattedExpense = {
                 ...expense,
                 // Ensure date is string formatted for readability
-                expense_date: expense.expense_date ? new Date(expense.expense_date).toLocaleDateString() : 'N/A',
+                date: expense.date ? new Date(expense.date).toLocaleDateString() : 'N/A',
             };
             worksheet.addRow(formattedExpense);
         });
@@ -189,6 +189,58 @@ class ReportExportService {
                 notes: assignment.notes || 'N/A',
             };
             worksheet.addRow(formattedAssignment);
+        });
+        //  Generating Buffer
+        const arrayBufferOrBuffer = await workbook.xlsx.writeBuffer();
+        // If ExcelJS returned a Node Buffer use it directly, otherwise convert the ArrayBuffer/Uint8Array to a Node Buffer
+        const buffer = Buffer.isBuffer(arrayBufferOrBuffer)
+            ? arrayBufferOrBuffer
+            : Buffer.from(arrayBufferOrBuffer);
+        return buffer;
+    }
+    /**
+     * Generates an Excel workbook buffer for the Action Log Report.
+     */
+    async generateActionLogReport(filters) {
+        const data = await models_1.ActionLogReportModel.findAllFiltered(filters);
+        const workbook = new ExcelJS.Workbook();
+        const worksheet = workbook.addWorksheet('Action Logs Report');
+        worksheet.columns = [
+            { header: 'ID', key: 'id', width: 10 },
+            { header: 'User', key: 'user_name', width: 20 },
+            { header: 'Action Type', key: 'action_type', width: 15 },
+            { header: 'Entity Type', key: 'entity_type', width: 15 },
+            { header: 'Entity ID', key: 'entity_id', width: 12 },
+            { header: 'Details', key: 'details', width: 40 },
+            { header: 'Date & Time', key: 'created_at', width: 20 },
+        ];
+        // Style the Header Row
+        worksheet.getRow(1).eachCell(cell => {
+            cell.font = { bold: true, color: { argb: 'FFFFFF' } };
+            cell.fill = {
+                type: 'pattern',
+                pattern: 'solid',
+                fgColor: { argb: '28a745' } // green fill
+            };
+            cell.alignment = { vertical: 'middle', horizontal: 'center' };
+            cell.border = {
+                top: { style: 'thin' },
+                left: { style: 'thin' },
+                bottom: { style: 'thin' },
+                right: { style: 'thin' }
+            };
+        });
+        data.forEach(log => {
+            const formattedLog = {
+                id: log.id,
+                user_name: log.user_name || 'N/A',
+                action_type: log.action_type,
+                entity_type: log.entity_type,
+                entity_id: log.entity_id || 'N/A',
+                details: log.details ? JSON.stringify(log.details) : 'N/A',
+                created_at: log.created_at ? new Date(log.created_at).toLocaleString() : 'N/A',
+            };
+            worksheet.addRow(formattedLog);
         });
         //  Generating Buffer
         const arrayBufferOrBuffer = await workbook.xlsx.writeBuffer();

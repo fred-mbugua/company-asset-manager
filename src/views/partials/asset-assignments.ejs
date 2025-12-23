@@ -10,6 +10,7 @@
                             <th>Assigned Date</th>
                             <th>Notes</th>
                             <th>Return Date</th>
+                            <th>Attachments</th>
                             <th>Actions</th>
                         </tr>
                     </thead>
@@ -33,6 +34,11 @@
                                         '<span data-date="' + assignment.return_date + '"></span>' : 'N/A' %>
                                 </td>
                                 <td>
+                                    <button class="btn btn-attachment" onclick="showAssignmentAttachments(<%= assignment.id %>)">
+                                        <i class="uil uil-paperclip"></i> View
+                                    </button>
+                                </td>
+                                <td>
                                     <% if (!assignment.return_date) { %>
                                     <button class="btn btn-return" data-id="<%= assignment.id %>">
                                         Return
@@ -43,7 +49,7 @@
                             <% }); %>
                         <% } else { %>
                             <tr>
-                                <td colspan="9" class="no-data">No current assignments</td>
+                                <td colspan="10" class="no-data">No current assignments</td>
                             </tr>
                         <% } %>
                     </tbody>

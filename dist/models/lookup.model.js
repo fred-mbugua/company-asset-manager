@@ -67,6 +67,63 @@ class LookupModel {
         const result = await database_1.default.query(query);
         return result.rows;
     }
+    /**
+     * Fetches all employee names.
+     */
+    async getAllEmployeeDetails() {
+        const query = `
+            SELECT *
+            FROM employees
+            ORDER BY first_name ASC;
+        `;
+        const result = await database_1.default.query(query);
+        return result.rows;
+    }
+    async getAllUserRoles() {
+        const query = `
+            SELECT id, name
+            FROM roles
+            ORDER BY name ASC;
+        `;
+        const result = await database_1.default.query(query);
+        return result.rows;
+    }
+    /**
+     * Fetches all users for filter dropdown.
+     */
+    async getAllUsers() {
+        const query = `
+            SELECT id, first_name || ' ' || last_name AS user_name
+            FROM users
+            ORDER BY first_name ASC, last_name ASC;
+        `;
+        const result = await database_1.default.query(query);
+        return result.rows;
+    }
+    /**
+     * Fetches all distinct action types from action_logs.
+     */
+    async getAllActionTypes() {
+        const query = `
+            SELECT DISTINCT action_type
+            FROM action_logs
+            ORDER BY action_type ASC;
+        `;
+        const result = await database_1.default.query(query);
+        return result.rows.map(row => row.action_type);
+    }
+    /**
+     * Fetches all distinct entity types from action_logs.
+     */
+    async getAllEntityTypes() {
+        const query = `
+            SELECT DISTINCT entity_type
+            FROM action_logs
+            ORDER BY entity_type ASC;
+        `;
+        const result = await database_1.default.query(query);
+        return result.rows.map(row => row.entity_type);
+    }
 }
 exports.LookupModel = LookupModel;
 exports.default = new LookupModel();

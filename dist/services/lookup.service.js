@@ -41,6 +41,39 @@ class LookupService {
             locations // Array of { id, name }
         };
     }
+    /**
+     * Fetching all required lists for the users page.
+     */
+    async getUserFilters() {
+        // Run all promises concurrently for fast loading
+        const [departments, locations, employees, userRoles] = await Promise.all([
+            lookup_model_1.default.getAllDepartments(),
+            lookup_model_1.default.getAllBranches(),
+            lookup_model_1.default.getAllEmployeeDetails(),
+            lookup_model_1.default.getAllUserRoles()
+        ]);
+        return {
+            departments,
+            locations,
+            employees,
+            userRoles
+        };
+    }
+    /**
+     * Fetches all required lists for the Action Log Report filters.
+     */
+    async getActionLogFilters() {
+        const [users, actionTypes, entityTypes] = await Promise.all([
+            lookup_model_1.default.getAllUsers(),
+            lookup_model_1.default.getAllActionTypes(),
+            lookup_model_1.default.getAllEntityTypes()
+        ]);
+        return {
+            users,
+            actionTypes,
+            entityTypes
+        };
+    }
 }
 exports.LookupService = LookupService;
 exports.default = new LookupService();

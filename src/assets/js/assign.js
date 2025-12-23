@@ -266,18 +266,55 @@ document.addEventListener('DOMContentLoaded', () => {
     const prevBtn = document.getElementById('prev-btn');
     const nextBtn = document.getElementById('next-btn');
     const pageInfo = document.getElementById('page-info');
+    const searchInput = document.getElementById('search-input');
 
     let currentPage = 1;
     let itemsPerPage = 10;
     let allAssignments = [];
+    let filteredAssignments = [];
 
     // Store all assignment rows when page loads
     if (assignmentTableBody) {
         const rows = Array.from(assignmentTableBody.querySelectorAll('tr'));
-        allAssignments = rows;
+        allAssignments = rows.map(row => {
+            const cells = Array.from(row.cells);
+            return {
+                element: row.cloneNode(true),
+                assetTag: String(cells[1]?.textContent || '').toLowerCase(),
+                manufacturer: String(cells[2]?.textContent || '').toLowerCase(),
+                model: String(cells[3]?.textContent || '').toLowerCase(),
+                employee: String(cells[4]?.textContent || '').toLowerCase(),
+                notes: String(cells[6]?.textContent || '').toLowerCase(),
+                isValid: !row.querySelector('.no-data')
+            };
+        });
+        filteredAssignments = [...allAssignments];
 
         // Initialize pagination
         updatePagination();
+
+        // Search functionality
+        if (searchInput) {
+            searchInput.addEventListener('input', (e) => {
+                const searchTerm = String(e.target.value || '').toLowerCase().trim();
+                
+                if (!searchTerm) {
+                    filteredAssignments = [...allAssignments];
+                } else {
+                    filteredAssignments = allAssignments.filter(assignment => {
+                        if (!assignment.isValid) return false;
+                        return assignment.assetTag.includes(searchTerm) ||
+                               assignment.manufacturer.includes(searchTerm) ||
+                               assignment.model.includes(searchTerm) ||
+                               assignment.employee.includes(searchTerm) ||
+                               assignment.notes.includes(searchTerm);
+                    });
+                }
+                
+                currentPage = 1;
+                updatePagination();
+            });
+        }
 
         // Page size change handler
         if (pageSizeSelect) {
@@ -301,7 +338,7 @@ document.addEventListener('DOMContentLoaded', () => {
         // Next button handler
         if (nextBtn) {
             nextBtn.addEventListener('click', () => {
-                const totalPages = Math.ceil(allAssignments.length / itemsPerPage);
+                const totalPages = Math.ceil(filteredAssignments.length / itemsPerPage);
                 if (currentPage < totalPages) {
                     currentPage++;
                     updatePagination();
@@ -312,7 +349,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
     function updatePagination() {
         // Filter out "No current assignments" row
-        const validAssignments = allAssignments.filter(row => !row.querySelector('.no-data'));
+        const validAssignments = filteredAssignments.filter(assignment => assignment.isValid);
         
         const totalItems = validAssignments.length;
         const totalPages = Math.ceil(totalItems / itemsPerPage) || 1;
@@ -327,13 +364,13 @@ document.addEventListener('DOMContentLoaded', () => {
         if (totalItems === 0) {
             // Show no data message
             const noDataRow = document.createElement('tr');
-            noDataRow.innerHTML = '<td colspan="9" class="no-data">No current assignments</td>';
+            noDataRow.innerHTML = '<td colspan="10" class="no-data">No current assignments</td>';
             assignmentTableBody.appendChild(noDataRow);
         } else {
             // Show only the rows for the current page
             const pageAssignments = validAssignments.slice(startIndex, endIndex);
-            pageAssignments.forEach(row => {
-                assignmentTableBody.appendChild(row);
+            pageAssignments.forEach(assignment => {
+                assignmentTableBody.appendChild(assignment.element.cloneNode(true));
             });
         }
         
@@ -345,3 +382,102 @@ document.addEventListener('DOMContentLoaded', () => {
         nextBtn.disabled = currentPage >= totalPages;
     }
 });
+
+// Show assignment attachments modal
+async function showAssignmentAttachments(assignmentId) {
+    const modal = document.getElementById('assignmentAttachmentsModal');
+    const attachmentsContent = document.getElementById('assignment-attachments-content');
+    
+    modal.style.display = 'block';
+    attachmentsContent.innerHTML = '<p style="text-align: center; color: #888;">Loading...</p>';
+    
+    try {
+        // Fetch assignment details
+        const response = await API.get(`/assignments/${assignmentId}`);
+        const assignment = response.data;
+        
+        // Display assignment info and attachments
+        attachmentsContent.innerHTML = `
+            <div class="assignment-detail-info" style="background: #f8f9fa; border-radius: 6px; padding: 15px; margin-bottom: 20px;">
+                <div class="detail-row" style="padding: 8px 0; border-bottom: 1px solid #e9ecef;">
+                    <strong style="display: inline-block; min-width: 150px;">Assignment ID:</strong> ${assignment.id}
+                </div>
+                <div class="detail-row" style="padding: 8px 0; border-bottom: 1px solid #e9ecef;">
+                    <strong style="display: inline-block; min-width: 150px;">Asset:</strong> ${assignment.asset_tag || 'N/A'}
+                </div>
+                <div class="detail-row" style="padding: 8px 0; border-bottom: 1px solid #e9ecef;">
+                    <strong style="display: inline-block; min-width: 150px;">Employee:</strong> ${assignment.employee_name || 'N/A'}
+                </div>
+                <div class="detail-row" style="padding: 8px 0;">
+                    <strong style="display: inline-block; min-width: 150px;">Assigned Date:</strong> ${new Date(assignment.assignment_date).toLocaleDateString('en-GB', {
+                        day: '2-digit',
+                        month: 'short',
+                        year: 'numeric'
+                    })}
+                </div>
+            </div>
+            
+            <div class="attachments-section" data-entity-type="assignment" data-entity-id="${assignmentId}">
+                <h4 style="margin-bottom: 15px; color: #2c3e50; display: flex; align-items: center; gap: 0.5rem;">
+                    <i class="uil uil-paperclip"></i> Attachments & Notes
+                </h4>
+                
+                <div class="attachment-upload-form" style="background: white; padding: 1.5rem; border-radius: 6px; margin-bottom: 1.5rem;">
+                    <div class="upload-area" style="margin-bottom: 1rem;">
+                        <input type="file" id="assignment-attachment-file-${assignmentId}" class="attachment-file-input" accept="*/*" style="display: none;">
+                        <label for="assignment-attachment-file-${assignmentId}" class="upload-label" style="display: flex; flex-direction: column; align-items: center; gap: 0.5rem; padding: 2rem; border: 2px dashed #ddd; border-radius: 6px; cursor: pointer; transition: all 0.3s ease; background: #fafafa;">
+                            <i class="uil uil-upload" style="font-size: 2.5rem; color: #F37635;"></i>
+                            <span>Choose File or Drag & Drop</span>
+                            <small style="color: #7f8c8d; font-size: 0.875rem;">Maximum file size: 10MB</small>
+                        </label>
+                        <div class="selected-file" style="display: none; align-items: center; gap: 0.5rem; padding: 1rem; border: 2px solid #F37635; border-radius: 6px; background: #fff5f0;">
+                            <i class="uil uil-file" style="font-size: 1.5rem; color: #F37635;"></i>
+                            <span class="file-name" style="flex: 1; color: #2c3e50; font-weight: 500;"></span>
+                            <button type="button" class="clear-file-btn" style="background: #e74c3c; color: white; border: none; border-radius: 50%; width: 24px; height: 24px; cursor: pointer; font-size: 18px; line-height: 1; padding: 0;">&times;</button>
+                        </div>
+                    </div>
+                    <div class="upload-notes" style="margin-bottom: 1rem;">
+                        <label for="assignment-attachment-notes-${assignmentId}" style="display: block; margin-bottom: 0.5rem; color: #495057; font-weight: 500;">Notes (Optional)</label>
+                        <textarea id="assignment-attachment-notes-${assignmentId}" class="attachment-notes-input" rows="2" placeholder="Add any notes about this attachment..." style="width: 100%; padding: 0.75rem; border: 1px solid #ced4da; border-radius: 4px; font-size: 14px; font-family: inherit; resize: vertical;"></textarea>
+                    </div>
+                    <button type="button" class="btn btn-upload-attachment" data-entity-type="assignment" data-entity-id="${assignmentId}" style="display: inline-flex; align-items: center; gap: 0.5rem; padding: 0.75rem 1.5rem; background: #F37635; color: white; border: none; border-radius: 4px; font-size: 14px; font-weight: 500; cursor: pointer;">
+                        <i class="uil uil-upload-alt"></i> Upload Attachment
+                    </button>
+                </div>
+
+                <div class="attachments-list" id="assignment-attachments-list-${assignmentId}" style="background: white; border-radius: 6px; padding: 1rem; min-height: 100px;">
+                    <p class="loading-text" style="text-align: center; color: #7f8c8d; font-style: italic; padding: 2rem;">Loading attachments...</p>
+                </div>
+            </div>
+        `;
+        
+        // Initialize attachment manager for assignments
+        AttachmentManager.init('assignment', assignmentId);
+        
+    } catch (error) {
+        console.error('Error loading assignment details:', error);
+        attachmentsContent.innerHTML = `
+            <p style="text-align: center; color: #e74c3c;">
+                Failed to load assignment details. Please try again.
+            </p>
+        `;
+    }
+}
+
+// Close assignment attachments modal
+function closeAssignmentAttachments() {
+    const modal = document.getElementById('assignmentAttachmentsModal');
+    modal.style.display = 'none';
+}
+
+// Close modal when clicking outside
+window.addEventListener('click', (event) => {
+    const modal = document.getElementById('assignmentAttachmentsModal');
+    if (event.target === modal) {
+        closeAssignmentAttachments();
+    }
+});
+
+// Make functions globally available
+window.showAssignmentAttachments = showAssignmentAttachments;
+window.closeAssignmentAttachments = closeAssignmentAttachments;

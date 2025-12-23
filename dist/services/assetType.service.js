@@ -27,6 +27,36 @@ class AssetTypeService {
     async findAll() {
         return models_1.AssetTypeModel.findAll();
     }
+    /**
+     * Finds a single asset type by ID.
+     */
+    async findById(id) {
+        const type = await models_1.AssetTypeModel.findById(id);
+        if (!type) {
+            throw new Error('Asset type not found');
+        }
+        return type;
+    }
+    /**
+     * Updates an asset type.
+     */
+    async update(id, data) {
+        try {
+            return await models_1.AssetTypeModel.update(id, data);
+        }
+        catch (error) {
+            if (error.message.startsWith('Duplicate asset type:')) {
+                throw new Error(error.message);
+            }
+            throw error;
+        }
+    }
+    /**
+     * Deletes an asset type.
+     */
+    async delete(id) {
+        return models_1.AssetTypeModel.delete(id);
+    }
 }
 exports.AssetTypeService = AssetTypeService;
 exports.default = new AssetTypeService();

@@ -28,6 +28,27 @@ h3 {
     background-color: #07601d;
 }
 
+/* Search/Filter Section */
+.search-filter-section {
+    display: flex;
+    gap: 10px;
+    margin-bottom: 15px;
+}
+
+.search-input {
+    flex: 1;
+    padding: 10px;
+    border: 1px solid #ccc;
+    border-radius: 4px;
+    font-size: 14px;
+}
+
+.search-input:focus {
+    outline: none;
+    border-color: #1abc9c;
+    box-shadow: 0 0 0 3px rgba(26, 188, 156, 0.1);
+}
+
 /* Data Table Styling (Reusing standard data-table if available, but defining specifics) */
 .data-table {
     width: 100%;

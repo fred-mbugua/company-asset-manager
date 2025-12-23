@@ -58,13 +58,26 @@ class AssignmentModel {
                             assignments ass Inner Join
                             assets asts On ass.asset_id = asts.id Inner Join
                             employees emps On ass.employee_id = emps.id
+                        Where
+                            ass.return_date IS NULL
                         Order By
                             assignment_date Desc`;
         const result = await database_1.default.query(query);
         return result.rows;
     }
     static async findById(id) {
-        const query = `SELECT * FROM assignments WHERE id = $1;`;
+        const query = `
+            SELECT 
+                a.*,
+                ast.asset_tag,
+                ast.manufacturer,
+                ast.model,
+                CONCAT(e.first_name, ' ', e.last_name) as employee_name
+            FROM assignments a
+            LEFT JOIN assets ast ON a.asset_id = ast.id
+            LEFT JOIN employees e ON a.employee_id = e.id
+            WHERE a.id = $1;
+        `;
         const result = await database_1.default.query(query, [id]);
         return result.rows[0];
     }
@@ -118,6 +131,72 @@ class AssignmentModel {
                 A.id DESC;
         `;
         const result = await database_1.default.query(query, [employeeId]);
+        return result.rows;
+    }
+    static async getInStockStatus() {
+        const query = `
+            SELECT id, name FROM asset_statuses 
+            WHERE LOWER(name) = 'in stock' 
+            LIMIT 1;
+        `;
+        const result = await database_1.default.query(query);
+        return result.rows[0];
+    }
+    static async getInUseStatus() {
+        const query = `
+            SELECT id, name FROM asset_statuses 
+            WHERE LOWER(name) = 'in use' OR LOWER(name) = 'inuse'
+            LIMIT 1;
+        `;
+        const result = await database_1.default.query(query);
+        return result.rows[0];
+    }
+    static async updateAssetStatus(assetId, statusId, statusName) {
+        const query = `
+            UPDATE assets 
+            SET asset_status_id = $1, status = $2
+            WHERE id = $3
+            RETURNING *;
+        `;
+        const result = await database_1.default.query(query, [statusId, statusName, assetId]);
+        return result.rows[0];
+    }
+    static async getEmployeeById(employeeId) {
+        const query = `
+            SELECT 
+                employees.*,
+                branches.name AS branch_name,
+                branches.location AS branch_location
+            FROM employees
+            LEFT JOIN branches ON employees.branch_id = branches.id
+            WHERE employees.id = $1;
+        `;
+        const result = await database_1.default.query(query, [employeeId]);
+        return result.rows[0];
+    }
+    static async getAssetHistory(assetId) {
+        const query = `
+            SELECT 
+                ass.id,
+                ass.assignment_date,
+                ass.return_date,
+                ass.notes,
+                emps.first_name,
+                emps.middle_name,
+                emps.last_name,
+                branches.name AS branch_name,
+                branches.location AS branch_location,
+                users.first_name AS assigned_by_first_name,
+                users.last_name AS assigned_by_last_name
+            FROM assignments ass
+            INNER JOIN employees emps ON ass.employee_id = emps.id
+            LEFT JOIN branches ON emps.branch_id = branches.id
+            LEFT JOIN action_logs al ON al.entity_type = 'Assignment' AND al.entity_id = ass.id AND al.action_type = 'ASSIGN ASSET'
+            LEFT JOIN users ON al.user_id = users.id
+            WHERE ass.asset_id = $1
+            ORDER BY ass.assignment_date DESC;
+        `;
+        const result = await database_1.default.query(query, [assetId]);
         return result.rows;
     }
 }

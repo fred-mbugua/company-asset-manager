@@ -17,3 +17,7 @@ export { default as ExpenseReportModel } from './expenseReport.model';
 export { default as LookupModel } from './lookup.model';
 export { default as AssignmentReportModel } from './assignmentReport.model';
 export { default as ActionLogReportModel } from './actionLogReport.model';
+export { default as AssetAttachmentModel } from './assetAttachment.model';
+export { default as ExpenseAttachmentModel } from './expenseAttachment.model';
+export { default as AssignmentAttachmentModel } from './assignmentAttachment.model';
+export { default as SystemConfigurationModel } from './systemConfiguration.model';

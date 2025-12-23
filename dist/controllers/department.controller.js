@@ -62,8 +62,8 @@ class DepartmentController {
             const userId = (_a = req.user) === null || _a === void 0 ? void 0 : _a.id;
             const departmentId = Number(req.params.id);
             const updateData = req.body;
-            const updatedDepartment = await services_1.DepartmentService.update(departmentId, updateData, userId);
-            logger_1.default.info(`Department updated successfully: ${updatedDepartment.name}`);
+            const updatedDepartment = await services_1.DepartmentService.updateDepartment(departmentId, userId, updateData);
+            logger_1.default.info(`Department updated successfully: ${updatedDepartment === null || updatedDepartment === void 0 ? void 0 : updatedDepartment.name}`);
             (0, response_1.successResponse)(res, 200, 'Department updated successfully', updatedDepartment);
         }
         catch (error) {

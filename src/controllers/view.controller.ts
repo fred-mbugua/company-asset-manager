@@ -470,6 +470,18 @@ class ViewsController {
     async render404(req: Request, res: Response) {
         res.status(404).render('404');
     }
+
+    // Rendering the system configuration page
+    async renderSystemConfiguration(req: AuthenticatedRequest, res: Response) {
+        try {
+            res.render('system-configuration', { 
+                user: req.user
+            });
+        } catch (error) {
+            console.error('Error rendering system configuration page:', error);
+            res.status(500).send('Failed to load system configuration page.');
+        }
+    }
 }
 
 export default new ViewsController();

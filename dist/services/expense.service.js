@@ -14,6 +14,13 @@ class ExpenseService {
     async getAll() {
         return models_1.ExpenseModel.findallAssets();
     }
+    async getExpenseById(id) {
+        const expense = await models_1.ExpenseModel.findById(id);
+        if (!expense) {
+            throw new Error('Expense not found');
+        }
+        return expense;
+    }
     async getExpensesByAssetId(assetId) {
         const expense = await models_1.ExpenseModel.findByAssetId(assetId);
         if (!expense) {

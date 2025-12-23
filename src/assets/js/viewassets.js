@@ -194,6 +194,39 @@ async function showAssetDetails(id) {
             <div class="form-field"><label>Purchase Price:</label><input type="number" step="0.01" id="edit_price" value="${asset.purchase_price}" required></div>
             <div class="form-field full-width"><label>Notes:</label><textarea id="edit_desc" rows="3">${asset.notes}</textarea></div>
         `;
+        
+        // Add attachments section
+        detailForm.innerHTML += `
+            <div class="attachments-section" data-entity-type="asset" data-entity-id="${id}">
+                <h4><i class="uil uil-paperclip"></i> Attachments & Notes</h4>
+                <div class="attachment-upload-form">
+                    <div class="upload-area">
+                        <input type="file" id="asset-attachment-file-${id}" class="attachment-file-input" accept="*/*" style="display: none;">
+                        <label for="asset-attachment-file-${id}" class="upload-label">
+                            <i class="uil uil-upload"></i>
+                            <span>Choose File or Drag & Drop</span>
+                            <small>Maximum file size: 10MB</small>
+                        </label>
+                        <div class="selected-file" style="display: none;">
+                            <i class="uil uil-file"></i>
+                            <span class="file-name"></span>
+                            <button type="button" class="clear-file-btn">&times;</button>
+                        </div>
+                    </div>
+                    <div class="upload-notes">
+                        <label for="asset-attachment-notes-${id}">Notes (Optional)</label>
+                        <textarea id="asset-attachment-notes-${id}" class="attachment-notes-input" rows="2" placeholder="Add any notes about this attachment..."></textarea>
+                    </div>
+                    <button type="button" class="btn btn-upload-attachment" data-entity-type="asset" data-entity-id="${id}">
+                        <i class="uil uil-upload-alt"></i> Upload Attachment
+                    </button>
+                </div>
+                <div class="attachments-list" id="asset-attachments-list-${id}">
+                    <p class="loading-text">Loading attachments...</p>
+                </div>
+            </div>
+        `;
+        
         document.getElementById('edit_status').value = asset.asset_status_id;
         document.getElementById('edit_location').value = asset.branch_id;
         
@@ -216,6 +249,11 @@ async function showAssetDetails(id) {
         
         listSection.style.display = 'none';
         detailSection.style.display = 'block';
+
+        // Initialize attachment manager
+        if (typeof AttachmentManager !== 'undefined') {
+            AttachmentManager.init('asset', id);
+        }
 
     } catch (error) {
         showMessage('error', error.message || 'Failed to load asset details.');

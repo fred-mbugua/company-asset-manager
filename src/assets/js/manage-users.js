@@ -236,18 +236,68 @@ document.addEventListener('DOMContentLoaded', () => {
     const prevBtn = document.getElementById('prev-btn');
     const nextBtn = document.getElementById('next-btn');
     const pageInfo = document.getElementById('page-info');
+    const searchInput = document.getElementById('search-input');
 
     let currentPage = 1;
     let itemsPerPage = 10;
     let allUsers = [];
+    let filteredUsers = [];
 
     // Store all user rows when page loads
     if (usersTableBody) {
         const rows = Array.from(usersTableBody.querySelectorAll('tr'));
-        allUsers = rows;
+        allUsers = rows.map(row => {
+            const emailCell = row.querySelector('td[data-label="Email"]');
+            const roleCell = row.querySelector('td[data-label="Role"]');
+            const deptCell = row.querySelector('td[data-label="Department"]');
+            const branchCell = row.querySelector('td[data-label="Branch"]');
+            
+            const emailText = emailCell?.textContent || '';
+            const roleText = roleCell?.textContent || '';
+            const deptText = deptCell?.textContent || '';
+            const branchText = branchCell?.textContent || '';
+            
+            return {
+                element: row.cloneNode(true),
+                email: String(emailText).toLowerCase(),
+                role: String(roleText).toLowerCase(),
+                department: String(deptText).toLowerCase(),
+                branch: String(branchText).toLowerCase(),
+                isValid: emailCell && !emailText.includes('No users found')
+            };
+        });
+        filteredUsers = [...allUsers];
 
         // Initialize pagination
         updatePagination();
+
+        // Search functionality
+        if (searchInput) {
+            searchInput.addEventListener('input', (e) => {
+                const searchTerm = e.target.value.toLowerCase().trim();
+                
+                if (!searchTerm) {
+                    filteredUsers = [...allUsers];
+                } else {
+                    filteredUsers = allUsers.filter(user => {
+                        if (!user || !user.isValid) return false;
+                        
+                        const email = user.email || '';
+                        const role = user.role || '';
+                        const department = user.department || '';
+                        const branch = user.branch || '';
+                        
+                        return email.includes(searchTerm) ||
+                               role.includes(searchTerm) ||
+                               department.includes(searchTerm) ||
+                               branch.includes(searchTerm);
+                    });
+                }
+                
+                currentPage = 1;
+                updatePagination();
+            });
+        }
 
         // Page size change handler
         if (pageSizeSelect) {
@@ -271,7 +321,7 @@ document.addEventListener('DOMContentLoaded', () => {
         // Next button handler
         if (nextBtn) {
             nextBtn.addEventListener('click', () => {
-                const totalPages = Math.ceil(allUsers.length / itemsPerPage);
+                const totalPages = Math.ceil(filteredUsers.length / itemsPerPage);
                 if (currentPage < totalPages) {
                     currentPage++;
                     updatePagination();
@@ -281,36 +331,28 @@ document.addEventListener('DOMContentLoaded', () => {
     }
 
     function updatePagination() {
-        // Filter out "No users found" row
-        const validUsers = allUsers.filter(row => !row.textContent.includes('No users found'));
+        const validUsers = filteredUsers.filter(user => user.isValid);
         
         const totalItems = validUsers.length;
         const totalPages = Math.ceil(totalItems / itemsPerPage) || 1;
         
-        // Calculate start and end indices
         const startIndex = (currentPage - 1) * itemsPerPage;
         const endIndex = startIndex + itemsPerPage;
         
-        // Clear table body
         usersTableBody.innerHTML = '';
         
         if (totalItems === 0) {
-            // Show no data message
             const noDataRow = document.createElement('tr');
             noDataRow.innerHTML = '<td colspan="8" style="text-align:center;">No users found.</td>';
             usersTableBody.appendChild(noDataRow);
         } else {
-            // Show only the rows for the current page
             const pageUsers = validUsers.slice(startIndex, endIndex);
-            pageUsers.forEach(row => {
-                usersTableBody.appendChild(row);
+            pageUsers.forEach(user => {
+                usersTableBody.appendChild(user.element.cloneNode(true));
             });
         }
         
-        // Update page info
         pageInfo.textContent = `Page ${currentPage} of ${totalPages} (${totalItems} total)`;
-        
-        // Update button states
         prevBtn.disabled = currentPage === 1;
         nextBtn.disabled = currentPage >= totalPages;
     }

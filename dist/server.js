@@ -38,14 +38,18 @@ const routes_1 = require("./routes");
 const config_1 = require("./config");
 const logger_1 = __importDefault(require("./utils/logger"));
 require("express-async-errors"); // Handles async errors in Express
+const middlewares_1 = require("./middlewares");
 // Middleware
 app.use(express_1.default.json());
 app.use((0, cookie_parser_1.default)());
 app.use((0, cors_1.default)());
+app.use(middlewares_1.currentPathMiddleware); // Add current path to all requests
+app.use(middlewares_1.systemConfigMiddleware); // Add system configuration to all views
 // Connecting to database
 (0, database_1.connectDB)();
 // Serve static files (CSS, JS, images)
 app.use('/assets', express_1.default.static(path_1.default.join(__dirname, 'assets')));
+app.use('/uploads', express_1.default.static(path_1.default.join(process.cwd(), 'uploads')));
 // Configure EJS as the view engine
 app.set('view engine', 'ejs');
 app.set('views', path_1.default.join(__dirname, 'views'));
@@ -56,6 +60,10 @@ app.use('/', routes_1.viewsRoutes);
 // Catch-all route to serve the login page as the default
 app.get('/', (req, res) => {
     res.redirect('/login');
+});
+// 404 handler - must be after all other routes
+app.use((req, res) => {
+    res.status(404).render('404');
 });
 // Global error handler
 app.use((err, req, res, next) => {

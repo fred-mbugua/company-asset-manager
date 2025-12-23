@@ -71,7 +71,18 @@ class AssignmentModel {
     }
 
     static async findById(id: number) {
-        const query = `SELECT * FROM assignments WHERE id = $1;`;
+        const query = `
+            SELECT 
+                a.*,
+                ast.asset_tag,
+                ast.manufacturer,
+                ast.model,
+                CONCAT(e.first_name, ' ', e.last_name) as employee_name
+            FROM assignments a
+            LEFT JOIN assets ast ON a.asset_id = ast.id
+            LEFT JOIN employees e ON a.employee_id = e.id
+            WHERE a.id = $1;
+        `;
         const result = await db.query(query, [id]);
         return result.rows[0];
     }

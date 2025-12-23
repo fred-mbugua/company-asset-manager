@@ -40,6 +40,7 @@ const authenticate = async (req, res, next) => {
             return next();
         }
         catch (accessError) {
+            // console.log('Access token verification failed:', accessError);
             // Access token expired or invalid. Continue to refresh flow.
         }
     }
@@ -85,7 +86,7 @@ const authorize = (roles) => {
                 return res.status(403).json({ success: false, message: 'Forbidden: Insufficient privileges.' });
             }
             // For frontend pages, redirect to an error page or dashboard
-            return res.redirect('/');
+            return res.redirect('/login');
         }
         next();
     };

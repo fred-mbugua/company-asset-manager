@@ -10,6 +10,10 @@ import uploadRoutes from './upload.routes';
 import departmentRoutes from './departments.routes';
 import branchRoutes from './branches.routes';
 import assetTypeRoutes from './assetType.routes';
+import assetAttachmentRoutes from './assetAttachment.routes';
+import expenseAttachmentRoutes from './expenseAttachment.routes';
+import assignmentAttachmentRoutes from './assignmentAttachment.routes';
+import systemConfigurationRoutes from './systemConfiguration.routes';
 
 import { authenticate, authorize } from '../middlewares/auth.middleware'; 
 
@@ -25,5 +29,9 @@ router.use('/reports', authenticate, reportRoutes);
 router.use('/upload', authenticate, uploadRoutes);
 router.use('/departments', authenticate, departmentRoutes);
 router.use('/branches', authenticate, branchRoutes);
+router.use('/asset-attachments', authenticate, assetAttachmentRoutes);
+router.use('/expense-attachments', authenticate, expenseAttachmentRoutes);
+router.use('/assignment-attachments', authenticate, assignmentAttachmentRoutes);
+router.use('/system-config', systemConfigurationRoutes);
 router.use('/', authenticate, assetTypeRoutes);
 export default router;

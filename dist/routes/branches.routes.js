@@ -8,4 +8,7 @@ const branch_controller_1 = __importDefault(require("../controllers/branch.contr
 const router = (0, express_1.Router)();
 router.post('/', branch_controller_1.default.create);
 router.get('/', branch_controller_1.default.findAll);
+router.get('/:id', branch_controller_1.default.getBranchById);
+router.put('/:id', branch_controller_1.default.updateBranch);
+router.delete('/:id', branch_controller_1.default.deleteBranch);
 exports.default = router;

@@ -37,5 +37,8 @@ class AssetService {
     async search(query) {
         return asset_model_1.default.search(query);
     }
+    async statusList() {
+        return asset_model_1.default.getAssetStatuses();
+    }
 }
 exports.default = new AssetService();

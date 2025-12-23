@@ -3,7 +3,6 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
     return (mod && mod.__esModule) ? mod : { "default": mod };
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.UserController = void 0;
 const services_1 = require("../services");
 const response_1 = require("../utils/response");
 const logger_1 = __importDefault(require("../utils/logger"));
@@ -50,5 +49,34 @@ class UserController {
             (0, response_1.errorResponse)(res, 404, error.message);
         }
     }
+    async resetPassword(req, res) {
+        var _a;
+        try {
+            const userId = (_a = req.user) === null || _a === void 0 ? void 0 : _a.id;
+            const { password } = req.body;
+            if (!password || password.length < 6) {
+                return (0, response_1.errorResponse)(res, 400, 'Password must be at least 6 characters long');
+            }
+            await services_1.UserService.resetPassword(req.params.id, password, userId);
+            (0, response_1.successResponse)(res, 200, 'Password reset successfully');
+        }
+        catch (error) {
+            logger_1.default.error(`Password reset failed: ${error.message}`, { error });
+            (0, response_1.errorResponse)(res, 500, error.message);
+        }
+    }
+    async toggleStatus(req, res) {
+        var _a;
+        try {
+            const userId = (_a = req.user) === null || _a === void 0 ? void 0 : _a.id;
+            const { is_active } = req.body;
+            const result = await services_1.UserService.toggleUserStatus(req.params.id, is_active, userId);
+            (0, response_1.successResponse)(res, 200, 'User status updated successfully', result);
+        }
+        catch (error) {
+            logger_1.default.error(`Toggle status failed: ${error.message}`, { error });
+            (0, response_1.errorResponse)(res, 500, error.message);
+        }
+    }
 }
-exports.UserController = UserController;
+exports.default = new UserController();

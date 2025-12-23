@@ -3,13 +3,15 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
     return (mod && mod.__esModule) ? mod : { "default": mod };
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.ExpenseTypeController = exports.AssetStatusController = exports.AssetTypeController = exports.ViewsController = exports.BulkUploadController = exports.ReportController = exports.ExpenseController = exports.EmployeeController = exports.AssignmentController = exports.AuthController = exports.AssetController = void 0;
+exports.ExpenseTypeController = exports.AssetStatusController = exports.AssetTypeController = exports.ViewsController = exports.BulkUploadController = exports.ReportController = exports.ExpenseController = exports.EmployeeController = exports.UserController = exports.AssignmentController = exports.AuthController = exports.AssetController = void 0;
 var asset_controller_1 = require("./asset.controller");
 Object.defineProperty(exports, "AssetController", { enumerable: true, get: function () { return __importDefault(asset_controller_1).default; } });
 var auth_controller_1 = require("./auth.controller");
 Object.defineProperty(exports, "AuthController", { enumerable: true, get: function () { return __importDefault(auth_controller_1).default; } });
 var assignment_controller_1 = require("./assignment.controller");
 Object.defineProperty(exports, "AssignmentController", { enumerable: true, get: function () { return __importDefault(assignment_controller_1).default; } });
+var user_controller_1 = require("./user.controller");
+Object.defineProperty(exports, "UserController", { enumerable: true, get: function () { return __importDefault(user_controller_1).default; } });
 var employee_controller_1 = require("./employee.controller");
 Object.defineProperty(exports, "EmployeeController", { enumerable: true, get: function () { return __importDefault(employee_controller_1).default; } });
 var expense_controller_1 = require("./expense.controller");
