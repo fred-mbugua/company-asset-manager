@@ -1,12 +1,39 @@
- // Sidebar toggle for mobile
+ // Sidebar toggle for mobile with overlay
  const sidebar = document.getElementById("sidebar");
  const toggleBtn = document.querySelector(".menu-toggle");
+ 
+ // Create overlay element
+ let sidebarOverlay = document.querySelector(".sidebar-overlay");
+ if (!sidebarOverlay) {
+   sidebarOverlay = document.createElement("div");
+   sidebarOverlay.className = "sidebar-overlay";
+   document.body.appendChild(sidebarOverlay);
+ }
 
  if (!sidebar || !toggleBtn) {
    console.error("Sidebar or toggle button not found in the DOM.");
  } else {
-   toggleBtn.addEventListener("click", () => {
+   // Toggle sidebar and overlay
+   toggleBtn.addEventListener("click", (e) => {
+     e.stopPropagation();
      sidebar.classList.toggle("open");
+     sidebarOverlay.classList.toggle("active");
+   });
+   
+   // Close sidebar when clicking overlay
+   sidebarOverlay.addEventListener("click", () => {
+     sidebar.classList.remove("open");
+     sidebarOverlay.classList.remove("active");
+   });
+   
+   // Close sidebar when clicking outside on mobile
+   document.addEventListener("click", (e) => {
+     if (window.innerWidth <= 768) {
+       if (!sidebar.contains(e.target) && !toggleBtn.contains(e.target) && sidebar.classList.contains("open")) {
+         sidebar.classList.remove("open");
+         sidebarOverlay.classList.remove("active");
+       }
+     }
    });
  }
 
@@ -45,7 +72,8 @@
    item.addEventListener("click", () => {
      const contentType = item.getAttribute("data-content");
      if (contentType) loadContent(contentType);
-     sidebar.classList.remove("open"); // close sidebar after click on mobile
+     sidebar.classList.remove("open");
+     if (sidebarOverlay) sidebarOverlay.classList.remove("active");
    });
  });
 
@@ -56,7 +84,8 @@
      e.stopPropagation();
      const contentType = item.getAttribute("data-content");
      loadContent(contentType);
-     sidebar.classList.remove("open"); // close sidebar after click
+     sidebar.classList.remove("open");
+     if (sidebarOverlay) sidebarOverlay.classList.remove("active");
    });
  });
 

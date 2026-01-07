@@ -1,6 +1,10 @@
 <%
-    // Assuming 'user' object is passed to EJS and contains user role information (e.g., user.role_id or user.role)
-    const userRole = locals.user?.role || 'Standard User'; 
+    // Assuming 'user' object is passed to EJS and contains user role information (e.g., user.role_id or user.role_name)
+    const userRole = locals.user?.role_name || locals.user?.role || 'Standard User';
+    
+    // Debug: Log the user object to see what properties it has
+    // console.log('Sidebar user object:', JSON.stringify(locals.user));
+    // console.log('User role detected:', userRole);
     
     // Get current path to determine active menu item
     const currentPath = locals.currentPath || '';
@@ -25,7 +29,7 @@
                 { title: 'Create', url: '/expenses/create', roles: ['Admin', 'Standard User'] },
             ]
         },
-        { title: 'Reports', icon: 'uil-analytics', url: '/reports', roles: ['Admin'], id: 'reports-menu', submenu: [ // Restricted to Admin
+        { title: 'Reports', icon: 'uil-analytics', url: '/reports', roles: ['Admin', 'Standard User'], id: 'reports-menu', submenu: [
                 { title: 'Assets', url: '/reports/assets', roles: ['Admin', 'Standard User'] },
                 { title: 'Expenses', url: '/reports/expenses', roles: ['Admin', 'Standard User'] },
                 { title: 'Assignments', url: '/reports/assignments', roles: ['Admin', 'Standard User'] },

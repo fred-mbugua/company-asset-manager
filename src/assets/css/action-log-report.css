@@ -44,7 +44,8 @@
     display: flex;
     flex-direction: column;
     gap: 6px;
-    flex: 0 1 auto;
+    flex: 1 1 auto;
+    min-width: 200px;
 }
 
 .filter-group label {
@@ -69,11 +70,18 @@
     gap: 10px;
 }
 
+.date-inputs input[type="date"] {
+    flex: 1;
+    min-width: 0;
+    width: 100%;
+}
+
 .date-separator {
     color: #666;
     font-size: 0.9em;
     font-weight: 500;
     padding: 0 5px;
+    flex-shrink: 0;
 }
 
 .filter-actions {
@@ -89,9 +97,14 @@
     border: 1px solid #ccc;
     border-radius: 4px;
     font-size: 0.9em;
-    min-width: 180px;
+    width: 100%;
     transition: border-color 0.2s;
     background-color: white;
+}
+
+.filters input[type="date"] {
+    flex: 1;
+    min-width: 0;
 }
 
 .filters input:focus,
@@ -168,6 +181,10 @@
     border: 1px solid #eee;
     color: #555;
     vertical-align: top;
+    max-width: 250px;
+    word-wrap: break-word;
+    word-break: break-word;
+    overflow-wrap: break-word;
 }
 
 .report-table tbody tr {
@@ -187,73 +204,311 @@
 /* ========================================= */
 .pagination-controls {
     display: flex;
-    justify-content: center;
+    align-items: center;
+    justify-content: space-between;
+    gap: 15px;
+    padding: 15px 0;
+    margin-top: 20px;
+    border-top: 1px solid #eee;
+    flex-wrap: wrap;
+}
+
+.pagination-info {
+    display: flex;
     align-items: center;
     gap: 15px;
-    margin-top: 20px;
-    padding: 15px 0;
-    border-top: 1px solid #eee;
+    flex-wrap: wrap;
+}
+
+.pagination-buttons {
+    display: flex;
+    gap: 8px;
 }
 
 .pagination-controls select {
-    padding: 8px 12px;
+    padding: 6px 12px;
     border: 1px solid #ccc;
     border-radius: 4px;
-    font-size: 0.9em;
-}
-
-.pagination-controls button {
-    padding: 8px 16px;
-    border: 1px solid #ccc;
-    border-radius: 4px;
-    background-color: #ffffff;
+    font-size: 14px;
     cursor: pointer;
-    font-size: 0.9em;
-    transition: background-color 0.2s, border-color 0.2s;
 }
 
-.pagination-controls button:hover:not(:disabled) {
-    background-color: #f0f0f0;
-    border-color: #F37635;
+.btn-page {
+    padding: 8px 16px;
+    font-size: 16px;
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
+    background-color: #F37635;
+    color: #fff;
+    transition: all 0.2s;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    min-width: 44px;
+    height: 38px;
 }
 
-.pagination-controls button:disabled {
-    background-color: #f5f5f5;
-    color: #aaa;
+.btn-page:hover:not(:disabled) {
+    background-color: #e06525;
+    transform: translateY(-1px);
+}
+
+.btn-page:disabled {
+    background-color: #ccc;
     cursor: not-allowed;
-    border-color: #ddd;
+    opacity: 0.6;
+}
+
+.btn-page i {
+    font-size: 14px;
 }
 
 .pagination-controls #page-info {
-    font-size: 0.9em;
-    color: #666;
+    font-size: 14px;
+    color: #495057;
     font-weight: 500;
+    white-space: nowrap;
 }
 
 /* ========================================= */
 /* Responsive Design                         */
 /* ========================================= */
-@media (max-width: 768px) {
+/* Tablets and Small Desktops (max-width: 1024px) */
+@media (max-width: 1024px) {
+    .report-container {
+        padding: 20px;
+        margin: 15px;
+    }
+
+    .filter-group {
+        min-width: auto;
+    }
+
     .filters {
-        flex-direction: column;
+        padding: 15px;
+        gap: 12px;
+    }
+
+    .filter-row {
+        gap: 12px;
+    }
+
+    .filters input,
+    .filters select {
+        flex: 0 1 auto;
+        min-width: 150px;
+        font-size: 0.85em;
+    }
+}
+
+/* Mobile Landscape and Tablets (max-width: 768px) */
+@media (max-width: 768px) {
+    .report-container {
+        padding: 15px;
+        margin: 10px;
+        border-radius: 6px;
+    }
+
+    .report-container h3 {
+        font-size: 1.3em;
+        margin-bottom: 20px;
+    }
+
+    .filters {
+        padding: 15px;
+        gap: 10px;
+    }
+
+    .filter-row {
+        gap: 10px;
+    }
+
+    .filter-group {
+        flex: 1 1 100%;
+        min-width: auto;
+    }
+
+    .filter-group.date-range {
+        flex: 1 1 100%;
+    }
+
+    .filter-actions {
+        flex: 1 1 100%;
+        margin-left: 0;
+        width: 100%;
+        flex-direction: row;
+        gap: 10px;
+    }
+
+    .filter-actions .btn {
+        flex: 1;
     }
 
     .filters input,
     .filters select {
         width: 100%;
+        min-width: auto;
+        font-size: 16px; /* Prevents zoom on iOS */
     }
 
-    .report-table {
+    .date-inputs {
+        flex-direction: column;
+        gap: 10px;
+        align-items: stretch;
+    }
+
+    .date-separator {
+        display: none;
+    }
+
+    .date-inputs input[type="date"] {
+        width: 100%;
+    }
+
+    .table-wrapper {
+        margin: 0;
+        padding: 0;
+    }
+
+    .report-table th,
+    .report-table td {
+        padding: 8px 10px;
+        font-size: 0.85em;
+        max-width: 150px;
+    }
+
+    /* Pagination responsive */
+    .pagination-controls {
+        flex-direction: column;
+        gap: 12px;
+        padding: 12px 0;
+    }
+
+    .pagination-info {
+        width: 100%;
+        justify-content: space-between;
+        gap: 10px;
+    }
+
+    .pagination-buttons {
+        width: 100%;
+        justify-content: center;
+    }
+
+    .pagination-controls select {
+        padding: 8px 12px;
+        font-size: 14px;
+        flex: 0 1 auto;
+    }
+
+    .btn-page {
+        padding: 10px 20px;
+        font-size: 16px;
+        min-width: 60px;
+    }
+
+    .pagination-controls #page-info {
+        text-align: right;
+        flex: 1;
+    }
+}
+
+/* Mobile Portrait (max-width: 480px) */
+@media (max-width: 480px) {
+    .report-container {
+        padding: 12px;
+        margin: 8px;
+    }
+
+    .report-container h3 {
+        font-size: 1.1em;
+    }
+
+    .filters {
+        padding: 12px;
+        gap: 10px;
+    }
+
+    .filter-row {
+        gap: 10px;
+    }
+
+    .date-inputs {
+        gap: 8px;
+    }
+
+    .filter-group label {
         font-size: 0.8em;
     }
 
-    .report-table thead th,
-    .report-table tbody td {
+    .filters input,
+    .filters select {
+        font-size: 14px;
         padding: 8px 10px;
     }
 
+    .btn {
+        padding: 10px 15px;
+        font-size: 0.85em;
+    }
+
+    .table-wrapper {
+        margin: 0;
+        padding: 0;
+    }
+
+    .report-table td {
+        max-width: 120px;
+        font-size: 0.8em;
+    }
+
+    .report-table th {
+        font-size: 0.8em;
+    }
+
     .pagination-controls {
-        flex-wrap: wrap;
+        flex-direction: column;
+        align-items: stretch;
         gap: 10px;
+        padding: 15px 0 5px 0;
+    }
+
+    .pagination-controls .btn {
+        width: 48%;
+    }
+}
+
+/* Extra Small Mobile (max-width: 360px) */
+@media (max-width: 360px) {
+    .content-area,
+    .report-container {
+        padding: 8px;
+    }
+
+    .filters {
+        padding: 10px;
+        gap: 8px;
+    }
+
+    .report-container h3 {
+        font-size: 1em;
+    }
+
+    .filters input,
+    .filters select {
+        font-size: 13px;
+        padding: 8px;
+    }
+
+    .btn {
+        padding: 8px 12px;
+        font-size: 0.8em;
+    }
+
+    .report-table td,
+    .report-table th {
+        font-size: 0.75em;
+        padding: 6px 5px;
     }
 }

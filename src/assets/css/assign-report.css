@@ -25,7 +25,7 @@
 .filters {
     display: flex;
     flex-direction: column;
-    gap: 15px;
+    gap: 10px;
     margin-bottom: 25px;
     padding: 20px;
     background-color: #f8f8f8;
@@ -36,7 +36,7 @@
 .filter-row {
     display: flex;
     flex-wrap: wrap;
-    gap: 15px;
+    gap: 10px;
     align-items: flex-end;
 }
 
@@ -44,7 +44,8 @@
     display: flex;
     flex-direction: column;
     gap: 6px;
-    flex: 0 1 auto;
+    flex: 1 1 auto;
+    min-width: 200px;
 }
 
 .filter-group label {
@@ -55,7 +56,7 @@
 }
 
 .filter-group.date-range {
-    flex: 1 1 auto;
+    flex: 1 1 100%;
 }
 
 .date-range label {
@@ -69,11 +70,18 @@
     gap: 10px;
 }
 
+.date-inputs input[type="date"] {
+    flex: 1;
+    min-width: 0;
+    width: 100%;
+}
+
 .date-separator {
     color: #666;
     font-size: 0.9em;
     font-weight: 500;
     padding: 0 5px;
+    flex-shrink: 0;
 }
 
 .filter-actions {
@@ -89,7 +97,8 @@
     border: 1px solid #ccc;
     border-radius: 4px;
     font-size: 0.9em;
-    min-width: 180px;
+    width: 100%;
+    min-width: auto;
     transition: border-color 0.2s;
     background-color: white;
 }
@@ -179,12 +188,64 @@
 /* ========================================= */
 .pagination-controls {
     display: flex;
-    justify-content: flex-end;
+    justify-content: space-between;
     align-items: center;
-    gap: 10px;
+    gap: 15px;
     margin-top: 20px;
-    padding: 10px 0;
-    border-top: 1px solid #eee;
+    padding: 20px 0 5px 0;
+    border-top: 1px solid #e0e0e0;
+    flex-wrap: wrap;
+}
+
+.pagination-info {
+    display: flex;
+    align-items: center;
+    gap: 15px;
+    flex-wrap: wrap;
+}
+
+.pagination-buttons {
+    display: flex;
+    gap: 8px;
+}
+
+.pagination-controls select {
+    padding: 6px 12px;
+    border: 1px solid #ccc;
+    border-radius: 4px;
+    font-size: 14px;
+    cursor: pointer;
+}
+
+.btn-page {
+    padding: 8px 16px;
+    font-size: 16px;
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
+    background-color: #F37635;
+    color: #fff;
+    transition: all 0.2s;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    min-width: 44px;
+    height: 38px;
+}
+
+.btn-page:hover:not(:disabled) {
+    background-color: #e06525;
+    transform: translateY(-1px);
+}
+
+.btn-page:disabled {
+    background-color: #ccc;
+    cursor: not-allowed;
+    opacity: 0.6;
+}
+
+.btn-page i {
+    font-size: 14px;
 }
 
 .pagination-controls .btn {
@@ -211,6 +272,7 @@
 #page-info {
     font-weight: 600;
     color: #495057;
+    font-size: 14px;
 }
 
 /* ========================================= */
@@ -237,7 +299,6 @@
     .filters select {
         flex: 0 1 auto;
         min-width: 150px;
-        max-width: 200px;
         font-size: 0.85em;
     }
 }
@@ -259,14 +320,51 @@
     .filters {
         flex-direction: column;
         align-items: stretch;
-        padding: 12px;
+        padding: 15px;
+        gap: 10px;
+    }
+    
+    .filter-row {
+        flex-direction: column;
+        gap: 10px;
+    }
+    
+    .filter-group {
+        width: 100%;
+        flex: 1 1 100%;
+        min-width: auto;
+    }
+    
+    .filter-group.date-range {
+        width: 100%;
+    }
+    
+    .date-inputs {
+        flex-direction: column;
+        align-items: stretch;
+        gap: 10px;
+    }
+    
+    .date-separator {
+        text-align: center;
+    }
+    
+    .filter-actions {
+        margin-left: 0;
+        width: 100%;
+        flex-direction: column;
+    }
+    
+    .filter-actions .btn {
+        width: 100%;
     }
 
     .filters input,
     .filters select {
         flex: 1 1 auto;
         width: 100%;
-        font-size: 0.9em;
+        min-width: auto;
+        font-size: 16px; /* Prevents zoom on iOS */
     }
 
     .btn {
@@ -279,6 +377,8 @@
     .table-wrapper {
         overflow-x: auto;
         -webkit-overflow-scrolling: touch;
+        margin: 0;
+        padding: 0;
     }
 
     .report-table {
@@ -293,9 +393,21 @@
 
     /* Pagination adjustments */
     .pagination-controls {
-        justify-content: space-between;
-        gap: 8px;
-        flex-wrap: wrap;
+        flex-direction: column;
+        align-items: stretch;
+        gap: 12px;
+        padding: 15px 0 5px 0;
+    }
+    
+    .pagination-info {
+        width: 100%;
+        flex-direction: column;
+        gap: 10px;
+    }
+    
+    .pagination-buttons {
+        width: 100%;
+        justify-content: center;
     }
 
     .pagination-controls .btn {
@@ -305,15 +417,14 @@
     }
 
     #page-size {
-        font-size: 0.85em;
+        font-size: 16px;
+        width: 100%;
     }
 
     #page-info {
         font-size: 0.85em;
-        flex-basis: 100%;
+        width: 100%;
         text-align: center;
-        order: -1;
-        margin-bottom: 8px;
     }
 }
 
@@ -332,14 +443,18 @@
     }
 
     .filters {
-        padding: 10px;
+        padding: 12px;
+        gap: 8px;
+    }
+    
+    .filter-row {
         gap: 8px;
     }
 
     .filters input,
     .filters select {
         padding: 10px;
-        font-size: 16px; /* Prevents iOS auto-zoom */
+        font-size: 14px;
     }
 
     .btn {
@@ -360,7 +475,8 @@
     }
 
     .pagination-controls {
-        gap: 5px;
+        gap: 10px;
+        padding: 15px 0 5px 0;
     }
 
     .pagination-controls .btn {
@@ -370,7 +486,7 @@
 
     #page-size {
         padding: 8px;
-        font-size: 0.8em;
+        font-size: 14px;
     }
 
     #page-info {
@@ -390,6 +506,13 @@
     }
 
     .filters {
+        padding: 10px;
+        gap: 8px;
+    }
+    
+    .filters input,
+    .filters select {
+        font-size: 13px;
         padding: 8px;
     }
 
@@ -413,7 +536,10 @@
         padding: 6px 8px;
     }
 
-    #page-size,
+    #page-size {
+        font-size: 13px;
+    }
+    
     #page-info {
         font-size: 0.75em;
     }

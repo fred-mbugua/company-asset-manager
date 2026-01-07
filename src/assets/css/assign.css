@@ -22,7 +22,7 @@
     background: #ffffff;
     border-radius: 8px;
     box-shadow: 0 2px 4px rgba(0,0,0,0.1);
-    padding: 20px;
+    padding: 25px;
     margin-bottom: 20px;
 }
 
@@ -43,6 +43,8 @@
     display: flex;
     gap: 10px;
     margin-bottom: 15px;
+    padding-bottom: 15px;
+    border-bottom: 2px solid #eef2f7;
 }
 
 .search-input {
@@ -115,31 +117,42 @@
 /* Table Styling */
 .table-responsive {
     overflow-x: auto;
+    -webkit-overflow-scrolling: touch;
+    margin: 0;
+    padding: 0;
 }
 
 table {
     width: 100%;
     border-collapse: collapse;
     font-size: 14px;
+    background: white;
+}
+
+th, td {
+    border: 1px solid #ddd;
+    padding: 12px;
+    text-align: left;
+    vertical-align: middle;
 }
 
 th {
-    background-color: #f8f9fa;
-    color: #2c3e50;
+    background: #f8f9fa;
     font-weight: 600;
-    text-align: left;
-    padding: 12px;
-    border-bottom: 2px solid #dee2e6;
+    color: #2c3e50;
+    white-space: nowrap;
 }
 
 td {
-    padding: 12px;
-    border-bottom: 1px solid #f8f8f8;
     color: #4a5568;
 }
 
+tr:nth-child(even) {
+    background: #fdfdfd;
+}
+
 tr:hover {
-    background-color: #f8f8f8;
+    background: #f0f0f0;
 }
 
 .no-data {
@@ -147,6 +160,74 @@ tr:hover {
     color: #718096;
     padding: 20px;
     font-style: italic;
+}
+
+/* Pagination Controls */
+.pagination-controls {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 15px;
+    padding: 20px 0 5px 0;
+    margin-top: auto;
+    border-top: 1px solid #e0e0e0;
+    flex-wrap: wrap;
+}
+
+.pagination-info {
+    display: flex;
+    align-items: center;
+    gap: 15px;
+    flex-wrap: wrap;
+}
+
+.pagination-buttons {
+    display: flex;
+    gap: 8px;
+}
+
+.pagination-controls select {
+    padding: 6px 12px;
+    border: 1px solid #ccc;
+    border-radius: 4px;
+    font-size: 14px;
+    cursor: pointer;
+}
+
+.btn-page {
+    padding: 8px 16px;
+    font-size: 16px;
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
+    background-color: #F37635;
+    color: #fff;
+    transition: all 0.2s;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    min-width: 44px;
+    height: 38px;
+}
+
+.btn-page:hover:not(:disabled) {
+    background-color: #e06525;
+    transform: translateY(-1px);
+}
+
+.btn-page:disabled {
+    background-color: #ccc;
+    cursor: not-allowed;
+    opacity: 0.6;
+}
+
+.btn-page i {
+    font-size: 14px;
+}
+
+.pagination-controls #page-info {
+    font-size: 14px;
+    color: #4a5568;
 }
 
 /* Button Styling */
@@ -289,7 +370,7 @@ tr:hover {
     padding: 0;
     border-radius: 8px;
     width: 90%;
-    max-width: 500px;
+    max-width: 900px;
     box-shadow: 0 4px 20px rgba(0, 0, 0, 0.3);
     animation: slideDown 0.3s;
 }
@@ -675,16 +756,404 @@ tr:hover {
         width: 100%;
     }
     
+    .page-header h2 {
+        font-size: 20px;
+    }
+    
     .form-section,
     .table-section {
         padding: 15px;
+        margin-bottom: 15px;
+    }
+    
+    .section-header {
+        margin-bottom: 15px;
+        padding-bottom: 8px;
+    }
+    
+    .section-header h3 {
+        font-size: 16px;
+    }
+    
+    .search-input {
+        padding: 10px;
+        font-size: 14px;
+    }
+    
+    .form-group input,
+    .form-group select,
+    .form-group textarea {
+        font-size: 16px; /* Prevents zoom on iOS */
+        padding: 10px;
     }
     
     .table-responsive {
-        margin: 0 -15px;
+        margin: 0;
+        padding: 0;
+        overflow-x: auto;
+        -webkit-overflow-scrolling: touch;
+    }
+    
+    table {
+        min-width: 800px;
+        font-size: 12px;
     }
     
     td, th {
+        padding: 8px 6px;
+        font-size: 11px;
+    }
+    
+    /* Pagination responsive styles */
+    .pagination-controls {
+        padding: 15px 0 5px 0;
+        gap: 10px;
+    }
+    
+    .pagination-info {
+        gap: 10px;
+    }
+    
+    .pagination-controls select {
+        font-size: 16px;
+        padding: 8px 10px;
+    }
+    
+    .btn-page {
+        min-width: 44px;
+        height: 44px;
+    }
+    
+    .btn {
+        padding: 6px 12px;
+        font-size: 13px;
+    }
+    
+    .btn-primary,
+    .btn-return,
+    .btn-attachment {
+        width: 100%;
+        margin-bottom: 8px;
+        justify-content: center;
+    }
+    
+    /* Modal responsive styles */
+    .modal-content {
+        width: 95%;
+        max-width: 95%;
+        margin: 10px auto;
+        border-radius: 6px;
+    }
+    
+    .modal-header {
+        padding: 15px;
+    }
+    
+    .modal-header h3 {
+        font-size: 18px;
+    }
+    
+    .modal-body {
+        padding: 15px;
+        max-height: calc(100vh - 150px);
+        overflow-y: auto;
+    }
+    
+    .attachment-item {
+        flex-direction: column;
+        align-items: flex-start;
+        gap: 12px;
+        padding: 12px;
+    }
+    
+    .attachment-content {
+        width: 100%;
+    }
+    
+    .attachment-actions {
+        width: 100%;
+        justify-content: stretch;
+        gap: 10px;
+    }
+    
+    .btn-small {
+        flex: 1;
+        justify-content: center;
+        padding: 10px 12px;
+        font-size: 14px;
+    }
+    
+    .detail-row {
+        flex-direction: column;
+        align-items: flex-start;
+        gap: 5px;
+        padding: 12px 0;
+    }
+    
+    .detail-row strong {
+        min-width: auto;
+        margin-bottom: 4px;
+    }
+    
+    .upload-label {
+        padding: 20px;
+    }
+    
+    .upload-label i {
+        font-size: 2rem;
+    }
+    
+    .attachment-notes-input {
+        font-size: 16px;
+    }
+}
+
+@media (max-width: 480px) {
+    .content-wrapper {
         padding: 8px;
+    }
+    
+    .page-header h2 {
+        font-size: 18px;
+    }
+    
+    .form-section,
+    .table-section {
+        padding: 12px;
+    }
+    
+    .section-header h3 {
+        font-size: 15px;
+    }
+    
+    .form-group label {
+        font-size: 13px;
+    }
+    
+    .search-container {
+        min-width: 100%;
+    }
+    
+    .search-filter-section {
+        padding-bottom: 12px;
+    }
+    
+    .search-input {
+        font-size: 13px;
+    }
+    
+    table {
+        min-width: 700px;
+        font-size: 11px;
+    }
+    
+    td, th {
+        padding: 6px 4px;
+        font-size: 10px;
+    }
+    
+    .no-data {
+        font-size: 13px;
+        padding: 15px;
+    }
+    
+    /* Pagination responsive styles for small mobile */
+    .pagination-controls {
+        flex-direction: column;
+        align-items: stretch;
+        gap: 12px;
+        padding: 15px 0 5px 0;
+    }
+    
+    .pagination-info {
+        flex-direction: column;
+        align-items: stretch;
+        gap: 10px;
+    }
+    
+    .pagination-buttons {
+        justify-content: center;
+    }
+    
+    .pagination-controls select {
+        width: 100%;
+    }
+    
+    /* Modal responsive styles for small mobile */
+    .modal-content {
+        width: 98%;
+        margin: 5px auto;
+        max-height: calc(100vh - 20px);
+        overflow-y: auto;
+    }
+    
+    .modal-header {
+        padding: 12px;
+    }
+    
+    .modal-header h3 {
+        font-size: 16px;
+    }
+    
+    .close {
+        font-size: 24px;
+    }
+    
+    .modal-body {
+        padding: 12px;
+        max-height: calc(100vh - 100px);
+    }
+    
+    .attachment-item {
+        padding: 10px;
+        gap: 10px;
+    }
+    
+    .attachment-icon {
+        font-size: 1.5rem;
+    }
+    
+    .attachment-meta {
+        font-size: 11px;
+        gap: 8px;
+    }
+    
+    .attachment-notes {
+        font-size: 12px;
+        padding: 6px 10px;
+    }
+    
+    .btn-small {
+        padding: 8px 10px;
+        font-size: 13px;
+    }
+    
+    .assignment-detail-info {
+        padding: 15px;
+    }
+    
+    .detail-row {
+        padding: 10px 0;
+    }
+    
+    .attachments-section h4 {
+        font-size: 16px;
+    }
+    
+    .upload-label {
+        padding: 15px;
+    }
+    
+    .upload-label i {
+        font-size: 1.8rem;
+    }
+    
+    .upload-label span {
+        font-size: 14px;
+    }
+    
+    .upload-label small {
+        font-size: 12px;
+    }
+}
+
+@media (max-width: 360px) {
+    .page-header h2 {
+        font-size: 16px;
+    }
+    
+    .section-header h3 {
+        font-size: 14px;
+    }
+    
+    .form-section,
+    .table-section {
+        padding: 10px;
+    }
+    
+    .search-filter-section {
+        padding-bottom: 10px;
+    }
+    
+    .search-input {
+        font-size: 12px;
+        padding: 8px;
+    }
+    
+    table {
+        font-size: 10px;
+    }
+    
+    td, th {
+        padding: 5px 3px;
+        font-size: 9px;
+    }
+    
+    .btn {
+        padding: 8px 10px;
+        font-size: 12px;
+    }
+    
+    /* Modal responsive styles for extra small mobile */
+    .modal-header {
+        padding: 10px;
+    }
+    
+    .modal-header h3 {
+        font-size: 15px;
+    }
+    
+    .modal-body {
+        padding: 10px;
+    }
+    
+    .attachment-item {
+        padding: 8px;
+    }
+    
+    .attachment-icon {
+        font-size: 1.3rem;
+    }
+    
+    .attachment-meta {
+        font-size: 10px;
+    }
+    
+    .attachment-notes {
+        font-size: 11px;
+        padding: 5px 8px;
+    }
+    
+    .btn-small {
+        padding: 6px 8px;
+        font-size: 12px;
+    }
+    
+    .assignment-detail-info {
+        padding: 12px;
+    }
+    
+    .detail-row strong {
+        font-size: 13px;
+    }
+    
+    .attachments-section h4 {
+        font-size: 15px;
+    }
+    
+    .upload-label {
+        padding: 12px;
+    }
+    
+    .upload-label i {
+        font-size: 1.5rem;
+    }
+    
+    .upload-label span {
+        font-size: 13px;
+    }
+    
+    .upload-label small {
+        font-size: 11px;
     }
 }

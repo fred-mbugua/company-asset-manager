@@ -52,9 +52,14 @@
                     </select>
                 </div>
                 <div class="date-filters">
-                    <label>Purchase Date Range:</label>
-                    <input type="date" id="filter-from-date" placeholder="From Date">
-                    <input type="date" id="filter-to-date" placeholder="To Date">
+                    <div class="filter-field">
+                        <label for="filter-from-date">Purchase Date From</label>
+                        <input type="date" id="filter-from-date">
+                    </div>
+                    <div class="filter-field">
+                        <label for="filter-to-date">Purchase Date To</label>
+                        <input type="date" id="filter-to-date">
+                    </div>
                 </div>
                 <button class="btn btn-view" id="search-btn">Search</button>
             </div>
@@ -101,14 +106,22 @@
             </div>
             
             <div class="pagination-controls">
-                <select id="page-size">
-                    <option value="20" selected>20 per page</option>
-                    <option value="30">30 per page</option>
-                    <option value="50">50 per page</option>
-                </select>
-                <button id="prev-btn" class="btn" <%= pagination.hasPrevPage ? '' : 'disabled' %>>Previous</button>
-                <span id="page-info">Page <%= pagination.currentPage %> of <%= pagination.totalPages %> (<%= totalAssets %> total)</span>
-                <button id="next-btn" class="btn" <%= pagination.hasNextPage ? '' : 'disabled' %>>Next</button>
+                <div class="pagination-info">
+                    <select id="page-size">
+                        <option value="20" selected>20 per page</option>
+                        <option value="30">30 per page</option>
+                        <option value="50">50 per page</option>
+                    </select>
+                    <span id="page-info">Page <%= pagination.currentPage %> of <%= pagination.totalPages %> (<%= totalAssets %> total)</span>
+                </div>
+                <div class="pagination-buttons">
+                    <button id="prev-btn" class="btn btn-page" <%= pagination.hasPrevPage ? '' : 'disabled' %> title="Previous Page">
+                        <i class="fa fa-chevron-left"></i>
+                    </button>
+                    <button id="next-btn" class="btn btn-page" <%= pagination.hasNextPage ? '' : 'disabled' %> title="Next Page">
+                        <i class="fa fa-chevron-right"></i>
+                    </button>
+                </div>
             </div>
         </div>
 

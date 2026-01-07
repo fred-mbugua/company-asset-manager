@@ -1,0 +1,114 @@
+<%- include('partials/header', { pageTitle: isViewingOtherUser ? 'User Profile' : 'My Profile', cssFile: 'profile' }) %>
+<%- include('partials/navbar', { user: locals.user }) %>
+
+<div class="main">
+    <%- include('partials/sidebar') %>
+    <section class="content-area">
+        <% if (isViewingOtherUser) { %>
+        <div style="margin-bottom: 20px;">
+            <a href="/manage-users" class="btn" style="display: inline-flex; align-items: center; gap: 8px;">
+                <i class="fa fa-arrow-left"></i> Back to User Management
+            </a>
+        </div>
+        <% } %>
+        <div class="profile-container">
+            <div class="profile-header">
+                <div class="profile-avatar">
+                    <i class="fa fa-user-circle"></i>
+                </div>
+                <div class="profile-title">
+                    <h3><%= user.first_name %> <%= user.last_name %></h3>
+                    <span class="profile-role"><%= user.role_name %></span>
+                </div>
+            </div>
+
+            <div class="profile-content">
+                <div class="profile-section">
+                    <h4>Personal Information</h4>
+                    <form id="profile-form">
+                        <div class="form-row">
+                            <div class="form-group">
+                                <label for="first_name">First Name:</label>
+                                <input type="text" id="first_name" name="first_name" value="<%= user.first_name %>" <%= user.role_name !== 'Admin' ? 'readonly' : '' %>>
+                            </div>
+                            <div class="form-group">
+                                <label for="middle_name">Middle Name:</label>
+                                <input type="text" id="middle_name" name="middle_name" value="<%= user.middle_name || '' %>" <%= user.role_name !== 'Admin' ? 'readonly' : '' %>>
+                            </div>
+                        </div>
+
+                        <div class="form-row">
+                            <div class="form-group">
+                                <label for="last_name">Last Name:</label>
+                                <input type="text" id="last_name" name="last_name" value="<%= user.last_name %>" <%= user.role_name !== 'Admin' ? 'readonly' : '' %>>
+                            </div>
+                            <div class="form-group">
+                                <label for="email">Email (Username):</label>
+                                <input type="email" id="email" name="email" value="<%= user.email %>" readonly>
+                            </div>
+                        </div>
+
+                        <div class="form-row">
+                            <div class="form-group">
+                                <label for="phone">Phone:</label>
+                                <input type="text" id="phone" name="phone" value="<%= user.phone || '' %>" <%= user.role_name !== 'Admin' ? 'readonly' : '' %>>
+                            </div>
+                            <div class="form-group">
+                                <label for="department">Department:</label>
+                                <input type="text" id="department" name="department" value="<%= user.department_name || 'N/A' %>" readonly>
+                            </div>
+                        </div>
+
+                        <div class="form-row">
+                            <div class="form-group">
+                                <label for="branch">Branch:</label>
+                                <input type="text" id="branch" name="branch" value="<%= user.branch_name || 'N/A' %>" readonly>
+                            </div>
+                            <div class="form-group">
+                                <label for="status">Status:</label>
+                                <input type="text" id="status" name="status" value="<%= user.is_active ? 'Active' : 'Inactive' %>" readonly>
+                            </div>
+                        </div>
+
+                        <% if (viewerIsAdmin && !isViewingOtherUser) { %>
+                        <div class="form-actions">
+                            <button type="submit" class="btn btn-save">
+                                <i class="fa fa-save"></i> Save Changes
+                            </button>
+                        </div>
+                        <% } %>
+                    </form>
+                </div>
+
+                <% if (viewerIsAdmin && !isViewingOtherUser) { %>
+                <div class="profile-section">
+                    <h4>Change Password</h4>
+                    <form id="password-form">
+                        <div class="form-group">
+                            <label for="current_password">Current Password:</label>
+                            <input type="password" id="current_password" name="current_password" required>
+                        </div>
+                        <div class="form-group">
+                            <label for="new_password">New Password:</label>
+                            <input type="password" id="new_password" name="new_password" required>
+                        </div>
+                        <div class="form-group">
+                            <label for="confirm_password">Confirm New Password:</label>
+                            <input type="password" id="confirm_password" name="confirm_password" required>
+                        </div>
+                        <div class="form-actions">
+                            <button type="submit" class="btn btn-change-password">
+                                <i class="fa fa-lock"></i> Change Password
+                            </button>
+                        </div>
+                    </form>
+                </div>
+                <% } %>
+
+                
+            </div>
+        </div>
+    </section>
+</div>
+
+<%- include('partials/footer', { jsFile: 'profile' }) %>

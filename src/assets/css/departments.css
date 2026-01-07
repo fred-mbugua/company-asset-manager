@@ -70,3 +70,152 @@
   tr:nth-child(even) { background: #fdfdfd; }
   .btn-edit { background: #F37635; color: #ffffff; }
   .btn-delete { background: #dc3545; color: #fff; margin-left: 5px; }
+  
+  /* ============================
+     RESPONSIVE STYLES
+     ============================ */
+  
+  /* Tablets (max-width: 1024px) */
+  @media (max-width: 1024px) {
+    .department-form-container {
+      max-width: 100%;
+      padding: 18px;
+      margin: 15px;
+    }
+  
+    .form-grid {
+      grid-template-columns: repeat(2, 1fr);
+      gap: 15px;
+    }
+  }
+  
+  /* Mobile (max-width: 768px) */
+  @media (max-width: 768px) {
+    .department-form-container {
+      padding: 15px;
+      margin: 10px;
+    }
+  
+    h3 {
+      font-size: 18px;
+      margin-bottom: 12px;
+    }
+  
+    .form-grid {
+      grid-template-columns: 1fr;
+      gap: 10px;
+    }
+  
+    .form-group {
+      padding: 5px;
+    }
+  
+    input, select {
+      padding: 10px;
+      font-size: 16px; /* Prevents zoom on iOS */
+    }
+  
+    .actions {
+      flex-direction: column;
+      gap: 8px;
+    }
+  
+    .btn {
+      width: 100%;
+      padding: 12px;
+      font-size: 15px;
+    }
+  
+    .department-list {
+      margin-top: 20px;
+      overflow-x: auto;
+      -webkit-overflow-scrolling: touch;
+    }
+  
+    table {
+      font-size: 12px;
+      min-width: 600px;
+    }
+  
+    th, td {
+      padding: 6px;
+      font-size: 11px;
+      white-space: nowrap;
+    }
+  
+    .btn-edit,
+    .btn-delete {
+      padding: 5px 10px;
+      font-size: 11px;
+      margin-left: 3px;
+    }
+  }
+  
+  /* Small Mobile (max-width: 480px) */
+  @media (max-width: 480px) {
+    .department-form-container {
+      padding: 12px;
+      margin: 8px;
+    }
+  
+    h3 {
+      font-size: 16px;
+    }
+  
+    .form-grid {
+      gap: 8px;
+    }
+  
+    label {
+      font-size: 13px;
+    }
+  
+    .message {
+      font-size: 13px;
+    }
+  
+    table {
+      font-size: 11px;
+    }
+  
+    th, td {
+      padding: 5px 4px;
+      font-size: 10px;
+    }
+  }
+  
+  /* Extra Small Mobile (max-width: 360px) */
+  @media (max-width: 360px) {
+    .department-form-container {
+      padding: 10px;
+      margin: 5px;
+    }
+  
+    h3 {
+      font-size: 15px;
+    }
+  
+    input, select {
+      padding: 8px;
+    }
+  
+    .btn {
+      padding: 10px;
+      font-size: 14px;
+    }
+  
+    table {
+      font-size: 10px;
+    }
+  
+    th, td {
+      padding: 4px 3px;
+      font-size: 9px;
+    }
+  
+    .btn-edit,
+    .btn-delete {
+      padding: 4px 8px;
+      font-size: 10px;
+    }
+  }

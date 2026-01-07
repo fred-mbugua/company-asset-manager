@@ -13,7 +13,7 @@
         <div class="filter-row">
           <div class="filter-group">
             <label for="filter-type">Asset Type:</label>
-            <select id="filter-type" class="select2-dropdown" style="width: 200px;">
+            <select id="filter-type" class="select2-dropdown">
               <option value="">All Types</option>
               <% if (locals.assetTypes) { %>
               <% locals.assetTypes.forEach(type => { %>
@@ -25,7 +25,7 @@
           
           <div class="filter-group">
             <label for="filter-location">Location:</label>
-            <select id="filter-location" class="select2-dropdown" style="width: 200px;">
+            <select id="filter-location" class="select2-dropdown">
               <option value="">All Locations</option>
               <% if (locals.branches) { %>
               <% locals.branches.forEach(location => { %>
@@ -37,7 +37,7 @@
           
           <div class="filter-group">
             <label for="filter-status">Status:</label>
-            <select id="filter-status" class="select2-dropdown" style="width: 200px;">
+            <select id="filter-status" class="select2-dropdown">
               <option value="">All Statuses</option>
               <% if (locals.assetStatuses) { %>
               <% locals.assetStatuses.forEach(status => { %>
@@ -105,14 +105,22 @@
       </div>
 
       <div class="pagination-controls">
-          <select id="page-size">
-            <option value="20">20 per page</option>
-            <option value="30">30 per page</option>
-            <option value="50">50 per page</option>
-          </select>
-          <button id="prev-btn" class="btn" <%= pagination.hasPrevPage ? '' : 'disabled' %>>Previous</button>
-          <span id="page-info">Page <%= pagination.currentPage %> of <%= pagination.totalPages %> (<%= totalAssets %> total)</span>
-          <button id="next-btn" class="btn" <%= pagination.hasNextPage ? '' : 'disabled' %>>Next</button>
+          <div class="pagination-info">
+              <select id="page-size">
+                <option value="20">20 per page</option>
+                <option value="30">30 per page</option>
+                <option value="50">50 per page</option>
+              </select>
+              <span id="page-info">Page <%= pagination.currentPage %> of <%= pagination.totalPages %> (<%= totalAssets %> total)</span>
+          </div>
+          <div class="pagination-buttons">
+              <button id="prev-btn" class="btn btn-page" <%= pagination.hasPrevPage ? '' : 'disabled' %> title="Previous Page">
+                  <i class="fa fa-chevron-left"></i>
+              </button>
+              <button id="next-btn" class="btn btn-page" <%= pagination.hasNextPage ? '' : 'disabled' %> title="Next Page">
+                  <i class="fa fa-chevron-right"></i>
+              </button>
+          </div>
         </div>
     </div>
 

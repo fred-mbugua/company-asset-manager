@@ -8,6 +8,7 @@ const router = Router();
 router.get('/login', ViewsController.renderLogin);
 router.get('/', authenticate, authorize(['Admin', 'Standard User']), asyncHandler(ViewsController.renderDashboard));
 router.get('/dashboard', authenticate, authorize(['Admin', 'Standard User']), asyncHandler(ViewsController.renderDashboard));
+router.get('/profile', authenticate, authorize(['Admin', 'Standard User']), asyncHandler(ViewsController.renderProfile));
 router.get('/assets/create', authenticate, authorize(['Admin', 'Standard User']), asyncHandler(ViewsController.renderCreateAsset));
 router.get('/assets/view', authenticate, authorize(['Admin', 'Standard User']), asyncHandler(ViewsController.renderViewAssets));
 router.get('/assets/assign', authenticate, authorize(['Admin', 'Standard User']), asyncHandler(ViewsController.renderAssignAssets));

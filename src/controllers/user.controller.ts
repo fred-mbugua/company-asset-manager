@@ -75,6 +75,54 @@ class UserController {
             errorResponse(res, 500, (error as Error).message);
         }
     }
+
+    async updateProfile(req: AuthenticatedRequest, res: Response) {
+        try {
+            const userId = req.user?.id;
+            if (!userId) {
+                return errorResponse(res, 401, 'Unauthorized');
+            }
+
+            const { first_name, middle_name, last_name, phone } = req.body;
+            
+            const updatedUser = await UserService.updateUser(userId.toString(), {
+                first_name,
+                middle_name,
+                last_name,
+                phone
+            }, userId);
+
+            successResponse(res, 200, 'Profile updated successfully', updatedUser);
+        } catch (error) {
+            logger.error(`Profile update failed: ${(error as Error).message}`, { error });
+            errorResponse(res, 500, (error as Error).message);
+        }
+    }
+
+    async changePassword(req: AuthenticatedRequest, res: Response) {
+        try {
+            const userId = req.user?.id;
+            if (!userId) {
+                return errorResponse(res, 401, 'Unauthorized');
+            }
+
+            const { current_password, new_password } = req.body;
+
+            if (!current_password || !new_password) {
+                return errorResponse(res, 400, 'Current password and new password are required');
+            }
+
+            if (new_password.length < 6) {
+                return errorResponse(res, 400, 'New password must be at least 6 characters long');
+            }
+
+            await UserService.changePassword(userId.toString(), current_password, new_password);
+            successResponse(res, 200, 'Password changed successfully');
+        } catch (error) {
+            logger.error(`Password change failed: ${(error as Error).message}`, { error });
+            errorResponse(res, 500, (error as Error).message);
+        }
+    }
 }
 
 export default new UserController();

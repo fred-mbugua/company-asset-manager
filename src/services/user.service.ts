@@ -166,6 +166,33 @@ class UserService {
     return updatedUser;
   }
 
+  async changePassword(userId: string, currentPassword: string, newPassword: string) {
+    const user = await UserModel.findById(userId);
+    if (!user) {
+      throw new Error('User not found');
+    }
+
+    // Verify current password
+    const isMatch = await bcrypt.compare(currentPassword, user.password);
+    if (!isMatch) {
+      throw new Error('Current password is incorrect');
+    }
+
+    // Hash and update new password
+    const hashedPassword = await bcrypt.hash(newPassword, this.SALT_ROUNDS);
+    await UserModel.updatePassword(userId, hashedPassword);
+
+    await ActionLogService.logAction(
+      Number(userId),
+      'CHANGE_PASSWORD',
+      'User',
+      Number(userId),
+      { email: user.email }
+    );
+
+    logger.info(`Password changed for user ID: ${userId}`);
+  }
+
 }
 
 export default new UserService();

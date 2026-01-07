@@ -192,35 +192,106 @@ form textarea {
     margin-bottom: 1rem;
 }
 
-/* Pagination Controls */
+/* ========================================= */
+/* Pagination Controls                       */
+/* ========================================= */
 .pagination-controls {
     display: flex;
-    justify-content: space-between;
     align-items: center;
+    justify-content: space-between;
+    padding: 20px 0;
     margin-top: 15px;
-    padding: 10px;
+    border-top: 1px solid #eee;
 }
 
-.pagination-controls button {
-    padding: 8px 15px;
-    background-color: #4A9D5F;
-    color: white;
+.pagination-info {
+    display: flex;
+    align-items: center;
+    gap: 15px;
+}
+
+.pagination-buttons {
+    display: flex;
+    gap: 8px;
+}
+
+.pagination-controls select {
+    padding: 6px 12px;
+    border: 1px solid #ccc;
+    border-radius: 4px;
+    font-size: 14px;
+    cursor: pointer;
+    background-color: #fff;
+    transition: border-color 0.2s, box-shadow 0.2s;
+}
+
+.pagination-controls select:focus {
+    outline: none;
+    border-color: #F37635;
+    box-shadow: 0 0 0 3px rgba(243, 118, 53, 0.1);
+}
+
+.btn-page {
+    padding: 8px 16px;
+    font-size: 16px;
     border: none;
     border-radius: 4px;
     cursor: pointer;
+    background-color: #F37635;
+    color: #fff;
+    transition: all 0.2s;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    min-width: 44px;
+    height: 38px;
 }
 
-.pagination-controls button:hover:not(:disabled) {
-    background-color: #07601d;
+.btn-page:hover:not(:disabled) {
+    background-color: #e06525;
+    transform: translateY(-1px);
+    box-shadow: 0 2px 4px rgba(243, 118, 53, 0.3);
 }
 
-.pagination-controls button:disabled {
+.btn-page:disabled {
     background-color: #ccc;
     cursor: not-allowed;
+    opacity: 0.6;
+}
+
+.btn-page i {
+    font-size: 14px;
+}
+
+.pagination-controls #page-info {
+    font-size: 14px;
+    color: #495057;
+    font-weight: 500;
+    white-space: nowrap;
 }
 
 /* Responsive Design */
 @media (max-width: 768px) {
+    .pagination-controls {
+        flex-direction: column;
+        gap: 12px;
+        align-items: stretch;
+    }
+
+    .pagination-info {
+        width: 100%;
+        justify-content: space-between;
+    }
+
+    .pagination-buttons {
+        width: 100%;
+        justify-content: center;
+    }
+
+    .btn-page {
+        min-width: 60px;
+    }
+
     .data-table {
         font-size: 0.85rem;
     }
@@ -257,5 +328,24 @@ form textarea {
         width: 95%;
         margin: 10% auto;
         padding: 20px;
+    }
+}
+
+@media (max-width: 480px) {
+    .pagination-controls {
+        padding: 15px 0;
+    }
+
+    .pagination-info {
+        flex-direction: column;
+        gap: 8px;
+    }
+
+    .pagination-controls select {
+        width: 100%;
+    }
+
+    .btn-page {
+        flex: 1;
     }
 }

@@ -31,6 +31,7 @@ export interface IUpdateUser {
   middle_name?: string;
   last_name?: string;
   email?: string;
+  phone?: string;
   password?: string;
   role_id?: number;
   department_id?: number; // Optional department association

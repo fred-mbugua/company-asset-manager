@@ -13,7 +13,7 @@
                 <div class="filter-row">
                     <div class="filter-group">
                         <label for="filter-user">User:</label>
-                        <select id="filter-user" class="select2-dropdown" style="width: 200px;">
+                        <select id="filter-user" class="select2-dropdown">
                             <option value="">All Users</option>
                             <% if (locals.users && locals.users.length) { %>
                                 <% locals.users.forEach(user => { %>
@@ -25,7 +25,7 @@
                     
                     <div class="filter-group">
                         <label for="filter-action-type">Action Type:</label>
-                        <select id="filter-action-type" class="select2-dropdown" style="width: 200px;">
+                        <select id="filter-action-type" class="select2-dropdown">
                             <option value="">All Action Types</option>
                             <% if (locals.actionTypes && locals.actionTypes.length) { %>
                                 <% locals.actionTypes.forEach(type => { %>
@@ -37,7 +37,7 @@
                     
                     <div class="filter-group">
                         <label for="filter-entity-type">Entity Type:</label>
-                        <select id="filter-entity-type" class="select2-dropdown" style="width: 200px;">
+                        <select id="filter-entity-type" class="select2-dropdown">
                             <option value="">All Entity Types</option>
                             <% if (locals.entityTypes && locals.entityTypes.length) { %>
                                 <% locals.entityTypes.forEach(type => { %>
@@ -101,15 +101,23 @@
             </div>
 
             <div class="pagination-controls">
-                <select id="page-size">
-                    <option value="20" <%= locals.pagination.itemsPerPage === 20 ? 'selected' : '' %>>20 per page</option>
-                    <option value="30" <%= locals.pagination.itemsPerPage === 30 ? 'selected' : '' %>>30 per page</option>
-                    <option value="50" <%= locals.pagination.itemsPerPage === 50 ? 'selected' : '' %>>50 per page</option>
-                    <option value="100" <%= locals.pagination.itemsPerPage === 100 ? 'selected' : '' %>>100 per page</option>
-                </select>
-                <button id="prev-btn" class="btn" <%= locals.pagination.currentPage === 1 ? 'disabled' : '' %>>Previous</button>
-                <span id="page-info">Page <%= locals.pagination.currentPage %> of <%= locals.pagination.totalPages %> (<%= locals.totalLogs %> total)</span>
-                <button id="next-btn" class="btn" <%= locals.pagination.currentPage >= locals.pagination.totalPages ? 'disabled' : '' %>>Next</button>
+                <div class="pagination-info">
+                    <select id="page-size">
+                        <option value="20" <%= locals.pagination.itemsPerPage === 20 ? 'selected' : '' %>>20 per page</option>
+                        <option value="30" <%= locals.pagination.itemsPerPage === 30 ? 'selected' : '' %>>30 per page</option>
+                        <option value="50" <%= locals.pagination.itemsPerPage === 50 ? 'selected' : '' %>>50 per page</option>
+                        <option value="100" <%= locals.pagination.itemsPerPage === 100 ? 'selected' : '' %>>100 per page</option>
+                    </select>
+                    <span id="page-info">Page <%= locals.pagination.currentPage %> of <%= locals.pagination.totalPages %> (<%= locals.totalLogs %> total)</span>
+                </div>
+                <div class="pagination-buttons">
+                    <button id="prev-btn" class="btn btn-page" <%= locals.pagination.currentPage === 1 ? 'disabled' : '' %> title="Previous Page">
+                        <i class="fa fa-chevron-left"></i>
+                    </button>
+                    <button id="next-btn" class="btn btn-page" <%= locals.pagination.currentPage >= locals.pagination.totalPages ? 'disabled' : '' %> title="Next Page">
+                        <i class="fa fa-chevron-right"></i>
+                    </button>
+                </div>
             </div>
         </div>
     </section>
@@ -124,7 +132,7 @@ $(document).ready(function() {
     $('.select2-dropdown').select2({
         placeholder: 'Select an option',
         allowClear: true,
-        width: 'style',
+        width: '100%',
         minimumResultsForSearch: 0
     });
 });

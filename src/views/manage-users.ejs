@@ -110,6 +110,11 @@
                                     <td data-label="Employee Link"><%= (user.employee_first_name + ' ' + user.employee_middle_name + ' ' + user.employee_last_name) || 'Unlinked' %></td>
                                     <td data-label="Status"><%= user.is_active === true ? 'Active' : (user.is_active === false ? 'Disabled' : 'N/A') %></td>
                                     <td data-label="Actions">
+                                        <% if (locals.user && locals.user.role === 'Admin') { %>
+                                        <a href="/profile?userId=<%= user.id %>" class="btn btn-sm btn-view" title="View Profile">
+                                            <i class="fa fa-user"></i> View
+                                        </a>
+                                        <% } %>
                                         <button class="btn btn-sm btn-edit" data-id="<%= user.id %>">Edit</button>
                                         <button class="btn btn-sm btn-reset-password" data-id="<%= user.id %>">Reset Pwd</button>
                                         <button class="btn btn-sm btn-toggle-status" data-id="<%= user.id %>" data-status="<%= user.is_active %>">
@@ -126,16 +131,22 @@
                     </tbody>
                 </table>
                 
-                <div class="pagination-controls" style="display: flex; justify-content: space-between; align-items: center; margin-top: 15px; padding: 10px;">
-                    <select id="page-size" style="padding: 8px; border: 1px solid #ccc; border-radius: 4px;">
-                        <option value="10" selected>10 per page</option>
-                        <option value="20">20 per page</option>
-                        <option value="50">50 per page</option>
-                    </select>
-                    <div style="display: flex; gap: 10px; align-items: center;">
-                        <button id="prev-btn" class="btn" disabled>Previous</button>
+                <div class="pagination-controls">
+                    <div class="pagination-info">
+                        <select id="page-size">
+                            <option value="10" selected>10 per page</option>
+                            <option value="20">20 per page</option>
+                            <option value="50">50 per page</option>
+                        </select>
                         <span id="page-info">Page 1 of 1 (0 total)</span>
-                        <button id="next-btn" class="btn" disabled>Next</button>
+                    </div>
+                    <div class="pagination-buttons">
+                        <button id="prev-btn" class="btn btn-page" disabled title="Previous Page">
+                            <i class="fa fa-chevron-left"></i>
+                        </button>
+                        <button id="next-btn" class="btn btn-page" disabled title="Next Page">
+                            <i class="fa fa-chevron-right"></i>
+                        </button>
                     </div>
                 </div>
             </div>
