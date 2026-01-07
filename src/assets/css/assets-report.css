@@ -158,8 +158,6 @@
     min-width: auto;
     transition: var(--transition);
 }
-    transition: var(--transition);
-}
 
 .filters select {
     /* Adding dropdown arrow SVG */
