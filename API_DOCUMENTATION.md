@@ -190,11 +190,17 @@
 **Request Body:**
 ```json
 {
+  "first_name": "Caleb",
+  "middle_name": "John",
+  "last_name": "Kiprono",
   "email": "user@jiranismart.com",
   "password": "securePassword123",
-  "first_name": "Caleb",
-  "last_name": "Kiprono",
-  "role_id": 1
+  "phone": "+254712345678",
+  "role_id": 1,
+  "department_id": 2,
+  "department": "IT",
+  "branch_id": 1,
+  "branch_location": "Head Office"
 }
 ```
 
@@ -202,17 +208,20 @@
 ```json
 {
   "success": true,
-  "statusCode": 201,
   "message": "User registered successfully",
   "data": {
     "id": 1,
-    "email": "user@jiranismart.com",
+    "employee_id": 1,
     "first_name": "Caleb",
+    "middle_name": "John",
     "last_name": "Kiprono",
-    "role_id": 1
+    "email": "user@jiranismart.com",
+    "phone": "+254712345678"
   }
 }
 ```
+
+**Note:** This endpoint creates both an employee record and a user account in a single transaction.
 
 ---
 
@@ -233,22 +242,31 @@
 ```json
 {
   "success": true,
-  "statusCode": 200,
   "message": "Logged in successfully",
   "data": {
     "user": {
       "id": 1,
-      "email": "user@jiranismart.com",
-      "first_name": "Caleb",
-      "last_name": "Kiprono",
+      "employee_id": 1,
+      "first_name": "Dev",
+      "middle_name": "Dev",
+      "last_name": "Dev",
+      "email": "ict@jiranismart.com",
+      "password": "$2a$10$pvN0OKHi7HAfYAoid6F3.e9ag3r57KVmPL/tezhi6zubmPPAlFp.C",
+      "role_id": 1,
+      "department_id": null,
+      "phone": "+254793577021",
+      "branch_id": 1,
+      "is_active": true,
       "role": "Admin"
     },
-    "accessToken": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9...",
-    "refreshToken": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9...",
-    "returnTo": "/assetsapp/dashboard"
+    "accessToken": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6MSwiZW1haWwiOiJpY3RAamlyYW5pc21hcnQuY29tIiwicm9sZSI6IkFkbWluIiwiaWF0IjoxNzY3ODcxODI2LCJleHAiOjE3Njc4NzU0MjZ9.QP31Z7CYXWp_9DToqoqelYF9zcgU75N1CF51VLzxe6Y",
+    "refreshToken": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6MSwiZW1haWwiOiJpY3RAamlyYW5pc21hcnQuY29tIiwicm9sZSI6IkFkbWluIiwiaWF0IjoxNzY3ODcxODI2LCJleHAiOjE3Njg0NzY2MjZ9.e_EcvjH1pQhDk6DI-IGYrBm5AiWb-HgfFsRRJOgUCVY",
+    "returnTo": "/dashboard"
   }
 }
 ```
+
+**Note:** The `password` field in the response contains the hashed password. For security, this should not be exposed in production environments.
 
 **Cookies Set:**
 - `accessToken` - HTTP-only, 30 minutes expiry
@@ -265,7 +283,6 @@
 ```json
 {
   "success": true,
-  "statusCode": 200,
   "message": "Token refreshed successfully"
 }
 ```
@@ -281,7 +298,6 @@
 ```json
 {
   "success": true,
-  "statusCode": 200,
   "message": "Logged out successfully"
 }
 ```
@@ -297,7 +313,6 @@
 ```json
 {
   "success": true,
-  "statusCode": 200,
   "message": "Roles retrieved successfully",
   "data": [
     {
@@ -345,26 +360,30 @@
 ```json
 {
   "success": true,
-  "statusCode": 200,
   "message": "Assets retrieved successfully",
-  "data": [
-    {
-      "id": 1,
-      "asset_tag": "ASSET-001",
-      "asset_name": "Dell Laptop",
-      "asset_type_id": 1,
-      "asset_type_name": "Computer Equipment",
-      "purchase_date": "2025-01-01",
-      "purchase_price": 1200.00,
-      "current_value": 1000.00,
-      "status_id": 1,
-      "status_name": "Available",
-      "branch_id": 1,
-      "branch_name": "Head Office",
-      "department_id": 1,
-      "department_name": "IT"
-    }
-  ]
+  "data": {
+    "assets": [
+      {
+        "id": 1,
+        "asset_tag": "ASSET-001",
+        "asset_type": "Laptop",
+        "manufacturer": "Dell",
+        "model": "Latitude 5420",
+        "serial_number": "SN123456",
+        "status": "In Use",
+        "purchase_date": "2025-01-01",
+        "purchase_price": 1200.00,
+        "notes": "Assigned to IT department",
+        "type_name": "Computer Equipment",
+        "status_name": "In Use",
+        "location": "Head Office"
+      }
+    ],
+    "total": 150,
+    "page": 1,
+    "itemsPerPage": 20,
+    "totalPages": 8
+  }
 }
 ```
 
@@ -382,22 +401,25 @@
 ```json
 {
   "success": true,
-  "statusCode": 200,
   "message": "Asset retrieved successfully",
   "data": {
     "id": 1,
     "asset_tag": "ASSET-001",
-    "asset_name": "Dell Laptop",
-    "description": "Dell Latitude 5420",
-    "asset_type_id": 1,
+    "asset_type": "Laptop",
+    "manufacturer": "Dell",
+    "model": "Latitude 5420",
+    "serial_number": "SN12345678",
+    "status": "In Use",
     "purchase_date": "2025-01-01",
     "purchase_price": 1200.00,
-    "current_value": 1000.00,
-    "status_id": 1,
+    "notes": "Assigned to IT department",
+    "asset_type_id": 1,
+    "asset_status_id": 1,
     "branch_id": 1,
-    "department_id": 1,
-    "serial_number": "SN12345678",
-    "warranty_expiry_date": "2026-01-01"
+    "type_name": "Computer Equipment",
+    "status_name": "In Use",
+    "branch_name": "Head Office",
+    "location": "New York"
   }
 }
 ```
@@ -430,7 +452,6 @@
 ```json
 {
   "success": true,
-  "statusCode": 200,
   "message": "Assets statuses retrieved successfully",
   "data": [
     {
@@ -458,17 +479,17 @@
 ```json
 {
   "asset_tag": "ASSET-002",
-  "asset_name": "HP Laptop",
-  "description": "HP EliteBook 840",
-  "asset_type_id": 1,
+  "asset_type": "Laptop",
+  "manufacturer": "HP",
+  "model": "EliteBook 840",
+  "serial_number": "HP98765432",
+  "status": "Available",
   "purchase_date": "2025-01-05",
   "purchase_price": 1500.00,
-  "current_value": 1500.00,
-  "status_id": 1,
-  "branch_id": 1,
-  "department_id": 2,
-  "serial_number": "HP98765432",
-  "warranty_expiry_date": "2026-01-05"
+  "notes": "New HP laptop for development team",
+  "asset_type_id": 1,
+  "asset_status_id": 1,
+  "branch_id": 1
 }
 ```
 
@@ -476,12 +497,21 @@
 ```json
 {
   "success": true,
-  "statusCode": 201,
   "message": "Asset created successfully",
   "data": {
     "id": 2,
     "asset_tag": "ASSET-002",
-    ...
+    "asset_type": "Laptop",
+    "manufacturer": "HP",
+    "model": "EliteBook 840",
+    "serial_number": "HP98765432",
+    "status": "Available",
+    "purchase_date": "2025-01-05",
+    "purchase_price": 1500.00,
+    "notes": "New HP laptop for development team",
+    "asset_type_id": 1,
+    "asset_status_id": 1,
+    "branch_id": 1
   }
 }
 ```
@@ -512,7 +542,6 @@
 ```json
 {
   "success": true,
-  "statusCode": 200,
   "message": "Asset deleted successfully"
 }
 ```
@@ -529,7 +558,7 @@
 **Request Body:**
 ```json
 {
-  "type_name": "Office Furniture",
+  "name": "Office Furniture",
   "description": "Desks, chairs, and cabinets"
 }
 ```
@@ -538,12 +567,13 @@
 ```json
 {
   "success": true,
-  "statusCode": 201,
   "message": "Asset type created successfully",
   "data": {
     "id": 5,
-    "type_name": "Office Furniture",
-    "description": "Desks, chairs, and cabinets"
+    "name": "Office Furniture",
+    "description": "Desks, chairs, and cabinets",
+    "created_at": "2025-01-05T10:00:00Z",
+    "updated_at": "2025-01-05T10:00:00Z"
   }
 }
 ```
@@ -559,13 +589,14 @@
 ```json
 {
   "success": true,
-  "statusCode": 200,
   "message": "Asset types retrieved successfully",
   "data": [
     {
       "id": 1,
-      "type_name": "Computer Equipment",
-      "description": "Laptops, desktops, monitors"
+      "name": "Computer Equipment",
+      "description": "Laptops, desktops, monitors",
+      "created_at": "2025-01-01T10:00:00Z",
+      "updated_at": "2025-01-01T10:00:00Z"
     }
   ]
 }
@@ -585,11 +616,10 @@
 ```json
 {
   "success": true,
-  "statusCode": 200,
   "message": "Asset type retrieved successfully",
   "data": {
     "id": 1,
-    "type_name": "Computer Equipment",
+    "name": "Computer Equipment",
     "description": "Laptops, desktops, monitors, and peripherals",
     "created_at": "2025-01-01T10:00:00Z",
     "updated_at": "2025-01-01T10:00:00Z"
@@ -610,7 +640,7 @@
 **Request Body:**
 ```json
 {
-  "type_name": "Updated Type Name",
+  "name": "Updated Type Name",
   "description": "Updated description"
 }
 ```
@@ -663,7 +693,6 @@
 ```json
 {
   "success": true,
-  "statusCode": 200,
   "message": "Asset status retrieved successfully",
   "data": {
     "id": 1,
@@ -722,7 +751,6 @@
 ```json
 {
   "success": true,
-  "statusCode": 201,
   "message": "Attachment uploaded successfully",
   "data": {
     "id": 1,
@@ -741,7 +769,6 @@
 ```json
 {
   "success": false,
-  "statusCode": 400,
   "message": "File size exceeds maximum limit of 10MB"
 }
 ```
@@ -760,7 +787,6 @@
 ```json
 {
   "success": true,
-  "statusCode": 200,
   "message": "Attachments retrieved successfully",
   "data": [
     {
@@ -789,7 +815,6 @@
 ```json
 {
   "success": true,
-  "statusCode": 200,
   "message": "Attachment deleted successfully"
 }
 ```
@@ -798,7 +823,6 @@
 ```json
 {
   "success": false,
-  "statusCode": 404,
   "message": "Attachment not found"
 }
 ```
@@ -826,7 +850,6 @@
 ```json
 {
   "success": true,
-  "statusCode": 201,
   "message": "Asset assigned successfully",
   "data": {
     "id": 10,
@@ -871,7 +894,6 @@
 ```json
 {
   "success": true,
-  "statusCode": 200,
   "message": "Asset returned successfully",
   "data": {
     "id": 10,
@@ -898,7 +920,6 @@
 ```json
 {
   "success": true,
-  "statusCode": 200,
   "message": "Asset history retrieved successfully",
   "data": [
     {
@@ -906,7 +927,9 @@
       "asset_id": 1,
       "asset_tag": "ASSET-001",
       "employee_id": 5,
-      "employee_name": "Caleb Kiprono",
+      "first_name": "Caleb",
+      "middle_name": null,
+      "last_name": "Kiprono",
       "assigned_date": "2026-01-01",
       "return_date": "2026-01-08",
       "notes": "Laptop for development work"
@@ -935,7 +958,6 @@
 ```json
 {
   "success": true,
-  "statusCode": 201,
   "message": "Attachment uploaded successfully",
   "data": {
     "id": 5,
@@ -964,7 +986,6 @@
 ```json
 {
   "success": true,
-  "statusCode": 200,
   "message": "Attachments retrieved successfully",
   "data": [
     {
@@ -995,7 +1016,6 @@
 ```json
 {
   "success": true,
-  "statusCode": 200,
   "message": "Attachment deleted successfully"
 }
 ```
@@ -1016,18 +1036,16 @@
 ```json
 {
   "success": true,
-  "statusCode": 200,
   "message": "Employee retrieved successfully",
   "data": {
     "id": 5,
-    "employee_name": "Caleb Kiprono",
-    "email": "caleb@jiranismart.com",
-    "phone": "+254712345678",
+    "first_name": "Caleb",
+    "middle_name": null,
+    "last_name": "Kiprono",
     "department_id": 1,
-    "department_name": "IT",
+    "department": "IT",
     "branch_id": 1,
-    "branch_name": "Head Office",
-    "position": "Software Developer",
+    "branch_location": "Head Office",
     "hire_date": "2024-06-01",
     "status": "Active"
   }
@@ -1038,7 +1056,6 @@
 ```json
 {
   "success": false,
-  "statusCode": 404,
   "message": "Employee not found"
 }
 ```
@@ -1057,7 +1074,6 @@
 ```json
 {
   "success": true,
-  "statusCode": 200,
   "message": "Employee assets retrieved successfully",
   "data": [
     {
@@ -1106,7 +1122,6 @@
 ```json
 {
   "success": true,
-  "statusCode": 201,
   "message": "Expense added successfully",
   "data": {
     "id": 15,
@@ -1132,7 +1147,7 @@
 **Request Body:**
 ```json
 {
-  "type_name": "Upgrade",
+  "name": "Upgrade",
   "description": "Hardware or software upgrades"
 }
 ```
@@ -1158,11 +1173,10 @@
 ```json
 {
   "success": true,
-  "statusCode": 200,
   "message": "Expense type retrieved successfully",
   "data": {
     "id": 2,
-    "type_name": "Repair",
+    "name": "Repair",
     "description": "Maintenance and repair costs",
     "created_at": "2025-01-01T10:00:00Z",
     "updated_at": "2025-01-01T10:00:00Z"
@@ -1210,7 +1224,6 @@
 ```json
 {
   "success": true,
-  "statusCode": 201,
   "message": "Attachment uploaded successfully",
   "data": {
     "id": 8,
@@ -1239,7 +1252,6 @@
 ```json
 {
   "success": true,
-  "statusCode": 200,
   "message": "Attachments retrieved successfully",
   "data": [
     {
@@ -1270,7 +1282,6 @@
 ```json
 {
   "success": true,
-  "statusCode": 200,
   "message": "Attachment deleted successfully"
 }
 ```
@@ -1288,13 +1299,13 @@
 ```json
 {
   "success": true,
-  "statusCode": 200,
   "message": "Departments retrieved successfully",
   "data": [
     {
       "id": 1,
-      "department_name": "IT",
-      "description": "Information Technology"
+      "name": "IT",
+      "created_at": "2025-01-01T10:00:00Z",
+      "updated_at": "2025-01-01T10:00:00Z"
     }
   ]
 }
@@ -1314,15 +1325,12 @@
 ```json
 {
   "success": true,
-  "statusCode": 200,
   "message": "Department retrieved successfully",
   "data": {
     "id": 1,
-    "department_name": "IT",
-    "description": "Information Technology Department",
-    "manager": "John Smith",
-    "employee_count": 15,
-    "created_at": "2025-01-01T10:00:00Z"
+    "name": "IT",
+    "created_at": "2025-01-01T10:00:00Z",
+    "updated_at": "2025-01-01T10:00:00Z"
   }
 }
 ```
@@ -1337,8 +1345,7 @@
 **Request Body:**
 ```json
 {
-  "department_name": "Marketing",
-  "description": "Marketing and Communications"
+  "name": "Marketing"
 }
 ```
 
@@ -1356,8 +1363,7 @@
 ```json
 {
   "department_name": "Information Technology",
-  "description": "IT Department - Updated",
-  "manager": "Jane Doe"
+  "name": "Information Technology"
 }
 ```
 
@@ -1365,14 +1371,12 @@
 ```json
 {
   "success": true,
-  "statusCode": 200,
   "message": "Department updated successfully",
   "data": {
     "id": 1,
-    "department_name": "Information Technology",
-    "description": "IT Department - Updated",
-    "manager": "Jane Doe"
-  }
+    "name": "Information Technology",
+    "created_at": "2025-01-01T10:00:00Z",
+    "updated_at": "2025-01-15T14:30:00Z
 }
 ```
 
@@ -1390,7 +1394,6 @@
 ```json
 {
   "success": true,
-  "statusCode": 200,
   "message": "Department deleted successfully"
 }
 ```
@@ -1399,7 +1402,6 @@
 ```json
 {
   "success": false,
-  "statusCode": 400,
   "message": "Cannot delete department. It has assigned employees."
 }
 ```
@@ -1417,14 +1419,14 @@
 ```json
 {
   "success": true,
-  "statusCode": 200,
   "message": "Branches retrieved successfully",
   "data": [
     {
       "id": 1,
-      "branch_name": "Head Office",
+      "name": "Head Office",
       "location": "New York",
-      "address": "123 Main Street"
+      "created_at": "2025-01-15T10:30:00.000Z",
+      "updated_at": "2025-01-15T10:30:00.000Z"
     }
   ]
 }
@@ -1449,9 +1451,8 @@
 
 **Request Body:**
 ```json
-{
-  "branch_name": "West Coast Office",
-  "location": "San Francisco",
+{name": "West Coast Office",
+  "location": "San Francisco
   "address": "456 Market Street"
 }
 ```
@@ -1470,10 +1471,8 @@
 ```json
 {
   "branch_name": "West Coast Office - Updated",
-  "location": "San Francisco, CA",
-  "address": "456 Market Street, Suite 200",
-  "phone": "+1-415-555-0100",
-  "manager": "Sarah Johnson"
+  "name": "West Coast Office - Updated",
+  "location": "San Francisco, CA"
 }
 ```
 
@@ -1481,16 +1480,13 @@
 ```json
 {
   "success": true,
-  "statusCode": 200,
   "message": "Branch updated successfully",
   "data": {
     "id": 2,
-    "branch_name": "West Coast Office - Updated",
+    "name": "West Coast Office - Updated",
     "location": "San Francisco, CA",
-    "address": "456 Market Street, Suite 200",
-    "phone": "+1-415-555-0100",
-    "manager": "Sarah Johnson"
-  }
+    "created_at": "2025-01-15T10:30:00.000Z",
+    "updated_at": "2025-01-20T14:45:00.000Z
 }
 ```
 
@@ -1508,7 +1504,6 @@
 ```json
 {
   "success": true,
-  "statusCode": 200,
   "message": "Branch deleted successfully"
 }
 ```
@@ -1517,7 +1512,6 @@
 ```json
 {
   "success": false,
-  "statusCode": 400,
   "message": "Cannot delete branch. It has assigned assets or employees."
 }
 ```
@@ -1538,21 +1532,33 @@
 ```json
 {
   "success": true,
-  "statusCode": 200,
   "message": "User retrieved successfully",
   "data": {
-    "id": 5,
-    "email": "caleb@jiranismart.com",
-    "first_name": "Caleb",
-    "last_name": "Kiprono",
+    "id": 1,
+    "employee_id": 1,
+    "first_name": "Dev",
+    "middle_name": "Dev",
+    "last_name": "Dev",
+    "email": "ict@jiranismart.com",
+    "password": "$2a$10$pvN0OKHi7HAfYAoid6F3.e9ag3r57KVmPL/tezhi6zubmPPAlFp.C",
     "role_id": 1,
-    "role_name": "Admin",
+    "department_id": null,
+    "phone": "+254793577021",
+    "branch_id": 1,
     "is_active": true,
-    "last_login": "2026-01-08T08:30:00Z",
-    "created_at": "2025-06-01T10:00:00Z"
+    "name": "Head Office",
+    "location": "New York",
+    "role_name": "Admin",
+    "department_name": null,
+    "employee_first_name": "Dev",
+    "employee_middle_name": "Dev",
+    "employee_last_name": "Dev",
+    "departmnt_id": null
   }
 }
 ```
+
+**Note:** Response includes joined data from branches, roles, employees, and departments tables.
 
 ---
 
@@ -1575,7 +1581,6 @@
 ```json
 {
   "success": true,
-  "statusCode": 200,
   "message": "Profile updated successfully",
   "data": {
     "id": 5,
@@ -1591,7 +1596,6 @@
 ```json
 {
   "success": false,
-  "statusCode": 400,
   "message": "Email already in use"
 }
 ```
@@ -1616,7 +1620,6 @@
 ```json
 {
   "success": true,
-  "statusCode": 200,
   "message": "Password changed successfully"
 }
 ```
@@ -1634,7 +1637,7 @@
 **Request Body:**
 ```json
 {
-  "new_password": "TempPassword@123"
+  "password": "TempPassword@123"
 }
 ```
 
@@ -1642,7 +1645,6 @@
 ```json
 {
   "success": true,
-  "statusCode": 200,
   "message": "Password reset successfully"
 }
 ```
@@ -1670,7 +1672,6 @@
 ```json
 {
   "success": true,
-  "statusCode": 200,
   "message": "User status updated successfully",
   "data": {
     "id": 8,
@@ -1695,7 +1696,6 @@
 ```json
 {
   "success": true,
-  "statusCode": 200,
   "message": "Assets report generated successfully",
   "data": [
     {
@@ -1736,7 +1736,6 @@
 ```json
 {
   "success": true,
-  "statusCode": 200,
   "message": "Filtered assets report generated successfully",
   "data": {
     "items": [
@@ -1768,7 +1767,6 @@
 ```json
 {
   "success": true,
-  "statusCode": 200,
   "message": "Assets by employee report generated successfully",
   "data": [
     {
@@ -1776,7 +1774,9 @@
       "asset_tag": "ASSET-001",
       "asset_name": "Dell Laptop",
       "employee_id": 5,
-      "employee_name": "Caleb Kiprono",
+      "first_name": "Caleb",
+      "middle_name": null,
+      "last_name": "Kiprono",
       "assignment_date": "2026-01-01",
       "status": "Assigned"
     }
@@ -1795,7 +1795,6 @@
 ```json
 {
   "success": true,
-  "statusCode": 200,
   "message": "Assets by employee report generated successfully",
   "data": [
     {
@@ -1867,7 +1866,6 @@
 ```json
 {
   "success": true,
-  "statusCode": 200,
   "message": "Expense report data retrieved successfully",
   "data": {
     "expenses": [
@@ -1929,7 +1927,6 @@
 ```json
 {
   "success": true,
-  "statusCode": 200,
   "message": "Expenses report generated successfully",
   "data": {
     "expenses": [
@@ -1960,7 +1957,6 @@
 
 **Query Parameters:**
 - `asset_tag` - Filter by asset tag (partial match)
-- `asset_id` - Filter by asset ID
 - `employee_id` - Filter by employee ID
 - `employee_name` - Filter by employee name (partial match)
 - `from_date` - Filter assignments from this date (YYYY-MM-DD)
@@ -1977,7 +1973,6 @@
 ```json
 {
   "success": true,
-  "statusCode": 200,
   "message": "Assignments retrieved successfully",
   "data": {
     "assignments": [
@@ -1988,7 +1983,9 @@
         "asset_name": "Dell Laptop",
         "employee_id": 5,
         "employee_name": "Caleb Kiprono",
-        "assignment_date": "01/01/2026",
+        "first_name": "Caleb",
+        "middle_name": null,
+        "last_name": "1/2026",
         "return_date": "Active",
         "notes": "Laptop for development",
         "branch": "Head Office",
@@ -2009,7 +2006,6 @@
 
 **Query Parameters:** Same as Get Assignment Report Data (all filters supported)
 - `asset_tag` - Filter by asset tag
-- `asset_id` - Filter by asset ID
 - `employee_id` - Filter by employee ID
 - `employee_name` - Filter by employee name
 - `from_date` - Start date (YYYY-MM-DD)
@@ -2046,7 +2042,6 @@
 ```json
 {
   "success": true,
-  "statusCode": 200,
   "message": "Action logs retrieved successfully",
   "data": {
     "logs": [
@@ -2148,7 +2143,6 @@ Optional columns:
 ```json
 {
   "success": true,
-  "statusCode": 201,
   "message": "Assets uploaded successfully",
   "data": {
     "total": 50,
@@ -2181,7 +2175,6 @@ Optional columns:
 ```json
 {
   "success": true,
-  "statusCode": 200,
   "message": "Configuration retrieved successfully",
   "data": {
     "id": 1,
@@ -2208,7 +2201,6 @@ Optional columns:
 ```json
 {
   "success": true,
-  "statusCode": 200,
   "message": "Public configuration retrieved successfully",
   "data": {
     "company_name": "JSL Systems",
@@ -2241,7 +2233,6 @@ Optional columns:
 ```json
 {
   "success": true,
-  "statusCode": 200,
   "message": "Configuration updated successfully",
   "data": {
     "id": 1,
@@ -2266,7 +2257,6 @@ Optional columns:
 ```json
 {
   "success": true,
-  "statusCode": 200,
   "message": "Logo uploaded successfully",
   "data": {
     "logo_url": "/uploads/logos/company-logo-1704715800000.png"
@@ -2284,7 +2274,6 @@ All endpoints may return error responses in the following format:
 ```json
 {
   "success": false,
-  "statusCode": 400,
   "message": "Invalid request data",
   "error": "Detailed error message"
 }
@@ -2294,7 +2283,6 @@ All endpoints may return error responses in the following format:
 ```json
 {
   "success": false,
-  "statusCode": 401,
   "message": "Authentication required",
   "error": "No token provided"
 }
@@ -2304,7 +2292,6 @@ All endpoints may return error responses in the following format:
 ```json
 {
   "success": false,
-  "statusCode": 403,
   "message": "Access denied",
   "error": "Insufficient permissions"
 }
@@ -2314,7 +2301,6 @@ All endpoints may return error responses in the following format:
 ```json
 {
   "success": false,
-  "statusCode": 404,
   "message": "Resource not found",
   "error": "Asset with ID 999 not found"
 }
@@ -2324,7 +2310,6 @@ All endpoints may return error responses in the following format:
 ```json
 {
   "success": false,
-  "statusCode": 500,
   "message": "Internal server error",
   "error": "Database connection failed"
 }
@@ -2396,7 +2381,6 @@ GET /api/reports/assets?limit=50&offset=100
 ```json
 {
   "success": true,
-  "statusCode": 200,
   "message": "Assets retrieved successfully",
   "data": {
     "items": [...],
@@ -2640,7 +2624,6 @@ Currently, there are no explicit rate limits implemented. However, it is recomme
 ```json
 {
   "success": false,
-  "statusCode": 401,
   "message": "Authentication required"
 }
 ```
@@ -2659,7 +2642,6 @@ Currently, there are no explicit rate limits implemented. However, it is recomme
 ```json
 {
   "success": false,
-  "statusCode": 400,
   "message": "File size exceeds maximum limit of 10MB"
 }
 ```
@@ -2678,7 +2660,6 @@ Currently, there are no explicit rate limits implemented. However, it is recomme
 ```json
 {
   "success": false,
-  "statusCode": 400,
   "message": "Invalid pagination parameters"
 }
 ```
@@ -2697,7 +2678,6 @@ Currently, there are no explicit rate limits implemented. However, it is recomme
 ```json
 {
   "success": false,
-  "statusCode": 400,
   "message": "Invalid asset_type_id: Asset type with ID 99 not found"
 }
 ```
@@ -2715,7 +2695,6 @@ Currently, there are no explicit rate limits implemented. However, it is recomme
 ```json
 {
   "success": false,
-  "statusCode": 400,
   "message": "Asset tag 'ASSET-001' already exists"
 }
 ```
@@ -2733,7 +2712,6 @@ Currently, there are no explicit rate limits implemented. However, it is recomme
 ```json
 {
   "success": false,
-  "statusCode": 403,
   "message": "Access denied. Admin role required."
 }
 ```
