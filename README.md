@@ -1,6 +1,6 @@
 # Asset Management API Documentation
 
-This document provides a comprehensive overview of the RESTful API for the Asset Management System, reflecting all recent modifications to the database schema and application logic. The base URL for all endpoints is assumed to be `http://your-server-address/api`.
+This document provides a comprehensive overview of the RESTful API for the Asset Management System, reflecting all recent modifications to the database schema and application logic. The base URL for all endpoints is assumed to be `http://server-address/api`.
 
 All API responses follow a standard JSON format:
 

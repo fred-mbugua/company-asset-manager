@@ -37,10 +37,10 @@
 **Request Body:**
 ```json
 {
-  "email": "user@example.com",
+  "email": "user@jiranismart.com",
   "password": "securePassword123",
-  "first_name": "John",
-  "last_name": "Doe",
+  "first_name": "Caleb",
+  "last_name": "Kiprono",
   "role_id": 1
 }
 ```
@@ -53,9 +53,9 @@
   "message": "User registered successfully",
   "data": {
     "id": 1,
-    "email": "user@example.com",
-    "first_name": "John",
-    "last_name": "Doe",
+    "email": "user@jiranismart.com",
+    "first_name": "Caleb",
+    "last_name": "Kiprono",
     "role_id": 1
   }
 }
@@ -71,7 +71,7 @@
 **Request Body:**
 ```json
 {
-  "email": "user@example.com",
+  "email": "user@jiranismart.com",
   "password": "securePassword123"
 }
 ```
@@ -85,9 +85,9 @@
   "data": {
     "user": {
       "id": 1,
-      "email": "user@example.com",
-      "first_name": "John",
-      "last_name": "Doe",
+      "email": "user@jiranismart.com",
+      "first_name": "Caleb",
+      "last_name": "Kiprono",
       "role": "Admin"
     },
     "accessToken": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9...",
@@ -172,7 +172,7 @@
 **Request Body:**
 ```json
 {
-  "email": "newemail@example.com",
+  "email": "newemail@jiranismart.com",
   "first_name": "Jane",
   "last_name": "Smith",
   "role_id": 2
@@ -685,7 +685,7 @@
       "asset_id": 1,
       "asset_tag": "ASSET-001",
       "employee_id": 5,
-      "employee_name": "John Doe",
+      "employee_name": "Caleb Kiprono",
       "assigned_date": "2026-01-01",
       "return_date": "2026-01-08",
       "notes": "Laptop for development work"
@@ -1075,7 +1075,7 @@
 {
   "first_name": "Jane",
   "last_name": "Smith",
-  "email": "jane.smith@example.com"
+  "email": "jane.smith@jiranismart.com"
 }
 ```
 
@@ -1264,7 +1264,7 @@
         "asset_tag": "ASSET-001",
         "asset_name": "Dell Laptop",
         "employee_id": 5,
-        "employee_name": "John Doe",
+        "employee_name": "Caleb Kiprono",
         "assigned_date": "2026-01-01",
         "return_date": null,
         "notes": "Laptop for development"
@@ -1320,7 +1320,7 @@
         "entity_type": "Asset",
         "entity_id": 1,
         "user_id": 5,
-        "user_name": "John Doe",
+        "user_name": "Caleb Kiprono",
         "action_date": "2026-01-08T10:30:00Z",
         "description": "Created new asset ASSET-001"
       }
