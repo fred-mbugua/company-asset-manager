@@ -9,6 +9,10 @@
     // Get current path to determine active menu item
     const currentPath = locals.currentPath || '';
     
+    // Get logo and app name
+    const appName = locals.systemConfig?.app_name || 'Asset Management System';
+    const companyLogo = locals.systemConfig?.company_logo_url || null;
+    
     // Access rules for navigation items
     const menuItems = [
         { title: 'Dashboard', icon: 'uil-dashboard', url: '/dashboard', roles: ['Admin', 'Standard User'] },
@@ -57,6 +61,15 @@
 %>
 
 <aside class="sidebar" id="sidebar">
+    <div class="sidebar-logo">
+        <% if (companyLogo) { %>
+            <img src="<%= companyLogo %>" alt="<%= appName %>" class="sidebar-logo-img">
+        <% } else { %>
+            <div class="sidebar-logo-placeholder">
+                <i class="uil uil-building"></i>
+            </div>
+        <% } %>
+    </div>
     <ul id="menu">
         <% menuItems.forEach((item, itemIndex) => { %>
             <% if (hasAccess(item.roles)) { %>

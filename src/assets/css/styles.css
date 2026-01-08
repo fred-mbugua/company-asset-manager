@@ -194,6 +194,11 @@
     -webkit-overflow-scrolling: touch;
   }
   
+  /* Sidebar logo */
+  .sidebar-logo {
+    display: none; /* Hidden on desktop */
+  }
+  
   /* Sidebar scrollbar styling */
   .sidebar::-webkit-scrollbar {
     width: 4px;
@@ -617,10 +622,53 @@ select.select2-dropdown {
       transition: left 0.3s ease;
       width: 230px;
       box-shadow: 2px 0 10px rgba(0, 0, 0, 0.1);
+      display: flex;
+      flex-direction: column;
     }
   
     .sidebar.open {
       left: 0;
+    }
+    
+    /* Show and style logo in sidebar on mobile */
+    .sidebar-logo {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: 20px 15px;
+      background: #fff;
+      border-bottom: 1px solid rgba(0, 0, 0, 0.1);
+      position: sticky;
+      top: 0;
+      z-index: 10;
+      box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
+    }
+    
+    .sidebar-logo-img {
+      max-width: 140px;
+      max-height: 50px;
+      object-fit: contain;
+    }
+    
+    .sidebar-logo-placeholder {
+      width: 50px;
+      height: 50px;
+      background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+      border-radius: 10px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+    
+    .sidebar-logo-placeholder i {
+      font-size: 28px;
+      color: #fff;
+    }
+    
+    /* Make menu scrollable below sticky logo */
+    .sidebar #menu {
+      flex: 1;
+      overflow-y: auto;
     }
   
     .dashboard {
