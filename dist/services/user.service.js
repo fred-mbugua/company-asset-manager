@@ -106,5 +106,21 @@ class UserService {
         logger_1.default.info(`User ${id} status changed to ${isActive ? 'Active' : 'Disabled'}`);
         return updatedUser;
     }
+    async changePassword(userId, currentPassword, newPassword) {
+        const user = await models_1.UserModel.findById(userId);
+        if (!user) {
+            throw new Error('User not found');
+        }
+        // Verify current password
+        const isMatch = await bcryptjs_1.default.compare(currentPassword, user.password);
+        if (!isMatch) {
+            throw new Error('Current password is incorrect');
+        }
+        // Hash and update new password
+        const hashedPassword = await bcryptjs_1.default.hash(newPassword, this.SALT_ROUNDS);
+        await models_1.UserModel.updatePassword(userId, hashedPassword);
+        await actionLog_service_1.default.logAction(Number(userId), 'CHANGE_PASSWORD', 'User', Number(userId), { email: user.email });
+        logger_1.default.info(`Password changed for user ID: ${userId}`);
+    }
 }
 exports.default = new UserService();

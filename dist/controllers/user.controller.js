@@ -78,5 +78,48 @@ class UserController {
             (0, response_1.errorResponse)(res, 500, error.message);
         }
     }
+    async updateProfile(req, res) {
+        var _a;
+        try {
+            const userId = (_a = req.user) === null || _a === void 0 ? void 0 : _a.id;
+            if (!userId) {
+                return (0, response_1.errorResponse)(res, 401, 'Unauthorized');
+            }
+            const { first_name, middle_name, last_name, phone } = req.body;
+            const updatedUser = await services_1.UserService.updateUser(userId.toString(), {
+                first_name,
+                middle_name,
+                last_name,
+                phone
+            }, userId);
+            (0, response_1.successResponse)(res, 200, 'Profile updated successfully', updatedUser);
+        }
+        catch (error) {
+            logger_1.default.error(`Profile update failed: ${error.message}`, { error });
+            (0, response_1.errorResponse)(res, 500, error.message);
+        }
+    }
+    async changePassword(req, res) {
+        var _a;
+        try {
+            const userId = (_a = req.user) === null || _a === void 0 ? void 0 : _a.id;
+            if (!userId) {
+                return (0, response_1.errorResponse)(res, 401, 'Unauthorized');
+            }
+            const { current_password, new_password } = req.body;
+            if (!current_password || !new_password) {
+                return (0, response_1.errorResponse)(res, 400, 'Current password and new password are required');
+            }
+            if (new_password.length < 6) {
+                return (0, response_1.errorResponse)(res, 400, 'New password must be at least 6 characters long');
+            }
+            await services_1.UserService.changePassword(userId.toString(), current_password, new_password);
+            (0, response_1.successResponse)(res, 200, 'Password changed successfully');
+        }
+        catch (error) {
+            logger_1.default.error(`Password change failed: ${error.message}`, { error });
+            (0, response_1.errorResponse)(res, 500, error.message);
+        }
+    }
 }
 exports.default = new UserController();

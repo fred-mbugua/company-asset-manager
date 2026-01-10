@@ -11,6 +11,7 @@ const router = (0, express_1.Router)();
 router.get('/login', controllers_1.ViewsController.renderLogin);
 router.get('/', auth_middleware_1.authenticate, (0, auth_middleware_1.authorize)(['Admin', 'Standard User']), (0, express_async_handler_1.default)(controllers_1.ViewsController.renderDashboard));
 router.get('/dashboard', auth_middleware_1.authenticate, (0, auth_middleware_1.authorize)(['Admin', 'Standard User']), (0, express_async_handler_1.default)(controllers_1.ViewsController.renderDashboard));
+router.get('/profile', auth_middleware_1.authenticate, (0, auth_middleware_1.authorize)(['Admin', 'Standard User']), (0, express_async_handler_1.default)(controllers_1.ViewsController.renderProfile));
 router.get('/assets/create', auth_middleware_1.authenticate, (0, auth_middleware_1.authorize)(['Admin', 'Standard User']), (0, express_async_handler_1.default)(controllers_1.ViewsController.renderCreateAsset));
 router.get('/assets/view', auth_middleware_1.authenticate, (0, auth_middleware_1.authorize)(['Admin', 'Standard User']), (0, express_async_handler_1.default)(controllers_1.ViewsController.renderViewAssets));
 router.get('/assets/assign', auth_middleware_1.authenticate, (0, auth_middleware_1.authorize)(['Admin', 'Standard User']), (0, express_async_handler_1.default)(controllers_1.ViewsController.renderAssignAssets));

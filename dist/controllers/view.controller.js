@@ -429,5 +429,51 @@ class ViewsController {
             res.status(500).send('Failed to load system configuration page.');
         }
     }
+    async renderProfile(req, res) {
+        var _a, _b, _c;
+        try {
+            const currentUserId = (_a = req.user) === null || _a === void 0 ? void 0 : _a.id;
+            const currentUserRole = (_b = req.user) === null || _b === void 0 ? void 0 : _b.role;
+            if (!currentUserId) {
+                res.redirect('/login');
+                return;
+            }
+            // Check if viewing another user's profile
+            const targetUserId = req.query.userId;
+            const isViewingOtherUser = targetUserId && targetUserId !== currentUserId.toString();
+            // Security Check: Only admins can view other users' profiles
+            if (isViewingOtherUser) {
+                if (currentUserRole !== 'Admin') {
+                    res.status(403).render('error', {
+                        message: 'Access Denied',
+                        error: { status: 403, stack: '' },
+                        details: 'You do not have permission to view other user profiles. Only administrators can access this feature.'
+                    });
+                    return;
+                }
+                // Validate userId parameter (prevent injection)
+                if (!/^\d+$/.test(targetUserId)) {
+                    res.status(400).send('Invalid user ID format.');
+                    return;
+                }
+            }
+            // Fetch user details
+            const userIdToFetch = isViewingOtherUser ? targetUserId : currentUserId.toString();
+            const userDetails = await services_1.UserService.getUserById(userIdToFetch);
+            if (!userDetails) {
+                res.status(404).send('User not found.');
+                return;
+            }
+            res.render('profile', {
+                user: userDetails,
+                isViewingOtherUser,
+                viewerIsAdmin: ((_c = req.user) === null || _c === void 0 ? void 0 : _c.role) === 'Admin'
+            });
+        }
+        catch (error) {
+            console.error('Error rendering profile page:', error);
+            res.status(500).send('Failed to load profile page.');
+        }
+    }
 }
 exports.default = new ViewsController();
