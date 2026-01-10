@@ -1,0 +1,405 @@
+<%- include('partials/header', { pageTitle: 'Bulk User Import History', cssFile: 'manage-users' }) %>
+<%- include('partials/navbar', { user: locals.user }) %>
+
+<div class="main">
+    <%- include('partials/sidebar') %>
+    <section class="content-area">
+        <div class="user-management-container">
+            <div class="page-header">
+                <h3>Bulk User Import History</h3>
+                <a href="/users/manage" class="btn btn-secondary">
+                    <i class="uil-arrow-left"></i> Back to Users
+                </a>
+            </div>
+
+            <div class="import-batches-section mt-4">
+                <h4>Import Batches</h4>
+                
+                <table id="batches-table" class="data-table">
+                    <thead>
+                        <tr>
+                            <th>Batch ID</th>
+                            <th>Import Date</th>
+                            <th>Imported By</th>
+                            <th>Type</th>
+                            <th>Total</th>
+                            <th>Successful</th>
+                            <th>Failed</th>
+                            <th>Status</th>
+                            <th>Actions</th>
+                        </tr>
+                    </thead>
+                    <tbody id="batches-table-body">
+                        <tr>
+                            <td colspan="9" class="text-center">Loading...</td>
+                        </tr>
+                    </tbody>
+                </table>
+
+                <div class="pagination-controls mt-3">
+                    <div class="pagination-info">
+                        <select id="page-size">
+                            <option value="10" selected>10 per page</option>
+                            <option value="20">20 per page</option>
+                            <option value="50">50 per page</option>
+                        </select>
+                        <span id="page-info">Page 1 of 1</span>
+                    </div>
+                    <div class="pagination-buttons">
+                        <button id="prev-btn" class="btn btn-page" disabled>
+                            <i class="fa fa-chevron-left"></i>
+                        </button>
+                        <button id="next-btn" class="btn btn-page" disabled>
+                            <i class="fa fa-chevron-right"></i>
+                        </button>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Batch Details Modal -->
+            <div id="batch-details-modal" class="modal">
+                <div class="modal-content modal-lg">
+                    <span class="close-btn">&times;</span>
+                    <h4>Import Batch Details</h4>
+                    
+                    <div class="batch-summary mb-3">
+                        <div class="summary-item">
+                            <strong>Batch ID:</strong> <span id="detail-batch-id">-</span>
+                        </div>
+                        <div class="summary-item">
+                            <strong>Import Date:</strong> <span id="detail-import-date">-</span>
+                        </div>
+                        <div class="summary-item">
+                            <strong>Imported By:</strong> <span id="detail-imported-by">-</span>
+                        </div>
+                        <div class="summary-item">
+                            <strong>Status:</strong> <span id="detail-status">-</span>
+                        </div>
+                    </div>
+
+                    <div class="import-stats mb-3">
+                        <div class="stat-box stat-total">
+                            <span class="stat-value" id="detail-total">0</span>
+                            <span class="stat-label">Total Records</span>
+                        </div>
+                        <div class="stat-box stat-success">
+                            <span class="stat-value" id="detail-successful">0</span>
+                            <span class="stat-label">Successful</span>
+                        </div>
+                        <div class="stat-box stat-failed">
+                            <span class="stat-value" id="detail-failed">0</span>
+                            <span class="stat-label">Failed</span>
+                        </div>
+                    </div>
+
+                    <h5>Imported Users</h5>
+                    <div class="table-responsive">
+                        <table class="data-table">
+                            <thead>
+                                <tr>
+                                    <th>Name</th>
+                                    <th>Email</th>
+                                    <th>Status</th>
+                                    <th>Auto-Generated Password</th>
+                                    <th>Password Status</th>
+                                    <th>Error</th>
+                                </tr>
+                            </thead>
+                            <tbody id="batch-users-table-body">
+                                <tr>
+                                    <td colspan="6" class="text-center">Loading...</td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+</div>
+
+<style>
+.page-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 20px;
+}
+
+.modal-lg {
+    max-width: 900px;
+    width: 90%;
+}
+
+.batch-summary {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+    gap: 15px;
+    padding: 15px;
+    background: #f8f9fa;
+    border-radius: 8px;
+}
+
+.summary-item {
+    font-size: 14px;
+}
+
+.import-stats {
+    display: flex;
+    gap: 15px;
+    flex-wrap: wrap;
+}
+
+.stat-box {
+    flex: 1;
+    min-width: 120px;
+    padding: 15px;
+    border-radius: 8px;
+    text-align: center;
+}
+
+.stat-total {
+    background: linear-gradient(135deg, #007bff, #0056b3);
+    color: white;
+}
+
+.stat-success {
+    background: linear-gradient(135deg, #28a745, #1e7e34);
+    color: white;
+}
+
+.stat-failed {
+    background: linear-gradient(135deg, #dc3545, #bd2130);
+    color: white;
+}
+
+.stat-value {
+    display: block;
+    font-size: 24px;
+    font-weight: bold;
+}
+
+.stat-label {
+    font-size: 12px;
+    opacity: 0.9;
+}
+
+.password-visible {
+    font-family: monospace;
+    background: #f0f0f0;
+    padding: 4px 8px;
+    border-radius: 4px;
+    font-size: 13px;
+}
+
+.password-changed {
+    color: #28a745;
+    font-weight: 500;
+}
+
+.password-hidden {
+    color: #6c757d;
+    font-style: italic;
+}
+
+.status-badge {
+    padding: 4px 8px;
+    border-radius: 4px;
+    font-size: 12px;
+    font-weight: 500;
+}
+
+.status-success {
+    background: #d4edda;
+    color: #155724;
+}
+
+.status-failed {
+    background: #f8d7da;
+    color: #721c24;
+}
+
+.status-pending {
+    background: #fff3cd;
+    color: #856404;
+}
+
+.status-completed {
+    background: #d4edda;
+    color: #155724;
+}
+
+.status-processing {
+    background: #cce5ff;
+    color: #004085;
+}
+
+.table-responsive {
+    max-height: 400px;
+    overflow-y: auto;
+}
+
+.error-message {
+    color: #dc3545;
+    font-size: 12px;
+    max-width: 200px;
+    word-break: break-word;
+}
+</style>
+
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    let currentPage = 1;
+    let pageSize = 10;
+    let totalPages = 1;
+
+    const batchesTableBody = document.getElementById('batches-table-body');
+    const pageInfo = document.getElementById('page-info');
+    const prevBtn = document.getElementById('prev-btn');
+    const nextBtn = document.getElementById('next-btn');
+    const pageSizeSelect = document.getElementById('page-size');
+    const detailsModal = document.getElementById('batch-details-modal');
+    const closeBtn = detailsModal.querySelector('.close-btn');
+
+    // Load batches
+    async function loadBatches() {
+        try {
+            const offset = (currentPage - 1) * pageSize;
+            const response = await API.get(`/bulk-user-import/batches?limit=${pageSize}&offset=${offset}`);
+            
+            const { batches, totalCount } = response.data;
+            totalPages = Math.ceil(totalCount / pageSize);
+
+            renderBatches(batches);
+            updatePagination();
+        } catch (error) {
+            console.error('Failed to load batches:', error);
+            batchesTableBody.innerHTML = '<tr><td colspan="9" class="text-center">Failed to load import history</td></tr>';
+        }
+    }
+
+    function renderBatches(batches) {
+        if (!batches || batches.length === 0) {
+            batchesTableBody.innerHTML = '<tr><td colspan="9" class="text-center">No import batches found</td></tr>';
+            return;
+        }
+
+        batchesTableBody.innerHTML = batches.map(batch => `
+            <tr>
+                <td>${batch.id}</td>
+                <td>${new Date(batch.created_at).toLocaleString()}</td>
+                <td>${batch.imported_by_name || batch.imported_by_email || 'N/A'}</td>
+                <td>${batch.import_type.toUpperCase()}</td>
+                <td>${batch.total_records}</td>
+                <td class="text-success">${batch.successful_records}</td>
+                <td class="text-danger">${batch.failed_records}</td>
+                <td><span class="status-badge status-${batch.status}">${batch.status}</span></td>
+                <td>
+                    <button class="btn btn-sm btn-view view-details-btn" data-id="${batch.id}">
+                        <i class="fa fa-eye"></i> View Details
+                    </button>
+                </td>
+            </tr>
+        `).join('');
+
+        // Add click handlers
+        document.querySelectorAll('.view-details-btn').forEach(btn => {
+            btn.addEventListener('click', () => viewBatchDetails(btn.dataset.id));
+        });
+    }
+
+    function updatePagination() {
+        pageInfo.textContent = `Page ${currentPage} of ${totalPages}`;
+        prevBtn.disabled = currentPage <= 1;
+        nextBtn.disabled = currentPage >= totalPages;
+    }
+
+    async function viewBatchDetails(batchId) {
+        try {
+            const response = await API.get(`/bulk-user-import/batches/${batchId}`);
+            const { batch, users } = response.data;
+
+            // Populate modal
+            document.getElementById('detail-batch-id').textContent = batch.id;
+            document.getElementById('detail-import-date').textContent = new Date(batch.created_at).toLocaleString();
+            document.getElementById('detail-imported-by').textContent = batch.imported_by_name || batch.imported_by_email || 'N/A';
+            document.getElementById('detail-status').innerHTML = `<span class="status-badge status-${batch.status}">${batch.status}</span>`;
+            document.getElementById('detail-total').textContent = batch.total_records;
+            document.getElementById('detail-successful').textContent = batch.successful_records;
+            document.getElementById('detail-failed').textContent = batch.failed_records;
+
+            // Render users table
+            const usersTableBody = document.getElementById('batch-users-table-body');
+            if (!users || users.length === 0) {
+                usersTableBody.innerHTML = '<tr><td colspan="6" class="text-center">No users in this batch</td></tr>';
+            } else {
+                usersTableBody.innerHTML = users.map(user => `
+                    <tr>
+                        <td>${user.first_name} ${user.last_name}</td>
+                        <td>${user.email}</td>
+                        <td><span class="status-badge status-${user.import_status}">${user.import_status}</span></td>
+                        <td>
+                            ${user.import_status === 'success' ? (
+                                user.password_changed 
+                                    ? '<span class="password-hidden">Hidden</span>'
+                                    : user.visible_password 
+                                        ? `<span class="password-visible">${user.visible_password}</span>`
+                                        : '<span class="password-hidden">Hidden</span>'
+                            ) : '-'}
+                        </td>
+                        <td>
+                            ${user.import_status === 'success' ? (
+                                user.password_changed 
+                                    ? '<span class="password-changed"><i class="fa fa-check"></i> Changed</span>'
+                                    : '<span class="status-badge status-pending">Not Changed</span>'
+                            ) : '-'}
+                        </td>
+                        <td>${user.error_message ? `<span class="error-message">${user.error_message}</span>` : '-'}</td>
+                    </tr>
+                `).join('');
+            }
+
+            detailsModal.style.display = 'block';
+        } catch (error) {
+            console.error('Failed to load batch details:', error);
+            alert('Failed to load batch details');
+        }
+    }
+
+    // Event listeners
+    pageSizeSelect.addEventListener('change', function() {
+        pageSize = parseInt(this.value);
+        currentPage = 1;
+        loadBatches();
+    });
+
+    prevBtn.addEventListener('click', function() {
+        if (currentPage > 1) {
+            currentPage--;
+            loadBatches();
+        }
+    });
+
+    nextBtn.addEventListener('click', function() {
+        if (currentPage < totalPages) {
+            currentPage++;
+            loadBatches();
+        }
+    });
+
+    closeBtn.addEventListener('click', function() {
+        detailsModal.style.display = 'none';
+    });
+
+    window.addEventListener('click', function(e) {
+        if (e.target === detailsModal) {
+            detailsModal.style.display = 'none';
+        }
+    });
+
+    // Initial load
+    loadBatches();
+});
+</script>
+
+<%- include('partials/footer') %>

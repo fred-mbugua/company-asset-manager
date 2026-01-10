@@ -3,7 +3,7 @@ import pool from '../config/database';
 class ExpenseModel {
   async create(expenseData: any) {
     // console.log('Creating expense with data:', expenseData);
-    const query = 'INSERT INTO expenses (asset_id, date, amount, vendor, invoice_number, notes, expense_type_id) VALUES ($1, $2, $3, $4, $5, $6, $7) RETURNING *';
+    const query = 'INSERT INTO expenses (asset_id, date, amount, vendor, invoice_number, notes, expense_type_id, assigned_employee_id) VALUES ($1, $2, $3, $4, $5, $6, $7, $8) RETURNING *';
     const result = await pool.query(query, [
       expenseData.asset_id,
       expenseData.date,
@@ -12,6 +12,7 @@ class ExpenseModel {
       expenseData.invoice_number,
       expenseData.notes,
       expenseData.expense_type_id,
+      expenseData.assigned_employee_id || null,
     ]);
     return result.rows[0];
   }
@@ -23,10 +24,13 @@ class ExpenseModel {
         a.asset_tag,
         a.manufacturer,
         a.model,
-        et.name as expense_type_name
+        et.name as expense_type_name,
+        emp.first_name || ' ' || emp.last_name AS assigned_employee_name,
+        emp.company AS employee_company
       FROM expenses e
       LEFT JOIN assets a ON e.asset_id = a.id
       LEFT JOIN expense_types et ON e.expense_type_id = et.id
+      LEFT JOIN employees emp ON e.assigned_employee_id = emp.id
       WHERE e.id = $1
     `;
     const result = await pool.query(query, [id]);
@@ -34,7 +38,15 @@ class ExpenseModel {
   }
 
   async findByAssetId(assetId: number) {
-    const query = 'SELECT * FROM expenses WHERE asset_id = $1 ORDER BY date DESC';
+    const query = `
+      SELECT 
+        e.*,
+        emp.first_name || ' ' || emp.last_name AS assigned_employee_name
+      FROM expenses e
+      LEFT JOIN employees emp ON e.assigned_employee_id = emp.id
+      WHERE e.asset_id = $1 
+      ORDER BY e.date DESC
+    `;
     const result = await pool.query(query, [assetId]);
     return result.rows;
   }
@@ -70,6 +82,25 @@ class ExpenseModel {
     const query = 'DELETE FROM expenses WHERE id = $1';
     await pool.query(query, [id]);
     return { message: 'Expense deleted successfully.' };
+  }
+
+  /**
+   * Get the current employee assigned to an asset (if any)
+   */
+  async getCurrentAssignedEmployee(assetId: number) {
+    const query = `
+      SELECT 
+        e.id,
+        e.first_name || ' ' || e.last_name AS full_name,
+        e.company
+      FROM employees e
+      INNER JOIN assignments a ON a.employee_id = e.id
+      WHERE a.asset_id = $1 AND a.return_date IS NULL
+      ORDER BY a.assignment_date DESC
+      LIMIT 1
+    `;
+    const result = await pool.query(query, [assetId]);
+    return result.rows[0] || null;
   }
 }
 

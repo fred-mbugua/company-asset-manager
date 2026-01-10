@@ -66,4 +66,20 @@ router.get(
     asyncHandler(ReportController.exportActionLogReport)
 );
 
+// Repair Summary Report Data Endpoint
+// URL: GET /api/reports/repair-summary?from_date=...&to_date=...
+router.get(
+    '/repair-summary', 
+    authenticate,
+    asyncHandler(ReportController.getRepairSummaryReportData) 
+);
+
+// Repair Summary Report Export Endpoint
+// URL: GET /api/reports/repair-summary/export?from_date=...&to_date=...
+router.get(
+    '/repair-summary/export', 
+    authenticate,
+    asyncHandler(ReportController.exportRepairSummaryReport)
+);
+
 export default router;

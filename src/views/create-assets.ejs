@@ -10,10 +10,6 @@
             <h2>Create New Asset</h2>
             <form id="assetForm">
                 <div class="form-field">
-                    <label for="asset_tag">Asset Tag</label>
-                    <input type="text" id="asset_tag" required>
-                </div>
-                <div class="form-field">
                     <label for="asset_type">Asset Type</label>
                     <select id="asset_type" class="select2-dropdown" required style="width: 100%;">
                         <option value="">-- Select type --</option>
@@ -21,6 +17,16 @@
                             <option value="<%= type.id %>"><%= type.name %></option>
                         <% }); %>
                     </select>
+                </div>
+                <div class="form-field">
+                    <label for="asset_tag">Asset Tag</label>
+                    <div class="input-with-button">
+                        <input type="text" id="asset_tag" placeholder="Auto-generated or enter manually">
+                        <button type="button" id="generateTagBtn" class="btn btn-secondary" title="Generate tag based on selected type">
+                            <i class="uil uil-sync"></i> Auto
+                        </button>
+                    </div>
+                    <small id="tag-preview" class="form-hint" style="color: #666; display: none;">Next tag: <span id="next-tag-value"></span></small>
                 </div>
                 <div class="form-field">
                     <label for="manufacturer">Manufacturer</label>

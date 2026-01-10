@@ -84,6 +84,8 @@
                             <th>ID</th>
                             <th>Asset Tag</th>
                             <th>Expense Type</th>
+                            <th>Assigned Employee</th>
+                            <th>Company</th>
                             <th>Date</th>
                             <th>Amount</th>
                             <th>Vendor</th>
@@ -100,6 +102,8 @@
                                     <td><%= expense.id %></td>
                                     <td><%= expense.asset_tag %></td>
                                     <td><%= expense.expense_type_name %></td>
+                                    <td><%= expense.assigned_employee_name || 'N/A' %></td>
+                                    <td><%= expense.employee_company || 'N/A' %></td>
                                     <td><span data-date="<%= expense.date %>"></span></td>
                                     <td><%= expense.amount %></td>
                                     <td title="<%= expense.vendor || '' %>"><%= expense.vendor || 'N/A' %></td>
@@ -111,7 +115,7 @@
                             <% }); %>
                         <% } else { %>
                             <tr>
-                                <td colspan="10" style="text-align:center;color:#888;">No expenses found.</td>
+                                <td colspan="12" style="text-align:center;color:#888;">No expenses found.</td>
                             </tr>
                         <% } %>
                     </tbody>

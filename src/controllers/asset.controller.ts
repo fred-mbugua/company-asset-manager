@@ -33,7 +33,7 @@ export class AssetController {
             successResponse(res, 201, 'Asset created successfully', newAsset);
         } catch (error: any) {
             logger.error('Failed to create asset:', error);
-            errorResponse(res, 400, 'Invalid asset data');
+            errorResponse(res, 400, error.message || 'Invalid asset data');
         }
     }
 
@@ -76,6 +76,20 @@ export class AssetController {
         } catch (error: any) {
             logger.error('Failed to search asset statuses:', error);
             errorResponse(res, 500, 'Failed to search asset statuses');
+        }
+    }
+
+    async getNextTagPreview(req: Request, res: Response) {
+        try {
+            const assetTypeId = Number(req.params.assetTypeId);
+            if (!assetTypeId || isNaN(assetTypeId)) {
+                return errorResponse(res, 400, 'Valid asset type ID is required');
+            }
+            const preview = await AssetService.getNextTagPreview(assetTypeId);
+            successResponse(res, 200, 'Next tag preview retrieved successfully', preview);
+        } catch (error: any) {
+            logger.error('Failed to get next tag preview:', error);
+            errorResponse(res, 500, 'Failed to get tag preview');
         }
     }
 }

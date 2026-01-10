@@ -27,6 +27,8 @@ interface AssignmentReportData {
     assignment_date: Date;
     return_date: Date | null;
     notes: string | null;
+    purchase_price: number;
+    company: string;
 }
 
 export class AssignmentReportModel {
@@ -38,11 +40,14 @@ export class AssignmentReportModel {
             assets.asset_tag,
             assets.manufacturer,
             assets.model,
+            assets.purchase_price,
             employees.department,
+            employees.company,
             assignments.assignment_date,
             assignments.return_date,
             assignments.notes,
-            employees.first_name || ' ' || employees.last_name AS employee_name
+            employees.first_name || ' ' || employees.last_name AS employee_name,
+            branches.name AS location
         FROM assignments
         INNER JOIN assets ON assignments.asset_id = assets.id
         INNER JOIN employees ON assignments.employee_id = employees.id

@@ -69,7 +69,7 @@
                         <tr>
                             <th>ID</th><th>Asset Tag</th><th>Type</th><th>Manufacturer</th>
                             <th>Model</th><th>Serial</th><th>Status</th><th>Location</th>
-                            <th>Purchase Date</th><th>Actions</th>
+                            <th>Purchase Date</th><th>Purchase Amount</th><th>Actions</th>
                         </tr>
                     </thead>
                     <tbody id="asset-table-body">
@@ -89,6 +89,7 @@
                                     <td><%= asset.status %></td>
                                     <td><%= asset.location %></td>
                                     <td><span data-date="<%= asset.purchase_date %>"></span></td>
+                                    <td>Ksh. <%= asset.purchase_price ? parseFloat(asset.purchase_price).toLocaleString() : '0' %></td>
                                     <td>
                                         <button class="btn btn-edit" onclick="showAssetDetails(<%= asset.id %>)">View/Edit</button>
                                         <button class="btn btn-view" onclick="showAssignmentHistory(<%= asset.id %>, '<%= asset.asset_tag %>')">History</button>
@@ -99,7 +100,7 @@
                                 </tr>
                             <% }); %>
                         <% } else { %>
-                             <tr><td colspan="10" style="text-align:center;color:#888;">No assets found.</td></tr>
+                             <tr><td colspan="11" style="text-align:center;color:#888;">No assets found.</td></tr>
                         <% } %>
                     </tbody>
                 </table>

@@ -50,4 +50,11 @@ router.post(
     asyncHandler(SystemConfigurationController.uploadLogo)
 );
 
+router.post(
+    '/test-email',
+    authenticate,
+    authorize(['Admin']),
+    asyncHandler(SystemConfigurationController.sendTestEmail)
+);
+
 export default router;

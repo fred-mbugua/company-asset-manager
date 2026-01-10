@@ -21,3 +21,5 @@ export { default as AssetAttachmentModel } from './assetAttachment.model';
 export { default as ExpenseAttachmentModel } from './expenseAttachment.model';
 export { default as AssignmentAttachmentModel } from './assignmentAttachment.model';
 export { default as SystemConfigurationModel } from './systemConfiguration.model';
+export { default as AssetTagPrefixModel } from './assetTagPrefix.model';
+export { default as BulkUserImportModel } from './bulkUserImport.model';

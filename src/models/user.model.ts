@@ -24,11 +24,11 @@ class UserModel {
           employees.last_name As employee_last_name,
           departments.id As departmnt_id
       From
-          users Inner Join
-          branches On users.branch_id = branches.id Inner Join
-          roles On users.role_id = roles.id Inner Join
-          employees On users.employee_id = employees.id Inner Join
-          departments On employees.department_id = departments.id
+          users 
+          LEFT JOIN branches On users.branch_id = branches.id 
+          LEFT JOIN roles On users.role_id = roles.id 
+          LEFT JOIN employees On users.employee_id = employees.id 
+          LEFT JOIN departments On employees.department_id = departments.id
       Where users.id = $1;   
     `;
     const result = await pool.query(query, [id]);
@@ -94,22 +94,21 @@ class UserModel {
 
   async findAllUserDetails() {
     const query = `
-          
-                Select
+                SELECT
                     users.*,
-                    branches.name As branch_name,
+                    branches.name AS branch_name,
                     branches.location,
-                    roles.name As role_name,
-                    departments.name As department_name,
-                    employees.first_name As employee_first_name,
-                    employees.middle_name As employee_middle_name,
-                    employees.last_name As employee_last_name
-                From
-                    users Inner Join
-                    branches On users.branch_id = branches.id Inner Join
-                    roles On users.role_id = roles.id Inner Join
-                    employees On users.employee_id = employees.id Inner Join
-                    departments On employees.department_id = departments.id
+                    roles.name AS role_name,
+                    departments.name AS department_name,
+                    employees.first_name AS employee_first_name,
+                    employees.middle_name AS employee_middle_name,
+                    employees.last_name AS employee_last_name
+                FROM users 
+                LEFT JOIN branches ON users.branch_id = branches.id 
+                LEFT JOIN roles ON users.role_id = roles.id 
+                LEFT JOIN employees ON users.employee_id = employees.id 
+                LEFT JOIN departments ON employees.department_id = departments.id
+                ORDER BY users.first_name ASC
           `;
 
     const result = await pool.query(query);
@@ -162,6 +161,26 @@ class UserModel {
   async updateStatus(id: string, isActive: boolean) {
     const query = 'UPDATE users SET is_active = $1 WHERE id = $2 RETURNING id, email, is_active';
     const result = await pool.query(query, [isActive, id]);
+    return result.rows[0];
+  }
+
+  async markPasswordChanged(id: string) {
+    const query = `
+      UPDATE users 
+      SET is_password_changed = TRUE, password_changed_at = NOW() 
+      WHERE id = $1 
+      RETURNING id;
+    `;
+    const result = await pool.query(query, [id]);
+    
+    // Also update bulk_imported_users if applicable
+    const bulkQuery = `
+      UPDATE bulk_imported_users 
+      SET password_changed = TRUE, password_changed_at = NOW() 
+      WHERE user_id = $1;
+    `;
+    await pool.query(bulkQuery, [id]);
+    
     return result.rows[0];
   }
 }

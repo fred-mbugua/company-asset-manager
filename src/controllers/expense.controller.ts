@@ -3,6 +3,7 @@ import { ExpenseService } from '../services';
 import { successResponse, errorResponse } from '../utils/response';
 import logger from '../utils/logger';
 import { AuthenticatedRequest } from '../types';
+import { ExpenseModel } from '../models';
 
 class ExpenseController {
   async addExpense(req: AuthenticatedRequest, res: Response) {
@@ -42,6 +43,17 @@ class ExpenseController {
             successResponse(res, 200, 'Expenses retrieved successfully', expenses);
         } catch (error) {
             logger.error(`Failed to retrieve expenses for asset ID ${req.params.assetId}:`, error);
+            errorResponse(res, 404, (error as Error).message);
+        }
+    }
+
+    async getAssignedEmployee(req: Request, res: Response) {
+        try {
+            const assetId = Number(req.params.assetId);
+            const employee = await ExpenseModel.getCurrentAssignedEmployee(assetId);
+            successResponse(res, 200, 'Assigned employee retrieved successfully', { employee });
+        } catch (error) {
+            logger.error(`Failed to get assigned employee for asset ID ${req.params.assetId}:`, error);
             errorResponse(res, 404, (error as Error).message);
         }
     }

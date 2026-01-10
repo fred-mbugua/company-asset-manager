@@ -534,6 +534,34 @@ class ViewsController {
             res.status(500).send('Failed to load profile page.');
         }
     }
+
+    /**
+     * Rendering the Repair Summary Report page
+     */
+    async renderRepairSummaryReport(req: Request, res: Response) {
+        try {
+            res.render('repair-summary-report', { 
+                user: req.user
+            });
+        } catch (error) {
+            console.error('Error rendering repair summary report page:', error);
+            res.status(500).send('Failed to load repair summary report page.');
+        }
+    }
+
+    /**
+     * Rendering the Bulk Import History page
+     */
+    async renderBulkImportHistory(req: Request, res: Response) {
+        try {
+            res.render('bulk-import-history', { 
+                user: req.user
+            });
+        } catch (error) {
+            console.error('Error rendering bulk import history page:', error);
+            res.status(500).send('Failed to load bulk import history page.');
+        }
+    }
 }
 
 export default new ViewsController();

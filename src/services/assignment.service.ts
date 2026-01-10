@@ -60,6 +60,12 @@ class AssignmentService {
         const oldBranchId = asset.branch_id;
         const newBranchId = employeeQuery.branch_id;
 
+        // Skip transfer if employee has no branch assigned
+        if (!newBranchId) {
+            logger.info(`Skipping branch transfer for asset ${assetId} - employee ${employeeId} has no branch assigned`);
+            return;
+        }
+
         if (oldBranchId === newBranchId) {
             return; // No transfer needed
         }

@@ -1,3 +1,46 @@
+// Handle asset type change to show next tag preview
+document.getElementById('asset_type').addEventListener('change', async function() {
+    const assetTypeId = this.value;
+    const tagPreview = document.getElementById('tag-preview');
+    const nextTagValue = document.getElementById('next-tag-value');
+    
+    if (assetTypeId) {
+        try {
+            const response = await API.get(`/assets/next-tag/${assetTypeId}`);
+            if (response.data) {
+                nextTagValue.textContent = response.data.fullTag;
+                tagPreview.style.display = 'block';
+            }
+        } catch (error) {
+            console.error('Failed to get tag preview:', error);
+            tagPreview.style.display = 'none';
+        }
+    } else {
+        tagPreview.style.display = 'none';
+    }
+});
+
+// Auto-generate asset tag button
+document.getElementById('generateTagBtn').addEventListener('click', async function() {
+    const assetTypeId = document.getElementById('asset_type').value;
+    const assetTagInput = document.getElementById('asset_tag');
+    
+    if (!assetTypeId) {
+        showMessage('error', 'Please select an asset type first.');
+        return;
+    }
+    
+    try {
+        const response = await API.get(`/assets/next-tag/${assetTypeId}`);
+        if (response.data && response.data.fullTag) {
+            assetTagInput.value = response.data.fullTag;
+            showMessage('info', `Tag will be: ${response.data.fullTag} (final tag assigned on save)`);
+        }
+    } catch (error) {
+        showMessage('error', 'Failed to generate asset tag.');
+    }
+});
+
 document.getElementById('assetForm').addEventListener('submit', async function(e) {
     e.preventDefault();
 
@@ -10,8 +53,10 @@ document.getElementById('assetForm').addEventListener('submit', async function(e
         return showMessage('error', 'Purchase date cannot be in the future.');
     }
 
+    const assetTagValue = document.getElementById('asset_tag').value.trim();
+    
     const formData = {
-        asset_tag: document.getElementById('asset_tag').value,
+        asset_tag: assetTagValue || 'AUTO', // If empty, use AUTO to trigger auto-generation
         asset_type: document.getElementById('asset_type').selectedOptions[0].text,
         manufacturer: document.getElementById('manufacturer').value,
         model: document.getElementById('model').value,
@@ -33,6 +78,7 @@ document.getElementById('assetForm').addEventListener('submit', async function(e
         
         // Clear the form after successful submission
         document.getElementById('assetForm').reset();
+        document.getElementById('tag-preview').style.display = 'none';
     } catch (error) {
         showMessage('error', error.message || 'Failed to create asset.');
     }

@@ -8,6 +8,7 @@ const router = Router();
 router.get('/', authenticate, authorize(['Admin', 'Standard User']), asyncHandler(AssetController.getAll));
 router.get('/search', authenticate, authorize(['Admin', 'Standard User']), asyncHandler(AssetController.search));
 router.get('/statuses/list', authenticate, authorize(['Admin', 'Standard User']), asyncHandler(AssetController.statusList));
+router.get('/next-tag/:assetTypeId', authenticate, authorize(['Admin', 'Standard User']), asyncHandler(AssetController.getNextTagPreview));
 router.get('/:id', authenticate, authorize(['Admin', 'Standard User']), asyncHandler(AssetController.getById));
 router.post('/', authenticate, authorize(['Admin']), asyncHandler(AssetController.create));
 router.put('/:id', authenticate, authorize(['Admin']), asyncHandler(AssetController.update));

@@ -3,7 +3,45 @@ document.addEventListener('DOMContentLoaded', () => {
     const dateInput = document.getElementById('date');
     const today = new Date().toISOString().split('T')[0];
     dateInput.setAttribute('max', today);
+    
+    // Initialize assigned employee field event listener
+    initAssetEmployeeLookup();
 });
+
+// Fetch assigned employee when asset is selected
+function initAssetEmployeeLookup() {
+    const assetSelect = document.getElementById('asset_id');
+    const employeeDisplay = document.getElementById('assigned_employee_display');
+    const employeeIdField = document.getElementById('assigned_employee_id');
+    
+    if (assetSelect && employeeDisplay) {
+        // Handle both Select2 and native change events
+        $(assetSelect).on('change', async function() {
+            const assetId = this.value;
+            
+            if (!assetId) {
+                employeeDisplay.value = '';
+                employeeIdField.value = '';
+                return;
+            }
+            
+            try {
+                const response = await API.get(`/expenses/assigned-employee/${assetId}`);
+                if (response.data && response.data.employee) {
+                    employeeDisplay.value = `${response.data.employee.full_name} (${response.data.employee.company || 'N/A'})`;
+                    employeeIdField.value = response.data.employee.id;
+                } else {
+                    employeeDisplay.value = 'Not assigned';
+                    employeeIdField.value = '';
+                }
+            } catch (error) {
+                console.error('Failed to fetch assigned employee:', error);
+                employeeDisplay.value = 'Unable to fetch';
+                employeeIdField.value = '';
+            }
+        });
+    }
+}
 
 document.getElementById('expense-form').addEventListener('submit', async function(e) {
     e.preventDefault();
@@ -17,6 +55,8 @@ document.getElementById('expense-form').addEventListener('submit', async functio
         return;
     }
 
+    const assignedEmployeeId = document.getElementById('assigned_employee_id').value;
+    
     const formData = {
         asset_id: parseInt(document.getElementById('asset_id').value),
         expense_type_id: parseInt(document.getElementById('expense_type_id').value),
@@ -24,7 +64,8 @@ document.getElementById('expense-form').addEventListener('submit', async functio
         amount: parseFloat(document.getElementById('amount').value),
         vendor: document.getElementById('vendor').value,
         invoice_number: document.getElementById('invoice_number').value,
-        notes: document.getElementById('notes').value
+        notes: document.getElementById('notes').value,
+        assigned_employee_id: assignedEmployeeId ? parseInt(assignedEmployeeId) : null
     };
 
     try {
@@ -33,6 +74,8 @@ document.getElementById('expense-form').addEventListener('submit', async functio
         showMessage('success', response.message || 'Expense saved successfully!');
         
         document.getElementById('expense-form').reset();
+        document.getElementById('assigned_employee_display').value = '';
+        document.getElementById('assigned_employee_id').value = '';
         // Reload expense history
         window.location.reload();
     } catch (error) {

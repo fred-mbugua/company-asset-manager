@@ -85,8 +85,11 @@
                             <th>Asset Tag</th>
                             <th>Manufacturer</th>
                             <th>Model Name</th>
+                            <th>Purchase Amount</th>
                             <th>Employee</th>
+                            <th>Company</th>
                             <th>Department</th>
+                            <th>Location</th>
                             <th>Assigned Date</th>
                             <th>Notes</th>
                             <th>Return Date</th>
@@ -100,8 +103,11 @@
                                     <td><%= assignment.asset_tag %></td>
                                     <td><%= assignment.manufacturer %></td>
                                     <td><%= assignment.model %></td>
+                                    <td>Ksh. <%= assignment.purchase_price ? parseFloat(assignment.purchase_price).toLocaleString() : '0' %></td>
                                     <td><%= assignment.employee_name %></td>
+                                    <td><%= assignment.company || 'N/A' %></td>
                                     <td><%= assignment.department %></td>
+                                    <td><%= assignment.location || 'N/A' %></td>
                                     <td><span data-date="<%= assignment.assignment_date %>"></span></td>
                                     <td title="<%= assignment.notes || '' %>"><%= assignment.notes ? assignment.notes.substring(0, 50) + '...' : 'N/A' %></td>
                                     <td><% if (assignment.return_date != null) { %><span data-date="<%= assignment.return_date %>"></span><% } else { %>N/A<% } %></td>
@@ -109,7 +115,7 @@
                             <% }); %>
                         <% } else { %>
                             <tr>
-                                <td colspan="10" style="text-align:center;color:#888;">No assignments found.</td>
+                                <td colspan="12" style="text-align:center;color:#888;">No assignments found.</td>
                             </tr>
                         <% } %>
                     </tbody>

@@ -2,6 +2,7 @@ import { Request, Response } from 'express';
 import { AuthenticatedRequest } from '../types';
 import SystemConfigurationService from '../services/systemConfiguration.service';
 import StorageService from '../utils/storage';
+import EmailService from '../services/email.service';
 import { successResponse, errorResponse } from '../utils/response';
 import logger from '../utils/logger';
 
@@ -71,6 +72,31 @@ export class SystemConfigurationController {
         } catch (error: any) {
             logger.error('Failed to upload logo:', error);
             errorResponse(res, 500, 'Failed to upload logo');
+        }
+    }
+
+    async sendTestEmail(req: AuthenticatedRequest, res: Response) {
+        try {
+            const { email } = req.body;
+            
+            if (!email) {
+                return errorResponse(res, 400, 'Email address is required');
+            }
+
+            // Get SMTP configuration
+            const config = await SystemConfigurationService.getConfig();
+            
+            if (!config.smtp_host || !config.smtp_user) {
+                return errorResponse(res, 400, 'SMTP settings are not configured. Please configure SMTP settings first.');
+            }
+
+            // Send test email
+            await EmailService.sendTestEmail(email, config);
+            
+            successResponse(res, 200, 'Test email sent successfully');
+        } catch (error: any) {
+            logger.error('Failed to send test email:', error);
+            errorResponse(res, 500, error.message || 'Failed to send test email');
         }
     }
 }

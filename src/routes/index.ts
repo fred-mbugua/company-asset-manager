@@ -15,3 +15,4 @@ export { default as assetAttachmentRoutes } from './assetAttachment.routes';
 export { default as expenseAttachmentRoutes } from './expenseAttachment.routes';
 export { default as assignmentAttachmentRoutes } from './assignmentAttachment.routes';
 export { default as systemConfigurationRoutes } from './systemConfiguration.routes';
+export { default as bulkUserImportRoutes } from './bulkUserImport.routes';

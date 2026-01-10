@@ -4,6 +4,7 @@ import { IExpenseReportFilters } from '../models/expenseReport.model';
 import { IActionLogReportFilters } from '../models/actionLogReport.model';
 import LookupService from '../services/lookup.service'; 
 import { IAssignmentReportFilters } from '../models/assignmentReport.model';
+import { ExpenseReportModel } from '../models';
 import { successResponse, errorResponse } from '../utils/response';
 import logger from '../utils/logger';
 
@@ -306,6 +307,67 @@ class ReportController {
         } catch (error) {
             console.error('Exporting Action Log Report failed:', error);
             res.status(500).send('Failed to generate action log report.');
+        }
+    }
+
+    /**
+     * Get Repair Expense Summary Report data.
+     * Route: GET /api/reports/repair-summary
+     */
+    async getRepairSummaryReportData(req: Request, res: Response): Promise<void> {
+        try {
+            const { from_date, to_date } = req.query;
+            
+            const filters = {
+                from_date: from_date as string,
+                to_date: to_date as string
+            };
+
+            const repairSummary = await ExpenseReportModel.getRepairExpenseSummary(filters);
+
+            const formattedSummary = repairSummary.map(item => ({
+                ...item,
+                total_repair_amount: currencyFormatter.format(item.total_repair_amount),
+                total_repair_amount_raw: parseFloat(item.total_repair_amount)
+            }));
+
+            res.status(200).json({
+                success: true,
+                data: {
+                    summary: formattedSummary,
+                    totalCount: formattedSummary.length
+                }
+            });
+
+        } catch (error) {
+            console.error('Error fetching repair summary report data:', error);
+            res.status(500).json({ success: false, message: 'Failed to retrieve repair summary report data.' });
+        }
+    }
+
+    /**
+     * Export Repair Summary Report to Excel.
+     * Route: GET /api/reports/repair-summary/export
+     */
+    async exportRepairSummaryReport(req: Request, res: Response): Promise<void> {
+        try {
+            const { from_date, to_date } = req.query;
+            
+            const filters = {
+                from_date: from_date as string,
+                to_date: to_date as string
+            };
+
+            const excelBuffer = await ReportExportService.generateRepairSummaryReport(filters);
+
+            const date = new Date().toISOString().slice(0, 10);
+            res.setHeader('Content-Type', 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet');
+            res.setHeader('Content-Disposition', `attachment; filename=Repair_Summary_Report_${date}.xlsx`);
+            res.send(excelBuffer);
+
+        } catch (error) {
+            console.error('Exporting Repair Summary Report failed:', error);
+            res.status(500).send('Failed to generate repair summary report.');
         }
     }
 }

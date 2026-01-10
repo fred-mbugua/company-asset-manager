@@ -70,7 +70,8 @@ document.addEventListener('DOMContentLoaded', () => {
                 const employee = employeeResponse.data;
 
                 // Check if asset and employee are in different branches
-                if (asset.branch_id !== employee.branch_id) {
+                // Skip check if employee has no branch assigned (allow assignment without transfer)
+                if (employee.branch_id && asset.branch_id !== employee.branch_id) {
                     // Store pending assignment data
                     pendingAssignment = formData;
                     

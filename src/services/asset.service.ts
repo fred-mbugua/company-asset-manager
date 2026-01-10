@@ -1,9 +1,18 @@
 import AssetModel from '../models/asset.model';
+import AssetTagPrefixModel from '../models/assetTagPrefix.model';
 import ActionLogService from './actionLog.service';
 import logger from '../utils/logger';
 
 class AssetService {
     async create(assetData: any, userId: number) {
+        // If asset_tag is 'AUTO' or empty, generate it automatically
+        if (!assetData.asset_tag || assetData.asset_tag === 'AUTO' || assetData.asset_tag.trim() === '') {
+            if (!assetData.asset_type_id) {
+                throw new Error('Asset type is required for auto-generating asset tag');
+            }
+            assetData.asset_tag = await AssetTagPrefixModel.generateNextTag(assetData.asset_type_id);
+        }
+
         const newAsset = await AssetModel.create(assetData);
         
         await ActionLogService.logAction(
@@ -67,6 +76,19 @@ class AssetService {
 
     async statusList() {
         return AssetModel.getAssetStatuses();
+    }
+
+    /**
+     * Get preview of next asset tag for a given asset type
+     */
+    async getNextTagPreview(assetTypeId: number) {
+        const preview = await AssetTagPrefixModel.getNextSequencePreview(assetTypeId);
+        const paddedSequence = preview.nextNumber.toString().padStart(3, '0');
+        return {
+            prefix: preview.prefix,
+            nextNumber: preview.nextNumber,
+            fullTag: `${preview.prefix}-${paddedSequence}`
+        };
     }
 }
 

@@ -19,27 +19,27 @@ document.addEventListener('DOMContentLoaded', function() {
     const isMobile = window.innerWidth < 768;
     const isTablet = window.innerWidth >= 768 && window.innerWidth < 1024;
 
-    // Defining color palettes for charts
+    // Defining color palettes for charts - BRIGHT AND BOLD COLORS
     const colorPalette = [
-        'rgba(102, 126, 234, 0.8)',
-        'rgba(118, 75, 162, 0.8)',
-        'rgba(237, 100, 166, 0.8)',
-        'rgba(255, 154, 158, 0.8)',
-        'rgba(250, 208, 196, 0.8)',
-        'rgba(79, 172, 254, 0.8)',
-        'rgba(0, 242, 254, 0.8)',
-        'rgba(132, 250, 176, 0.8)'
+        'rgba(40, 167, 69, 0.85)',     // Bright Green
+        'rgba(255, 153, 0, 0.85)',     // Bright Orange
+        'rgba(220, 53, 69, 0.85)',     // Bright Red
+        'rgba(0, 123, 255, 0.85)',     // Bright Blue
+        'rgba(255, 193, 7, 0.85)',     // Bright Yellow/Gold
+        'rgba(23, 162, 184, 0.85)',    // Bright Cyan/Teal
+        'rgba(111, 66, 193, 0.85)',    // Bright Purple
+        'rgba(253, 126, 20, 0.85)'     // Bright Orange-Red
     ];
 
     const borderColorPalette = [
-        'rgba(102, 126, 234, 1)',
-        'rgba(118, 75, 162, 1)',
-        'rgba(237, 100, 166, 1)',
-        'rgba(255, 154, 158, 1)',
-        'rgba(250, 208, 196, 1)',
-        'rgba(79, 172, 254, 1)',
-        'rgba(0, 242, 254, 1)',
-        'rgba(132, 250, 176, 1)'
+        'rgba(40, 167, 69, 1)',        // Bright Green
+        'rgba(255, 153, 0, 1)',        // Bright Orange
+        'rgba(220, 53, 69, 1)',        // Bright Red
+        'rgba(0, 123, 255, 1)',        // Bright Blue
+        'rgba(255, 193, 7, 1)',        // Bright Yellow/Gold
+        'rgba(23, 162, 184, 1)',       // Bright Cyan/Teal
+        'rgba(111, 66, 193, 1)',       // Bright Purple
+        'rgba(253, 126, 20, 1)'        // Bright Orange-Red
     ];
 
     // Storing chart instances for cleanup
@@ -185,11 +185,11 @@ document.addEventListener('DOMContentLoaded', function() {
                 datasets: [{
                     label: 'Number of Assets',
                     data: chartData.assetsByBranch.map(item => parseInt(item.count)),
-                    backgroundColor: 'rgba(102, 126, 234, 0.7)',
-                    borderColor: 'rgba(102, 126, 234, 1)',
+                    backgroundColor: 'rgba(0, 123, 255, 0.85)',
+                    borderColor: 'rgba(0, 123, 255, 1)',
                     borderWidth: 2,
                     borderRadius: 8,
-                    hoverBackgroundColor: 'rgba(102, 126, 234, 0.9)'
+                    hoverBackgroundColor: 'rgba(0, 123, 255, 0.95)'
                 }]
             },
             options: {
@@ -272,17 +272,17 @@ document.addEventListener('DOMContentLoaded', function() {
                 datasets: [{
                     label: 'Monthly Expenses (Ksh)',
                     data: chartData.monthlyExpenses.map(item => parseFloat(item.total)),
-                    backgroundColor: 'rgba(245, 87, 108, 0.1)',
-                    borderColor: 'rgba(245, 87, 108, 1)',
+                    backgroundColor: 'rgba(255, 153, 0, 0.15)',
+                    borderColor: 'rgba(255, 153, 0, 1)',
                     borderWidth: 3,
                     fill: true,
                     tension: 0.4,
                     pointRadius: isMobile ? 3 : 5,
-                    pointBackgroundColor: 'rgba(245, 87, 108, 1)',
+                    pointBackgroundColor: 'rgba(255, 153, 0, 1)',
                     pointBorderColor: '#fff',
                     pointBorderWidth: 2,
                     pointHoverRadius: isMobile ? 5 : 7,
-                    pointHoverBackgroundColor: 'rgba(245, 87, 108, 1)',
+                    pointHoverBackgroundColor: 'rgba(220, 53, 69, 1)',
                     pointHoverBorderWidth: 3
                 }]
             },

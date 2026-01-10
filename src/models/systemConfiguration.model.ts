@@ -14,6 +14,15 @@ export interface SystemConfiguration {
     firebase_storage_bucket: string | null;
     firebase_messaging_sender_id: string | null;
     firebase_app_id: string | null;
+    auto_send_password: boolean;
+    // SMTP Settings
+    smtp_host: string | null;
+    smtp_port: number | null;
+    smtp_secure: boolean;
+    smtp_user: string | null;
+    smtp_password: string | null;
+    smtp_from_name: string | null;
+    smtp_from_email: string | null;
     created_at: Date;
     updated_at: Date;
 }
@@ -31,6 +40,15 @@ export interface SystemConfigurationUpdate {
     firebase_storage_bucket?: string;
     firebase_messaging_sender_id?: string;
     firebase_app_id?: string;
+    auto_send_password?: boolean;
+    // SMTP Settings
+    smtp_host?: string;
+    smtp_port?: number;
+    smtp_secure?: boolean;
+    smtp_user?: string;
+    smtp_password?: string;
+    smtp_from_name?: string;
+    smtp_from_email?: string;
 }
 
 class SystemConfigurationModel {

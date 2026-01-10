@@ -6,6 +6,9 @@ import asyncHandler from 'express-async-handler';
 
 const router = Router();
 
+// Get assigned employee for an asset (must be before /:id route)
+router.get('/assigned-employee/:assetId', authenticate, asyncHandler(ExpenseController.getAssignedEmployee));
+
 router.get('/:id', authenticate, asyncHandler(ExpenseController.getById));
 
 router.post('/', authenticate, authorize(['Admin']), asyncHandler(ExpenseController.addExpense));

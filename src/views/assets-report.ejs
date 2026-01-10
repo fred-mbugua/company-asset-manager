@@ -78,6 +78,7 @@
               <th>Status</th>
               <th>Location</th>
               <th>Purchase Date</th>
+              <th>Purchase Amount</th>
             </tr>
           </thead>
           <tbody id="asset-table-body">
@@ -94,6 +95,7 @@
               <td><%= asset.status_name %></td>
               <td><%= asset.location %></td>
               <td><span data-date="<%= asset.purchase_date %>"></span></td>
+              <td>Ksh. <%= asset.purchase_price ? parseFloat(asset.purchase_price).toLocaleString() : '0' %></td>
             </tr>
             <% }); %>
             <% } %>

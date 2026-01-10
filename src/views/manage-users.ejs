@@ -7,9 +7,170 @@
         <div class="user-management-container">
             <h3>User Management</h3>
             
-            <button id="add-user-btn" class="btn btn-add">
-                <i class="uil-plus"></i> Add New User
-            </button>
+            <div class="action-buttons">
+                <button id="add-user-btn" class="btn btn-add">
+                    <i class="uil-plus"></i> Add New User
+                </button>
+                
+                <% if (locals.user && locals.user.role === 'Admin') { %>
+                <div class="bulk-import-actions">
+                    <button id="bulk-import-btn" class="btn btn-import">
+                        <i class="uil-file-upload-alt"></i> Bulk Import
+                    </button>
+                    <a href="/api/bulk-user-import/template" class="btn-link">
+                        <i class="uil-file-download-alt"></i> Download Template
+                    </a>
+                    <a href="/users/import-history" class="btn-link">
+                        <i class="uil-history"></i> Import History
+                    </a>
+                </div>
+                <% } %>
+            </div>
+
+            <!-- Bulk Import Modal -->
+            <div id="bulk-import-modal" class="modal">
+                <div class="modal-content modal-lg">
+                    <span class="close-btn" id="close-import-modal">&times;</span>
+                    <h4>Bulk User Import</h4>
+                    
+                    <div class="import-steps">
+                        <div class="step active" data-step="1">
+                            <span class="step-number">1</span>
+                            <span class="step-title">Upload File</span>
+                        </div>
+                        <div class="step" data-step="2">
+                            <span class="step-number">2</span>
+                            <span class="step-title">Preview</span>
+                        </div>
+                        <div class="step" data-step="3">
+                            <span class="step-number">3</span>
+                            <span class="step-title">Import</span>
+                        </div>
+                    </div>
+
+                    <!-- Step 1: Upload -->
+                    <div class="import-step-content" id="step-1-content">
+                        <div class="upload-section">
+                            <div class="upload-area" id="upload-area">
+                                <i class="uil uil-cloud-upload"></i>
+                                <p>Drag and drop your file here, or click to browse</p>
+                                <p class="upload-hint">Supported formats: Excel (.xlsx, .xls) or CSV</p>
+                                <input type="file" id="import-file" accept=".xlsx,.xls,.csv" style="display: none;">
+                            </div>
+                            <div class="file-info" id="file-info" style="display: none;">
+                                <i class="uil uil-file-check"></i>
+                                <span id="file-name">filename.xlsx</span>
+                                <button class="btn btn-sm btn-danger" id="remove-file">
+                                    <i class="uil uil-times"></i>
+                                </button>
+                            </div>
+                        </div>
+                        <div class="import-actions">
+                            <button class="btn btn-secondary" id="cancel-import-btn">Cancel</button>
+                            <button class="btn btn-primary" id="preview-btn" disabled>
+                                <i class="uil uil-eye"></i> Preview Data
+                            </button>
+                        </div>
+                    </div>
+
+                    <!-- Step 2: Preview -->
+                    <div class="import-step-content" id="step-2-content" style="display: none;">
+                        <div class="preview-summary">
+                            <div class="summary-card summary-valid">
+                                <span class="summary-value" id="valid-count">0</span>
+                                <span class="summary-label">Valid Records</span>
+                            </div>
+                            <div class="summary-card summary-invalid">
+                                <span class="summary-value" id="invalid-count">0</span>
+                                <span class="summary-label">Invalid Records</span>
+                            </div>
+                        </div>
+
+                        <div class="preview-tabs">
+                            <button class="tab-btn active" data-tab="valid">Valid Records</button>
+                            <button class="tab-btn" data-tab="invalid">Invalid Records</button>
+                        </div>
+
+                        <div class="preview-table-container">
+                            <div id="valid-table-container" class="tab-content active">
+                                <table class="data-table">
+                                    <thead>
+                                        <tr>
+                                            <th>First Name</th>
+                                            <th>Last Name</th>
+                                            <th>Email</th>
+                                            <th>Phone</th>
+                                            <th>Department</th>
+                                            <th>Branch</th>
+                                            <th>Company</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody id="valid-preview-body">
+                                    </tbody>
+                                </table>
+                            </div>
+                            <div id="invalid-table-container" class="tab-content">
+                                <table class="data-table">
+                                    <thead>
+                                        <tr>
+                                            <th>Row</th>
+                                            <th>Data</th>
+                                            <th>Errors</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody id="invalid-preview-body">
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
+
+                        <div class="import-actions">
+                            <button class="btn btn-secondary" id="back-to-upload-btn">
+                                <i class="uil uil-arrow-left"></i> Back
+                            </button>
+                            <button class="btn btn-success" id="start-import-btn" disabled>
+                                <i class="uil uil-import"></i> Import <span id="import-count">0</span> Users
+                            </button>
+                        </div>
+                    </div>
+
+                    <!-- Step 3: Import Results -->
+                    <div class="import-step-content" id="step-3-content" style="display: none;">
+                        <div class="import-progress" id="import-progress">
+                            <div class="spinner"></div>
+                            <p>Importing users... Please wait.</p>
+                        </div>
+                        
+                        <div class="import-results" id="import-results" style="display: none;">
+                            <div class="results-summary">
+                                <div class="result-card result-success">
+                                    <i class="uil uil-check-circle"></i>
+                                    <span class="result-value" id="result-success">0</span>
+                                    <span class="result-label">Successfully Imported</span>
+                                </div>
+                                <div class="result-card result-failed">
+                                    <i class="uil uil-times-circle"></i>
+                                    <span class="result-value" id="result-failed">0</span>
+                                    <span class="result-label">Failed</span>
+                                </div>
+                            </div>
+
+                            <div class="import-note">
+                                <i class="uil uil-info-circle"></i>
+                                <p>Passwords have been auto-generated for all successfully imported users. 
+                                   You can view them in the <a href="/users/import-history">Import History</a> page.</p>
+                            </div>
+
+                            <div class="import-actions">
+                                <button class="btn btn-secondary" id="close-results-btn">Close</button>
+                                <a href="/users/import-history" class="btn btn-primary">
+                                    <i class="uil uil-eye"></i> View Import History
+                                </a>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
 
             <div id="user-form-modal" class="modal">
                 <div class="modal-content">

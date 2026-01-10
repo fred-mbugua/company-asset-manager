@@ -17,6 +17,8 @@ interface ExpenseReportData {
     expense_type_name: string;
     department: string;
     location: string;
+    assigned_employee_name: string;
+    employee_company: string;
 }
 
 /**
@@ -96,7 +98,9 @@ export class ExpenseReportModel {
                 assets.asset_tag,
                 expense_types.name As expense_type_name,
                 branches.name As location,
-                COALESCE(departments.name, 'N/A') AS department
+                COALESCE(departments.name, 'N/A') AS department,
+                COALESCE(assigned_emp.first_name || ' ' || assigned_emp.last_name, 'N/A') AS assigned_employee_name,
+                COALESCE(assigned_emp.company, 'N/A') AS employee_company
             From
                 expenses Left Join
                 assets On expenses.asset_id = assets.id Left Join
@@ -105,7 +109,8 @@ export class ExpenseReportModel {
                         And assignments.return_date Is Null Left Join
                 employees On assignments.employee_id = employees.id Left Join
                 branches On assets.branch_id = branches.id Left Join
-                departments On employees.department_id = departments.id
+                departments On employees.department_id = departments.id Left Join
+                employees assigned_emp On expenses.assigned_employee_id = assigned_emp.id
             ${where}
             ORDER BY expenses.date DESC
             LIMIT $${nextIndex} OFFSET $${nextIndex + 1};
@@ -153,7 +158,9 @@ export class ExpenseReportModel {
                 assets.asset_tag,
                 expense_types.name As expense_type_name,
                 Coalesce(departments.name, 'N/A') As department,
-                branches.name As location
+                branches.name As location,
+                COALESCE(assigned_emp.first_name || ' ' || assigned_emp.last_name, 'N/A') AS assigned_employee_name,
+                COALESCE(assigned_emp.company, 'N/A') AS employee_company
             From
                 expenses Left Join
                 assets On expenses.asset_id = assets.id Left Join
@@ -162,11 +169,61 @@ export class ExpenseReportModel {
                         And assignments.return_date Is Null Left Join
                 employees On assignments.employee_id = employees.id Left Join
                 branches On assets.branch_id = branches.id Left Join
-                departments On employees.department_id = departments.id
+                departments On employees.department_id = departments.id Left Join
+                employees assigned_emp On expenses.assigned_employee_id = assigned_emp.id
             ${where}
             ORDER BY expenses.date DESC;
         `;
         
+        const result = await db.query(query, values);
+        return result.rows;
+    }
+
+    /**
+     * Get summarized repair expense report
+     * Groups by asset and calculates total repair amount
+     */
+    async getRepairExpenseSummary(filters: { from_date?: string; to_date?: string }): Promise<any[]> {
+        let where = `WHERE expense_types.name ILIKE '%repair%'`;
+        const values: any[] = [];
+        let paramIndex = 1;
+
+        if (filters.from_date) {
+            where += ` AND expenses.date >= $${paramIndex++}`;
+            values.push(filters.from_date);
+        }
+
+        if (filters.to_date) {
+            where += ` AND expenses.date <= $${paramIndex++}`;
+            values.push(filters.to_date);
+        }
+
+        const query = `
+            SELECT
+                COALESCE(emp.first_name || ' ' || emp.last_name, 'Unassigned') AS staff_name,
+                COALESCE(emp.company, 'N/A') AS company,
+                assets.asset_tag,
+                branches.name AS location,
+                assets.model,
+                asset_statuses.name AS status,
+                asset_types.name AS asset_type,
+                SUM(expenses.amount) AS total_repair_amount,
+                COUNT(expenses.id) AS repair_count
+            FROM expenses
+            INNER JOIN assets ON expenses.asset_id = assets.id
+            INNER JOIN expense_types ON expenses.expense_type_id = expense_types.id
+            INNER JOIN asset_types ON assets.asset_type_id = asset_types.id
+            INNER JOIN asset_statuses ON assets.asset_status_id = asset_statuses.id
+            LEFT JOIN branches ON assets.branch_id = branches.id
+            LEFT JOIN employees emp ON expenses.assigned_employee_id = emp.id
+            ${where}
+            GROUP BY 
+                emp.first_name, emp.last_name, emp.company,
+                assets.asset_tag, branches.name, assets.model,
+                asset_statuses.name, asset_types.name
+            ORDER BY total_repair_amount DESC;
+        `;
+
         const result = await db.query(query, values);
         return result.rows;
     }

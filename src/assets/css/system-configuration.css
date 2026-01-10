@@ -99,6 +99,8 @@
 .form-field input[type="text"],
 .form-field input[type="email"],
 .form-field input[type="tel"],
+.form-field input[type="number"],
+.form-field input[type="password"],
 .form-field textarea {
     width: 100%;
     padding: 0.75rem;
@@ -272,6 +274,242 @@
     line-height: 1.6;
 }
 
+/* Toggle Switch */
+.switch-row {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-start;
+    gap: 1.5rem;
+}
+
+.switch-info {
+    flex: 1;
+}
+
+.switch-info label {
+    display: block;
+    font-weight: 500;
+    color: #2c3e50;
+    margin-bottom: 0.25rem;
+}
+
+.switch-info small {
+    display: block;
+    color: #7f8c8d;
+    font-size: 0.875rem;
+    line-height: 1.4;
+}
+
+.switch {
+    position: relative;
+    display: inline-block;
+    width: 50px;
+    height: 26px;
+    flex-shrink: 0;
+}
+
+.switch input {
+    opacity: 0;
+    width: 0;
+    height: 0;
+}
+
+.slider {
+    position: absolute;
+    cursor: pointer;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background-color: #ccc;
+    transition: 0.4s;
+}
+
+.slider:before {
+    position: absolute;
+    content: "";
+    height: 20px;
+    width: 20px;
+    left: 3px;
+    bottom: 3px;
+    background-color: white;
+    transition: 0.4s;
+}
+
+input:checked + .slider {
+    background-color: #1abc9c;
+}
+
+input:focus + .slider {
+    box-shadow: 0 0 1px #1abc9c;
+}
+
+input:checked + .slider:before {
+    transform: translateX(24px);
+}
+
+.slider.round {
+    border-radius: 26px;
+}
+
+.slider.round:before {
+    border-radius: 50%;
+}
+
+/* Sub Settings */
+.sub-settings {
+    margin-top: 1rem;
+    padding: 1rem;
+    background: #f8f9fa;
+    border-radius: 8px;
+    border-left: 3px solid #1abc9c;
+}
+
+/* Info Box */
+.info-box {
+    display: flex;
+    gap: 10px;
+    padding: 1rem;
+    border-radius: 6px;
+    align-items: flex-start;
+}
+
+.info-box.info {
+    background: #e8f4fd;
+    border: 1px solid #bee5eb;
+}
+
+.info-box.info i {
+    color: #17a2b8;
+    font-size: 1.2rem;
+    flex-shrink: 0;
+}
+
+.info-box.info p {
+    margin: 0;
+    color: #0c5460;
+    font-size: 0.875rem;
+    line-height: 1.5;
+}
+
+.info-box.warning {
+    background: #fff3cd;
+    border: 1px solid #ffc107;
+}
+
+.info-box.warning i {
+    color: #856404;
+}
+
+.info-box.warning p {
+    color: #856404;
+}
+
+/* Form Section */
+.form-section {
+    margin-bottom: 2rem;
+}
+
+.form-section h4 {
+    margin-top: 0;
+    margin-bottom: 1rem;
+    color: #34495e;
+    font-size: 1.1rem;
+    padding-bottom: 0.5rem;
+    border-bottom: 1px solid #e0e0e0;
+}
+
+/* Form Row - Two columns */
+.form-row {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 1.5rem;
+}
+
+/* Password Input with Toggle */
+.password-input-wrapper {
+    position: relative;
+    display: flex;
+    align-items: center;
+}
+
+.password-input-wrapper input {
+    flex: 1;
+    padding-right: 40px;
+}
+
+.toggle-password {
+    position: absolute;
+    right: 10px;
+    background: none;
+    border: none;
+    cursor: pointer;
+    color: #666;
+    padding: 5px;
+}
+
+.toggle-password:hover {
+    color: #1abc9c;
+}
+
+/* Input with Button */
+.input-with-button {
+    display: flex;
+    gap: 10px;
+}
+
+.input-with-button input {
+    flex: 1;
+}
+
+.input-with-button .btn {
+    white-space: nowrap;
+    display: flex;
+    align-items: center;
+    gap: 5px;
+}
+
+/* Test Email Section */
+.test-email-section {
+    background: #f8f9fa;
+    padding: 1.5rem;
+    border-radius: 8px;
+}
+
+.test-result {
+    margin-top: 1rem;
+    padding: 1rem;
+    border-radius: 6px;
+}
+
+.test-result.success {
+    background: #d4edda;
+    color: #155724;
+    border: 1px solid #c3e6cb;
+}
+
+.test-result.error {
+    background: #f8d7da;
+    color: #721c24;
+    border: 1px solid #f5c6cb;
+}
+
+.test-result.loading {
+    background: #e2e3e5;
+    color: #383d41;
+    border: 1px solid #d6d8db;
+}
+
+/* Info Box Links */
+.info-box a {
+    color: #007bff;
+    text-decoration: underline;
+}
+
+.info-box a:hover {
+    color: #0056b3;
+}
+
 /* Form Buttons */
 .form-buttons {
     display: flex;
@@ -349,6 +587,19 @@
     .form-field input[type="tel"],
     .form-field textarea {
         font-size: 16px; /* Prevents zoom on iOS */
+    }
+
+    .form-row {
+        grid-template-columns: 1fr;
+        gap: 1rem;
+    }
+
+    .input-with-button {
+        flex-direction: column;
+    }
+
+    .input-with-button .btn {
+        width: 100%;
     }
 
     .logo-section {

@@ -47,14 +47,14 @@ document.addEventListener('DOMContentLoaded', function() {
         if (file) {
             // Validate file size (5MB)
             if (file.size > 5 * 1024 * 1024) {
-                showMessage('File size must be less than 5MB', 'error');
+                showMessage('error', 'File size must be less than 5MB');
                 logoInput.value = '';
                 return;
             }
 
             // Validate file type
             if (!file.type.startsWith('image/')) {
-                showMessage('Please select an image file', 'error');
+                showMessage('error', 'Please select an image file');
                 logoInput.value = '';
                 return;
             }
@@ -118,12 +118,94 @@ document.addEventListener('DOMContentLoaded', function() {
             // Validate Firebase fields
             if (!formData.firebase_api_key || !formData.firebase_auth_domain || 
                 !formData.firebase_project_id || !formData.firebase_storage_bucket) {
-                showMessage('Please fill in all Firebase configuration fields', 'error');
+                showMessage('error', 'Please fill in all Firebase configuration fields');
                 return;
             }
         }
 
         await updateConfiguration(formData);
+    });
+
+    // Email Settings Form Submit
+    document.getElementById('emailSettingsForm').addEventListener('submit', async function(e) {
+        e.preventDefault();
+        
+        const formData = {
+            smtp_host: document.getElementById('smtp_host').value || null,
+            smtp_port: document.getElementById('smtp_port').value ? parseInt(document.getElementById('smtp_port').value) : null,
+            smtp_secure: document.getElementById('smtp_secure').checked,
+            smtp_user: document.getElementById('smtp_user').value || null,
+            smtp_password: document.getElementById('smtp_password').value || null,
+            smtp_from_name: document.getElementById('smtp_from_name').value || null,
+            smtp_from_email: document.getElementById('smtp_from_email').value || null
+        };
+
+        await updateConfiguration(formData);
+    });
+
+    // Send Test Email
+    document.getElementById('send-test-email').addEventListener('click', async function() {
+        const testEmail = document.getElementById('test_email').value;
+        const resultDiv = document.getElementById('test-email-result');
+        
+        if (!testEmail) {
+            showMessage('error', 'Please enter a test email address');
+            return;
+        }
+
+        // Show loading state
+        resultDiv.style.display = 'block';
+        resultDiv.className = 'test-result loading';
+        resultDiv.innerHTML = '<i class="uil uil-spinner-alt"></i> Sending test email...';
+        this.disabled = true;
+
+        try {
+            const response = await fetch('/api/system-config/test-email', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                    'Authorization': `Bearer ${localStorage.getItem('accessToken')}`
+                },
+                body: JSON.stringify({ email: testEmail })
+            });
+
+            const result = await response.json();
+
+            if (response.ok) {
+                resultDiv.className = 'test-result success';
+                resultDiv.innerHTML = '<i class="uil uil-check-circle"></i> Test email sent successfully! Please check your inbox.';
+            } else {
+                resultDiv.className = 'test-result error';
+                resultDiv.innerHTML = `<i class="uil uil-times-circle"></i> ${result.message || 'Failed to send test email'}`;
+            }
+        } catch (error) {
+            resultDiv.className = 'test-result error';
+            resultDiv.innerHTML = '<i class="uil uil-times-circle"></i> Failed to send test email. Please check your SMTP configuration.';
+        }
+
+        this.disabled = false;
+    });
+
+    // Security Settings Form Submit
+    document.getElementById('securitySettingsForm').addEventListener('submit', async function(e) {
+        e.preventDefault();
+        
+        const formData = {
+            auto_send_password: document.getElementById('auto_send_password').checked
+        };
+
+        await updateConfiguration(formData);
+    });
+
+    // Auto-send password toggle handler
+    const autoSendPasswordCheckbox = document.getElementById('auto_send_password');
+    autoSendPasswordCheckbox.addEventListener('change', function() {
+        const emailSettings = document.getElementById('email-notification-settings');
+        if (this.checked) {
+            emailSettings.style.display = 'block';
+        } else {
+            emailSettings.style.display = 'none';
+        }
     });
 
     // Load configuration from API
@@ -146,7 +228,7 @@ document.addEventListener('DOMContentLoaded', function() {
             populateForm(currentConfig);
         } catch (error) {
             console.error('Error loading configuration:', error);
-            showMessage('Failed to load configuration', 'error');
+            showMessage('error', 'Failed to load configuration');
         }
     }
 
@@ -165,6 +247,25 @@ document.addEventListener('DOMContentLoaded', function() {
             logoPreview.src = config.company_logo_url;
             logoPreview.classList.add('visible');
             logoPlaceholder.style.display = 'none';
+        }
+
+        // Email Settings
+        document.getElementById('smtp_host').value = config.smtp_host || '';
+        document.getElementById('smtp_port').value = config.smtp_port || '';
+        document.getElementById('smtp_secure').checked = config.smtp_secure || false;
+        document.getElementById('smtp_user').value = config.smtp_user || '';
+        // Don't populate password for security, just show placeholder if set
+        if (config.smtp_password) {
+            document.getElementById('smtp_password').placeholder = '••••••••••••';
+        }
+        document.getElementById('smtp_from_name').value = config.smtp_from_name || '';
+        document.getElementById('smtp_from_email').value = config.smtp_from_email || '';
+
+        // Security Settings
+        const autoSendPassword = config.auto_send_password || false;
+        document.getElementById('auto_send_password').checked = autoSendPassword;
+        if (autoSendPassword) {
+            document.getElementById('email-notification-settings').style.display = 'block';
         }
 
         // Storage Settings
@@ -199,7 +300,7 @@ document.addEventListener('DOMContentLoaded', function() {
             }
 
             const result = await response.json();
-            showMessage('Configuration updated successfully', 'success');
+            showMessage('success', 'Configuration updated successfully');
             
             // Update current config
             currentConfig = result.data;
@@ -210,7 +311,7 @@ document.addEventListener('DOMContentLoaded', function() {
             }, 1000);
         } catch (error) {
             console.error('Error updating configuration:', error);
-            showMessage('Failed to update configuration', 'error');
+            showMessage('error', 'Failed to update configuration');
         }
     }
 
@@ -233,13 +334,13 @@ document.addEventListener('DOMContentLoaded', function() {
             }
 
             const result = await response.json();
-            showMessage('Logo uploaded successfully', 'success');
+            showMessage('success', 'Logo uploaded successfully');
             
             // Update current config with new logo URL
             currentConfig.company_logo_url = result.data.logo_url;
         } catch (error) {
             console.error('Error uploading logo:', error);
-            showMessage('Failed to upload logo', 'error');
+            showMessage('error', 'Failed to upload logo');
             
             // Reset logo preview
             logoPreview.classList.remove('visible');
@@ -248,3 +349,32 @@ document.addEventListener('DOMContentLoaded', function() {
         }
     }
 });
+// Toggle password visibility
+function togglePasswordVisibility(inputId) {
+    const input = document.getElementById(inputId);
+    const icon = input.nextElementSibling.querySelector('i');
+    
+    if (input.type === 'password') {
+        input.type = 'text';
+        icon.classList.remove('uil-eye');
+        icon.classList.add('uil-eye-slash');
+    } else {
+        input.type = 'password';
+        icon.classList.remove('uil-eye-slash');
+        icon.classList.add('uil-eye');
+    }
+}
+
+// Switch to a specific tab
+function switchToTab(tabName) {
+    const tabButtons = document.querySelectorAll('.tab-button');
+    const tabContents = document.querySelectorAll('.tab-content');
+    
+    // Remove active class from all tabs and buttons
+    tabButtons.forEach(btn => btn.classList.remove('active'));
+    tabContents.forEach(content => content.classList.remove('active'));
+    
+    // Add active class to clicked button and corresponding content
+    document.querySelector(`[data-tab="${tabName}"]`).classList.add('active');
+    document.getElementById(`${tabName}-tab`).classList.add('active');
+}

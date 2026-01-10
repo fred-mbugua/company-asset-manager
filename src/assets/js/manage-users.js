@@ -356,4 +356,255 @@ document.addEventListener('DOMContentLoaded', () => {
         prevBtn.disabled = currentPage === 1;
         nextBtn.disabled = currentPage >= totalPages;
     }
+
+    // ==================== BULK IMPORT FUNCTIONALITY ====================
+    initBulkImport();
 });
+
+/**
+ * Initialize bulk import functionality
+ */
+function initBulkImport() {
+    const bulkImportBtn = document.getElementById('bulk-import-btn');
+    const bulkImportModal = document.getElementById('bulk-import-modal');
+    const closeImportModal = document.getElementById('close-import-modal');
+    const cancelImportBtn = document.getElementById('cancel-import-btn');
+    
+    if (!bulkImportBtn || !bulkImportModal) return;
+
+    const uploadArea = document.getElementById('upload-area');
+    const importFileInput = document.getElementById('import-file');
+    const fileInfo = document.getElementById('file-info');
+    const fileName = document.getElementById('file-name');
+    const removeFileBtn = document.getElementById('remove-file');
+    const previewBtn = document.getElementById('preview-btn');
+    const backToUploadBtn = document.getElementById('back-to-upload-btn');
+    const startImportBtn = document.getElementById('start-import-btn');
+    const closeResultsBtn = document.getElementById('close-results-btn');
+
+    let selectedFile = null;
+    let validUsers = [];
+    let importType = 'excel';
+
+    // Open modal
+    bulkImportBtn.addEventListener('click', () => {
+        resetImportModal();
+        bulkImportModal.style.display = 'block';
+    });
+
+    // Close modal handlers
+    closeImportModal.addEventListener('click', () => {
+        bulkImportModal.style.display = 'none';
+    });
+
+    cancelImportBtn.addEventListener('click', () => {
+        bulkImportModal.style.display = 'none';
+    });
+
+    closeResultsBtn?.addEventListener('click', () => {
+        bulkImportModal.style.display = 'none';
+        window.location.reload();
+    });
+
+    window.addEventListener('click', (e) => {
+        if (e.target === bulkImportModal) {
+            bulkImportModal.style.display = 'none';
+        }
+    });
+
+    // Upload area interactions
+    uploadArea.addEventListener('click', () => importFileInput.click());
+
+    uploadArea.addEventListener('dragover', (e) => {
+        e.preventDefault();
+        uploadArea.classList.add('dragover');
+    });
+
+    uploadArea.addEventListener('dragleave', () => {
+        uploadArea.classList.remove('dragover');
+    });
+
+    uploadArea.addEventListener('drop', (e) => {
+        e.preventDefault();
+        uploadArea.classList.remove('dragover');
+        const file = e.dataTransfer.files[0];
+        if (file) handleFileSelect(file);
+    });
+
+    importFileInput.addEventListener('change', (e) => {
+        if (e.target.files[0]) handleFileSelect(e.target.files[0]);
+    });
+
+    removeFileBtn.addEventListener('click', () => {
+        selectedFile = null;
+        importFileInput.value = '';
+        fileInfo.style.display = 'none';
+        uploadArea.style.display = 'flex';
+        previewBtn.disabled = true;
+    });
+
+    // Handle file selection
+    function handleFileSelect(file) {
+        const validExtensions = ['.xlsx', '.xls', '.csv'];
+        const fileExtension = '.' + file.name.split('.').pop().toLowerCase();
+        
+        if (!validExtensions.includes(fileExtension)) {
+            alert('Please upload an Excel (.xlsx, .xls) or CSV file');
+            return;
+        }
+
+        selectedFile = file;
+        importType = fileExtension === '.csv' ? 'csv' : 'excel';
+        fileName.textContent = file.name;
+        uploadArea.style.display = 'none';
+        fileInfo.style.display = 'flex';
+        previewBtn.disabled = false;
+    }
+
+    // Preview button click
+    previewBtn.addEventListener('click', async () => {
+        if (!selectedFile) return;
+
+        previewBtn.disabled = true;
+        previewBtn.innerHTML = '<span class="spinner-small"></span> Processing...';
+
+        try {
+            const formData = new FormData();
+            formData.append('file', selectedFile);
+
+            const response = await fetch('/api/bulk-user-import/preview', {
+                method: 'POST',
+                body: formData
+            });
+
+            const result = await response.json();
+
+            if (!result.success) {
+                throw new Error(result.message || 'Failed to preview file');
+            }
+
+            validUsers = result.data.valid;
+            renderPreview(result.data);
+            goToStep(2);
+        } catch (error) {
+            console.error('Preview failed:', error);
+            alert('Failed to preview file: ' + error.message);
+        } finally {
+            previewBtn.disabled = false;
+            previewBtn.innerHTML = '<i class="uil uil-eye"></i> Preview Data';
+        }
+    });
+
+    // Render preview data
+    function renderPreview(data) {
+        document.getElementById('valid-count').textContent = data.valid.length;
+        document.getElementById('invalid-count').textContent = data.invalid.length;
+        document.getElementById('import-count').textContent = data.valid.length;
+
+        // Render valid records
+        const validBody = document.getElementById('valid-preview-body');
+        if (data.valid.length === 0) {
+            validBody.innerHTML = '<tr><td colspan="7" class="text-center">No valid records</td></tr>';
+        } else {
+            validBody.innerHTML = data.valid.map(user => `
+                <tr>
+                    <td>${escapeHtml(user.first_name)}</td>
+                    <td>${escapeHtml(user.last_name)}</td>
+                    <td>${escapeHtml(user.email)}</td>
+                    <td>${escapeHtml(user.phone || '-')}</td>
+                    <td>${escapeHtml(user.department || user.department_id || '-')}</td>
+                    <td>${escapeHtml(user.branch_location || user.branch_id || '-')}</td>
+                    <td>${escapeHtml(user.company || 'Jirani')}</td>
+                </tr>
+            `).join('');
+        }
+
+        // Render invalid records
+        const invalidBody = document.getElementById('invalid-preview-body');
+        if (data.invalid.length === 0) {
+            invalidBody.innerHTML = '<tr><td colspan="3" class="text-center">No invalid records</td></tr>';
+        } else {
+            invalidBody.innerHTML = data.invalid.map(item => `
+                <tr>
+                    <td>${item.row}</td>
+                    <td>${escapeHtml(item.data.email || item.data.first_name || 'Unknown')}</td>
+                    <td class="error-text">${item.errors.join(', ')}</td>
+                </tr>
+            `).join('');
+        }
+
+        startImportBtn.disabled = data.valid.length === 0;
+    }
+
+    // Preview tab switching
+    document.querySelectorAll('.preview-tabs .tab-btn').forEach(btn => {
+        btn.addEventListener('click', () => {
+            document.querySelectorAll('.preview-tabs .tab-btn').forEach(b => b.classList.remove('active'));
+            document.querySelectorAll('.preview-table-container .tab-content').forEach(c => c.classList.remove('active'));
+            
+            btn.classList.add('active');
+            document.getElementById(btn.dataset.tab + '-table-container').classList.add('active');
+        });
+    });
+
+    // Back to upload button
+    backToUploadBtn.addEventListener('click', () => goToStep(1));
+
+    // Start import button
+    startImportBtn.addEventListener('click', async () => {
+        if (validUsers.length === 0) return;
+
+        goToStep(3);
+        document.getElementById('import-progress').style.display = 'block';
+        document.getElementById('import-results').style.display = 'none';
+
+        try {
+            const response = await API.post('/bulk-user-import/process', {
+                users: validUsers,
+                importType: importType
+            });
+
+            const result = response.data || response;
+            
+            document.getElementById('result-success').textContent = result.successfulRecords;
+            document.getElementById('result-failed').textContent = result.failedRecords;
+            
+            document.getElementById('import-progress').style.display = 'none';
+            document.getElementById('import-results').style.display = 'block';
+        } catch (error) {
+            console.error('Import failed:', error);
+            alert('Import failed: ' + (error.message || 'Unknown error'));
+            goToStep(2);
+        }
+    });
+
+    // Step navigation
+    function goToStep(step) {
+        document.querySelectorAll('.import-steps .step').forEach((s, index) => {
+            s.classList.toggle('active', index < step);
+            s.classList.toggle('completed', index < step - 1);
+        });
+
+        document.querySelectorAll('.import-step-content').forEach((content, index) => {
+            content.style.display = index === step - 1 ? 'block' : 'none';
+        });
+    }
+
+    // Reset modal
+    function resetImportModal() {
+        selectedFile = null;
+        validUsers = [];
+        importFileInput.value = '';
+        fileInfo.style.display = 'none';
+        uploadArea.style.display = 'flex';
+        previewBtn.disabled = true;
+        goToStep(1);
+    }
+
+    function escapeHtml(text) {
+        if (!text) return '';
+        const div = document.createElement('div');
+        div.textContent = text;
+        return div.innerHTML;
+    }
+}
