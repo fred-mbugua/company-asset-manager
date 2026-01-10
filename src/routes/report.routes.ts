@@ -67,11 +67,19 @@ router.get(
 );
 
 // Repair Summary Report Data Endpoint
-// URL: GET /api/reports/repair-summary?from_date=...&to_date=...
+// URL: GET /api/reports/repair-summary?from_date=...&to_date=...&asset_tag=...&limit=...&offset=...
 router.get(
     '/repair-summary', 
     authenticate,
     asyncHandler(ReportController.getRepairSummaryReportData) 
+);
+
+// Asset Repair Expense Details Endpoint
+// URL: GET /api/reports/repair-summary/asset/:assetId?from_date=...&to_date=...
+router.get(
+    '/repair-summary/asset/:assetId',
+    authenticate,
+    asyncHandler(ReportController.getAssetRepairExpenses)
 );
 
 // Repair Summary Report Export Endpoint

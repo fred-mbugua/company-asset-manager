@@ -256,7 +256,8 @@ export class ReportExportService {
      * Generating an Excel workbook buffer for the Repair Summary Report.
      */
     async generateRepairSummaryReport(filters: { from_date?: string; to_date?: string }): Promise<Buffer> {
-        const data = await ExpenseReportModel.getRepairExpenseSummary(filters); 
+        const result = await ExpenseReportModel.getRepairExpenseSummary(filters); 
+        const data = result.data;
         const workbook = new ExcelJS.Workbook();
         const worksheet = workbook.addWorksheet('Repair Summary Report');
 

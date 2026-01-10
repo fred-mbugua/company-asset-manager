@@ -96,7 +96,7 @@ class BulkUserImportController {
     }
 
     /**
-     * Get batch details with imported users
+     * Get batch details with imported users (supports pagination and search)
      */
     async getBatchDetails(req: AuthenticatedRequest, res: Response) {
         try {
@@ -105,8 +105,19 @@ class BulkUserImportController {
                 return errorResponse(res, 400, 'Invalid batch ID');
             }
 
-            const result = await BulkUserImportService.getBatchDetails(batchId);
-            successResponse(res, 200, 'Batch details retrieved', result);
+            // Check for pagination/search params
+            const limit = req.query.limit ? parseInt(req.query.limit as string) : undefined;
+            const offset = req.query.offset ? parseInt(req.query.offset as string) : undefined;
+            const search = req.query.search as string | undefined;
+
+            // If pagination params provided, use paginated method
+            if (limit !== undefined || offset !== undefined || search) {
+                const result = await BulkUserImportService.getBatchDetailsPaginated(batchId, { limit, offset, search });
+                successResponse(res, 200, 'Batch details retrieved', result);
+            } else {
+                const result = await BulkUserImportService.getBatchDetails(batchId);
+                successResponse(res, 200, 'Batch details retrieved', result);
+            }
         } catch (error: any) {
             logger.error('Failed to get batch details:', error);
             errorResponse(res, 404, error.message);

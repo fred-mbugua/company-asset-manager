@@ -285,7 +285,7 @@ document.addEventListener('DOMContentLoaded', () => {
                 manufacturer: String(cells[2]?.textContent || '').toLowerCase(),
                 model: String(cells[3]?.textContent || '').toLowerCase(),
                 employee: String(cells[4]?.textContent || '').toLowerCase(),
-                notes: String(cells[6]?.textContent || '').toLowerCase(),
+                notes: String(cells[7]?.textContent || '').toLowerCase(),
                 isValid: !row.querySelector('.no-data')
             };
         });

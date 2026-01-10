@@ -19,6 +19,7 @@ document.addEventListener('DOMContentLoaded', () => {
     const roleField = document.getElementById('role');
     const departmentField = document.getElementById('department_id');
     const branchField = document.getElementById('branch_id');
+    const companyField = document.getElementById('company_id');
     const employeeIdField = document.getElementById('employee_id');
 
     // const API_ENDPOINT = '/api/admin/users'; // Assumed API endpoint
@@ -62,6 +63,7 @@ document.addEventListener('DOMContentLoaded', () => {
             // The || '' handles null values from the server
             departmentField.value = user.departmnt_id || '';
             branchField.value = user.branch_id || '';
+            companyField.value = user.company_id || '';
             phoneField.value = user.phone || '';
             // employeeField.value = user.employee_id || '';
             
@@ -147,6 +149,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
         const departmentText = departmentField.options[departmentField.selectedIndex].text;
         const branchText = branchField.options[branchField.selectedIndex].text;
+        const companyText = companyField.options[companyField.selectedIndex].text;
 
         const formData = {
             "first_name": firstNameField.value,
@@ -160,6 +163,8 @@ document.addEventListener('DOMContentLoaded', () => {
             "department": departmentText || null,
             "branch_id": branchField.value || null,
             "branch_location": branchText || null,
+            "company_id": companyField.value || null,
+            "company": companyText || null,
             "employee_id": employeeIdField.value || null,
         };
 

@@ -229,6 +229,78 @@ class BulkUserImportModel {
         const result = await db.query(query, [batchId]);
         return result.rows;
     }
+
+    /**
+     * Get bulk import info for a specific user by user_id
+     */
+    async getBulkImportInfoByUserId(userId: number): Promise<BulkImportedUser | null> {
+        const query = `
+            SELECT 
+                biu.*,
+                CASE 
+                    WHEN biu.password_changed = TRUE THEN NULL 
+                    ELSE biu.auto_generated_password 
+                END AS visible_password
+            FROM bulk_imported_users biu
+            WHERE biu.user_id = $1
+            ORDER BY biu.created_at DESC
+            LIMIT 1;
+        `;
+        const result = await db.query(query, [userId]);
+        return result.rows[0] || null;
+    }
+
+    /**
+     * Get imported users by batch ID with pagination and search
+     */
+    async getImportedUsersByBatchIdPaginated(
+        batchId: number, 
+        options: { limit?: number; offset?: number; search?: string }
+    ): Promise<{ users: BulkImportedUser[]; totalCount: number }> {
+        const { limit = 10, offset = 0, search = '' } = options;
+        
+        let whereClause = 'WHERE biu.bulk_import_id = $1';
+        const values: any[] = [batchId];
+        let paramIndex = 2;
+
+        if (search) {
+            whereClause += ` AND (
+                biu.first_name ILIKE $${paramIndex} OR 
+                biu.last_name ILIKE $${paramIndex} OR 
+                biu.email ILIKE $${paramIndex} OR
+                CONCAT(biu.first_name, ' ', biu.last_name) ILIKE $${paramIndex}
+            )`;
+            values.push(`%${search}%`);
+            paramIndex++;
+        }
+
+        // Count query
+        const countQuery = `
+            SELECT COUNT(*) as total
+            FROM bulk_imported_users biu
+            ${whereClause};
+        `;
+        const countResult = await db.query(countQuery, values);
+        const totalCount = parseInt(countResult.rows[0].total, 10);
+
+        // Data query
+        const dataQuery = `
+            SELECT 
+                biu.*,
+                CASE 
+                    WHEN biu.password_changed = TRUE THEN NULL 
+                    ELSE biu.auto_generated_password 
+                END AS visible_password
+            FROM bulk_imported_users biu
+            ${whereClause}
+            ORDER BY biu.id ASC
+            LIMIT $${paramIndex} OFFSET $${paramIndex + 1};
+        `;
+        values.push(limit, offset);
+        
+        const result = await db.query(dataQuery, values);
+        return { users: result.rows, totalCount };
+    }
 }
 
 export default new BulkUserImportModel();

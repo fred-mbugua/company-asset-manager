@@ -232,6 +232,15 @@
                             <% } %>
                         </select>
                         
+                        <label for="company_id">Company:</label>
+                        <select id="company_id" name="company_id">
+                            <option value="">Select Company</option>
+                            <% if (locals.companies && locals.companies.length) { %>
+                                <% locals.companies.forEach(company => { %>
+                                    <option value="<%= company.id %>" <%= company.name === 'Jirani Smart' ? 'selected' : '' %>><%= company.name %></option>
+                                <% }); %>
+                            <% } %>
+                        </select>
                         
 
                         <button type="submit" class="btn btn-primary mt-3"><i class="uil-plus"></i> Save User</button>
@@ -254,6 +263,7 @@
                             <th>Role</th>
                             <th>Department</th>
                             <th>Branch</th>
+                            <th>Company</th>
                             <th>Employee Link</th>
                             <th>Status</th>
                             <th>Actions</th>
@@ -268,6 +278,7 @@
                                     <td data-label="Role"><%= user.role_name %></td>
                                     <td data-label="Department"><%= user.department_name || 'N/A' %></td>
                                     <td data-label="Branch"><%= user.branch_name || 'N/A' %></td>
+                                    <td data-label="Company"><%= user.company_name || 'N/A' %></td>
                                     <td data-label="Employee Link"><%= (user.employee_first_name + ' ' + user.employee_middle_name + ' ' + user.employee_last_name) || 'Unlinked' %></td>
                                     <td data-label="Status"><%= user.is_active === true ? 'Active' : (user.is_active === false ? 'Disabled' : 'N/A') %></td>
                                     <td data-label="Actions">
@@ -286,7 +297,7 @@
                             <% }); %>
                         <% } else { %>
                             <tr>
-                                <td colspan="8" style="text-align:center;">No users found.</td>
+                                <td colspan="9" style="text-align:center;">No users found.</td>
                             </tr>
                         <% } %>
                     </tbody>

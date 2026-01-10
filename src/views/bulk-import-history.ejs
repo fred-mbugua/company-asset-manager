@@ -93,6 +93,27 @@
                     </div>
 
                     <h5>Imported Users</h5>
+                    
+                    <!-- Search and pagination controls for modal -->
+                    <div class="modal-controls mb-3">
+                        <div class="modal-search">
+                            <input type="text" id="modal-search-input" placeholder="Search by name or email..." class="form-control">
+                            <button type="button" id="modal-search-btn" class="btn btn-search">
+                                <i class="fa fa-search"></i>
+                            </button>
+                            <button type="button" id="modal-clear-btn" class="btn btn-secondary">
+                                <i class="fa fa-times"></i> Clear
+                            </button>
+                        </div>
+                        <div class="modal-page-size">
+                            <select id="modal-page-size">
+                                <option value="10" selected>10 per page</option>
+                                <option value="20">20 per page</option>
+                                <option value="50">50 per page</option>
+                            </select>
+                        </div>
+                    </div>
+
                     <div class="table-responsive">
                         <table class="data-table">
                             <thead>
@@ -111,6 +132,19 @@
                                 </tr>
                             </tbody>
                         </table>
+                    </div>
+
+                    <!-- Modal pagination -->
+                    <div class="modal-pagination mt-3">
+                        <span id="modal-page-info">Page 1 of 1</span>
+                        <div class="modal-pagination-buttons">
+                            <button id="modal-prev-btn" class="btn btn-page" disabled>
+                                <i class="fa fa-chevron-left"></i> Previous
+                            </button>
+                            <button id="modal-next-btn" class="btn btn-page" disabled>
+                                Next <i class="fa fa-chevron-right"></i>
+                            </button>
+                        </div>
                     </div>
                 </div>
             </div>
@@ -245,6 +279,95 @@
     max-width: 200px;
     word-break: break-word;
 }
+
+.modal-controls {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    gap: 15px;
+    flex-wrap: wrap;
+}
+
+.modal-search {
+    display: flex;
+    gap: 8px;
+    align-items: center;
+    flex: 1;
+    max-width: 400px;
+}
+
+.modal-search .form-control {
+    flex: 1;
+    padding: 8px 12px;
+    border: 1px solid #ddd;
+    border-radius: 4px;
+    font-size: 14px;
+}
+
+.modal-search .btn-search {
+    padding: 8px 12px;
+    background: #007bff;
+    color: white;
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
+}
+
+.modal-search .btn-search:hover {
+    background: #0056b3;
+}
+
+.modal-search .btn-secondary {
+    padding: 8px 12px;
+    background: #6c757d;
+    color: white;
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
+}
+
+.modal-search .btn-secondary:hover {
+    background: #545b62;
+}
+
+.modal-page-size select {
+    padding: 8px 12px;
+    border: 1px solid #ddd;
+    border-radius: 4px;
+    font-size: 14px;
+    background: white;
+}
+
+.modal-pagination {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding-top: 15px;
+    border-top: 1px solid #eee;
+}
+
+.modal-pagination-buttons {
+    display: flex;
+    gap: 10px;
+}
+
+.modal-pagination .btn-page {
+    padding: 6px 12px;
+    background: #f8f9fa;
+    border: 1px solid #ddd;
+    border-radius: 4px;
+    cursor: pointer;
+    font-size: 13px;
+}
+
+.modal-pagination .btn-page:hover:not(:disabled) {
+    background: #e9ecef;
+}
+
+.modal-pagination .btn-page:disabled {
+    opacity: 0.5;
+    cursor: not-allowed;
+}
 </style>
 
 <script>
@@ -253,6 +376,13 @@ document.addEventListener('DOMContentLoaded', function() {
     let pageSize = 10;
     let totalPages = 1;
 
+    // Modal pagination state
+    let modalCurrentPage = 1;
+    let modalPageSize = 10;
+    let modalTotalPages = 1;
+    let currentBatchId = null;
+    let modalSearchTerm = '';
+
     const batchesTableBody = document.getElementById('batches-table-body');
     const pageInfo = document.getElementById('page-info');
     const prevBtn = document.getElementById('prev-btn');
@@ -260,6 +390,15 @@ document.addEventListener('DOMContentLoaded', function() {
     const pageSizeSelect = document.getElementById('page-size');
     const detailsModal = document.getElementById('batch-details-modal');
     const closeBtn = detailsModal.querySelector('.close-btn');
+
+    // Modal elements
+    const modalSearchInput = document.getElementById('modal-search-input');
+    const modalSearchBtn = document.getElementById('modal-search-btn');
+    const modalClearBtn = document.getElementById('modal-clear-btn');
+    const modalPageSizeSelect = document.getElementById('modal-page-size');
+    const modalPageInfo = document.getElementById('modal-page-info');
+    const modalPrevBtn = document.getElementById('modal-prev-btn');
+    const modalNextBtn = document.getElementById('modal-next-btn');
 
     // Load batches
     async function loadBatches() {
@@ -315,11 +454,17 @@ document.addEventListener('DOMContentLoaded', function() {
     }
 
     async function viewBatchDetails(batchId) {
+        currentBatchId = batchId;
+        modalCurrentPage = 1;
+        modalSearchTerm = '';
+        modalSearchInput.value = '';
+        
         try {
-            const response = await API.get(`/bulk-user-import/batches/${batchId}`);
-            const { batch, users } = response.data;
+            // Get batch info (without pagination first to get the header info)
+            const batchResponse = await API.get(`/bulk-user-import/batches/${batchId}`);
+            const { batch } = batchResponse.data;
 
-            // Populate modal
+            // Populate modal header
             document.getElementById('detail-batch-id').textContent = batch.id;
             document.getElementById('detail-import-date').textContent = new Date(batch.created_at).toLocaleString();
             document.getElementById('detail-imported-by').textContent = batch.imported_by_name || batch.imported_by_email || 'N/A';
@@ -328,36 +473,8 @@ document.addEventListener('DOMContentLoaded', function() {
             document.getElementById('detail-successful').textContent = batch.successful_records;
             document.getElementById('detail-failed').textContent = batch.failed_records;
 
-            // Render users table
-            const usersTableBody = document.getElementById('batch-users-table-body');
-            if (!users || users.length === 0) {
-                usersTableBody.innerHTML = '<tr><td colspan="6" class="text-center">No users in this batch</td></tr>';
-            } else {
-                usersTableBody.innerHTML = users.map(user => `
-                    <tr>
-                        <td>${user.first_name} ${user.last_name}</td>
-                        <td>${user.email}</td>
-                        <td><span class="status-badge status-${user.import_status}">${user.import_status}</span></td>
-                        <td>
-                            ${user.import_status === 'success' ? (
-                                user.password_changed 
-                                    ? '<span class="password-hidden">Hidden</span>'
-                                    : user.visible_password 
-                                        ? `<span class="password-visible">${user.visible_password}</span>`
-                                        : '<span class="password-hidden">Hidden</span>'
-                            ) : '-'}
-                        </td>
-                        <td>
-                            ${user.import_status === 'success' ? (
-                                user.password_changed 
-                                    ? '<span class="password-changed"><i class="fa fa-check"></i> Changed</span>'
-                                    : '<span class="status-badge status-pending">Not Changed</span>'
-                            ) : '-'}
-                        </td>
-                        <td>${user.error_message ? `<span class="error-message">${user.error_message}</span>` : '-'}</td>
-                    </tr>
-                `).join('');
-            }
+            // Load users with pagination
+            await loadModalUsers();
 
             detailsModal.style.display = 'block';
         } catch (error) {
@@ -365,6 +482,112 @@ document.addEventListener('DOMContentLoaded', function() {
             alert('Failed to load batch details');
         }
     }
+
+    async function loadModalUsers() {
+        const usersTableBody = document.getElementById('batch-users-table-body');
+        usersTableBody.innerHTML = '<tr><td colspan="6" class="text-center">Loading...</td></tr>';
+
+        try {
+            const offset = (modalCurrentPage - 1) * modalPageSize;
+            let url = `/bulk-user-import/batches/${currentBatchId}?limit=${modalPageSize}&offset=${offset}`;
+            if (modalSearchTerm) {
+                url += `&search=${encodeURIComponent(modalSearchTerm)}`;
+            }
+
+            const response = await API.get(url);
+            const { users, totalCount } = response.data;
+            
+            modalTotalPages = Math.ceil(totalCount / modalPageSize);
+            
+            renderModalUsers(users);
+            updateModalPagination();
+        } catch (error) {
+            console.error('Failed to load modal users:', error);
+            usersTableBody.innerHTML = '<tr><td colspan="6" class="text-center text-danger">Failed to load users</td></tr>';
+        }
+    }
+
+    function renderModalUsers(users) {
+        const usersTableBody = document.getElementById('batch-users-table-body');
+        
+        if (!users || users.length === 0) {
+            usersTableBody.innerHTML = '<tr><td colspan="6" class="text-center">No users found</td></tr>';
+            return;
+        }
+
+        usersTableBody.innerHTML = users.map(user => `
+            <tr>
+                <td>${user.first_name} ${user.last_name}</td>
+                <td>${user.email}</td>
+                <td><span class="status-badge status-${user.import_status}">${user.import_status}</span></td>
+                <td>
+                    ${user.import_status === 'success' ? (
+                        user.password_changed 
+                            ? '<span class="password-hidden">Hidden</span>'
+                            : user.visible_password 
+                                ? `<span class="password-visible">${user.visible_password}</span>`
+                                : '<span class="password-hidden">Hidden</span>'
+                    ) : '-'}
+                </td>
+                <td>
+                    ${user.import_status === 'success' ? (
+                        user.password_changed 
+                            ? '<span class="password-changed"><i class="fa fa-check"></i> Changed</span>'
+                            : '<span class="status-badge status-pending">Not Changed</span>'
+                    ) : '-'}
+                </td>
+                <td>${user.error_message ? `<span class="error-message">${user.error_message}</span>` : '-'}</td>
+            </tr>
+        `).join('');
+    }
+
+    function updateModalPagination() {
+        modalPageInfo.textContent = `Page ${modalCurrentPage} of ${modalTotalPages || 1}`;
+        modalPrevBtn.disabled = modalCurrentPage <= 1;
+        modalNextBtn.disabled = modalCurrentPage >= modalTotalPages;
+    }
+
+    // Modal pagination event listeners
+    modalSearchBtn.addEventListener('click', function() {
+        modalSearchTerm = modalSearchInput.value.trim();
+        modalCurrentPage = 1;
+        loadModalUsers();
+    });
+
+    modalSearchInput.addEventListener('keypress', function(e) {
+        if (e.key === 'Enter') {
+            modalSearchTerm = modalSearchInput.value.trim();
+            modalCurrentPage = 1;
+            loadModalUsers();
+        }
+    });
+
+    modalClearBtn.addEventListener('click', function() {
+        modalSearchInput.value = '';
+        modalSearchTerm = '';
+        modalCurrentPage = 1;
+        loadModalUsers();
+    });
+
+    modalPageSizeSelect.addEventListener('change', function() {
+        modalPageSize = parseInt(this.value);
+        modalCurrentPage = 1;
+        loadModalUsers();
+    });
+
+    modalPrevBtn.addEventListener('click', function() {
+        if (modalCurrentPage > 1) {
+            modalCurrentPage--;
+            loadModalUsers();
+        }
+    });
+
+    modalNextBtn.addEventListener('click', function() {
+        if (modalCurrentPage < modalTotalPages) {
+            modalCurrentPage++;
+            loadModalUsers();
+        }
+    });
 
     // Event listeners
     pageSizeSelect.addEventListener('change', function() {

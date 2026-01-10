@@ -19,6 +19,7 @@ interface UserImportRow {
     branch_id?: number;
     branch_location?: string;
     company?: string;
+    company_id?: number;
 }
 
 interface PreviewResult {
@@ -197,6 +198,24 @@ class BulkUserImportService {
                 }
             }
 
+            // Look up company by name - default to 'Jirani Smart' if not specified
+            if (transformedRow.company) {
+                const company = await EmployeeModel.findCompanyByName(transformedRow.company);
+                if (company) {
+                    transformedRow.company_id = company.id;
+                    transformedRow.company = company.name;
+                } else {
+                    errors.push(`Company "${transformedRow.company}" not found in the system`);
+                }
+            } else {
+                // Default to 'Jirani Smart' if no company specified
+                const defaultCompany = await EmployeeModel.getDefaultCompany();
+                if (defaultCompany) {
+                    transformedRow.company_id = defaultCompany.id;
+                    transformedRow.company = defaultCompany.name;
+                }
+            }
+
             if (errors.length > 0) {
                 invalid.push({ row: i + 2, data: transformedRow, errors }); // +2 for header and 0-index
             } else {
@@ -258,8 +277,8 @@ class BulkUserImportService {
                 // Create user record with bulk import flag
                 const createUserQuery = `
                     INSERT INTO users (employee_id, first_name, middle_name, last_name, email, password, 
-                                       role_id, department_id, phone, branch_id, is_active, is_bulk_imported, is_password_changed)
-                    VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10, true, true, false)
+                                       role_id, department_id, phone, branch_id, company_id, is_active, is_bulk_imported, is_password_changed)
+                    VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11, true, true, false)
                     RETURNING id, employee_id, first_name, middle_name, last_name, email, phone;
                 `;
                 const userResult = await client.query(createUserQuery, [
@@ -272,7 +291,8 @@ class BulkUserImportService {
                     userData.role_id,
                     userData.department_id || null,
                     userData.phone || '',
-                    userData.branch_id || null
+                    userData.branch_id || null,
+                    userData.company_id || null
                 ]);
                 const newUser = userResult.rows[0];
 
@@ -444,6 +464,25 @@ class BulkUserImportService {
         }
         const users = await BulkUserImportModel.getImportedUsersByBatchId(batchId);
         return { batch, users };
+    }
+
+    /**
+     * Get batch details with paginated imported users
+     */
+    async getBatchDetailsPaginated(batchId: number, options: { limit?: number; offset?: number; search?: string }) {
+        const batch = await BulkUserImportModel.getBatchById(batchId);
+        if (!batch) {
+            throw new Error('Import batch not found');
+        }
+        const { users, totalCount } = await BulkUserImportModel.getImportedUsersByBatchIdPaginated(batchId, options);
+        return { batch, users, totalCount };
+    }
+
+    /**
+     * Get bulk import info for a specific user
+     */
+    async getBulkImportInfoByUserId(userId: number) {
+        return BulkUserImportModel.getBulkImportInfoByUserId(userId);
     }
 
     /**

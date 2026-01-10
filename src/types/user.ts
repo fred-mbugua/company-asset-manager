@@ -11,6 +11,7 @@ export interface ICreateUser {
   role_id: number;
   role: string; // Role name for initial role assignment during registration
   department_id?: number; // Optional department association
+  company_id?: number; // Optional company association
 }
 
 
@@ -36,4 +37,5 @@ export interface IUpdateUser {
   role_id?: number;
   department_id?: number; // Optional department association
   branch_id?: number; // Optional branch association
+  company_id?: number; // Optional company association
 }

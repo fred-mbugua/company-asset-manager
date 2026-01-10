@@ -46,18 +46,20 @@ export class LookupService {
      */
     async getUserFilters(): Promise<any> {
         // Run all promises concurrently for fast loading
-        const [departments, locations, employees, userRoles] = await Promise.all([
+        const [departments, locations, employees, userRoles, companies] = await Promise.all([
             LookupModel.getAllDepartments(),
             LookupModel.getAllBranches(),
             LookupModel.getAllEmployeeDetails(),
-            LookupModel.getAllUserRoles()
+            LookupModel.getAllUserRoles(),
+            LookupModel.getAllCompanies()
         ]);
 
         return {
             departments,
             locations,
             employees,
-            userRoles
+            userRoles,
+            companies
         };
     }
 

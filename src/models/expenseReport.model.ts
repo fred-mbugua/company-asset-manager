@@ -183,7 +183,7 @@ export class ExpenseReportModel {
      * Get summarized repair expense report
      * Groups by asset and calculates total repair amount
      */
-    async getRepairExpenseSummary(filters: { from_date?: string; to_date?: string }): Promise<any[]> {
+    async getRepairExpenseSummary(filters: { from_date?: string; to_date?: string; asset_tag?: string; limit?: number; offset?: number }): Promise<{ data: any[]; totalCount: number }> {
         let where = `WHERE expense_types.name ILIKE '%repair%'`;
         const values: any[] = [];
         let paramIndex = 1;
@@ -198,8 +198,26 @@ export class ExpenseReportModel {
             values.push(filters.to_date);
         }
 
-        const query = `
+        if (filters.asset_tag) {
+            where += ` AND assets.asset_tag ILIKE $${paramIndex++}`;
+            values.push(`%${filters.asset_tag}%`);
+        }
+
+        // Count query for pagination
+        const countQuery = `
+            SELECT COUNT(DISTINCT assets.id) as total
+            FROM expenses
+            INNER JOIN assets ON expenses.asset_id = assets.id
+            INNER JOIN expense_types ON expenses.expense_type_id = expense_types.id
+            ${where}
+        `;
+        const countResult = await db.query(countQuery, values);
+        const totalCount = parseInt(countResult.rows[0].total);
+
+        // Main query with pagination
+        let query = `
             SELECT
+                assets.id AS asset_id,
                 COALESCE(emp.first_name || ' ' || emp.last_name, 'Unassigned') AS staff_name,
                 COALESCE(emp.company, 'N/A') AS company,
                 assets.asset_tag,
@@ -218,10 +236,67 @@ export class ExpenseReportModel {
             LEFT JOIN employees emp ON expenses.assigned_employee_id = emp.id
             ${where}
             GROUP BY 
-                emp.first_name, emp.last_name, emp.company,
+                assets.id, emp.first_name, emp.last_name, emp.company,
                 assets.asset_tag, branches.name, assets.model,
                 asset_statuses.name, asset_types.name
-            ORDER BY total_repair_amount DESC;
+            ORDER BY total_repair_amount DESC
+        `;
+
+        // Add pagination
+        if (filters.limit) {
+            query += ` LIMIT $${paramIndex++}`;
+            values.push(filters.limit);
+        }
+        if (filters.offset !== undefined) {
+            query += ` OFFSET $${paramIndex++}`;
+            values.push(filters.offset);
+        }
+
+        const result = await db.query(query, values);
+        return { data: result.rows, totalCount };
+    }
+
+    /**
+     * Get repair expense details for a specific asset
+     */
+    async getAssetRepairExpenses(assetId: number, filters: { from_date?: string; to_date?: string }): Promise<any[]> {
+        let where = `WHERE expenses.asset_id = $1 AND expense_types.name ILIKE '%repair%'`;
+        const values: any[] = [assetId];
+        let paramIndex = 2;
+
+        if (filters.from_date) {
+            where += ` AND expenses.date >= $${paramIndex++}`;
+            values.push(filters.from_date);
+        }
+
+        if (filters.to_date) {
+            where += ` AND expenses.date <= $${paramIndex++}`;
+            values.push(filters.to_date);
+        }
+
+        const query = `
+            SELECT
+                expenses.id,
+                expenses.date,
+                expenses.amount,
+                expenses.vendor,
+                expenses.invoice_number,
+                expenses.notes,
+                expense_types.name AS expense_type,
+                COALESCE(emp.first_name || ' ' || emp.last_name, 'Unassigned') AS assigned_to,
+                COALESCE(emp.company, 'N/A') AS company,
+                assets.asset_tag,
+                assets.model,
+                assets.manufacturer,
+                branches.name AS location,
+                (SELECT COUNT(*) FROM expense_attachments WHERE expense_id = expenses.id) AS attachment_count
+            FROM expenses
+            INNER JOIN assets ON expenses.asset_id = assets.id
+            INNER JOIN expense_types ON expenses.expense_type_id = expense_types.id
+            LEFT JOIN branches ON assets.branch_id = branches.id
+            LEFT JOIN employees emp ON expenses.assigned_employee_id = emp.id
+            ${where}
+            ORDER BY expenses.date DESC
         `;
 
         const result = await db.query(query, values);

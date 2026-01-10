@@ -51,7 +51,7 @@ const fetchAndRenderData = async () => {
     const offset = (currentPage - 1) * limit;
 
     // Show loading state
-    tableBody.innerHTML = `<tr><td colspan="10" style="text-align:center;color:#888;">Loading assets...</td></tr>`;
+    tableBody.innerHTML = `<tr><td colspan="11" style="text-align:center;color:#888;">Loading assets...</td></tr>`;
 
     try {
         const params = {
@@ -72,7 +72,7 @@ const fetchAndRenderData = async () => {
     } catch (error) {
         console.error('Error fetching assets:', error);
         showMessage('error', 'Failed to load assets data.');
-        tableBody.innerHTML = `<tr><td colspan="10" style="text-align:center;color:red;">Error loading data.</td></tr>`;
+        tableBody.innerHTML = `<tr><td colspan="11" style="text-align:center;color:red;">Error loading data.</td></tr>`;
         updatePaginationControls(0);
     }
 };
@@ -83,7 +83,7 @@ const fetchAndRenderData = async () => {
  */
 const renderTable = (data) => {
     if (!data || data.length === 0) {
-        tableBody.innerHTML = `<tr><td colspan="10" style="text-align:center;color:#888;">No assets found matching the criteria.</td></tr>`;
+        tableBody.innerHTML = `<tr><td colspan="11" style="text-align:center;color:#888;">No assets found matching the criteria.</td></tr>`;
         return;
     }
 
@@ -102,6 +102,7 @@ const renderTable = (data) => {
             <td>${asset.status || asset.status_name || 'N/A'}</td>
             <td>${asset.location || 'N/A'}</td>
             <td>${DateUtils.formatDate(asset.purchase_date)}</td>
+            <td>Ksh. ${asset.purchase_price ? parseFloat(asset.purchase_price).toLocaleString() : '0'}</td>
             <td>
                 <button class="btn btn-edit" onclick="showAssetDetails(${asset.id})">View/Edit</button>
                 <button class="btn btn-view" onclick="showAssignmentHistory(${asset.id}, '${asset.asset_tag}')">History</button>

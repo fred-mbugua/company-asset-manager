@@ -316,14 +316,17 @@ class ReportController {
      */
     async getRepairSummaryReportData(req: Request, res: Response): Promise<void> {
         try {
-            const { from_date, to_date } = req.query;
+            const { from_date, to_date, asset_tag, limit, offset } = req.query;
             
             const filters = {
                 from_date: from_date as string,
-                to_date: to_date as string
+                to_date: to_date as string,
+                asset_tag: asset_tag as string,
+                limit: limit ? parseInt(limit as string) : undefined,
+                offset: offset ? parseInt(offset as string) : undefined
             };
 
-            const repairSummary = await ExpenseReportModel.getRepairExpenseSummary(filters);
+            const { data: repairSummary, totalCount } = await ExpenseReportModel.getRepairExpenseSummary(filters);
 
             const formattedSummary = repairSummary.map(item => ({
                 ...item,
@@ -335,13 +338,55 @@ class ReportController {
                 success: true,
                 data: {
                     summary: formattedSummary,
-                    totalCount: formattedSummary.length
+                    totalCount: totalCount
                 }
             });
 
         } catch (error) {
             console.error('Error fetching repair summary report data:', error);
             res.status(500).json({ success: false, message: 'Failed to retrieve repair summary report data.' });
+        }
+    }
+
+    /**
+     * Get Repair Expense Details for a specific asset.
+     * Route: GET /api/reports/repair-summary/asset/:assetId
+     */
+    async getAssetRepairExpenses(req: Request, res: Response): Promise<void> {
+        try {
+            const assetId = parseInt(req.params.assetId);
+            const { from_date, to_date } = req.query;
+
+            if (!assetId || isNaN(assetId)) {
+                res.status(400).json({ success: false, message: 'Invalid asset ID' });
+                return;
+            }
+
+            const filters = {
+                from_date: from_date as string,
+                to_date: to_date as string
+            };
+
+            const expenses = await ExpenseReportModel.getAssetRepairExpenses(assetId, filters);
+
+            const formattedExpenses = expenses.map(item => ({
+                ...item,
+                amount_formatted: currencyFormatter.format(item.amount),
+                date_formatted: new Date(item.date).toLocaleDateString('en-GB', { 
+                    day: '2-digit', 
+                    month: 'short', 
+                    year: 'numeric' 
+                })
+            }));
+
+            res.status(200).json({
+                success: true,
+                data: formattedExpenses
+            });
+
+        } catch (error) {
+            console.error('Error fetching asset repair expenses:', error);
+            res.status(500).json({ success: false, message: 'Failed to retrieve asset repair expenses.' });
         }
     }
 

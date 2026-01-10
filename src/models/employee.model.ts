@@ -64,6 +64,24 @@ class EmployeeModel {
         return result.rows.map(row => row.name);
     }
 
+    async findAllCompaniesWithId() {
+        const query = `SELECT id, name FROM companies WHERE is_active = true ORDER BY name ASC`;
+        const result = await pool.query(query);
+        return result.rows;
+    }
+
+    async findCompanyByName(name: string) {
+        const query = `SELECT id, name FROM companies WHERE LOWER(name) = LOWER($1) AND is_active = true LIMIT 1`;
+        const result = await pool.query(query, [name]);
+        return result.rows[0] || null;
+    }
+
+    async getDefaultCompany() {
+        const query = `SELECT id, name FROM companies WHERE name = 'Jirani Smart' AND is_active = true LIMIT 1`;
+        const result = await pool.query(query);
+        return result.rows[0] || null;
+    }
+
     async update(employeeData: any) {
         const fields: string[] = [];
         const values: any[] = [];

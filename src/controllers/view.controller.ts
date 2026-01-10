@@ -4,6 +4,7 @@ import { ExpenseService, AssignmentService, UserService, BranchService, Departme
 import { AssetModel, EmployeeModel, ReportModel, AssignmentModel, AssetTypeModel, AssetStatusModel, ExpenseTypeModel, ExpenseModel, LocationModel, DepartmentModel } from '../models';
 import { AuthenticatedRequest } from '../types';
 import { logger } from '../utils';
+import BulkUserImportService from '../services/bulkUserImport.service';
 
 const currencyFormatter = new Intl.NumberFormat('en-US', { style: 'currency', currency: 'KES' });
 class ViewsController {
@@ -523,11 +524,18 @@ class ViewsController {
                 res.status(404).send('User not found.');
                 return;
             }
+
+            // Fetch bulk import info if user was bulk imported (only for admins viewing other users)
+            let bulkImportInfo = null;
+            if (isViewingOtherUser && userDetails.is_bulk_imported) {
+                bulkImportInfo = await BulkUserImportService.getBulkImportInfoByUserId(parseInt(userIdToFetch));
+            }
             
             res.render('profile', { 
                 user: userDetails,
                 isViewingOtherUser,
-                viewerIsAdmin: req.user?.role === 'Admin'
+                viewerIsAdmin: req.user?.role === 'Admin',
+                bulkImportInfo
             });
         } catch (error) {
             console.error('Error rendering profile page:', error);
