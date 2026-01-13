@@ -377,10 +377,10 @@ class BulkUserImportService {
         
         const templateData = [
             {
-                'First Name': 'John',
+                'First Name': 'Fred',
                 'Middle Name': 'M',
-                'Last Name': 'Doe',
-                'Email': 'john.doe@example.com',
+                'Last Name': 'K',
+                'Email': 'fred.k@example.com',
                 'Phone': '0712345678',
                 'Role ID': 2, // 1=Admin, 2=Standard User
                 'Department': 'IT',
@@ -390,8 +390,8 @@ class BulkUserImportService {
             {
                 'First Name': 'Jane',
                 'Middle Name': '',
-                'Last Name': 'Smith',
-                'Email': 'jane.smith@example.com',
+                'Last Name': 'Chelangat',
+                'Email': 'jane.chelangat@example.com',
                 'Phone': '0798765432',
                 'Role ID': 2,
                 'Department': 'Finance',

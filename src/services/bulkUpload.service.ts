@@ -175,8 +175,8 @@ export class BulkUploadService {
     const headers = ['First Name', 'Middle Name', 'Last Name', 'Company', 'Branch', 'Department'];
     const sampleData = [
       headers,
-      ['John', 'Michael', 'Doe', 'Jirani', 'Head Office', 'IT'],
-      ['Jane', '', 'Smith', 'Atana', 'Branch 1', 'Finance'],
+      ['Fred', 'Michael', 'K', 'Jirani', 'Head Office', 'IT'],
+      ['Jane', '', 'Chelangat', 'Atana', 'Branch 1', 'Finance'],
       ['Example', 'E', 'Employee', 'Jirani Smart', 'Head Office', 'HR']
     ];
     
