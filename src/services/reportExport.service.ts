@@ -41,7 +41,8 @@ export class ReportExportService {
             { header: 'Serial Number', key: 'serial_number', width: 25 },
             { header: 'Status', key: 'status_name', width: 15 },
             { header: 'Location', key: 'location', width: 15 },
-            { header: 'Purchase Date', key: 'purchase_date', width: 15 }
+            { header: 'Purchase Date', key: 'purchase_date', width: 15 },
+            { header: 'Purchase Amount', key: 'purchase_price', width: 18, style: { numFmt: '#,##0.00' } }
         ];
 
         // Style the Header Row
@@ -156,6 +157,7 @@ export class ReportExportService {
             { header: 'Department', key: 'department', width: 20 },
             { header: 'Assigned Date', key: 'assignment_date', width: 15 },
             { header: 'Return Date', key: 'return_date', width: 15 },
+            { header: 'Purchase Amount', key: 'purchase_price', width: 18, style: { numFmt: '#,##0.00' } },
             { header: 'Notes', key: 'notes', width: 40 },
         ];
         

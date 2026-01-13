@@ -677,6 +677,16 @@
     color: #3D7ABF;
   }
 
+  .badge-active {
+    background: rgba(40, 167, 69, 0.12);
+    color: #28a745;
+  }
+
+  .badge-warning {
+    background: rgba(255, 193, 7, 0.12);
+    color: #d39e00;
+  }
+
   .no-data {
     text-align: center;
     color: #a0aec0;
@@ -700,31 +710,86 @@
     margin-bottom:20px;
   }
 
-  /* Message container */
-  .app-message-container {
-    position: fixed;
-    top: 20px;
-    right: 20px;
-    z-index: 1000;
-}
-.app-message {
-    padding: 15px 25px;
+  /* Message container - positioned inside content-area */
+  #dynamic-message-container {
+    position: sticky;
+    top: 0;
+    left: 0;
+    right: 0;
+    z-index: 100;
+    padding: 0 15px;
+    pointer-events: none;
+  }
+  
+  .app-message {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 12px 20px;
     margin-bottom: 10px;
-    border-radius: 5px;
+    border-radius: 8px;
     color: white;
-    font-weight: bold;
-    box-shadow: 0 4px 8px rgba(0,0,0,0.2);
-    transition: opacity 0.5s ease-in-out;
-}
-.app-message-success {
-    background-color: #4CAF50;
-}
-.app-message-error {
-    background-color: #f44336;
-}
-.app-message.fade-out {
+    font-weight: 500;
+    box-shadow: 0 4px 12px rgba(0,0,0,0.15);
+    pointer-events: auto;
     opacity: 0;
-}
+    transform: translateY(-20px);
+    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  }
+  
+  .app-message.show {
+    opacity: 1;
+    transform: translateY(0);
+  }
+  
+  .app-message.fade-out {
+    opacity: 0;
+    transform: translateY(-20px);
+  }
+  
+  .app-message-text {
+    flex: 1;
+    margin-right: 15px;
+  }
+  
+  .app-message-close {
+    background: transparent;
+    border: none;
+    color: white;
+    cursor: pointer;
+    padding: 5px 8px;
+    border-radius: 4px;
+    opacity: 0.8;
+    transition: all 0.2s ease;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+  
+  .app-message-close:hover {
+    opacity: 1;
+    background: rgba(255,255,255,0.2);
+  }
+  
+  .app-message-close i {
+    font-size: 14px;
+  }
+  
+  .app-message-success {
+    background: linear-gradient(135deg, #4CAF50, #45a049);
+  }
+  
+  .app-message-error {
+    background: linear-gradient(135deg, #f44336, #d32f2f);
+  }
+  
+  .app-message-warning {
+    background: linear-gradient(135deg, #ff9800, #f57c00);
+  }
+  
+  .app-message-info {
+    background: linear-gradient(135deg, #2196F3, #1976D2);
+  }
 
 .select2-container--default .select2-results__option--highlighted[aria-selected] {
   background-color: #4A9D5F !important;

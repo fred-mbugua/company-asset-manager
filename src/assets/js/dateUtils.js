@@ -18,7 +18,7 @@ const DateUtils = {
         
         // console.log('Parsed date object:', date);
         // Check if date is valid
-        // if (isNaN(date.getTime())) return 'Invalid Date';
+        if (isNaN(date.getTime())) return 'Invalid Date';
         
         const defaultOptions = {
             year: 'numeric',

@@ -54,6 +54,7 @@ export class AssetTagPrefixModel {
     /**
      * Generate the next asset tag for a given asset type
      * Uses a transaction with row locking to prevent duplicates
+     * Checks the highest existing number in the assets table to ensure uniqueness
      */
     async generateNextTag(assetTypeId: number): Promise<string> {
         const client = await db.connect();
@@ -80,18 +81,44 @@ export class AssetTagPrefixModel {
                 
                 // Create default prefix from first 3 characters
                 prefix = 'ICT-' + typeName.substring(0, 3).toUpperCase();
-                nextSequence = 1;
-                
-                // Insert new prefix record
+            } else {
+                prefix = prefixResult.rows[0].prefix;
+            }
+
+            // Get the highest existing number from ALL assets in the table
+            // This ensures the new number is always higher than any existing asset tag globally
+            const maxNumberQuery = `
+                SELECT asset_tag FROM assets 
+                WHERE asset_tag ~ '-[0-9]+$'
+                ORDER BY CAST(SUBSTRING(asset_tag FROM '-([0-9]+)$') AS INTEGER) DESC 
+                LIMIT 1;
+            `;
+            const maxNumberResult = await client.query(maxNumberQuery);
+            
+            let highestExistingNumber = 0;
+            if (maxNumberResult.rows.length > 0) {
+                const existingTag = maxNumberResult.rows[0].asset_tag;
+                // Extract the numeric part from the asset tag (e.g., "ICT-LPT-007" -> 7)
+                const match = existingTag.match(/-(\d+)$/);
+                if (match) {
+                    highestExistingNumber = parseInt(match[1], 10);
+                }
+            }
+
+            // Get the stored sequence from asset_tag_prefixes
+            const storedSequence = prefixResult.rows.length > 0 ? prefixResult.rows[0].last_sequence : 0;
+            
+            // The next sequence should be the maximum of stored sequence + 1 and highest existing + 1
+            nextSequence = Math.max(storedSequence + 1, highestExistingNumber + 1);
+
+            if (prefixResult.rows.length === 0) {
+                // Insert new prefix record with the computed sequence
                 await client.query(
                     `INSERT INTO asset_tag_prefixes (asset_type_id, prefix, last_sequence) VALUES ($1, $2, $3)`,
                     [assetTypeId, prefix, nextSequence]
                 );
             } else {
-                prefix = prefixResult.rows[0].prefix;
-                nextSequence = prefixResult.rows[0].last_sequence + 1;
-                
-                // Update the sequence
+                // Update the sequence to match or exceed the highest existing number
                 await client.query(
                     `UPDATE asset_tag_prefixes SET last_sequence = $1, updated_at = CURRENT_TIMESTAMP WHERE asset_type_id = $2`,
                     [nextSequence, assetTypeId]
@@ -137,21 +164,49 @@ export class AssetTagPrefixModel {
 
     /**
      * Get current sequence for display purposes
+     * Also checks the highest existing number in the assets table
      */
     async getNextSequencePreview(assetTypeId: number): Promise<{ prefix: string; nextNumber: number }> {
         const result = await this.findByAssetTypeId(assetTypeId);
+        let prefix: string;
+        let storedSequence: number;
+
         if (!result) {
             const typeQuery = `SELECT name FROM asset_types WHERE id = $1`;
             const typeResult = await db.query(typeQuery, [assetTypeId]);
             const typeName = typeResult.rows[0]?.name || 'ASSET';
-            return {
-                prefix: 'ICT-' + typeName.substring(0, 3).toUpperCase(),
-                nextNumber: 1
-            };
+            prefix = 'ICT-' + typeName.substring(0, 3).toUpperCase();
+            storedSequence = 0;
+        } else {
+            prefix = result.prefix;
+            storedSequence = result.last_sequence;
         }
+
+        // Get the highest existing number from ALL assets in the table
+        const maxNumberQuery = `
+            SELECT asset_tag FROM assets 
+            WHERE asset_tag ~ '-[0-9]+$'
+            ORDER BY CAST(SUBSTRING(asset_tag FROM '-([0-9]+)$') AS INTEGER) DESC 
+            LIMIT 1;
+        `;
+        const maxNumberResult = await db.query(maxNumberQuery);
+        
+        let highestExistingNumber = 0;
+        if (maxNumberResult.rows.length > 0) {
+            const existingTag = maxNumberResult.rows[0].asset_tag;
+            // Extract the numeric part from the asset tag (e.g., "ICT-LPT-007" -> 7)
+            const match = existingTag.match(/-(\d+)$/);
+            if (match) {
+                highestExistingNumber = parseInt(match[1], 10);
+            }
+        }
+
+        // The next number should be the maximum of stored sequence + 1 and highest existing + 1
+        const nextNumber = Math.max(storedSequence + 1, highestExistingNumber + 1);
+
         return {
-            prefix: result.prefix,
-            nextNumber: result.last_sequence + 1
+            prefix,
+            nextNumber
         };
     }
 }

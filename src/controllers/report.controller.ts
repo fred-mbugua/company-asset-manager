@@ -209,16 +209,11 @@ class ReportController {
 
             const { assignments, totalCount } = await AssignmentService.getPaginatedAssignments(assignmentFilters, limit, offset);
 
-            const formattedAssignments = assignments.map(a => ({
-                ...a,
-                assignment_date: new Date(a.assignment_date).toLocaleDateString(),
-                return_date: a.return_date ? new Date(a.return_date).toLocaleDateString() : 'Active',
-            }));
-
+            // Send raw data - let client handle date formatting
             res.status(200).json({
                 success: true,
                 data: {
-                    assignments: formattedAssignments,
+                    assignments: assignments,
                     totalCount: totalCount
                 }
             });

@@ -35,23 +35,25 @@ export class AssignmentReportModel {
     
     // Base SQL SELECT and FROM clauses for readability
     private readonly BASE_QUERY_SELECT = `
-        SELECT
+        Select
             assignments.id,
             assets.asset_tag,
             assets.manufacturer,
             assets.model,
             assets.purchase_price,
-            employees.department,
             employees.company,
             assignments.assignment_date,
             assignments.return_date,
             assignments.notes,
-            employees.first_name || ' ' || employees.last_name AS employee_name,
-            branches.name AS location
-        FROM assignments
-        INNER JOIN assets ON assignments.asset_id = assets.id
-        INNER JOIN employees ON assignments.employee_id = employees.id
-        INNER JOIN branches ON assets.branch_id = branches.id -- Join branch for location filter
+            employees.first_name || ' ' || employees.last_name As employee_name,
+            branches.name As location,
+            departments.name As department
+        From
+            assignments Inner Join
+            assets On assignments.asset_id = assets.id Inner Join
+            employees On assignments.employee_id = employees.id Inner Join
+            branches On assets.branch_id = branches.id Inner Join
+            departments On employees.department_id = departments.id
     `;
 
     // --- Helper function to build the dynamic WHERE clause ---
@@ -110,6 +112,9 @@ export class AssignmentReportModel {
             LIMIT $${nextIndex} OFFSET $${nextIndex + 1};
         `;
 
+        // console.log('Executing Query:', dataQuery);
+        // console.log('With Values:', [...values, options.limit, options.offset]);
+
         values.push(options.limit, options.offset);
         const assignmentsResult = await db.query(dataQuery, values);
         
@@ -126,6 +131,8 @@ export class AssignmentReportModel {
         const countResult = await db.query(countQuery, countValues);
 
         const totalCount = parseInt(countResult.rows[0].total_count, 10);
+
+        // console.log('Assignments fetched:', assignmentsResult.rows); 
         
         return { assignments: assignmentsResult.rows, totalCount: totalCount };
     }

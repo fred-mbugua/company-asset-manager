@@ -90,6 +90,7 @@ document.addEventListener('DOMContentLoaded', () => {
                 <td>${asset.status_name || 'N/A'}</td>
                 <td>${asset.location || 'N/A'}</td>
                 <td>${DateUtils.formatDate(asset.purchase_date)}</td>
+                <td>Ksh. ${asset.purchase_price ? parseFloat(asset.purchase_price).toLocaleString() : '0'}</td>
             </tr>
         `).join('');
     };

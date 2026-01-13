@@ -20,13 +20,8 @@
                 </div>
                 <div class="form-field">
                     <label for="asset_tag">Asset Tag</label>
-                    <div class="input-with-button">
-                        <input type="text" id="asset_tag" placeholder="Auto-generated or enter manually">
-                        <button type="button" id="generateTagBtn" class="btn btn-secondary" title="Generate tag based on selected type">
-                            <i class="uil uil-sync"></i> Auto
-                        </button>
-                    </div>
-                    <small id="tag-preview" class="form-hint" style="color: #666; display: none;">Next tag: <span id="next-tag-value"></span></small>
+                    <input type="text" id="asset_tag" placeholder="Select asset type to auto-generate" disabled readonly style="background-color: #f5f5f5; cursor: not-allowed;">
+                    <small id="tag-preview" class="form-hint" style="color: #666; display: none;">Next tag will be: <span id="next-tag-value"></span></small>
                 </div>
                 <div class="form-field">
                     <label for="manufacturer">Manufacturer</label>
@@ -98,6 +93,33 @@ $(document).ready(function() {
         allowClear: true,
         width: 'style',
         minimumResultsForSearch: 0
+    });
+
+    // Handle asset type change to auto-generate asset tag (using jQuery for Select2 compatibility)
+    $('#asset_type').on('change', async function() {
+        const assetTypeId = $(this).val();
+        const tagPreview = document.getElementById('tag-preview');
+        const nextTagValue = document.getElementById('next-tag-value');
+        const assetTagInput = document.getElementById('asset_tag');
+        
+        if (assetTypeId) {
+            try {
+                const response = await API.get(`/assets/next-tag/${assetTypeId}`);
+                if (response.data && response.data.fullTag) {
+                    // Auto-populate the asset tag field
+                    assetTagInput.value = response.data.fullTag;
+                    nextTagValue.textContent = response.data.fullTag;
+                    tagPreview.style.display = 'block';
+                }
+            } catch (error) {
+                console.error('Failed to get tag preview:', error);
+                tagPreview.style.display = 'none';
+                assetTagInput.value = '';
+            }
+        } else {
+            tagPreview.style.display = 'none';
+            assetTagInput.value = '';
+        }
     });
 });
 </script>

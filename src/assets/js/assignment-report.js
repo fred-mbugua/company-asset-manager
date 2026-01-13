@@ -12,7 +12,7 @@ document.addEventListener('DOMContentLoaded', () => {
     let totalPages = parseInt(pageInfoSpan.textContent.match(/of (\d+)/)?.[1] || '1', 10);
     let currentFilters = {};
     const reportEndpoint = '/reports/assignments'; 
-    const COLSPAN = 10; 
+    const COLSPAN = 12; 
 
     const getFilters = () => {
         return {
@@ -65,13 +65,16 @@ document.addEventListener('DOMContentLoaded', () => {
             <tr>
                 <td>${assignment.id}</td>
                 <td>${assignment.asset_tag}</td>
-                <td>${assignment.manufacturer}</td>
-                <td>${assignment.model}</td>
-                <td>${assignment.employee_name}</td>
-                <td>${assignment.department}</td>
-                <td>${DateUtils.formatDate(assignment.assignment_date)}</td> 
+                <td>${assignment.manufacturer || 'N/A'}</td>
+                <td>${assignment.model || 'N/A'}</td>
+                <td>Ksh. ${assignment.purchase_price ? parseFloat(assignment.purchase_price).toLocaleString() : '0'}</td>
+                <td>${assignment.employee_name || 'N/A'}</td>
+                <td>${assignment.company || 'N/A'}</td>
+                <td title="${assignment.department || ''}">${assignment.department || 'N/A'}</td>
+                <td>${assignment.location || 'N/A'}</td>
+                <td>${assignment.assignment_date ? DateUtils.formatDate(assignment.assignment_date) : 'N/A'}</td> 
                 <td title="${assignment.notes || ''}">${assignment.notes ? assignment.notes.substring(0, 50) + '...' : 'N/A'}</td>
-                <td>${assignment.return_date ? DateUtils.formatDate(assignment.return_date) : 'N/A'}</td> 
+                <td>${assignment.return_date ? DateUtils.formatDate(assignment.return_date) : '<span class="badge badge-active">Not Returned</span>'}</td> 
             </tr>
         `).join('');
     };
