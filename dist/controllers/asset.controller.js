@@ -38,7 +38,7 @@ class AssetController {
         }
         catch (error) {
             logger_1.default.error('Failed to create asset:', error);
-            (0, response_1.errorResponse)(res, 400, 'Invalid asset data');
+            (0, response_1.errorResponse)(res, 400, error.message || 'Invalid asset data');
         }
     }
     async update(req, res) {
@@ -83,6 +83,20 @@ class AssetController {
         catch (error) {
             logger_1.default.error('Failed to search asset statuses:', error);
             (0, response_1.errorResponse)(res, 500, 'Failed to search asset statuses');
+        }
+    }
+    async getNextTagPreview(req, res) {
+        try {
+            const assetTypeId = Number(req.params.assetTypeId);
+            if (!assetTypeId || isNaN(assetTypeId)) {
+                return (0, response_1.errorResponse)(res, 400, 'Valid asset type ID is required');
+            }
+            const preview = await asset_service_1.default.getNextTagPreview(assetTypeId);
+            (0, response_1.successResponse)(res, 200, 'Next tag preview retrieved successfully', preview);
+        }
+        catch (error) {
+            logger_1.default.error('Failed to get next tag preview:', error);
+            (0, response_1.errorResponse)(res, 500, 'Failed to get tag preview');
         }
     }
 }

@@ -124,6 +124,19 @@ class LookupModel {
         const result = await database_1.default.query(query);
         return result.rows.map(row => row.entity_type);
     }
+    /**
+     * Fetches all active companies.
+     */
+    async getAllCompanies() {
+        const query = `
+            SELECT id, name
+            FROM companies
+            WHERE is_active = true
+            ORDER BY name ASC;
+        `;
+        const result = await database_1.default.query(query);
+        return result.rows;
+    }
 }
 exports.LookupModel = LookupModel;
 exports.default = new LookupModel();

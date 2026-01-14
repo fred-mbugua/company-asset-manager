@@ -10,3 +10,8 @@ export { default as ViewsController } from './view.controller';
 export { default as AssetTypeController } from './assetType.controller';
 export { default as AssetStatusController } from './assetStatus.controller';
 export { default as ExpenseTypeController } from './expenseType.controller';
+export { default as RepairRequestController } from './repairRequest.controller';
+export { default as RepairRequestTypeController } from './repairRequestType.controller';
+export { default as RepairRequestStatusController } from './repairRequestStatus.controller';
+export { default as RepairRequestPriorityController } from './repairRequestPriority.controller';
+export { default as RepairRequestAttachmentController } from './repairRequestAttachment.controller';

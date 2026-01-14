@@ -53,7 +53,8 @@ class AssignmentModel {
                             asts.model,
                             asts.serial_number,
                             asts.manufacturer,
-                            asts.asset_type
+                            asts.asset_type,
+                            asts.purchase_price
                         From
                             assignments ass Inner Join
                             assets asts On ass.asset_id = asts.id Inner Join

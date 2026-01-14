@@ -15,3 +15,7 @@ export { default as AssetTypeService } from './assetType.service';
 export { default as AssetStatusService } from './assetStatus.service';
 export { default as ExpenseTypeService } from './expenseType.service';
 export { default as ReportExportService } from './reportExport.service';
+export { default as RepairRequestService } from './repairRequest.service';
+export { default as RepairRequestTypeService } from './repairRequestType.service';
+export { default as RepairRequestStatusService } from './repairRequestStatus.service';
+export { default as RepairRequestPriorityService } from './repairRequestPriority.service';

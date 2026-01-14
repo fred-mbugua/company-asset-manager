@@ -11,6 +11,7 @@ const router = (0, express_1.Router)();
 router.get('/', middlewares_1.authenticate, (0, middlewares_1.authorize)(['Admin', 'Standard User']), (0, express_async_handler_1.default)(controllers_1.AssetController.getAll));
 router.get('/search', middlewares_1.authenticate, (0, middlewares_1.authorize)(['Admin', 'Standard User']), (0, express_async_handler_1.default)(controllers_1.AssetController.search));
 router.get('/statuses/list', middlewares_1.authenticate, (0, middlewares_1.authorize)(['Admin', 'Standard User']), (0, express_async_handler_1.default)(controllers_1.AssetController.statusList));
+router.get('/next-tag/:assetTypeId', middlewares_1.authenticate, (0, middlewares_1.authorize)(['Admin', 'Standard User']), (0, express_async_handler_1.default)(controllers_1.AssetController.getNextTagPreview));
 router.get('/:id', middlewares_1.authenticate, (0, middlewares_1.authorize)(['Admin', 'Standard User']), (0, express_async_handler_1.default)(controllers_1.AssetController.getById));
 router.post('/', middlewares_1.authenticate, (0, middlewares_1.authorize)(['Admin']), (0, express_async_handler_1.default)(controllers_1.AssetController.create));
 router.put('/:id', middlewares_1.authenticate, (0, middlewares_1.authorize)(['Admin']), (0, express_async_handler_1.default)(controllers_1.AssetController.update));

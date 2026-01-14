@@ -23,3 +23,8 @@ export { default as AssignmentAttachmentModel } from './assignmentAttachment.mod
 export { default as SystemConfigurationModel } from './systemConfiguration.model';
 export { default as AssetTagPrefixModel } from './assetTagPrefix.model';
 export { default as BulkUserImportModel } from './bulkUserImport.model';
+export { default as RepairRequestModel } from './repairRequest.model';
+export { default as RepairRequestTypeModel } from './repairRequestType.model';
+export { default as RepairRequestStatusModel } from './repairRequestStatus.model';
+export { default as RepairRequestPriorityModel } from './repairRequestPriority.model';
+export { default as RepairRequestAttachmentModel } from './repairRequestAttachment.model';

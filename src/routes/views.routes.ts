@@ -20,6 +20,11 @@ router.get('/departments/manage', authenticate, authorize(['Admin', 'Standard Us
 router.get('/asset-statuses/manage', authenticate, authorize(['Admin', 'Standard User']), asyncHandler(ViewsController.renderManageAssetStatuses));
 router.get('/asset-types/manage', authenticate, authorize(['Admin', 'Standard User']), asyncHandler(ViewsController.renderManageAssetTypes));
 router.get('/expense-types/manage', authenticate, authorize(['Admin', 'Standard User']), asyncHandler(ViewsController.renderManageExpenseTypes));
+router.get('/repair-request-types/manage', authenticate, authorize(['Admin']), asyncHandler(ViewsController.renderManageRepairTypes));
+router.get('/repair-request-statuses/manage', authenticate, authorize(['Admin']), asyncHandler(ViewsController.renderManageRepairStatuses));
+router.get('/repair-request-priorities/manage', authenticate, authorize(['Admin']), asyncHandler(ViewsController.renderManageRepairPriorities));
+router.get('/repair-requests', authenticate, authorize(['Admin', 'Standard User']), asyncHandler(ViewsController.renderRepairRequests));
+router.get('/repair-requests/new', authenticate, authorize(['Admin', 'Standard User']), asyncHandler(ViewsController.renderRepairRequests));
 router.get('/reports/assets', authenticate, authorize(['Admin', 'Standard User']), asyncHandler(ViewsController.renderAssetsReport));
 router.get('/reports/expenses', authenticate, authorize(['Admin', 'Standard User']), asyncHandler(ViewsController.renderAssetExpenseReport));
 router.get('/reports/assignments', authenticate, authorize(['Admin', 'Standard User']), asyncHandler(ViewsController.renderAssetAssignmentReport));

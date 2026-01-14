@@ -6,6 +6,7 @@ Object.defineProperty(exports, "__esModule", { value: true });
 exports.SystemConfigurationController = void 0;
 const systemConfiguration_service_1 = __importDefault(require("../services/systemConfiguration.service"));
 const storage_1 = __importDefault(require("../utils/storage"));
+const email_service_1 = __importDefault(require("../services/email.service"));
 const response_1 = require("../utils/response");
 const logger_1 = __importDefault(require("../utils/logger"));
 class SystemConfigurationController {
@@ -68,6 +69,26 @@ class SystemConfigurationController {
         catch (error) {
             logger_1.default.error('Failed to upload logo:', error);
             (0, response_1.errorResponse)(res, 500, 'Failed to upload logo');
+        }
+    }
+    async sendTestEmail(req, res) {
+        try {
+            const { email } = req.body;
+            if (!email) {
+                return (0, response_1.errorResponse)(res, 400, 'Email address is required');
+            }
+            // Get SMTP configuration
+            const config = await systemConfiguration_service_1.default.getConfig();
+            if (!config.smtp_host || !config.smtp_user) {
+                return (0, response_1.errorResponse)(res, 400, 'SMTP settings are not configured. Please configure SMTP settings first.');
+            }
+            // Send test email
+            await email_service_1.default.sendTestEmail(email, config);
+            (0, response_1.successResponse)(res, 200, 'Test email sent successfully');
+        }
+        catch (error) {
+            logger_1.default.error('Failed to send test email:', error);
+            (0, response_1.errorResponse)(res, 500, error.message || 'Failed to send test email');
         }
     }
 }

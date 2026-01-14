@@ -30,4 +30,5 @@ router.get('/', middlewares_1.authenticate, (0, middlewares_1.authorize)(['Admin
 router.get('/public', (0, express_async_handler_1.default)(systemConfiguration_controller_1.default.getPublicConfig));
 router.put('/', middlewares_1.authenticate, (0, middlewares_1.authorize)(['Admin']), (0, express_async_handler_1.default)(systemConfiguration_controller_1.default.updateConfig));
 router.post('/upload-logo', middlewares_1.authenticate, (0, middlewares_1.authorize)(['Admin']), upload.single('logo'), (0, express_async_handler_1.default)(systemConfiguration_controller_1.default.uploadLogo));
+router.post('/test-email', middlewares_1.authenticate, (0, middlewares_1.authorize)(['Admin']), (0, express_async_handler_1.default)(systemConfiguration_controller_1.default.sendTestEmail));
 exports.default = router;

@@ -7,21 +7,77 @@ const database_1 = __importDefault(require("../config/database"));
 class EmployeeModel {
     async create(employeeData) {
         const query = `
-            INSERT INTO employees (first_name, middle_name, last_name, branch_location, department, department_id, branch_id)
-            VALUES ($1, $2, $3, $4, $5, $6, $7)
+            INSERT INTO employees (first_name, middle_name, last_name, branch_location, department, department_id, branch_id, company)
+            VALUES ($1, $2, $3, $4, $5, $6, $7, $8)
             RETURNING *;
         `;
         const values = [
             employeeData.first_name,
             employeeData.middle_name,
             employeeData.last_name,
-            employeeData.branch_location,
-            employeeData.department,
-            employeeData.department_id,
-            employeeData.branch_id
+            employeeData.branch_location || null,
+            employeeData.department || null,
+            employeeData.department_id || null,
+            employeeData.branch_id || null,
+            employeeData.company || 'Jirani'
         ];
         const result = await database_1.default.query(query, values);
         return result.rows[0];
+    }
+    async bulkCreate(employees) {
+        const client = await database_1.default.connect();
+        try {
+            await client.query('BEGIN');
+            const results = [];
+            for (const emp of employees) {
+                const query = `
+                    INSERT INTO employees (first_name, middle_name, last_name, branch_location, department, department_id, branch_id, company)
+                    VALUES ($1, $2, $3, $4, $5, $6, $7, $8)
+                    RETURNING *;
+                `;
+                const values = [
+                    emp.first_name,
+                    emp.middle_name || '',
+                    emp.last_name,
+                    emp.branch_location || '',
+                    emp.department || '',
+                    emp.department_id || null,
+                    emp.branch_id,
+                    emp.company || 'Jirani'
+                ];
+                const result = await client.query(query, values);
+                results.push(result.rows[0]);
+            }
+            await client.query('COMMIT');
+            return results;
+        }
+        catch (error) {
+            await client.query('ROLLBACK');
+            throw error;
+        }
+        finally {
+            client.release();
+        }
+    }
+    async findAllCompanies() {
+        const query = `SELECT DISTINCT name FROM companies WHERE is_active = true ORDER BY name ASC`;
+        const result = await database_1.default.query(query);
+        return result.rows.map(row => row.name);
+    }
+    async findAllCompaniesWithId() {
+        const query = `SELECT id, name FROM companies WHERE is_active = true ORDER BY name ASC`;
+        const result = await database_1.default.query(query);
+        return result.rows;
+    }
+    async findCompanyByName(name) {
+        const query = `SELECT id, name FROM companies WHERE LOWER(name) = LOWER($1) AND is_active = true LIMIT 1`;
+        const result = await database_1.default.query(query, [name]);
+        return result.rows[0] || null;
+    }
+    async getDefaultCompany() {
+        const query = `SELECT id, name FROM companies WHERE name = 'Jirani Smart' AND is_active = true LIMIT 1`;
+        const result = await database_1.default.query(query);
+        return result.rows[0] || null;
     }
     async update(employeeData) {
         const fields = [];
@@ -54,6 +110,10 @@ class EmployeeModel {
         if (employeeData.branch_id !== undefined) {
             fields.push(`branch_id = $${paramCount++}`);
             values.push(employeeData.branch_id);
+        }
+        if (employeeData.company !== undefined) {
+            fields.push(`company = $${paramCount++}`);
+            values.push(employeeData.company);
         }
         if (fields.length === 0) {
             throw new Error('No fields to update');

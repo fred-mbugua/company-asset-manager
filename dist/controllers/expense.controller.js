@@ -6,6 +6,7 @@ Object.defineProperty(exports, "__esModule", { value: true });
 const services_1 = require("../services");
 const response_1 = require("../utils/response");
 const logger_1 = __importDefault(require("../utils/logger"));
+const models_1 = require("../models");
 class ExpenseController {
     async addExpense(req, res) {
         var _a;
@@ -46,6 +47,17 @@ class ExpenseController {
         }
         catch (error) {
             logger_1.default.error(`Failed to retrieve expenses for asset ID ${req.params.assetId}:`, error);
+            (0, response_1.errorResponse)(res, 404, error.message);
+        }
+    }
+    async getAssignedEmployee(req, res) {
+        try {
+            const assetId = Number(req.params.assetId);
+            const employee = await models_1.ExpenseModel.getCurrentAssignedEmployee(assetId);
+            (0, response_1.successResponse)(res, 200, 'Assigned employee retrieved successfully', { employee });
+        }
+        catch (error) {
+            logger_1.default.error(`Failed to get assigned employee for asset ID ${req.params.assetId}:`, error);
             (0, response_1.errorResponse)(res, 404, error.message);
         }
     }

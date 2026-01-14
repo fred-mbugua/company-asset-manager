@@ -4,6 +4,7 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
 };
 Object.defineProperty(exports, "__esModule", { value: true });
 const services_1 = require("../services");
+const models_1 = require("../models");
 const response_1 = require("../utils/response");
 const logger_1 = __importDefault(require("../utils/logger"));
 const currencyFormatter = new Intl.NumberFormat('en-US', { style: 'currency', currency: 'KES' });
@@ -172,15 +173,11 @@ class ReportController {
             const { limit: _, offset: __, ...filters } = req.query;
             const assignmentFilters = filters;
             const { assignments, totalCount } = await services_1.AssignmentService.getPaginatedAssignments(assignmentFilters, limit, offset);
-            const formattedAssignments = assignments.map(a => ({
-                ...a,
-                assignment_date: new Date(a.assignment_date).toLocaleDateString(),
-                return_date: a.return_date ? new Date(a.return_date).toLocaleDateString() : 'Active',
-            }));
+            // Send raw data - let client handle date formatting
             res.status(200).json({
                 success: true,
                 data: {
-                    assignments: formattedAssignments,
+                    assignments: assignments,
                     totalCount: totalCount
                 }
             });
@@ -257,6 +254,97 @@ class ReportController {
         catch (error) {
             console.error('Exporting Action Log Report failed:', error);
             res.status(500).send('Failed to generate action log report.');
+        }
+    }
+    /**
+     * Get Repair Expense Summary Report data.
+     * Route: GET /api/reports/repair-summary
+     */
+    async getRepairSummaryReportData(req, res) {
+        try {
+            const { from_date, to_date, asset_tag, limit, offset } = req.query;
+            const filters = {
+                from_date: from_date,
+                to_date: to_date,
+                asset_tag: asset_tag,
+                limit: limit ? parseInt(limit) : undefined,
+                offset: offset ? parseInt(offset) : undefined
+            };
+            const { data: repairSummary, totalCount } = await models_1.ExpenseReportModel.getRepairExpenseSummary(filters);
+            const formattedSummary = repairSummary.map(item => ({
+                ...item,
+                total_repair_amount: currencyFormatter.format(item.total_repair_amount),
+                total_repair_amount_raw: parseFloat(item.total_repair_amount)
+            }));
+            res.status(200).json({
+                success: true,
+                data: {
+                    summary: formattedSummary,
+                    totalCount: totalCount
+                }
+            });
+        }
+        catch (error) {
+            console.error('Error fetching repair summary report data:', error);
+            res.status(500).json({ success: false, message: 'Failed to retrieve repair summary report data.' });
+        }
+    }
+    /**
+     * Get Repair Expense Details for a specific asset.
+     * Route: GET /api/reports/repair-summary/asset/:assetId
+     */
+    async getAssetRepairExpenses(req, res) {
+        try {
+            const assetId = parseInt(req.params.assetId);
+            const { from_date, to_date } = req.query;
+            if (!assetId || isNaN(assetId)) {
+                res.status(400).json({ success: false, message: 'Invalid asset ID' });
+                return;
+            }
+            const filters = {
+                from_date: from_date,
+                to_date: to_date
+            };
+            const expenses = await models_1.ExpenseReportModel.getAssetRepairExpenses(assetId, filters);
+            const formattedExpenses = expenses.map(item => ({
+                ...item,
+                amount_formatted: currencyFormatter.format(item.amount),
+                date_formatted: new Date(item.date).toLocaleDateString('en-GB', {
+                    day: '2-digit',
+                    month: 'short',
+                    year: 'numeric'
+                })
+            }));
+            res.status(200).json({
+                success: true,
+                data: formattedExpenses
+            });
+        }
+        catch (error) {
+            console.error('Error fetching asset repair expenses:', error);
+            res.status(500).json({ success: false, message: 'Failed to retrieve asset repair expenses.' });
+        }
+    }
+    /**
+     * Export Repair Summary Report to Excel.
+     * Route: GET /api/reports/repair-summary/export
+     */
+    async exportRepairSummaryReport(req, res) {
+        try {
+            const { from_date, to_date } = req.query;
+            const filters = {
+                from_date: from_date,
+                to_date: to_date
+            };
+            const excelBuffer = await services_1.ReportExportService.generateRepairSummaryReport(filters);
+            const date = new Date().toISOString().slice(0, 10);
+            res.setHeader('Content-Type', 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet');
+            res.setHeader('Content-Disposition', `attachment; filename=Repair_Summary_Report_${date}.xlsx`);
+            res.send(excelBuffer);
+        }
+        catch (error) {
+            console.error('Exporting Repair Summary Report failed:', error);
+            res.status(500).send('Failed to generate repair summary report.');
         }
     }
 }

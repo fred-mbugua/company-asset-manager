@@ -1,7 +1,7 @@
 import { Request, Response } from 'express';
 import LookupService from '../services/lookup.service';
-import { ExpenseService, AssignmentService, UserService, BranchService, DepartmentService, ActionLogService, AssetStatusService, AssetTypeService, ExpenseTypeService } from '../services';
-import { AssetModel, EmployeeModel, ReportModel, AssignmentModel, AssetTypeModel, AssetStatusModel, ExpenseTypeModel, ExpenseModel, LocationModel, DepartmentModel } from '../models';
+import { ExpenseService, AssignmentService, UserService, BranchService, DepartmentService, ActionLogService, AssetStatusService, AssetTypeService, ExpenseTypeService, RepairRequestTypeService, RepairRequestStatusService, RepairRequestPriorityService } from '../services';
+import { AssetModel, EmployeeModel, ReportModel, AssignmentModel, AssetTypeModel, AssetStatusModel, ExpenseTypeModel, ExpenseModel, LocationModel, DepartmentModel, RepairRequestTypeModel, RepairRequestStatusModel, RepairRequestPriorityModel } from '../models';
 import { AuthenticatedRequest } from '../types';
 import { logger } from '../utils';
 import BulkUserImportService from '../services/bulkUserImport.service';
@@ -554,6 +554,83 @@ class ViewsController {
         } catch (error) {
             console.error('Error rendering repair summary report page:', error);
             res.status(500).send('Failed to load repair summary report page.');
+        }
+    }
+
+    /**
+     * Rendering the Repair Requests page
+     */
+    async renderRepairRequests(req: Request, res: Response): Promise<void> {
+        try {
+            // Fetch dropdown data
+            const requestTypes = await RepairRequestTypeModel.findAll();
+            const statuses = await RepairRequestStatusModel.findAll();
+            const priorities = await RepairRequestPriorityModel.findAll();
+            const branches = await LocationModel.findAll();
+            const assets = await AssetModel.findAll();
+            
+            res.render('repair-requests', {
+                user: req.user,
+                requestTypes: requestTypes,
+                statuses: statuses,
+                priorities: priorities,
+                branches: branches,
+                assets: assets.assets || []
+            });
+        } catch (error) {
+            logger.error('Error rendering repair requests page:', error);
+            res.status(500).send('Failed to load repair requests page.');
+        }
+    }
+
+    /**
+     * Rendering the Manage Repair Request Types EJS view.
+     */
+    async renderManageRepairTypes(req: Request, res: Response): Promise<void> {
+        try {
+            const repairTypes = await RepairRequestTypeService.findAll(true);
+            
+            res.render('manage-repair-types', {
+                user: req.user,
+                repairTypes: repairTypes,
+            });
+        } catch (error) {
+            logger.error('Error rendering manage repair types page:', error);
+            res.status(500).send('Failed to load repair type management page.');
+        }
+    }
+
+    /**
+     * Rendering the Manage Repair Request Statuses EJS view.
+     */
+    async renderManageRepairStatuses(req: Request, res: Response): Promise<void> {
+        try {
+            const repairStatuses = await RepairRequestStatusService.findAll(true);
+            
+            res.render('manage-repair-statuses', {
+                user: req.user,
+                repairStatuses: repairStatuses,
+            });
+        } catch (error) {
+            logger.error('Error rendering manage repair statuses page:', error);
+            res.status(500).send('Failed to load repair status management page.');
+        }
+    }
+
+    /**
+     * Rendering the Manage Repair Request Priorities EJS view.
+     */
+    async renderManageRepairPriorities(req: Request, res: Response): Promise<void> {
+        try {
+            const repairPriorities = await RepairRequestPriorityService.findAll(true);
+            
+            res.render('manage-repair-priorities', {
+                user: req.user,
+                repairPriorities: repairPriorities,
+            });
+        } catch (error) {
+            logger.error('Error rendering manage repair priorities page:', error);
+            res.status(500).send('Failed to load repair priority management page.');
         }
     }
 

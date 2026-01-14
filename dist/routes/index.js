@@ -3,7 +3,7 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
     return (mod && mod.__esModule) ? mod : { "default": mod };
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.systemConfigurationRoutes = exports.assignmentAttachmentRoutes = exports.expenseAttachmentRoutes = exports.assetAttachmentRoutes = exports.assetTypeRoutes = exports.branchRoutes = exports.departmentRoutes = exports.viewsRoutes = exports.uploadRoutes = exports.reportRoutes = exports.expenseRoutes = exports.employeeRoutes = exports.userRoutes = exports.assignmentRoutes = exports.authRoutes = exports.assetRoutes = exports.mainRoutes = void 0;
+exports.repairRequestRoutes = exports.bulkUserImportRoutes = exports.systemConfigurationRoutes = exports.assignmentAttachmentRoutes = exports.expenseAttachmentRoutes = exports.assetAttachmentRoutes = exports.assetTypeRoutes = exports.branchRoutes = exports.departmentRoutes = exports.viewsRoutes = exports.uploadRoutes = exports.reportRoutes = exports.expenseRoutes = exports.employeeRoutes = exports.userRoutes = exports.assignmentRoutes = exports.authRoutes = exports.assetRoutes = exports.mainRoutes = void 0;
 var main_routes_1 = require("./main.routes");
 Object.defineProperty(exports, "mainRoutes", { enumerable: true, get: function () { return __importDefault(main_routes_1).default; } });
 var asset_routes_1 = require("./asset.routes");
@@ -38,3 +38,7 @@ var assignmentAttachment_routes_1 = require("./assignmentAttachment.routes");
 Object.defineProperty(exports, "assignmentAttachmentRoutes", { enumerable: true, get: function () { return __importDefault(assignmentAttachment_routes_1).default; } });
 var systemConfiguration_routes_1 = require("./systemConfiguration.routes");
 Object.defineProperty(exports, "systemConfigurationRoutes", { enumerable: true, get: function () { return __importDefault(systemConfiguration_routes_1).default; } });
+var bulkUserImport_routes_1 = require("./bulkUserImport.routes");
+Object.defineProperty(exports, "bulkUserImportRoutes", { enumerable: true, get: function () { return __importDefault(bulkUserImport_routes_1).default; } });
+var repairRequest_routes_1 = require("./repairRequest.routes");
+Object.defineProperty(exports, "repairRequestRoutes", { enumerable: true, get: function () { return __importDefault(repairRequest_routes_1).default; } });

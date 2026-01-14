@@ -19,6 +19,11 @@ class BranchModel {
         const result = await database_1.default.query(query, [id]);
         return result.rows[0];
     }
+    static async findByName(name) {
+        const query = `SELECT * FROM branches WHERE LOWER(name) = LOWER($1) OR LOWER(location) = LOWER($1);`;
+        const result = await database_1.default.query(query, [name.trim()]);
+        return result.rows[0];
+    }
     static async findAll() {
         const query = `SELECT * FROM branches ORDER BY created_at;`;
         const result = await database_1.default.query(query);

@@ -39,4 +39,13 @@ router.get('/action-logs', middlewares_1.authenticate, (0, express_async_handler
 // Action Log Report Export Endpoint
 // URL: GET /api/reports/action-logs/export?action_type=...&from_date=...
 router.get('/action-logs/export', middlewares_1.authenticate, (0, express_async_handler_1.default)(controllers_1.ReportController.exportActionLogReport));
+// Repair Summary Report Data Endpoint
+// URL: GET /api/reports/repair-summary?from_date=...&to_date=...&asset_tag=...&limit=...&offset=...
+router.get('/repair-summary', middlewares_1.authenticate, (0, express_async_handler_1.default)(controllers_1.ReportController.getRepairSummaryReportData));
+// Asset Repair Expense Details Endpoint
+// URL: GET /api/reports/repair-summary/asset/:assetId?from_date=...&to_date=...
+router.get('/repair-summary/asset/:assetId', middlewares_1.authenticate, (0, express_async_handler_1.default)(controllers_1.ReportController.getAssetRepairExpenses));
+// Repair Summary Report Export Endpoint
+// URL: GET /api/reports/repair-summary/export?from_date=...&to_date=...
+router.get('/repair-summary/export', middlewares_1.authenticate, (0, express_async_handler_1.default)(controllers_1.ReportController.exportRepairSummaryReport));
 exports.default = router;

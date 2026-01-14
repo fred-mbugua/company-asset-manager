@@ -33,6 +33,12 @@
                 { title: 'Create', url: '/expenses/create', roles: ['Admin', 'Standard User'] },
             ]
         },
+        { 
+            title: 'Repair Requests', icon: 'uil-wrench', roles: ['Admin', 'Standard User'], id: 'repair-requests-menu', submenu: [
+                { title: 'All Requests', url: '/repair-requests', roles: ['Admin', 'Standard User'] },
+                { title: 'New Request', url: '/repair-requests/new', roles: ['Admin', 'Standard User'] },
+            ]
+        },
         { title: 'Reports', icon: 'uil-analytics', url: '/reports', roles: ['Admin', 'Standard User'], id: 'reports-menu', submenu: [
                 { title: 'Assets', url: '/reports/assets', roles: ['Admin', 'Standard User'] },
                 { title: 'Expenses', url: '/reports/expenses', roles: ['Admin', 'Standard User'] },
@@ -49,6 +55,9 @@
                 { title: 'Asset Statuses', url: '/asset-statuses/manage', roles: ['Admin'] },
                 { title: 'Asset Types', url: '/asset-types/manage', roles: ['Admin'] },
                 { title: 'Expense Types', url: '/expense-types/manage', roles: ['Admin'] },
+                { title: 'Repair Types', url: '/repair-request-types/manage', roles: ['Admin'] },
+                { title: 'Repair Statuses', url: '/repair-request-statuses/manage', roles: ['Admin'] },
+                { title: 'Repair Priorities', url: '/repair-request-priorities/manage', roles: ['Admin'] },
             ]
         },
         { 

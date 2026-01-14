@@ -7,6 +7,7 @@ const lookup_service_1 = __importDefault(require("../services/lookup.service"));
 const services_1 = require("../services");
 const models_1 = require("../models");
 const utils_1 = require("../utils");
+const bulkUserImport_service_1 = __importDefault(require("../services/bulkUserImport.service"));
 const currencyFormatter = new Intl.NumberFormat('en-US', { style: 'currency', currency: 'KES' });
 class ViewsController {
     // Rendering the login page
@@ -464,15 +465,122 @@ class ViewsController {
                 res.status(404).send('User not found.');
                 return;
             }
+            // Fetch bulk import info if user was bulk imported (only for admins viewing other users)
+            let bulkImportInfo = null;
+            if (isViewingOtherUser && userDetails.is_bulk_imported) {
+                bulkImportInfo = await bulkUserImport_service_1.default.getBulkImportInfoByUserId(parseInt(userIdToFetch));
+            }
             res.render('profile', {
                 user: userDetails,
                 isViewingOtherUser,
-                viewerIsAdmin: ((_c = req.user) === null || _c === void 0 ? void 0 : _c.role) === 'Admin'
+                viewerIsAdmin: ((_c = req.user) === null || _c === void 0 ? void 0 : _c.role) === 'Admin',
+                bulkImportInfo
             });
         }
         catch (error) {
             console.error('Error rendering profile page:', error);
             res.status(500).send('Failed to load profile page.');
+        }
+    }
+    /**
+     * Rendering the Repair Summary Report page
+     */
+    async renderRepairSummaryReport(req, res) {
+        try {
+            res.render('repair-summary-report', {
+                user: req.user
+            });
+        }
+        catch (error) {
+            console.error('Error rendering repair summary report page:', error);
+            res.status(500).send('Failed to load repair summary report page.');
+        }
+    }
+    /**
+     * Rendering the Repair Requests page
+     */
+    async renderRepairRequests(req, res) {
+        try {
+            // Fetch dropdown data
+            const requestTypes = await models_1.RepairRequestTypeModel.findAll();
+            const statuses = await models_1.RepairRequestStatusModel.findAll();
+            const priorities = await models_1.RepairRequestPriorityModel.findAll();
+            const branches = await models_1.LocationModel.findAll();
+            const assets = await models_1.AssetModel.findAll();
+            res.render('repair-requests', {
+                user: req.user,
+                requestTypes: requestTypes,
+                statuses: statuses,
+                priorities: priorities,
+                branches: branches,
+                assets: assets.assets || []
+            });
+        }
+        catch (error) {
+            utils_1.logger.error('Error rendering repair requests page:', error);
+            res.status(500).send('Failed to load repair requests page.');
+        }
+    }
+    /**
+     * Rendering the Manage Repair Request Types EJS view.
+     */
+    async renderManageRepairTypes(req, res) {
+        try {
+            const repairTypes = await services_1.RepairRequestTypeService.findAll(true);
+            res.render('manage-repair-types', {
+                user: req.user,
+                repairTypes: repairTypes,
+            });
+        }
+        catch (error) {
+            utils_1.logger.error('Error rendering manage repair types page:', error);
+            res.status(500).send('Failed to load repair type management page.');
+        }
+    }
+    /**
+     * Rendering the Manage Repair Request Statuses EJS view.
+     */
+    async renderManageRepairStatuses(req, res) {
+        try {
+            const repairStatuses = await services_1.RepairRequestStatusService.findAll(true);
+            res.render('manage-repair-statuses', {
+                user: req.user,
+                repairStatuses: repairStatuses,
+            });
+        }
+        catch (error) {
+            utils_1.logger.error('Error rendering manage repair statuses page:', error);
+            res.status(500).send('Failed to load repair status management page.');
+        }
+    }
+    /**
+     * Rendering the Manage Repair Request Priorities EJS view.
+     */
+    async renderManageRepairPriorities(req, res) {
+        try {
+            const repairPriorities = await services_1.RepairRequestPriorityService.findAll(true);
+            res.render('manage-repair-priorities', {
+                user: req.user,
+                repairPriorities: repairPriorities,
+            });
+        }
+        catch (error) {
+            utils_1.logger.error('Error rendering manage repair priorities page:', error);
+            res.status(500).send('Failed to load repair priority management page.');
+        }
+    }
+    /**
+     * Rendering the Bulk Import History page
+     */
+    async renderBulkImportHistory(req, res) {
+        try {
+            res.render('bulk-import-history', {
+                user: req.user
+            });
+        }
+        catch (error) {
+            console.error('Error rendering bulk import history page:', error);
+            res.status(500).send('Failed to load bulk import history page.');
         }
     }
 }

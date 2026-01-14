@@ -58,7 +58,8 @@ class ReportExportService {
             { header: 'Serial Number', key: 'serial_number', width: 25 },
             { header: 'Status', key: 'status_name', width: 15 },
             { header: 'Location', key: 'location', width: 15 },
-            { header: 'Purchase Date', key: 'purchase_date', width: 15 }
+            { header: 'Purchase Date', key: 'purchase_date', width: 15 },
+            { header: 'Purchase Amount', key: 'purchase_price', width: 18, style: { numFmt: '#,##0.00' } }
         ];
         // Style the Header Row
         worksheet.getRow(1).eachCell(cell => {
@@ -163,6 +164,7 @@ class ReportExportService {
             { header: 'Department', key: 'department', width: 20 },
             { header: 'Assigned Date', key: 'assignment_date', width: 15 },
             { header: 'Return Date', key: 'return_date', width: 15 },
+            { header: 'Purchase Amount', key: 'purchase_price', width: 18, style: { numFmt: '#,##0.00' } },
             { header: 'Notes', key: 'notes', width: 40 },
         ];
         // Style the Header Row
@@ -245,6 +247,71 @@ class ReportExportService {
         //  Generating Buffer
         const arrayBufferOrBuffer = await workbook.xlsx.writeBuffer();
         // If ExcelJS returned a Node Buffer use it directly, otherwise convert the ArrayBuffer/Uint8Array to a Node Buffer
+        const buffer = Buffer.isBuffer(arrayBufferOrBuffer)
+            ? arrayBufferOrBuffer
+            : Buffer.from(arrayBufferOrBuffer);
+        return buffer;
+    }
+    /**
+     * Generating an Excel workbook buffer for the Repair Summary Report.
+     */
+    async generateRepairSummaryReport(filters) {
+        const result = await models_1.ExpenseReportModel.getRepairExpenseSummary(filters);
+        const data = result.data;
+        const workbook = new ExcelJS.Workbook();
+        const worksheet = workbook.addWorksheet('Repair Summary Report');
+        worksheet.columns = [
+            { header: 'Staff', key: 'staff_name', width: 25 },
+            { header: 'Company', key: 'company', width: 18 },
+            { header: 'Asset Tag', key: 'asset_tag', width: 15 },
+            { header: 'Location', key: 'location', width: 18 },
+            { header: 'Model', key: 'model', width: 20 },
+            { header: 'Status', key: 'status', width: 15 },
+            { header: 'Asset Type', key: 'asset_type', width: 18 },
+            { header: 'Repair Count', key: 'repair_count', width: 12 },
+            { header: 'Total Repair Amount', key: 'total_repair_amount', width: 20, style: { numFmt: '"KES "#,##0.00' } },
+        ];
+        // Style the Header Row
+        worksheet.getRow(1).eachCell(cell => {
+            cell.font = { bold: true, color: { argb: 'FFFFFF' } };
+            cell.fill = {
+                type: 'pattern',
+                pattern: 'solid',
+                fgColor: { argb: 'dc3545' } // red fill for repair/warning theme
+            };
+            cell.alignment = { vertical: 'middle', horizontal: 'center' };
+            cell.border = {
+                top: { style: 'thin' },
+                left: { style: 'thin' },
+                bottom: { style: 'thin' },
+                right: { style: 'thin' }
+            };
+        });
+        data.forEach(item => {
+            const formattedItem = {
+                staff_name: item.staff_name || 'Unassigned',
+                company: item.company || 'N/A',
+                asset_tag: item.asset_tag,
+                location: item.location || 'N/A',
+                model: item.model || 'N/A',
+                status: item.status,
+                asset_type: item.asset_type,
+                repair_count: parseInt(item.repair_count),
+                total_repair_amount: parseFloat(item.total_repair_amount),
+            };
+            worksheet.addRow(formattedItem);
+        });
+        // Add total row
+        if (data.length > 0) {
+            const totalAmount = data.reduce((sum, item) => sum + parseFloat(item.total_repair_amount), 0);
+            const totalRow = worksheet.addRow({
+                staff_name: 'TOTAL',
+                total_repair_amount: totalAmount
+            });
+            totalRow.font = { bold: true };
+        }
+        //  Generating Buffer
+        const arrayBufferOrBuffer = await workbook.xlsx.writeBuffer();
         const buffer = Buffer.isBuffer(arrayBufferOrBuffer)
             ? arrayBufferOrBuffer
             : Buffer.from(arrayBufferOrBuffer);

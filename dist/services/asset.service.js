@@ -4,9 +4,17 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
 };
 Object.defineProperty(exports, "__esModule", { value: true });
 const asset_model_1 = __importDefault(require("../models/asset.model"));
+const assetTagPrefix_model_1 = __importDefault(require("../models/assetTagPrefix.model"));
 const actionLog_service_1 = __importDefault(require("./actionLog.service"));
 class AssetService {
     async create(assetData, userId) {
+        // If asset_tag is 'AUTO' or empty, generate it automatically
+        if (!assetData.asset_tag || assetData.asset_tag === 'AUTO' || assetData.asset_tag.trim() === '') {
+            if (!assetData.asset_type_id) {
+                throw new Error('Asset type is required for auto-generating asset tag');
+            }
+            assetData.asset_tag = await assetTagPrefix_model_1.default.generateNextTag(assetData.asset_type_id);
+        }
         const newAsset = await asset_model_1.default.create(assetData);
         await actionLog_service_1.default.logAction(userId, 'CREATE', 'Asset', newAsset.id, { asset_tag: newAsset.asset_tag });
         return newAsset;
@@ -39,6 +47,18 @@ class AssetService {
     }
     async statusList() {
         return asset_model_1.default.getAssetStatuses();
+    }
+    /**
+     * Get preview of next asset tag for a given asset type
+     */
+    async getNextTagPreview(assetTypeId) {
+        const preview = await assetTagPrefix_model_1.default.getNextSequencePreview(assetTypeId);
+        const paddedSequence = preview.nextNumber.toString().padStart(3, '0');
+        return {
+            prefix: preview.prefix,
+            nextNumber: preview.nextNumber,
+            fullTag: `${preview.prefix}-${paddedSequence}`
+        };
     }
 }
 exports.default = new AssetService();

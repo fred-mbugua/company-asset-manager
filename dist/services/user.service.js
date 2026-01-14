@@ -119,6 +119,8 @@ class UserService {
         // Hash and update new password
         const hashedPassword = await bcryptjs_1.default.hash(newPassword, this.SALT_ROUNDS);
         await models_1.UserModel.updatePassword(userId, hashedPassword);
+        // Mark password as changed (for bulk imported users)
+        await models_1.UserModel.markPasswordChanged(userId);
         await actionLog_service_1.default.logAction(Number(userId), 'CHANGE_PASSWORD', 'User', Number(userId), { email: user.email });
         logger_1.default.info(`Password changed for user ID: ${userId}`);
     }
