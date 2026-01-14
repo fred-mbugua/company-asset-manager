@@ -26,6 +26,7 @@ export interface IRepairRequest {
     invoice_number?: string;
     invoice_amount?: number;
     invoice_date?: Date;
+    invoice_notes?: string;
     invoice_uploaded_by?: number;
     invoice_uploaded_at?: Date;
     finance_reviewed_by?: number;
@@ -33,6 +34,7 @@ export interface IRepairRequest {
     finance_notes?: string;
     payment_reference?: string;
     payment_date?: Date;
+    expense_id?: number;
     created_at?: Date;
     updated_at?: Date;
     completed_at?: Date;
@@ -332,9 +334,9 @@ export class RepairRequestModel {
             'ict_reviewed_by', 'ict_reviewed_at', 'ict_notes',
             'repair_started_at', 'repair_completed_at', 'repair_notes',
             'vendor_name', 'invoice_number', 'invoice_amount', 'invoice_date',
-            'invoice_uploaded_by', 'invoice_uploaded_at',
+            'invoice_notes', 'invoice_uploaded_by', 'invoice_uploaded_at',
             'finance_reviewed_by', 'finance_reviewed_at', 'finance_notes',
-            'payment_reference', 'payment_date', 'completed_at'
+            'payment_reference', 'payment_date', 'completed_at', 'expense_id'
         ];
 
         const updates: string[] = [];

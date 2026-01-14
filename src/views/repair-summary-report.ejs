@@ -153,6 +153,24 @@
     </div>
 </div>
 
+<!-- Repair Request Attachments Modal -->
+<div id="repairAttachmentsModal" class="modal">
+    <div class="modal-content attachments-modal">
+        <div class="modal-header">
+            <h3><i class="fa fa-wrench"></i> Repair Request Documents</h3>
+            <span class="close" onclick="closeRepairAttachmentsModal()">&times;</span>
+        </div>
+        <div class="modal-body">
+            <div id="repair-request-info" style="background: #e8f4fd; padding: 10px; border-radius: 4px; margin-bottom: 15px;">
+                <strong>Request:</strong> <span id="repair-request-number">-</span>
+            </div>
+            <div id="repair-attachments-content">
+                <p style="text-align: center; color: #888;">Loading attachments...</p>
+            </div>
+        </div>
+    </div>
+</div>
+
 <!-- Select2 JS -->
 <script src="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/js/select2.min.js"></script>
 <script src="/js/api.js"></script>
@@ -397,7 +415,8 @@ async function showExpenseHistory(assetId, assetTag, model) {
                                 <th>Invoice #</th>
                                 <th>Assigned To</th>
                                 <th>Notes</th>
-                                <th>Attachments</th>
+                                <th>Expense Docs</th>
+                                <th>Repair Docs</th>
                                 <th>Actions</th>
                             </tr>
                         </thead>
@@ -405,6 +424,7 @@ async function showExpenseHistory(assetId, assetTag, model) {
             `;
 
             response.data.forEach(expense => {
+                const repairAttachmentCount = parseInt(expense.repair_attachment_count) || 0;
                 html += `
                     <tr>
                         <td>${expense.date_formatted}</td>
@@ -420,6 +440,14 @@ async function showExpenseHistory(assetId, assetTag, model) {
                                     <i class="fa fa-paperclip"></i> ${expense.attachment_count}
                                    </button>`
                                 : '<span class="text-muted">None</span>'
+                            }
+                        </td>
+                        <td class="text-center">
+                            ${expense.repair_request_id && repairAttachmentCount > 0
+                                ? `<button class="btn btn-sm btn-repair-docs" onclick="showRepairAttachments(${expense.repair_request_id}, '${window.escapeHtml(expense.repair_request_number || '')}')">
+                                    <i class="fa fa-wrench"></i> ${repairAttachmentCount}
+                                   </button>`
+                                : (expense.repair_request_id ? '<span class="text-muted">None</span>' : '<span class="text-muted">N/A</span>')
                             }
                         </td>
                         <td>
@@ -603,6 +631,68 @@ function closeAttachmentsModal() {
     document.getElementById('attachmentsModal').style.display = 'none';
 }
 
+// Show Repair Request Attachments Modal
+async function showRepairAttachments(repairRequestId, requestNumber) {
+    const modal = document.getElementById('repairAttachmentsModal');
+    const content = document.getElementById('repair-attachments-content');
+    document.getElementById('repair-request-number').textContent = requestNumber || `#${repairRequestId}`;
+    
+    modal.style.display = 'block';
+    content.innerHTML = '<p style="text-align: center; color: #888;">Loading attachments...</p>';
+
+    try {
+        const response = await API.get(`/repair-requests/${repairRequestId}/attachments`);
+        
+        if (response.data && response.data.length > 0) {
+            let html = '<div class="attachments-grid">';
+            
+            response.data.forEach(attachment => {
+                const isImage = attachment.file_type && attachment.file_type.startsWith('image/');
+                const fileUrl = `/api/repair-requests/${repairRequestId}/attachments/${attachment.id}/download`;
+                
+                html += `
+                    <div class="attachment-card">
+                        <div class="attachment-preview">
+                            ${isImage 
+                                ? `<img src="${fileUrl}" alt="${attachment.file_name}" onclick="window.open('${fileUrl}', '_blank')">`
+                                : `<i class="fa fa-file-pdf-o" style="font-size: 48px; color: #dc3545;"></i>`
+                            }
+                        </div>
+                        <div class="attachment-info">
+                            <p class="attachment-name" title="${window.escapeHtml(attachment.original_name || attachment.file_name)}">${window.escapeHtml(attachment.original_name || attachment.file_name)}</p>
+                            <p class="attachment-meta">
+                                <span class="attachment-type-badge">${window.escapeHtml(attachment.attachment_type || 'Document')}</span>
+                                ${formatFileSize(attachment.file_size)}
+                            </p>
+                            <p class="attachment-uploader">${attachment.uploader_name ? 'By: ' + window.escapeHtml(attachment.uploader_name) : ''}</p>
+                        </div>
+                        <div class="attachment-actions">
+                            <a href="${fileUrl}" target="_blank" class="btn btn-sm btn-info">
+                                <i class="fa fa-eye"></i> View
+                            </a>
+                            <a href="${fileUrl}" download class="btn btn-sm btn-success">
+                                <i class="fa fa-download"></i> Download
+                            </a>
+                        </div>
+                    </div>
+                `;
+            });
+            
+            html += '</div>';
+            content.innerHTML = html;
+        } else {
+            content.innerHTML = '<p style="text-align: center; color: #888;">No attachments found for this repair request.</p>';
+        }
+    } catch (error) {
+        console.error('Error fetching repair attachments:', error);
+        content.innerHTML = '<p style="text-align: center; color: red;">Error loading attachments. Please try again.</p>';
+    }
+}
+
+function closeRepairAttachmentsModal() {
+    document.getElementById('repairAttachmentsModal').style.display = 'none';
+}
+
 function formatFileSize(bytes) {
     if (!bytes) return '0 B';
     const k = 1024;
@@ -613,7 +703,7 @@ function formatFileSize(bytes) {
 
 // Close modals when clicking outside
 window.onclick = function(event) {
-    const modals = ['expenseHistoryModal', 'expenseDetailModal', 'attachmentsModal'];
+    const modals = ['expenseHistoryModal', 'expenseDetailModal', 'attachmentsModal', 'repairAttachmentsModal'];
     modals.forEach(modalId => {
         const modal = document.getElementById(modalId);
         if (event.target === modal) {
@@ -761,6 +851,20 @@ tfoot td {
 
 .btn-attachment:hover {
     background-color: #5a6268;
+}
+
+.btn-repair-docs {
+    background-color: #fd7e14;
+    color: white;
+    border: none;
+}
+
+.btn-repair-docs:hover {
+    background-color: #e96b02;
+}
+
+.btn-repair-docs i {
+    margin-right: 3px;
 }
 
 /* Pagination controls */

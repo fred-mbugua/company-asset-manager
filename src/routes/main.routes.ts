@@ -16,6 +16,7 @@ import assignmentAttachmentRoutes from './assignmentAttachment.routes';
 import systemConfigurationRoutes from './systemConfiguration.routes';
 import bulkUserImportRoutes from './bulkUserImport.routes';
 import repairRequestRoutes from './repairRequest.routes';
+import roleRoutes from './role.routes';
 
 import { authenticate, authorize } from '../middlewares/auth.middleware'; 
 
@@ -37,5 +38,6 @@ router.use('/assignment-attachments', authenticate, assignmentAttachmentRoutes);
 router.use('/system-config', systemConfigurationRoutes);
 router.use('/bulk-user-import', bulkUserImportRoutes);
 router.use('/repair-requests', repairRequestRoutes);
+router.use('/roles', roleRoutes);
 router.use('/', authenticate, assetTypeRoutes);
 export default router;

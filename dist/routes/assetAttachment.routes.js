@@ -17,7 +17,7 @@ const upload = (0, multer_1.default)({
     },
 });
 // Asset attachment routes
-router.post('/:assetId/attachments', middlewares_1.authenticate, (0, middlewares_1.authorize)(['Admin', 'Standard User']), upload.single('file'), (0, express_async_handler_1.default)(assetAttachment_controller_1.default.create));
-router.get('/:assetId/attachments', middlewares_1.authenticate, (0, middlewares_1.authorize)(['Admin', 'Standard User']), (0, express_async_handler_1.default)(assetAttachment_controller_1.default.getByAssetId));
+router.post('/:assetId/attachments', middlewares_1.authenticate, (0, middlewares_1.authorize)(['*']), upload.single('file'), (0, express_async_handler_1.default)(assetAttachment_controller_1.default.create));
+router.get('/:assetId/attachments', middlewares_1.authenticate, (0, middlewares_1.authorize)(['*']), (0, express_async_handler_1.default)(assetAttachment_controller_1.default.getByAssetId));
 router.delete('/attachments/:id', middlewares_1.authenticate, (0, middlewares_1.authorize)(['Admin']), (0, express_async_handler_1.default)(assetAttachment_controller_1.default.delete));
 exports.default = router;

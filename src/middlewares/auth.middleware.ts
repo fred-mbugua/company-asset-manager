@@ -117,9 +117,17 @@ export const authenticate = async (req: AuthenticatedRequest, res: Response, nex
 /**
  * Check req.user.role
  * which is populated by the authenticate middleware.
+ * Supports '*' wildcard to allow any authenticated user.
  */
 export const authorize = (roles: string[]) => {
   return (req: AuthenticatedRequest, res: Response, next: NextFunction) => {
+    // '*' means any authenticated user is allowed
+    if (roles.includes('*')) {
+      if (req.user) {
+        return next();
+      }
+    }
+    
     if (!req.user || !roles.includes(req.user.role)) {
       // For API requests, return 403 JSON
       if (req.originalUrl.startsWith('/api')) {

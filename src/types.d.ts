@@ -39,6 +39,7 @@ declare module 'express-session' {
 export interface AuthenticatedRequest extends Request {
     user?: {
         role: string;
+        role_id: number;
         id: number; // Changed from 'string' to 'number' to align with typical database IDs
         email: string;
         [key: string]: any;
@@ -60,6 +61,7 @@ declare global {
             // Include your custom 'user' property
             user?: {
                 role: string;
+                role_id: number;
                 id: number;
                 email: string;
                 [key: string]: any;

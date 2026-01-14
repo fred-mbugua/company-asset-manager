@@ -14,7 +14,7 @@ router.get('/assets/assignments', middlewares_1.authenticate, (0, express_async_
 router.get('/expenses/all', middlewares_1.authenticate, (0, express_async_handler_1.default)(controllers_1.ReportController.getAssetsByEmployee));
 router.get('/assets/employee/:employeeId', middlewares_1.authenticate, (0, express_async_handler_1.default)(controllers_1.ReportController.getAssetsByEmployee));
 router.get('/assets/branch/:location', middlewares_1.authenticate, (0, express_async_handler_1.default)(controllers_1.ReportController.getAssetsByBranch));
-router.get('/expenses/time-period', middlewares_1.authenticate, (0, middlewares_1.authorize)(['Admin']), (0, express_async_handler_1.default)(controllers_1.ReportController.getExpensesByTimePeriod));
+router.get('/expenses/time-period', middlewares_1.authenticate, (0, express_async_handler_1.default)(controllers_1.ReportController.getExpensesByTimePeriod));
 router.get('/assets/export', middlewares_1.authenticate, (0, express_async_handler_1.default)(controllers_1.ReportController.exportAssetReport));
 // Expense Report Data Endpoint
 // URL: /api/reports/expenses

@@ -4,11 +4,10 @@ import RepairRequestTypeController from '../controllers/repairRequestType.contro
 import RepairRequestStatusController from '../controllers/repairRequestStatus.controller';
 import RepairRequestPriorityController from '../controllers/repairRequestPriority.controller';
 import RepairRequestAttachmentController from '../controllers/repairRequestAttachment.controller';
+import RepairWorkflowController from '../controllers/repairWorkflow.controller';
 import { authenticate, authorize } from '../middlewares';
 import asyncHandler from 'express-async-handler';
 import multer from 'multer';
-import path from 'path';
-import fs from 'fs';
 
 const router = Router();
 
@@ -16,24 +15,9 @@ const router = Router();
 // FILE UPLOAD CONFIGURATION
 // =============================================================================
 
-// Ensure upload directory exists
-const uploadDir = path.join(process.cwd(), 'uploads', 'repair-requests');
-if (!fs.existsSync(uploadDir)) {
-    fs.mkdirSync(uploadDir, { recursive: true });
-}
-
-const storage = multer.diskStorage({
-    destination: (req, file, cb) => {
-        cb(null, uploadDir);
-    },
-    filename: (req, file, cb) => {
-        const uniqueSuffix = Date.now() + '-' + Math.round(Math.random() * 1E9);
-        cb(null, uniqueSuffix + '-' + file.originalname);
-    }
-});
-
+// Use memory storage for dynamic storage type (server/firebase)
 const upload = multer({
-    storage,
+    storage: multer.memoryStorage(),
     limits: { fileSize: 10 * 1024 * 1024 }, // 10MB limit
     fileFilter: (req, file, cb) => {
         const allowedTypes = [
@@ -264,7 +248,7 @@ router.patch(
 router.patch(
     '/:id/ict-approve',
     authenticate,
-    authorize(['Admin']),
+    authorize(['*']),
     asyncHandler(RepairRequestController.ictApprove)
 );
 
@@ -272,7 +256,7 @@ router.patch(
 router.patch(
     '/:id/ict-reject',
     authenticate,
-    authorize(['Admin']),
+    authorize(['*']),
     asyncHandler(RepairRequestController.ictReject)
 );
 
@@ -280,7 +264,7 @@ router.patch(
 router.patch(
     '/:id/in-repair',
     authenticate,
-    authorize(['Admin']),
+    authorize(['*']),
     asyncHandler(RepairRequestController.markInRepair)
 );
 
@@ -288,7 +272,7 @@ router.patch(
 router.patch(
     '/:id/awaiting-invoice',
     authenticate,
-    authorize(['Admin']),
+    authorize(['*']),
     asyncHandler(RepairRequestController.markAwaitingInvoice)
 );
 
@@ -299,11 +283,18 @@ router.patch(
     asyncHandler(RepairRequestController.submitInvoice)
 );
 
+// Update Invoice (edit existing invoice details)
+router.patch(
+    '/:id/update-invoice',
+    authenticate,
+    asyncHandler(RepairRequestController.updateInvoice)
+);
+
 // Finance Approve
 router.patch(
     '/:id/finance-approve',
     authenticate,
-    authorize(['Admin']),
+    authorize(['*']),
     asyncHandler(RepairRequestController.financeApprove)
 );
 
@@ -311,7 +302,7 @@ router.patch(
 router.patch(
     '/:id/finance-reject',
     authenticate,
-    authorize(['Admin']),
+    authorize(['*']),
     asyncHandler(RepairRequestController.financeReject)
 );
 
@@ -319,7 +310,7 @@ router.patch(
 router.patch(
     '/:id/complete',
     authenticate,
-    authorize(['Admin']),
+    authorize(['*']),
     asyncHandler(RepairRequestController.complete)
 );
 
@@ -373,11 +364,107 @@ router.get(
     asyncHandler(RepairRequestAttachmentController.download)
 );
 
+// Update attachment
+router.patch(
+    '/:id/attachments/:attachmentId',
+    authenticate,
+    upload.single('file'),
+    asyncHandler(RepairRequestAttachmentController.update)
+);
+
 // Delete attachment
 router.delete(
     '/:id/attachments/:attachmentId',
     authenticate,
     asyncHandler(RepairRequestAttachmentController.delete)
+);
+
+// =============================================================================
+// WORKFLOW CONFIGURATION ROUTES
+// =============================================================================
+
+// Get all workflow stages
+router.get(
+    '/workflow/stages',
+    authenticate,
+    asyncHandler(RepairWorkflowController.getAllStages)
+);
+
+// Get current user's workflow permissions
+router.get(
+    '/workflow/my-permissions',
+    authenticate,
+    asyncHandler(RepairWorkflowController.getMyPermissions)
+);
+
+// Get available actions for a request status
+router.get(
+    '/workflow/available-actions',
+    authenticate,
+    asyncHandler(RepairWorkflowController.getAvailableActions)
+);
+
+// Get all permissions
+router.get(
+    '/workflow/permissions',
+    authenticate,
+    authorize(['Admin']),
+    asyncHandler(RepairWorkflowController.getAllPermissions)
+);
+
+// Create a new workflow stage
+router.post(
+    '/workflow/stages',
+    authenticate,
+    authorize(['Admin']),
+    asyncHandler(RepairWorkflowController.createStage)
+);
+
+// Toggle stage active status (must be before :id route)
+router.patch(
+    '/workflow/stages/:id/toggle',
+    authenticate,
+    authorize(['Admin']),
+    asyncHandler(RepairWorkflowController.toggleStageActive)
+);
+
+// Get permissions for a stage (must be before :id route)
+router.get(
+    '/workflow/stages/:id/permissions',
+    authenticate,
+    authorize(['Admin']),
+    asyncHandler(RepairWorkflowController.getStagePermissions)
+);
+
+// Update permissions for a stage (must be before :id route)
+router.put(
+    '/workflow/stages/:id/permissions',
+    authenticate,
+    authorize(['Admin']),
+    asyncHandler(RepairWorkflowController.updateStagePermissions)
+);
+
+// Get a single workflow stage
+router.get(
+    '/workflow/stages/:id',
+    authenticate,
+    asyncHandler(RepairWorkflowController.getStageById)
+);
+
+// Update a workflow stage
+router.put(
+    '/workflow/stages/:id',
+    authenticate,
+    authorize(['Admin']),
+    asyncHandler(RepairWorkflowController.updateStage)
+);
+
+// Delete a workflow stage
+router.delete(
+    '/workflow/stages/:id',
+    authenticate,
+    authorize(['Admin']),
+    asyncHandler(RepairWorkflowController.deleteStage)
 );
 
 export default router;

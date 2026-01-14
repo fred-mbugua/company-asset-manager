@@ -267,6 +267,37 @@ class RepairRequestController {
         }
     }
     /**
+     * Update Invoice Details (for the user who uploaded it or admin)
+     */
+    async updateInvoice(req, res) {
+        var _a, _b;
+        try {
+            const userId = (_a = req.user) === null || _a === void 0 ? void 0 : _a.id;
+            const userRole = (_b = req.user) === null || _b === void 0 ? void 0 : _b.role;
+            if (!userId) {
+                (0, response_1.errorResponse)(res, 401, 'User not authenticated');
+                return;
+            }
+            const id = parseInt(req.params.id);
+            const { vendor_name, invoice_number, invoice_amount, invoice_date } = req.body;
+            if (!vendor_name || !invoice_number || !invoice_amount || !invoice_date) {
+                (0, response_1.errorResponse)(res, 400, 'Missing required invoice fields');
+                return;
+            }
+            const request = await repairRequest_service_1.default.updateInvoice(id, userId, userRole || '', {
+                vendor_name,
+                invoice_number,
+                invoice_amount: parseFloat(invoice_amount),
+                invoice_date
+            });
+            (0, response_1.successResponse)(res, 200, 'Invoice updated successfully', request);
+        }
+        catch (error) {
+            logger_1.default.error('Error updating invoice:', error);
+            (0, response_1.errorResponse)(res, 500, error.message || 'Failed to update invoice');
+        }
+    }
+    /**
      * Submit Invoice
      */
     async submitInvoice(req, res) {

@@ -583,5 +583,39 @@ class ViewsController {
             res.status(500).send('Failed to load bulk import history page.');
         }
     }
+    /**
+     * Rendering the Repair Workflow Configuration page
+     */
+    async renderManageRepairWorkflow(req, res) {
+        try {
+            // Fetch statuses for dropdowns
+            const statuses = await models_1.RepairRequestStatusModel.findAll();
+            // Fetch roles from database
+            const roles = await models_1.RoleModel.findAll();
+            res.render('manage-repair-workflow', {
+                user: req.user,
+                statuses: statuses,
+                roles: roles
+            });
+        }
+        catch (error) {
+            utils_1.logger.error('Error rendering manage repair workflow page:', error);
+            res.status(500).send('Failed to load repair workflow configuration page.');
+        }
+    }
+    /**
+     * Rendering the Manage Roles EJS view.
+     */
+    async renderManageRoles(req, res) {
+        try {
+            res.render('manage-roles', {
+                user: req.user
+            });
+        }
+        catch (error) {
+            utils_1.logger.error('Error rendering manage roles page:', error);
+            res.status(500).send('Failed to load roles management page.');
+        }
+    }
 }
 exports.default = new ViewsController();

@@ -520,6 +520,10 @@
   max-width: 900px;
 }
 
+.modal-sm {
+  max-width: 450px;
+}
+
 @keyframes modalSlide {
   from {
     opacity: 0;
@@ -815,6 +819,81 @@
   text-align: center;
   color: #7f8c8d;
   padding: 20px;
+}
+
+/* Current Attachment Display (Edit Modal) */
+.current-attachment-display {
+  margin-bottom: 15px;
+  padding: 10px;
+  background: #f8f9fa;
+  border-radius: 6px;
+  border: 1px solid #e9ecef;
+}
+
+.current-attachment-display .no-attachment {
+  color: #7f8c8d;
+  font-style: italic;
+}
+
+/* Current File Display (Edit Attachment Modal) */
+.current-file-display {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 10px;
+  background: #f8f9fa;
+  border-radius: 6px;
+  border: 1px solid #e9ecef;
+}
+
+.current-file-display i {
+  font-size: 20px;
+  color: #F37635;
+}
+
+.current-file-display span {
+  font-weight: 500;
+  color: #2c3e50;
+}
+
+.attachment-item-inline {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 10px;
+}
+
+.attachment-info-inline {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  flex: 1;
+}
+
+.attachment-info-inline i {
+  font-size: 20px;
+  color: #F37635;
+}
+
+.attachment-info-inline a {
+  color: #2c3e50;
+  text-decoration: none;
+  font-weight: 500;
+}
+
+.attachment-info-inline a:hover {
+  color: #F37635;
+  text-decoration: underline;
+}
+
+.attachment-actions-inline {
+  display: flex;
+  gap: 5px;
+}
+
+.attachment-actions-inline .btn {
+  padding: 4px 8px;
+  font-size: 12px;
 }
 
 /* Workflow Actions */

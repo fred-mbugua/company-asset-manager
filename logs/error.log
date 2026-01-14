@@ -1,0 +1,12 @@
+2026-01-14 12:49:42 error: error: column "description" does not exist
+    at C:\Users\HomePC\Documents\JSL\JSL SYSTEMS\asset-manager\node_modules\pg-pool\index.js:45:11
+    at processTicksAndRejections (node:internal/process/task_queues:103:5)
+    at async RoleModel.update (C:\Users\HomePC\Documents\JSL\JSL SYSTEMS\asset-manager\src\models\role.model.ts:57:20)
+    at async RoleService.update (C:\Users\HomePC\Documents\JSL\JSL SYSTEMS\asset-manager\src\services\role.service.ts:67:22)
+    at async update (C:\Users\HomePC\Documents\JSL\JSL SYSTEMS\asset-manager\src\controllers\role.controller.ts:94:26)
+2026-01-14 12:51:25 error: error: column "updated_at" of relation "roles" does not exist
+    at C:\Users\HomePC\Documents\JSL\JSL SYSTEMS\asset-manager\node_modules\pg-pool\index.js:45:11
+    at processTicksAndRejections (node:internal/process/task_queues:103:5)
+    at async RoleModel.update (C:\Users\HomePC\Documents\JSL\JSL SYSTEMS\asset-manager\src\models\role.model.ts:57:20)
+    at async RoleService.update (C:\Users\HomePC\Documents\JSL\JSL SYSTEMS\asset-manager\src\services\role.service.ts:67:22)
+    at async update (C:\Users\HomePC\Documents\JSL\JSL SYSTEMS\asset-manager\src\controllers\role.controller.ts:94:26)

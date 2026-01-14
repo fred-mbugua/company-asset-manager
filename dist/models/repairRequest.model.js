@@ -226,9 +226,9 @@ class RepairRequestModel {
             'ict_reviewed_by', 'ict_reviewed_at', 'ict_notes',
             'repair_started_at', 'repair_completed_at', 'repair_notes',
             'vendor_name', 'invoice_number', 'invoice_amount', 'invoice_date',
-            'invoice_uploaded_by', 'invoice_uploaded_at',
+            'invoice_notes', 'invoice_uploaded_by', 'invoice_uploaded_at',
             'finance_reviewed_by', 'finance_reviewed_at', 'finance_notes',
-            'payment_reference', 'payment_date', 'completed_at'
+            'payment_reference', 'payment_date', 'completed_at', 'expense_id'
         ];
         const updates = [];
         const values = [];

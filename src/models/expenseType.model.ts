@@ -55,6 +55,15 @@ export class ExpenseTypeModel {
     }
 
     /**
+     * Finds expense type by name (case-insensitive).
+     */
+    async findByName(name: string): Promise<IExpenseType | null> {
+        const query = `SELECT id, name, description FROM expense_types WHERE LOWER(name) = LOWER($1);`;
+        const result = await db.query(query, [name]);
+        return result.rows[0] || null;
+    }
+
+    /**
      * Updates an expense type.
      */
     async update(id: number, data: Partial<ICreateExpenseType>): Promise<IExpenseType> {

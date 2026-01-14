@@ -10,6 +10,8 @@ const repairRequestStatus_model_1 = __importDefault(require("../models/repairReq
 const repairRequestPriority_model_1 = __importDefault(require("../models/repairRequestPriority.model"));
 const repairRequestAttachment_model_1 = __importDefault(require("../models/repairRequestAttachment.model"));
 const actionLog_model_1 = __importDefault(require("../models/actionLog.model"));
+const expense_model_1 = __importDefault(require("../models/expense.model"));
+const expenseType_model_1 = __importDefault(require("../models/expenseType.model"));
 const logger_1 = __importDefault(require("../utils/logger"));
 // ============================================================================
 // SERVICE CLASS
@@ -205,6 +207,50 @@ class RepairRequestService {
         return this.updateStatus(requestId, status.id, userId, notes);
     }
     /**
+     * Update Invoice Details (only by uploader or admin)
+     */
+    async updateInvoice(requestId, userId, userRole, invoiceData) {
+        try {
+            const request = await repairRequest_model_1.default.findById(requestId);
+            if (!request) {
+                throw new Error('Repair request not found');
+            }
+            // Only the user who uploaded the invoice or admin can edit it
+            if (request.invoice_uploaded_by !== userId && userRole !== 'Admin') {
+                throw new Error('You do not have permission to edit this invoice');
+            }
+            // Update invoice details
+            await repairRequest_model_1.default.update(requestId, {
+                vendor_name: invoiceData.vendor_name,
+                invoice_number: invoiceData.invoice_number,
+                invoice_amount: invoiceData.invoice_amount,
+                invoice_date: new Date(invoiceData.invoice_date)
+            });
+            // Log the action
+            await actionLog_model_1.default.create({
+                user_id: userId,
+                action_type: 'UPDATE',
+                entity_type: 'RepairRequest',
+                entity_id: requestId,
+                details: {
+                    message: 'Invoice details updated',
+                    vendor_name: invoiceData.vendor_name,
+                    invoice_number: invoiceData.invoice_number,
+                    invoice_amount: invoiceData.invoice_amount
+                }
+            });
+            const updatedRequest = await repairRequest_model_1.default.findById(requestId);
+            if (!updatedRequest) {
+                throw new Error('Failed to retrieve updated request');
+            }
+            return updatedRequest;
+        }
+        catch (error) {
+            logger_1.default.error('Error updating invoice:', error);
+            throw error;
+        }
+    }
+    /**
      * Submit Invoice
      */
     async submitInvoice(requestId, userId, invoiceData) {
@@ -274,14 +320,72 @@ class RepairRequestService {
         return this.updateStatus(requestId, rejectedStatus.id, userId, notes);
     }
     /**
-     * Complete Request
+     * Complete Request - Also creates an expense record for the repair
      */
     async completeRequest(requestId, userId, notes) {
         const completedStatus = await repairRequestStatus_model_1.default.findByName('Completed');
         if (!completedStatus) {
             throw new Error('Completed status not configured');
         }
-        return this.updateStatus(requestId, completedStatus.id, userId, notes || 'Request completed');
+        // First, update the status
+        const completedRequest = await this.updateStatus(requestId, completedStatus.id, userId, notes || 'Request completed');
+        // Create an expense record if there's invoice data
+        try {
+            const request = await this.getRequestById(requestId);
+            if (request && request.invoice_amount && request.invoice_amount > 0) {
+                // Find or create the "Repair" expense type
+                let repairExpenseType = await expenseType_model_1.default.findByName('Repair');
+                if (!repairExpenseType) {
+                    // Create the Repair expense type if it doesn't exist
+                    repairExpenseType = await expenseType_model_1.default.create({
+                        name: 'Repair',
+                        description: 'Repair expenses from repair requests'
+                    });
+                }
+                // Get the asset's current assignment to find assigned employee
+                let assignedEmployeeId = null;
+                if (request.asset_id) {
+                    const assetAssignment = await this.getAssetCurrentAssignment(request.asset_id);
+                    if (assetAssignment) {
+                        assignedEmployeeId = assetAssignment.employee_id;
+                    }
+                }
+                // Create the expense record
+                const expenseData = {
+                    asset_id: request.asset_id,
+                    date: request.invoice_date || new Date(),
+                    amount: request.invoice_amount,
+                    vendor: request.vendor_name || 'Unknown Vendor',
+                    invoice_number: request.invoice_number || `RR-${requestId}`,
+                    notes: `Repair Request #${requestId}: ${request.title || 'Repair'}${request.invoice_notes ? ` - ${request.invoice_notes}` : ''}`,
+                    expense_type_id: repairExpenseType.id,
+                    assigned_employee_id: assignedEmployeeId
+                };
+                const expense = await expense_model_1.default.create(expenseData);
+                // Update repair request with the created expense ID
+                await repairRequest_model_1.default.update(requestId, { expense_id: expense.id });
+                logger_1.default.info(`Created expense #${expense.id} from completed repair request #${requestId}`);
+            }
+        }
+        catch (error) {
+            // Log error but don't fail the completion
+            logger_1.default.error(`Failed to create expense for repair request #${requestId}:`, error);
+        }
+        return completedRequest;
+    }
+    /**
+     * Get current assignment for an asset
+     */
+    async getAssetCurrentAssignment(assetId) {
+        const db = require('../config/database').default;
+        const query = `
+            SELECT employee_id 
+            FROM assignments 
+            WHERE asset_id = $1 AND return_date IS NULL 
+            LIMIT 1
+        `;
+        const result = await db.query(query, [assetId]);
+        return result.rows[0] || null;
     }
     /**
      * Cancel Request
@@ -348,6 +452,12 @@ class RepairRequestService {
      */
     async getAttachmentById(id) {
         return await repairRequestAttachment_model_1.default.findById(id);
+    }
+    /**
+     * Updates an attachment
+     */
+    async updateAttachment(id, data) {
+        return await repairRequestAttachment_model_1.default.update(id, data);
     }
     /**
      * Deletes an attachment

@@ -21,6 +21,7 @@ const assignmentAttachment_routes_1 = __importDefault(require("./assignmentAttac
 const systemConfiguration_routes_1 = __importDefault(require("./systemConfiguration.routes"));
 const bulkUserImport_routes_1 = __importDefault(require("./bulkUserImport.routes"));
 const repairRequest_routes_1 = __importDefault(require("./repairRequest.routes"));
+const role_routes_1 = __importDefault(require("./role.routes"));
 const auth_middleware_1 = require("../middlewares/auth.middleware");
 const router = (0, express_1.Router)();
 router.use('/auth', auth_middleware_1.authenticate, auth_routes_1.default);
@@ -39,5 +40,6 @@ router.use('/assignment-attachments', auth_middleware_1.authenticate, assignment
 router.use('/system-config', systemConfiguration_routes_1.default);
 router.use('/bulk-user-import', bulkUserImport_routes_1.default);
 router.use('/repair-requests', repairRequest_routes_1.default);
+router.use('/roles', role_routes_1.default);
 router.use('/', auth_middleware_1.authenticate, assetType_routes_1.default);
 exports.default = router;

@@ -5,8 +5,12 @@ document.addEventListener('DOMContentLoaded', () => {
     const detailsModal = document.getElementById('details-modal');
     const statusModal = document.getElementById('status-modal');
     const attachmentsModal = document.getElementById('attachments-modal');
+    const editInvoiceModal = document.getElementById('edit-invoice-modal');
+    const editAttachmentModal = document.getElementById('edit-attachment-modal');
     const requestForm = document.getElementById('request-form');
     const statusForm = document.getElementById('status-form');
+    const editInvoiceForm = document.getElementById('edit-invoice-form');
+    const editAttachmentForm = document.getElementById('edit-attachment-form');
     const tableBody = document.getElementById('requests-table-body');
 
     // Filter Elements
@@ -30,8 +34,54 @@ document.addEventListener('DOMContentLoaded', () => {
     let pageSize = 20;
     let totalPages = 1;
     let totalRecords = 0;
+    let userWorkflowPermissions = {}; // Dynamic workflow permissions cache
 
     const API_BASE = '/repair-requests';
+
+    /**
+     * Load user's workflow permissions from backend
+     */
+    const loadUserWorkflowPermissions = async () => {
+        try {
+            const response = await API.get(`${API_BASE}/workflow/my-permissions`);
+            if (response.data) {
+                userWorkflowPermissions = response.data;
+                // Create a lookup by stage_key for easier access
+                userWorkflowPermissions.stageKeys = {};
+                if (Array.isArray(response.data)) {
+                    response.data.forEach(perm => {
+                        userWorkflowPermissions.stageKeys[perm.stage_key] = true;
+                    });
+                }
+            }
+        } catch (error) {
+            console.warn('Could not load workflow permissions, using defaults:', error);
+            userWorkflowPermissions = { stageKeys: {} };
+        }
+    };
+
+    /**
+     * Check if user can perform a specific action
+     */
+    const canPerformAction = (stageKey) => {
+        // If permissions loaded, use them
+        if (userWorkflowPermissions.stageKeys) {
+            return userWorkflowPermissions.stageKeys[stageKey] === true;
+        }
+        // Fallback to role-based checks
+        const role = window.currentUser?.role || 'Standard User';
+        const actionRoleMap = {
+            'ict-approve': ['Admin', 'ICT'],
+            'ict-reject': ['Admin', 'ICT'],
+            'in-repair': ['Admin', 'ICT'],
+            'submit-invoice': ['Admin', 'ICT'],
+            'finance-approve': ['Admin', 'Finance'],
+            'finance-reject': ['Admin', 'Finance'],
+            'complete': ['Admin', 'Finance'],
+            'cancel': ['Admin', 'Standard User', 'ICT', 'Finance']
+        };
+        return actionRoleMap[stageKey]?.includes(role) || false;
+    };
 
     /**
      * Fetch repair requests with filters and pagination
@@ -74,12 +124,12 @@ document.addEventListener('DOMContentLoaded', () => {
     const fetchStatistics = async () => {
         try {
             const response = await API.get(`${API_BASE}/statistics`);
-            const stats = response.data;
+            const stats = response.data || {};
 
-            document.getElementById('stat-total').textContent = stats.total || 0;
-            document.getElementById('stat-pending').textContent = stats.pending || 0;
-            document.getElementById('stat-progress').textContent = stats.in_progress || 0;
-            document.getElementById('stat-completed').textContent = stats.completed || 0;
+            document.getElementById('stat-total').textContent = stats.total_requests || 0;
+            document.getElementById('stat-pending').textContent = stats.pending_count || 0;
+            document.getElementById('stat-progress').textContent = stats.in_progress_count || 0;
+            document.getElementById('stat-completed').textContent = stats.completed_count || 0;
         } catch (error) {
             console.error('Error fetching statistics:', error);
         }
@@ -112,7 +162,7 @@ document.addEventListener('DOMContentLoaded', () => {
                 <td><span class="request-number">${req.request_number}</span></td>
                 <td>${escapeHtml(req.title)}</td>
                 <td>${req.asset_tag || '<span class="text-muted">N/A</span>'}</td>
-                <td>${escapeHtml(req.type_name || 'N/A')}</td>
+                <td>${escapeHtml(req.request_type_name || 'N/A')}</td>
                 <td>
                     <span class="priority-badge" style="background-color: ${req.priority_color || '#6c757d'}">
                         ${escapeHtml(req.priority_name || 'N/A')}
@@ -138,72 +188,87 @@ document.addEventListener('DOMContentLoaded', () => {
     };
 
     /**
-     * Get action buttons based on status and user role
+     * Get action buttons based on status and user workflow permissions
      */
     const getActionButtons = (req) => {
-        const role = window.currentUser?.role || 'Standard User';
         const userId = window.currentUser?.id;
+        const role = window.currentUser?.role || 'Standard User';
         let buttons = '';
 
-        // ICT actions
-        if (role === 'Admin' || role === 'ICT') {
+        // ICT actions - based on workflow permissions
+        if (canPerformAction('ict-approve') || canPerformAction('ict-reject')) {
             if (req.status_name === 'Pending') {
-                buttons += `
-                    <button class="btn btn-sm btn-success btn-icon" onclick="performAction(${req.id}, 'ict-approve')" title="ICT Approve">
-                        <i class="uil uil-check"></i>
-                    </button>
-                    <button class="btn btn-sm btn-danger btn-icon" onclick="performAction(${req.id}, 'ict-reject')" title="ICT Reject">
-                        <i class="uil uil-times"></i>
-                    </button>
-                `;
-            }
-            if (req.status_name === 'ICT Approved') {
-                buttons += `
-                    <button class="btn btn-sm btn-warning btn-icon" onclick="performAction(${req.id}, 'in-repair')" title="Mark In Repair">
-                        <i class="uil uil-wrench"></i>
-                    </button>
-                `;
-            }
-            if (req.status_name === 'In Repair') {
-                buttons += `
-                    <button class="btn btn-sm btn-primary btn-icon" onclick="performAction(${req.id}, 'submit-invoice')" title="Submit Invoice">
-                        <i class="uil uil-invoice"></i>
-                    </button>
-                `;
+                if (canPerformAction('ict-approve')) {
+                    buttons += `
+                        <button class="btn btn-sm btn-success btn-icon" onclick="performAction(${req.id}, 'ict-approve')" title="ICT Approve">
+                            <i class="uil uil-check"></i>
+                        </button>
+                    `;
+                }
+                if (canPerformAction('ict-reject')) {
+                    buttons += `
+                        <button class="btn btn-sm btn-danger btn-icon" onclick="performAction(${req.id}, 'ict-reject')" title="ICT Reject">
+                            <i class="uil uil-times"></i>
+                        </button>
+                    `;
+                }
             }
         }
+        
+        if (canPerformAction('in-repair') && req.status_name === 'ICT Approved') {
+            buttons += `
+                <button class="btn btn-sm btn-warning btn-icon" onclick="performAction(${req.id}, 'in-repair')" title="Mark In Repair">
+                    <i class="uil uil-wrench"></i>
+                </button>
+            `;
+        }
+        
+        if (canPerformAction('submit-invoice') && req.status_name === 'In Repair') {
+            buttons += `
+                <button class="btn btn-sm btn-primary btn-icon" onclick="performAction(${req.id}, 'submit-invoice')" title="Submit Invoice">
+                    <i class="uil uil-invoice"></i>
+                </button>
+            `;
+        }
 
-        // Finance actions
-        if (role === 'Admin' || role === 'Finance') {
+        // Finance actions - based on workflow permissions
+        if (canPerformAction('finance-approve') || canPerformAction('finance-reject')) {
             if (req.status_name === 'Invoice Submitted') {
-                buttons += `
-                    <button class="btn btn-sm btn-success btn-icon" onclick="performAction(${req.id}, 'finance-approve')" title="Finance Approve">
-                        <i class="uil uil-check-circle"></i>
-                    </button>
-                    <button class="btn btn-sm btn-danger btn-icon" onclick="performAction(${req.id}, 'finance-reject')" title="Finance Reject">
-                        <i class="uil uil-times-circle"></i>
-                    </button>
-                `;
-            }
-            if (req.status_name === 'Finance Approved') {
-                buttons += `
-                    <button class="btn btn-sm btn-success btn-icon" onclick="performAction(${req.id}, 'complete')" title="Mark Complete">
-                        <i class="uil uil-check-square"></i>
-                    </button>
-                `;
+                if (canPerformAction('finance-approve')) {
+                    buttons += `
+                        <button class="btn btn-sm btn-success btn-icon" onclick="performAction(${req.id}, 'finance-approve')" title="Finance Approve">
+                            <i class="uil uil-check-circle"></i>
+                        </button>
+                    `;
+                }
+                if (canPerformAction('finance-reject')) {
+                    buttons += `
+                        <button class="btn btn-sm btn-danger btn-icon" onclick="performAction(${req.id}, 'finance-reject')" title="Finance Reject">
+                            <i class="uil uil-times-circle"></i>
+                        </button>
+                    `;
+                }
             }
         }
+        
+        if (canPerformAction('complete') && req.status_name === 'Finance Approved') {
+            buttons += `
+                <button class="btn btn-sm btn-success btn-icon" onclick="performAction(${req.id}, 'complete')" title="Mark Complete">
+                    <i class="uil uil-check-square"></i>
+                </button>
+            `;
+        }
 
-        // Attachments button
+        // Attachments button (always visible)
         buttons += `
             <button class="btn btn-sm btn-secondary btn-icon" onclick="openAttachments(${req.id})" title="Attachments">
                 <i class="uil uil-paperclip"></i>
             </button>
         `;
 
-        // Cancel button (for requester or admin)
-        if ((req.requester_id === userId || role === 'Admin') && 
-            !['Completed', 'Cancelled'].includes(req.status_name)) {
+        // Cancel button (for requester or users with cancel permission)
+        const canCancel = canPerformAction('cancel') || req.requester_id === userId || role === 'Admin';
+        if (canCancel && !['Completed', 'Cancelled'].includes(req.status_name)) {
             buttons += `
                 <button class="btn btn-sm btn-danger btn-icon" onclick="performAction(${req.id}, 'cancel')" title="Cancel">
                     <i class="uil uil-ban"></i>
@@ -252,7 +317,7 @@ document.addEventListener('DOMContentLoaded', () => {
                     </div>
                     <div class="detail-item">
                         <label>Type</label>
-                        <span>${escapeHtml(req.type_name || 'N/A')}</span>
+                        <span>${escapeHtml(req.request_type_name || 'N/A')}</span>
                     </div>
                     <div class="detail-item">
                         <label>Priority</label>
@@ -311,6 +376,16 @@ document.addEventListener('DOMContentLoaded', () => {
                                 </div>
                             ` : ''}
                         </div>
+                        <div class="invoice-actions" style="margin-top: 15px; display: flex; gap: 10px;">
+                            <button class="btn btn-info btn-sm" onclick="openInvoiceAttachments(${req.id})">
+                                <i class="uil uil-file-search-alt"></i> View Invoice Docs
+                            </button>
+                            ${canEditInvoice(req) ? `
+                                <button class="btn btn-warning btn-sm" onclick="openEditInvoice(${req.id}, '${escapeHtml(req.vendor_name)}', '${escapeHtml(req.invoice_number || '')}', ${req.invoice_amount || 0}, '${req.invoice_date ? req.invoice_date.split('T')[0] : ''}')">
+                                    <i class="uil uil-edit"></i> Edit Invoice
+                                </button>
+                            ` : ''}
+                        </div>
                     </div>
                 ` : ''}
 
@@ -319,9 +394,9 @@ document.addEventListener('DOMContentLoaded', () => {
                     <div class="history-timeline">
                         ${history.map(h => `
                             <div class="history-item">
-                                <div class="history-status">${escapeHtml(h.status_name)}</div>
+                                <div class="history-status">${escapeHtml(h.to_status_name || h.action_type || 'N/A')}</div>
                                 <div class="history-meta">
-                                    ${escapeHtml(h.changed_by_name)} - ${formatDateTime(h.changed_at)}
+                                    ${escapeHtml(h.performer_name || 'System')} - ${formatDateTime(h.created_at)}
                                 </div>
                                 ${h.notes ? `<div class="history-notes">${escapeHtml(h.notes)}</div>` : ''}
                             </div>
@@ -342,62 +417,76 @@ document.addEventListener('DOMContentLoaded', () => {
     };
 
     /**
-     * Get workflow actions for details modal
+     * Get workflow actions for details modal (using dynamic permissions)
      */
     const getWorkflowActions = (req) => {
-        const role = window.currentUser?.role || 'Standard User';
         const userId = window.currentUser?.id;
+        const role = window.currentUser?.role || 'Standard User';
         let actions = '';
 
-        if (role === 'Admin' || role === 'ICT') {
-            if (req.status_name === 'Pending') {
+        // ICT actions
+        if (req.status_name === 'Pending') {
+            if (canPerformAction('ict-approve')) {
                 actions += `
                     <button class="btn btn-success" onclick="performAction(${req.id}, 'ict-approve')">
                         <i class="uil uil-check"></i> ICT Approve
                     </button>
+                `;
+            }
+            if (canPerformAction('ict-reject')) {
+                actions += `
                     <button class="btn btn-danger" onclick="performAction(${req.id}, 'ict-reject')">
                         <i class="uil uil-times"></i> ICT Reject
                     </button>
                 `;
             }
-            if (req.status_name === 'ICT Approved') {
-                actions += `
-                    <button class="btn btn-warning" onclick="performAction(${req.id}, 'in-repair')">
-                        <i class="uil uil-wrench"></i> Mark In Repair
-                    </button>
-                `;
-            }
-            if (req.status_name === 'In Repair') {
-                actions += `
-                    <button class="btn btn-primary" onclick="performAction(${req.id}, 'submit-invoice')">
-                        <i class="uil uil-invoice"></i> Submit Invoice
-                    </button>
-                `;
-            }
+        }
+        
+        if (canPerformAction('in-repair') && req.status_name === 'ICT Approved') {
+            actions += `
+                <button class="btn btn-warning" onclick="performAction(${req.id}, 'in-repair')">
+                    <i class="uil uil-wrench"></i> Mark In Repair
+                </button>
+            `;
+        }
+        
+        if (canPerformAction('submit-invoice') && req.status_name === 'In Repair') {
+            actions += `
+                <button class="btn btn-primary" onclick="performAction(${req.id}, 'submit-invoice')">
+                    <i class="uil uil-invoice"></i> Submit Invoice
+                </button>
+            `;
         }
 
-        if (role === 'Admin' || role === 'Finance') {
-            if (req.status_name === 'Invoice Submitted') {
+        // Finance actions
+        if (req.status_name === 'Invoice Submitted') {
+            if (canPerformAction('finance-approve')) {
                 actions += `
                     <button class="btn btn-success" onclick="performAction(${req.id}, 'finance-approve')">
                         <i class="uil uil-check-circle"></i> Finance Approve
                     </button>
+                `;
+            }
+            if (canPerformAction('finance-reject')) {
+                actions += `
                     <button class="btn btn-danger" onclick="performAction(${req.id}, 'finance-reject')">
                         <i class="uil uil-times-circle"></i> Finance Reject
                     </button>
                 `;
             }
-            if (req.status_name === 'Finance Approved') {
-                actions += `
-                    <button class="btn btn-success" onclick="performAction(${req.id}, 'complete')">
-                        <i class="uil uil-check-square"></i> Mark Complete
-                    </button>
-                `;
-            }
+        }
+        
+        if (canPerformAction('complete') && req.status_name === 'Finance Approved') {
+            actions += `
+                <button class="btn btn-success" onclick="performAction(${req.id}, 'complete')">
+                    <i class="uil uil-check-square"></i> Mark Complete
+                </button>
+            `;
         }
 
-        if ((req.requester_id === userId || role === 'Admin') && 
-            !['Completed', 'Cancelled'].includes(req.status_name)) {
+        // Cancel button
+        const canCancel = canPerformAction('cancel') || req.requester_id === userId || role === 'Admin';
+        if (canCancel && !['Completed', 'Cancelled'].includes(req.status_name)) {
             actions += `
                 <button class="btn btn-danger" onclick="performAction(${req.id}, 'cancel')">
                     <i class="uil uil-ban"></i> Cancel Request
@@ -484,7 +573,26 @@ document.addEventListener('DOMContentLoaded', () => {
         }
 
         try {
-            await API.post(`${API_BASE}/${id}/${action}`, formData);
+            await API.patch(`${API_BASE}/${id}/${action}`, formData);
+            
+            // If submitting invoice and a file was attached, upload it
+            if (action === 'submit-invoice') {
+                const invoiceFile = document.getElementById('invoice-attachment').files[0];
+                if (invoiceFile) {
+                    try {
+                        const uploadFormData = new FormData();
+                        uploadFormData.append('attachment_type', 'invoice');
+                        uploadFormData.append('files', invoiceFile);
+                        await API.upload(`${API_BASE}/${id}/attachments`, uploadFormData);
+                    } catch (uploadError) {
+                        console.error('Error uploading invoice attachment:', uploadError);
+                        alert('Invoice submitted but attachment upload failed. You can add it later via Attachments.');
+                    }
+                }
+                // Clear the file input
+                document.getElementById('invoice-attachment').value = '';
+            }
+            
             alert('Status updated successfully!');
             statusModal.style.display = 'none';
             detailsModal.style.display = 'none';
@@ -519,25 +627,37 @@ document.addEventListener('DOMContentLoaded', () => {
                 return;
             }
 
-            container.innerHTML = attachments.map(att => `
+            const userId = window.currentUser?.id;
+            const userRole = window.currentUser?.role;
+
+            container.innerHTML = attachments.map(att => {
+                // Only show edit/delete buttons if user is Admin or the uploader
+                const canEdit = userRole === 'Admin' || att.uploaded_by === userId;
+                
+                return `
                 <div class="attachment-item">
                     <div class="attachment-info">
                         <i class="uil ${getFileIcon(att.file_name)}"></i>
                         <div>
                             <div class="attachment-name">${escapeHtml(att.original_name || att.file_name)}</div>
-                            <div class="attachment-meta">${att.attachment_type} - ${formatFileSize(att.file_size)}</div>
+                            <div class="attachment-meta">${att.attachment_type} - ${formatFileSize(att.file_size)}${att.uploader_name ? ` - Uploaded by ${escapeHtml(att.uploader_name)}` : ''}</div>
                         </div>
                     </div>
                     <div class="attachment-actions">
-                        <a href="/uploads/repair-requests/${att.file_name}" target="_blank" class="btn btn-sm btn-info" title="Download">
+                        <a href="/api/repair-requests/${id}/attachments/${att.id}/download" target="_blank" class="btn btn-sm btn-info" title="Download">
                             <i class="uil uil-download-alt"></i>
                         </a>
+                        ${canEdit ? `
+                        <button class="btn btn-sm btn-warning" onclick="openEditAttachment(${id}, ${att.id}, '${escapeHtml(att.original_name || att.file_name)}', '${att.attachment_type}', '${escapeHtml(att.notes || '')}')" title="Edit">
+                            <i class="uil uil-edit"></i>
+                        </button>
                         <button class="btn btn-sm btn-danger" onclick="deleteAttachment(${id}, ${att.id})" title="Delete">
                             <i class="uil uil-trash"></i>
                         </button>
+                        ` : ''}
                     </div>
                 </div>
-            `).join('');
+            `}).join('');
         } catch (error) {
             console.error('Error loading attachments:', error);
         }
@@ -563,15 +683,13 @@ document.addEventListener('DOMContentLoaded', () => {
         }
 
         try {
-            await API.post(`${API_BASE}/${id}/attachments`, formData, {
-                headers: { 'Content-Type': 'multipart/form-data' }
-            });
+            await API.upload(`${API_BASE}/${id}/attachments`, formData);
             alert('Attachments uploaded successfully!');
             document.getElementById('attachment-files').value = '';
             loadAttachments(id);
         } catch (error) {
             console.error('Error uploading attachments:', error);
-            alert(error.response?.data?.message || 'Failed to upload attachments.');
+            alert(error.message || 'Failed to upload attachments.');
         }
     });
 
@@ -590,6 +708,280 @@ document.addEventListener('DOMContentLoaded', () => {
             alert(error.response?.data?.message || 'Failed to delete attachment.');
         }
     };
+
+    /**
+     * Open edit attachment modal
+     */
+    window.openEditAttachment = (requestId, attachmentId, fileName, attachmentType, notes) => {
+        document.getElementById('edit-attachment-request-id').value = requestId;
+        document.getElementById('edit-attachment-id').value = attachmentId;
+        document.getElementById('edit-attachment-type').value = attachmentType || 'general';
+        document.getElementById('edit-attachment-notes').value = notes || '';
+        document.getElementById('edit-attachment-file').value = '';
+        document.getElementById('edit-attachment-current-file').innerHTML = `
+            <i class="uil ${getFileIcon(fileName)}"></i>
+            <span>${fileName}</span>
+        `;
+        editAttachmentModal.style.display = 'block';
+    };
+
+    /**
+     * Close edit attachment modal
+     */
+    window.closeEditAttachmentModal = () => {
+        editAttachmentModal.style.display = 'none';
+    };
+
+    /**
+     * Handle edit attachment form submission
+     */
+    editAttachmentForm.addEventListener('submit', async (e) => {
+        e.preventDefault();
+
+        const requestId = document.getElementById('edit-attachment-request-id').value;
+        const attachmentId = document.getElementById('edit-attachment-id').value;
+        const attachmentType = document.getElementById('edit-attachment-type').value;
+        const notes = document.getElementById('edit-attachment-notes').value;
+        const newFile = document.getElementById('edit-attachment-file').files[0];
+
+        try {
+            if (newFile) {
+                // If there's a new file, use FormData
+                const formData = new FormData();
+                formData.append('attachment_type', attachmentType);
+                formData.append('notes', notes);
+                formData.append('file', newFile);
+                await API.upload(`${API_BASE}/${requestId}/attachments/${attachmentId}`, formData, 'PATCH');
+            } else {
+                // Just update type and notes
+                await API.patch(`${API_BASE}/${requestId}/attachments/${attachmentId}`, {
+                    attachment_type: attachmentType,
+                    notes: notes
+                });
+            }
+
+            alert('Attachment updated successfully!');
+            editAttachmentModal.style.display = 'none';
+            loadAttachments(requestId);
+        } catch (error) {
+            console.error('Error updating attachment:', error);
+            alert(error.message || 'Failed to update attachment.');
+        }
+    });
+
+    /**
+     * Check if current user can edit invoice
+     */
+    const canEditInvoice = (req) => {
+        const userId = window.currentUser?.id;
+        const userRole = window.currentUser?.role;
+        // Only the invoice uploader or Admin can edit
+        return req.invoice_uploaded_by === userId || userRole === 'Admin';
+    };
+
+    /**
+     * Open invoice attachments (filtered to show only invoice type)
+     */
+    window.openInvoiceAttachments = async (id) => {
+        document.getElementById('attachments-request-id').value = id;
+        await loadInvoiceAttachments(id);
+        attachmentsModal.style.display = 'block';
+    };
+
+    /**
+     * Load invoice attachments only
+     */
+    const loadInvoiceAttachments = async (id) => {
+        try {
+            const response = await API.get(`${API_BASE}/${id}/attachments`);
+            const attachments = (response.data || []).filter(att => 
+                att.attachment_type === 'invoice' || att.attachment_type === 'Invoice'
+            );
+            const container = document.getElementById('attachments-list');
+
+            if (attachments.length === 0) {
+                container.innerHTML = '<p class="no-attachments">No invoice documents attached yet.</p>';
+                return;
+            }
+
+            const userId = window.currentUser?.id;
+            const userRole = window.currentUser?.role;
+
+            container.innerHTML = attachments.map(att => {
+                // Only show delete button if user is Admin or the uploader
+                const canDelete = userRole === 'Admin' || att.uploaded_by === userId;
+                
+                return `
+                <div class="attachment-item">
+                    <div class="attachment-info">
+                        <i class="uil ${getFileIcon(att.file_name)}"></i>
+                        <div>
+                            <div class="attachment-name">${escapeHtml(att.original_name || att.file_name)}</div>
+                            <div class="attachment-meta">${att.attachment_type} - ${formatFileSize(att.file_size)}${att.uploader_name ? ` - Uploaded by ${escapeHtml(att.uploader_name)}` : ''}</div>
+                        </div>
+                    </div>
+                    <div class="attachment-actions">
+                        <a href="/api/repair-requests/${id}/attachments/${att.id}/download" target="_blank" class="btn btn-sm btn-info" title="Download">
+                            <i class="uil uil-download-alt"></i>
+                        </a>
+                        ${canDelete ? `
+                        <button class="btn btn-sm btn-danger" onclick="deleteAttachment(${id}, ${att.id})" title="Delete">
+                            <i class="uil uil-trash"></i>
+                        </button>
+                        ` : ''}
+                    </div>
+                </div>
+            `}).join('');
+        } catch (error) {
+            console.error('Error loading invoice attachments:', error);
+        }
+    };
+
+    /**
+     * Open edit invoice modal
+     */
+    window.openEditInvoice = async (id, vendorName, invoiceNumber, invoiceAmount, invoiceDate) => {
+        document.getElementById('edit-invoice-request-id').value = id;
+        document.getElementById('edit-vendor-name').value = vendorName;
+        document.getElementById('edit-invoice-number').value = invoiceNumber;
+        document.getElementById('edit-invoice-amount').value = invoiceAmount;
+        document.getElementById('edit-invoice-date').value = invoiceDate;
+        document.getElementById('edit-invoice-attachment').value = '';
+        
+        // Load current invoice attachments
+        await loadCurrentInvoiceAttachment(id);
+        
+        editInvoiceModal.style.display = 'block';
+    };
+
+    /**
+     * Load current invoice attachment for edit modal
+     */
+    const loadCurrentInvoiceAttachment = async (requestId) => {
+        const container = document.getElementById('current-invoice-attachment');
+        try {
+            const response = await API.get(`${API_BASE}/${requestId}/attachments`);
+            const attachments = response.data || [];
+            const invoiceAttachments = attachments.filter(att => att.attachment_type === 'invoice');
+            
+            if (invoiceAttachments.length === 0) {
+                container.innerHTML = '<span class="no-attachment">No invoice document attached</span>';
+                return;
+            }
+
+            const userId = window.currentUser?.id;
+            const userRole = window.currentUser?.role;
+            
+            container.innerHTML = invoiceAttachments.map(att => {
+                // Only show delete button if user is Admin or the uploader
+                const canDelete = userRole === 'Admin' || att.uploaded_by === userId;
+                
+                return `
+                <div class="attachment-item-inline" data-attachment-id="${att.id}">
+                    <div class="attachment-info-inline">
+                        <i class="uil ${getFileIcon(att.file_name)}"></i>
+                        <span class="attachment-name">${escapeHtml(att.original_name || att.file_name)}</span>
+                        <span class="attachment-size">(${formatFileSize(att.file_size)})</span>
+                    </div>
+                    <div class="attachment-actions-inline">
+                        <a href="/api/repair-requests/${requestId}/attachments/${att.id}/download" target="_blank" class="btn btn-sm btn-info" title="View/Download">
+                            <i class="uil uil-eye"></i>
+                        </a>
+                        ${canDelete ? `
+                        <button type="button" class="btn btn-sm btn-danger" onclick="deleteInvoiceAttachment(${requestId}, ${att.id})" title="Delete">
+                            <i class="uil uil-trash"></i>
+                        </button>
+                        ` : ''}
+                    </div>
+                </div>
+            `}).join('');
+        } catch (error) {
+            console.error('Error loading invoice attachments:', error);
+            container.innerHTML = '<span class="no-attachment">Error loading attachments</span>';
+        }
+    };
+
+    /**
+     * Delete invoice attachment from edit modal
+     */
+    window.deleteInvoiceAttachment = async (requestId, attachmentId) => {
+        if (!confirm('Are you sure you want to delete this invoice document?')) return;
+
+        try {
+            await API.delete(`${API_BASE}/${requestId}/attachments/${attachmentId}`);
+            // Reload the current attachment display
+            await loadCurrentInvoiceAttachment(requestId);
+            alert('Invoice document deleted successfully!');
+        } catch (error) {
+            console.error('Error deleting invoice attachment:', error);
+            alert(error.message || 'Failed to delete invoice document.');
+        }
+    };
+
+    /**
+     * Handle edit invoice form submission
+     */
+    editInvoiceForm.addEventListener('submit', async (e) => {
+        e.preventDefault();
+
+        const id = document.getElementById('edit-invoice-request-id').value;
+        const formData = {
+            vendor_name: document.getElementById('edit-vendor-name').value,
+            invoice_number: document.getElementById('edit-invoice-number').value,
+            invoice_amount: parseFloat(document.getElementById('edit-invoice-amount').value),
+            invoice_date: document.getElementById('edit-invoice-date').value
+        };
+
+        try {
+            await API.patch(`${API_BASE}/${id}/update-invoice`, formData);
+            
+            // Check if a new file was selected for upload
+            const newInvoiceFile = document.getElementById('edit-invoice-attachment').files[0];
+            if (newInvoiceFile) {
+                // First, delete existing invoice attachments
+                try {
+                    const response = await API.get(`${API_BASE}/${id}/attachments`);
+                    const attachments = response.data || [];
+                    const invoiceAttachments = attachments.filter(att => att.attachment_type === 'invoice');
+                    
+                    // Delete all existing invoice attachments
+                    for (const att of invoiceAttachments) {
+                        await API.delete(`${API_BASE}/${id}/attachments/${att.id}`);
+                    }
+                } catch (deleteError) {
+                    console.warn('Could not delete old attachments:', deleteError);
+                }
+                
+                // Upload the new file
+                try {
+                    const uploadFormData = new FormData();
+                    uploadFormData.append('attachment_type', 'invoice');
+                    uploadFormData.append('files', newInvoiceFile);
+                    await API.upload(`${API_BASE}/${id}/attachments`, uploadFormData);
+                } catch (uploadError) {
+                    console.error('Error uploading new invoice attachment:', uploadError);
+                    alert('Invoice details updated but new attachment upload failed.');
+                }
+            }
+            
+            alert('Invoice updated successfully!');
+            editInvoiceModal.style.display = 'none';
+            detailsModal.style.display = 'none';
+            fetchRequests();
+        } catch (error) {
+            console.error('Error updating invoice:', error);
+            alert(error.message || 'Failed to update invoice.');
+        }
+    });
+
+    // Close edit invoice modal
+    document.getElementById('cancel-edit-invoice').addEventListener('click', () => {
+        editInvoiceModal.style.display = 'none';
+    });
+
+    editInvoiceModal.querySelector('.close-btn').addEventListener('click', () => {
+        editInvoiceModal.style.display = 'none';
+    });
 
     /**
      * Create new request
@@ -777,7 +1169,12 @@ document.addEventListener('DOMContentLoaded', () => {
         return icons[ext] || 'uil-file';
     };
 
-    // Initial load
-    fetchRequests();
-    fetchStatistics();
+    // Initial load - first load workflow permissions, then requests
+    const initialize = async () => {
+        await loadUserWorkflowPermissions();
+        fetchRequests();
+        fetchStatistics();
+    };
+    
+    initialize();
 });

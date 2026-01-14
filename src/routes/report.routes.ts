@@ -10,7 +10,7 @@ router.get('/assets/assignments', authenticate, asyncHandler(ReportController.ge
 router.get('/expenses/all', authenticate, asyncHandler(ReportController.getAssetsByEmployee));
 router.get('/assets/employee/:employeeId', authenticate, asyncHandler(ReportController.getAssetsByEmployee));
 router.get('/assets/branch/:location', authenticate, asyncHandler(ReportController.getAssetsByBranch));
-router.get('/expenses/time-period', authenticate, authorize(['Admin']), asyncHandler(ReportController.getExpensesByTimePeriod));
+router.get('/expenses/time-period', authenticate, asyncHandler(ReportController.getExpensesByTimePeriod));
 router.get(
     '/assets/export', 
     authenticate, 

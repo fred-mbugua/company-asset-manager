@@ -29,11 +29,15 @@ class ExpenseModel {
         a.model,
         et.name as expense_type_name,
         emp.first_name || ' ' || emp.last_name AS assigned_employee_name,
-        emp.company AS employee_company
+        emp.company AS employee_company,
+        rr.id AS repair_request_id,
+        rr.request_number AS repair_request_number,
+        rr.title AS repair_request_title
       FROM expenses e
       LEFT JOIN assets a ON e.asset_id = a.id
       LEFT JOIN expense_types et ON e.expense_type_id = et.id
       LEFT JOIN employees emp ON e.assigned_employee_id = emp.id
+      LEFT JOIN repair_requests rr ON rr.expense_id = e.id
       WHERE e.id = $1
     `;
         const result = await database_1.default.query(query, [id]);

@@ -77,9 +77,16 @@ exports.authenticate = authenticate;
 /**
  * Check req.user.role
  * which is populated by the authenticate middleware.
+ * Supports '*' wildcard to allow any authenticated user.
  */
 const authorize = (roles) => {
     return (req, res, next) => {
+        // '*' means any authenticated user is allowed
+        if (roles.includes('*')) {
+            if (req.user) {
+                return next();
+            }
+        }
         if (!req.user || !roles.includes(req.user.role)) {
             // For API requests, return 403 JSON
             if (req.originalUrl.startsWith('/api')) {

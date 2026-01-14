@@ -9,31 +9,17 @@ const repairRequestType_controller_1 = __importDefault(require("../controllers/r
 const repairRequestStatus_controller_1 = __importDefault(require("../controllers/repairRequestStatus.controller"));
 const repairRequestPriority_controller_1 = __importDefault(require("../controllers/repairRequestPriority.controller"));
 const repairRequestAttachment_controller_1 = __importDefault(require("../controllers/repairRequestAttachment.controller"));
+const repairWorkflow_controller_1 = __importDefault(require("../controllers/repairWorkflow.controller"));
 const middlewares_1 = require("../middlewares");
 const express_async_handler_1 = __importDefault(require("express-async-handler"));
 const multer_1 = __importDefault(require("multer"));
-const path_1 = __importDefault(require("path"));
-const fs_1 = __importDefault(require("fs"));
 const router = (0, express_1.Router)();
 // =============================================================================
 // FILE UPLOAD CONFIGURATION
 // =============================================================================
-// Ensure upload directory exists
-const uploadDir = path_1.default.join(process.cwd(), 'uploads', 'repair-requests');
-if (!fs_1.default.existsSync(uploadDir)) {
-    fs_1.default.mkdirSync(uploadDir, { recursive: true });
-}
-const storage = multer_1.default.diskStorage({
-    destination: (req, file, cb) => {
-        cb(null, uploadDir);
-    },
-    filename: (req, file, cb) => {
-        const uniqueSuffix = Date.now() + '-' + Math.round(Math.random() * 1E9);
-        cb(null, uniqueSuffix + '-' + file.originalname);
-    }
-});
+// Use memory storage for dynamic storage type (server/firebase)
 const upload = (0, multer_1.default)({
-    storage,
+    storage: multer_1.default.memoryStorage(),
     limits: { fileSize: 10 * 1024 * 1024 }, // 10MB limit
     fileFilter: (req, file, cb) => {
         const allowedTypes = [
@@ -113,21 +99,23 @@ router.delete('/:id', middlewares_1.authenticate, (0, middlewares_1.authorize)([
 // Update status (generic)
 router.patch('/:id/status', middlewares_1.authenticate, (0, express_async_handler_1.default)(repairRequest_controller_1.default.updateStatus));
 // ICT Approve
-router.patch('/:id/ict-approve', middlewares_1.authenticate, (0, middlewares_1.authorize)(['Admin']), (0, express_async_handler_1.default)(repairRequest_controller_1.default.ictApprove));
+router.patch('/:id/ict-approve', middlewares_1.authenticate, (0, middlewares_1.authorize)(['*']), (0, express_async_handler_1.default)(repairRequest_controller_1.default.ictApprove));
 // ICT Reject
-router.patch('/:id/ict-reject', middlewares_1.authenticate, (0, middlewares_1.authorize)(['Admin']), (0, express_async_handler_1.default)(repairRequest_controller_1.default.ictReject));
+router.patch('/:id/ict-reject', middlewares_1.authenticate, (0, middlewares_1.authorize)(['*']), (0, express_async_handler_1.default)(repairRequest_controller_1.default.ictReject));
 // Mark In Repair
-router.patch('/:id/in-repair', middlewares_1.authenticate, (0, middlewares_1.authorize)(['Admin']), (0, express_async_handler_1.default)(repairRequest_controller_1.default.markInRepair));
+router.patch('/:id/in-repair', middlewares_1.authenticate, (0, middlewares_1.authorize)(['*']), (0, express_async_handler_1.default)(repairRequest_controller_1.default.markInRepair));
 // Mark Awaiting Invoice
-router.patch('/:id/awaiting-invoice', middlewares_1.authenticate, (0, middlewares_1.authorize)(['Admin']), (0, express_async_handler_1.default)(repairRequest_controller_1.default.markAwaitingInvoice));
+router.patch('/:id/awaiting-invoice', middlewares_1.authenticate, (0, middlewares_1.authorize)(['*']), (0, express_async_handler_1.default)(repairRequest_controller_1.default.markAwaitingInvoice));
 // Submit Invoice
 router.patch('/:id/submit-invoice', middlewares_1.authenticate, (0, express_async_handler_1.default)(repairRequest_controller_1.default.submitInvoice));
+// Update Invoice (edit existing invoice details)
+router.patch('/:id/update-invoice', middlewares_1.authenticate, (0, express_async_handler_1.default)(repairRequest_controller_1.default.updateInvoice));
 // Finance Approve
-router.patch('/:id/finance-approve', middlewares_1.authenticate, (0, middlewares_1.authorize)(['Admin']), (0, express_async_handler_1.default)(repairRequest_controller_1.default.financeApprove));
+router.patch('/:id/finance-approve', middlewares_1.authenticate, (0, middlewares_1.authorize)(['*']), (0, express_async_handler_1.default)(repairRequest_controller_1.default.financeApprove));
 // Finance Reject
-router.patch('/:id/finance-reject', middlewares_1.authenticate, (0, middlewares_1.authorize)(['Admin']), (0, express_async_handler_1.default)(repairRequest_controller_1.default.financeReject));
+router.patch('/:id/finance-reject', middlewares_1.authenticate, (0, middlewares_1.authorize)(['*']), (0, express_async_handler_1.default)(repairRequest_controller_1.default.financeReject));
 // Complete
-router.patch('/:id/complete', middlewares_1.authenticate, (0, middlewares_1.authorize)(['Admin']), (0, express_async_handler_1.default)(repairRequest_controller_1.default.complete));
+router.patch('/:id/complete', middlewares_1.authenticate, (0, middlewares_1.authorize)(['*']), (0, express_async_handler_1.default)(repairRequest_controller_1.default.complete));
 // Cancel
 router.patch('/:id/cancel', middlewares_1.authenticate, (0, express_async_handler_1.default)(repairRequest_controller_1.default.cancel));
 // =============================================================================
@@ -145,6 +133,33 @@ router.get('/:id/attachments', middlewares_1.authenticate, (0, express_async_han
 router.get('/:id/attachments/:attachmentId', middlewares_1.authenticate, (0, express_async_handler_1.default)(repairRequestAttachment_controller_1.default.getById));
 // Download attachment
 router.get('/:id/attachments/:attachmentId/download', middlewares_1.authenticate, (0, express_async_handler_1.default)(repairRequestAttachment_controller_1.default.download));
+// Update attachment
+router.patch('/:id/attachments/:attachmentId', middlewares_1.authenticate, upload.single('file'), (0, express_async_handler_1.default)(repairRequestAttachment_controller_1.default.update));
 // Delete attachment
 router.delete('/:id/attachments/:attachmentId', middlewares_1.authenticate, (0, express_async_handler_1.default)(repairRequestAttachment_controller_1.default.delete));
+// =============================================================================
+// WORKFLOW CONFIGURATION ROUTES
+// =============================================================================
+// Get all workflow stages
+router.get('/workflow/stages', middlewares_1.authenticate, (0, express_async_handler_1.default)(repairWorkflow_controller_1.default.getAllStages));
+// Get current user's workflow permissions
+router.get('/workflow/my-permissions', middlewares_1.authenticate, (0, express_async_handler_1.default)(repairWorkflow_controller_1.default.getMyPermissions));
+// Get available actions for a request status
+router.get('/workflow/available-actions', middlewares_1.authenticate, (0, express_async_handler_1.default)(repairWorkflow_controller_1.default.getAvailableActions));
+// Get all permissions
+router.get('/workflow/permissions', middlewares_1.authenticate, (0, middlewares_1.authorize)(['Admin']), (0, express_async_handler_1.default)(repairWorkflow_controller_1.default.getAllPermissions));
+// Create a new workflow stage
+router.post('/workflow/stages', middlewares_1.authenticate, (0, middlewares_1.authorize)(['Admin']), (0, express_async_handler_1.default)(repairWorkflow_controller_1.default.createStage));
+// Toggle stage active status (must be before :id route)
+router.patch('/workflow/stages/:id/toggle', middlewares_1.authenticate, (0, middlewares_1.authorize)(['Admin']), (0, express_async_handler_1.default)(repairWorkflow_controller_1.default.toggleStageActive));
+// Get permissions for a stage (must be before :id route)
+router.get('/workflow/stages/:id/permissions', middlewares_1.authenticate, (0, middlewares_1.authorize)(['Admin']), (0, express_async_handler_1.default)(repairWorkflow_controller_1.default.getStagePermissions));
+// Update permissions for a stage (must be before :id route)
+router.put('/workflow/stages/:id/permissions', middlewares_1.authenticate, (0, middlewares_1.authorize)(['Admin']), (0, express_async_handler_1.default)(repairWorkflow_controller_1.default.updateStagePermissions));
+// Get a single workflow stage
+router.get('/workflow/stages/:id', middlewares_1.authenticate, (0, express_async_handler_1.default)(repairWorkflow_controller_1.default.getStageById));
+// Update a workflow stage
+router.put('/workflow/stages/:id', middlewares_1.authenticate, (0, middlewares_1.authorize)(['Admin']), (0, express_async_handler_1.default)(repairWorkflow_controller_1.default.updateStage));
+// Delete a workflow stage
+router.delete('/workflow/stages/:id', middlewares_1.authenticate, (0, middlewares_1.authorize)(['Admin']), (0, express_async_handler_1.default)(repairWorkflow_controller_1.default.deleteStage));
 exports.default = router;

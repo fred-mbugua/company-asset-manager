@@ -13,43 +13,49 @@
     const appName = locals.systemConfig?.app_name || 'Asset Management System';
     const companyLogo = locals.systemConfig?.company_logo_url || null;
     
+    // Check if user is admin
+    const isAdmin = userRole === 'Admin';
+    
     // Access rules for navigation items
+    // Using '*' to indicate all authenticated users have access
     const menuItems = [
-        { title: 'Dashboard', icon: 'uil-dashboard', url: '/dashboard', roles: ['Admin', 'Standard User'] },
+        { title: 'Dashboard', icon: 'uil-dashboard', url: '/dashboard', roles: ['*'] },
         { 
-            title: 'Assets', icon: 'uil-briefcase', roles: ['Admin', 'Standard User'], id: 'assets-menu', submenu: [
-                { title: 'Create', url: '/assets/create', roles: ['Admin', 'Standard User'] },
-                { title: 'View', url: '/assets/view', roles: ['Admin', 'Standard User'], parent: 'assets-menu' },
+            title: 'Assets', icon: 'uil-briefcase', roles: ['*'], id: 'assets-menu', submenu: [
+                { title: 'Create', url: '/assets/create', roles: ['*'] },
+                { title: 'View', url: '/assets/view', roles: ['*'], parent: 'assets-menu' },
             ]
         },
         { 
-            title: 'Assignments', icon: 'uil-clipboard-notes', roles: ['Admin', 'Standard User'], id: 'assignments-menu', submenu: [
-                { title: 'View', url: '/assets/view', roles: ['Admin', 'Standard User'], parent: 'assignments-menu' },
+            title: 'Assignments', icon: 'uil-clipboard-notes', roles: ['*'], id: 'assignments-menu', submenu: [
+                { title: 'View', url: '/assets/view', roles: ['*'], parent: 'assignments-menu' },
                 { title: 'Assign', url: '/assets/assign', roles: ['Admin'] }, // Only Admin can assign
             ]
         },
         { 
-            title: 'Expenses', icon: 'uil-receipt', roles: ['Admin', 'Standard User'], id: 'expenses-menu', submenu: [
-                { title: 'Create', url: '/expenses/create', roles: ['Admin', 'Standard User'] },
+            title: 'Expenses', icon: 'uil-receipt', roles: ['*'], id: 'expenses-menu', submenu: [
+                { title: 'Create', url: '/expenses/create', roles: ['*'] },
             ]
         },
         { 
-            title: 'Repair Requests', icon: 'uil-wrench', roles: ['Admin', 'Standard User'], id: 'repair-requests-menu', submenu: [
-                { title: 'All Requests', url: '/repair-requests', roles: ['Admin', 'Standard User'] },
-                { title: 'New Request', url: '/repair-requests/new', roles: ['Admin', 'Standard User'] },
+            title: 'Repair Requests', icon: 'uil-wrench', roles: ['*'], id: 'repair-requests-menu', submenu: [
+                { title: 'All Requests', url: '/repair-requests', roles: ['*'] },
+                { title: 'New Request', url: '/repair-requests/new', roles: ['*'] },
+                { title: 'Workflow Config', url: '/repair-requests/workflow', roles: ['Admin'] },
             ]
         },
-        { title: 'Reports', icon: 'uil-analytics', url: '/reports', roles: ['Admin', 'Standard User'], id: 'reports-menu', submenu: [
-                { title: 'Assets', url: '/reports/assets', roles: ['Admin', 'Standard User'] },
-                { title: 'Expenses', url: '/reports/expenses', roles: ['Admin', 'Standard User'] },
-                { title: 'Assignments', url: '/reports/assignments', roles: ['Admin', 'Standard User'] },
-                { title: 'Repair Summary', url: '/reports/repair-summary', roles: ['Admin', 'Standard User'] },
+        { title: 'Reports', icon: 'uil-analytics', url: '/reports', roles: ['*'], id: 'reports-menu', submenu: [
+                { title: 'Assets', url: '/reports/assets', roles: ['*'] },
+                { title: 'Expenses', url: '/reports/expenses', roles: ['*'] },
+                { title: 'Assignments', url: '/reports/assignments', roles: ['*'] },
+                { title: 'Repair Summary', url: '/reports/repair-summary', roles: ['*'] },
                 { title: 'Action Logs', url: '/reports/action-logs', roles: ['Admin'] }, // Only Admin can access Action Logs
             ] 
         },
         { 
             title: 'Administration', icon: 'uil-cog', roles: ['Admin'], id: 'admin-menu', submenu: [ // Restricted to Admin
                 { title: 'Users', url: '/users/manage', roles: ['Admin'] },
+                { title: 'Roles', url: '/roles/manage', roles: ['Admin'] },
                 { title: 'Branches', url: '/branches/manage', roles: ['Admin'] },
                 { title: 'Departments', url: '/departments/manage', roles: ['Admin'] },
                 { title: 'Asset Statuses', url: '/asset-statuses/manage', roles: ['Admin'] },
@@ -67,7 +73,8 @@
         },
     ];
 
-    const hasAccess = (requiredRoles) => requiredRoles.includes(userRole);
+    // hasAccess now supports '*' wildcard for any authenticated user
+    const hasAccess = (requiredRoles) => requiredRoles.includes('*') || requiredRoles.includes(userRole);
 %>
 
 <aside class="sidebar" id="sidebar">

@@ -289,12 +289,16 @@ export class ExpenseReportModel {
                 assets.model,
                 assets.manufacturer,
                 branches.name AS location,
-                (SELECT COUNT(*) FROM expense_attachments WHERE expense_id = expenses.id) AS attachment_count
+                (SELECT COUNT(*) FROM expense_attachments WHERE expense_id = expenses.id) AS attachment_count,
+                rr.id AS repair_request_id,
+                rr.request_number AS repair_request_number,
+                (SELECT COUNT(*) FROM repair_request_attachments WHERE repair_request_id = rr.id) AS repair_attachment_count
             FROM expenses
             INNER JOIN assets ON expenses.asset_id = assets.id
             INNER JOIN expense_types ON expenses.expense_type_id = expense_types.id
             LEFT JOIN branches ON assets.branch_id = branches.id
             LEFT JOIN employees emp ON expenses.assigned_employee_id = emp.id
+            LEFT JOIN repair_requests rr ON rr.expense_id = expenses.id
             ${where}
             ORDER BY expenses.date DESC
         `;

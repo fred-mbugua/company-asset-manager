@@ -42,7 +42,8 @@ class StorageService {
             path.join(this.uploadsDir, 'assets'),
             path.join(this.uploadsDir, 'expenses'),
             path.join(this.uploadsDir, 'assignments'),
-            path.join(this.uploadsDir, 'logos')
+            path.join(this.uploadsDir, 'logos'),
+            path.join(this.uploadsDir, 'repair-requests')
         ];
 
         for (const dir of directories) {
@@ -93,7 +94,7 @@ class StorageService {
 
     async uploadToServer(
         file: Express.Multer.File,
-        category: 'assets' | 'expenses' | 'assignments' | 'logos'
+        category: 'assets' | 'expenses' | 'assignments' | 'logos' | 'repair-requests'
     ): Promise<UploadResult> {
         const uploadPath = path.join(this.uploadsDir, category);
         const timestamp = Date.now();
@@ -113,7 +114,7 @@ class StorageService {
 
     async uploadToFirebase(
         file: Express.Multer.File,
-        category: 'assets' | 'expenses' | 'assignments' | 'logos',
+        category: 'assets' | 'expenses' | 'assignments' | 'logos' | 'repair-requests',
         firebaseConfig: StorageConfig['firebaseConfig']
     ): Promise<UploadResult> {
         await this.initializeFirebase(firebaseConfig);
@@ -198,7 +199,7 @@ class StorageService {
 
     async upload(
         file: Express.Multer.File,
-        category: 'assets' | 'expenses' | 'assignments' | 'logos',
+        category: 'assets' | 'expenses' | 'assignments' | 'logos' | 'repair-requests',
         config: StorageConfig
     ): Promise<UploadResult> {
         if (config.type === 'firebase' && config.firebaseConfig) {

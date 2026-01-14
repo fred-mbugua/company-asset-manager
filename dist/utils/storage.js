@@ -52,7 +52,8 @@ class StorageService {
             path.join(this.uploadsDir, 'assets'),
             path.join(this.uploadsDir, 'expenses'),
             path.join(this.uploadsDir, 'assignments'),
-            path.join(this.uploadsDir, 'logos')
+            path.join(this.uploadsDir, 'logos'),
+            path.join(this.uploadsDir, 'repair-requests')
         ];
         for (const dir of directories) {
             if (!fs.existsSync(dir)) {

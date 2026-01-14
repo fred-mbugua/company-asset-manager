@@ -5,11 +5,11 @@ import asyncHandler from 'express-async-handler';
 
 const router = Router();
 
-router.get('/', authenticate, authorize(['Admin', 'Standard User']), asyncHandler(AssetController.getAll));
-router.get('/search', authenticate, authorize(['Admin', 'Standard User']), asyncHandler(AssetController.search));
-router.get('/statuses/list', authenticate, authorize(['Admin', 'Standard User']), asyncHandler(AssetController.statusList));
-router.get('/next-tag/:assetTypeId', authenticate, authorize(['Admin', 'Standard User']), asyncHandler(AssetController.getNextTagPreview));
-router.get('/:id', authenticate, authorize(['Admin', 'Standard User']), asyncHandler(AssetController.getById));
+router.get('/', authenticate, authorize(['*']), asyncHandler(AssetController.getAll));
+router.get('/search', authenticate, authorize(['*']), asyncHandler(AssetController.search));
+router.get('/statuses/list', authenticate, authorize(['*']), asyncHandler(AssetController.statusList));
+router.get('/next-tag/:assetTypeId', authenticate, authorize(['*']), asyncHandler(AssetController.getNextTagPreview));
+router.get('/:id', authenticate, authorize(['*']), asyncHandler(AssetController.getById));
 router.post('/', authenticate, authorize(['Admin']), asyncHandler(AssetController.create));
 router.put('/:id', authenticate, authorize(['Admin']), asyncHandler(AssetController.update));
 router.delete('/:id', authenticate, authorize(['Admin']), asyncHandler(AssetController.delete));
@@ -29,7 +29,7 @@ router.get(
 router.post(
     '/asset-statuses/create', 
     authenticate, 
-    authorize(['Admin', 'Super Admin']), // Only authorized users can create new statuses
+    authorize(['Admin']), // Only Admin can create new statuses
     asyncHandler(AssetStatusController.createAssetStatus)
 );
 
@@ -48,14 +48,14 @@ router.get(
 router.put(
     '/asset-statuses/:id',
     authenticate,
-    authorize(['Admin', 'Super Admin']),
+    authorize(['Admin']),
     asyncHandler(AssetStatusController.updateAssetStatus)
 );
 
 router.delete(
     '/asset-statuses/:id',
     authenticate,
-    authorize(['Admin', 'Super Admin']),
+    authorize(['Admin']),
     asyncHandler(AssetStatusController.deleteAssetStatus)
 );
 

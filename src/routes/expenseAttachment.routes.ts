@@ -18,7 +18,7 @@ const upload = multer({
 router.post(
     '/:expenseId/attachments',
     authenticate,
-    authorize(['Admin', 'Standard User']),
+    authorize(['*']),
     upload.single('file'),
     asyncHandler(ExpenseAttachmentController.create)
 );
@@ -26,7 +26,7 @@ router.post(
 router.get(
     '/:expenseId/attachments',
     authenticate,
-    authorize(['Admin', 'Standard User']),
+    authorize(['*']),
     asyncHandler(ExpenseAttachmentController.getByExpenseId)
 );
 

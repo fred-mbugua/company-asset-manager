@@ -45,6 +45,14 @@ class ExpenseTypeModel {
         return result.rows[0] || null;
     }
     /**
+     * Finds expense type by name (case-insensitive).
+     */
+    async findByName(name) {
+        const query = `SELECT id, name, description FROM expense_types WHERE LOWER(name) = LOWER($1);`;
+        const result = await database_1.default.query(query, [name]);
+        return result.rows[0] || null;
+    }
+    /**
      * Updates an expense type.
      */
     async update(id, data) {

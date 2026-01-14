@@ -142,7 +142,7 @@ function updatePagination() {
         const subtotalRow = document.createElement('tr');
         subtotalRow.id = 'subtotal-row';
         subtotalRow.innerHTML = `
-            <td colspan="8" class="no-data" style="text-align: right;">Page Subtotal: </td>
+            <td colspan="7" class="no-data" style="text-align: right;">Page Subtotal: </td>
             <td class="subtotal">Ksh. ${pageSubtotal.toFixed(2).replace(/\\B(?=(\\d{3})+(?!\\d))/g, ',')}</td>
         `;
         tbody.appendChild(subtotalRow);
@@ -276,9 +276,18 @@ async function showExpenseDetails(expenseId) {
         const response = await API.get(`/expenses/${expenseId}`);
         const expense = response.data;
         
+        // Check if this expense came from a repair request
+        const repairRequestInfo = expense.repair_request_id ? `
+            <div class="detail-row" style="background: #e8f4fd; padding: 8px; border-radius: 4px; margin-bottom: 10px;">
+                <strong><i class="uil uil-wrench"></i> From Repair Request:</strong> 
+                #${expense.repair_request_number || expense.repair_request_id} - ${expense.repair_request_title || 'Repair'}
+            </div>
+        ` : '';
+        
         // Format the expense details
         detailContent.innerHTML = `
             <div class="expense-detail-info">
+                ${repairRequestInfo}
                 <div class="detail-row">
                     <strong>Expense ID:</strong> ${expense.id}
                 </div>
@@ -305,14 +314,26 @@ async function showExpenseDetails(expenseId) {
                     <strong>Amount:</strong> Ksh. ${parseFloat(expense.amount || 0).toFixed(2).replace(/\B(?=(\d{3})+(?!\d))/g, ',')}
                 </div>
                 <div class="detail-row">
-                    <strong>Notes:</strong> ${expense.expense_notes || 'N/A'}
+                    <strong>Notes:</strong> ${expense.expense_notes || expense.notes || 'N/A'}
                 </div>
             </div>
             
             <hr style="margin: 20px 0; border: none; border-top: 1px solid #ddd;">
             
+            ${expense.repair_request_id ? `
+            <!-- Repair Request Attachments Section -->
+            <div class="repair-attachments-section" style="margin-bottom: 20px;">
+                <h4 style="color: #3498db;"><i class="uil uil-wrench"></i> Repair Request Documents</h4>
+                <div id="repair-attachments-list-${expense.repair_request_id}" class="attachments-list">
+                    <p class="loading-text">Loading repair documents...</p>
+                </div>
+            </div>
+            
+            <hr style="margin: 20px 0; border: none; border-top: 1px solid #ddd;">
+            ` : ''}
+            
             <div class="attachments-section" data-entity-type="expense" data-entity-id="${expenseId}">
-                <h4><i class="uil uil-paperclip"></i> Attachments & Notes</h4>
+                <h4><i class="uil uil-paperclip"></i> Expense Attachments</h4>
                 
                 <!-- Upload Form -->
                 <div class="attachment-upload-form">
@@ -348,6 +369,11 @@ async function showExpenseDetails(expenseId) {
         // Initialize attachment manager for expenses
         AttachmentManager.init('expense', expenseId);
         
+        // Load repair request attachments if this expense came from a repair request
+        if (expense.repair_request_id) {
+            loadRepairRequestAttachments(expense.repair_request_id);
+        }
+        
     } catch (error) {
         console.error('Error loading expense details:', error);
         detailContent.innerHTML = `
@@ -356,6 +382,80 @@ async function showExpenseDetails(expenseId) {
             </p>
         `;
     }
+}
+
+// Load repair request attachments for expense detail view
+async function loadRepairRequestAttachments(repairRequestId) {
+    const container = document.getElementById(`repair-attachments-list-${repairRequestId}`);
+    if (!container) return;
+    
+    try {
+        const response = await API.get(`/repair-requests/${repairRequestId}/attachments`);
+        const attachments = response.data || [];
+        
+        if (attachments.length === 0) {
+            container.innerHTML = '<p style="color: #888; font-style: italic;">No repair request documents attached.</p>';
+            return;
+        }
+        
+        container.innerHTML = attachments.map(att => `
+            <div class="attachment-item" style="display: flex; justify-content: space-between; align-items: center; padding: 10px; background: #f8f9fa; border-radius: 6px; margin-bottom: 8px;">
+                <div class="attachment-info" style="display: flex; align-items: center; gap: 10px;">
+                    <i class="uil ${getFileIcon(att.file_name)}" style="font-size: 24px; color: #3498db;"></i>
+                    <div>
+                        <div style="font-weight: 500;">${escapeHtml(att.original_name || att.file_name)}</div>
+                        <div style="font-size: 12px; color: #888;">
+                            ${att.attachment_type || 'Document'} - ${formatFileSize(att.file_size)}
+                            ${att.uploader_name ? ` - by ${escapeHtml(att.uploader_name)}` : ''}
+                        </div>
+                    </div>
+                </div>
+                <div class="attachment-actions">
+                    <a href="/api/repair-requests/${repairRequestId}/attachments/${att.id}/download" target="_blank" class="btn btn-sm btn-info" title="View/Download">
+                        <i class="uil uil-download-alt"></i>
+                    </a>
+                </div>
+            </div>
+        `).join('');
+    } catch (error) {
+        console.error('Error loading repair request attachments:', error);
+        container.innerHTML = '<p style="color: #e74c3c;">Failed to load repair documents.</p>';
+    }
+}
+
+// Helper function to get file icon based on extension
+function getFileIcon(fileName) {
+    if (!fileName) return 'uil-file';
+    const ext = fileName.split('.').pop().toLowerCase();
+    const iconMap = {
+        'pdf': 'uil-file-alt',
+        'doc': 'uil-file-alt',
+        'docx': 'uil-file-alt',
+        'xls': 'uil-file-graph',
+        'xlsx': 'uil-file-graph',
+        'jpg': 'uil-image',
+        'jpeg': 'uil-image',
+        'png': 'uil-image',
+        'gif': 'uil-image'
+    };
+    return iconMap[ext] || 'uil-file';
+}
+
+// Helper function to format file size
+function formatFileSize(bytes) {
+    if (!bytes) return '0 B';
+    const k = 1024;
+    const sizes = ['B', 'KB', 'MB', 'GB'];
+    const i = Math.floor(Math.log(bytes) / Math.log(k));
+    return parseFloat((bytes / Math.pow(k, i)).toFixed(2)) + ' ' + sizes[i];
+}
+
+// Helper function to escape HTML
+function escapeHtml(text) {
+    if (!text) return '';
+    const div = document.createElement('div');
+    div.textContent = text;
+    return div.innerHTML;
 }
 
 // Close expense detail modal

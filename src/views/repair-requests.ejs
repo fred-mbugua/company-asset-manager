@@ -264,6 +264,62 @@
     </div>
 </div>
 
+<!-- Edit Invoice Modal -->
+<div id="edit-invoice-modal" class="modal">
+    <div class="modal-content">
+        <div class="modal-header">
+            <h3><i class="uil uil-edit"></i> Edit Invoice Details</h3>
+            <span class="close-btn">&times;</span>
+        </div>
+        <form id="edit-invoice-form">
+            <input type="hidden" id="edit-invoice-request-id">
+            <div class="modal-body">
+                <div class="form-row">
+                    <div class="form-group">
+                        <label for="edit-vendor-name">Vendor Name <span class="required">*</span></label>
+                        <input type="text" id="edit-vendor-name" name="vendor_name" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="edit-invoice-number">Invoice Number <span class="required">*</span></label>
+                        <input type="text" id="edit-invoice-number" name="invoice_number" required>
+                    </div>
+                </div>
+                <div class="form-row">
+                    <div class="form-group">
+                        <label for="edit-invoice-amount">Amount (Ksh) <span class="required">*</span></label>
+                        <input type="number" id="edit-invoice-amount" name="invoice_amount" step="0.01" min="0" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="edit-invoice-date">Invoice Date <span class="required">*</span></label>
+                        <input type="date" id="edit-invoice-date" name="invoice_date" required>
+                    </div>
+                </div>
+                
+                <!-- Current Invoice Attachment Section -->
+                <div class="form-group" id="current-invoice-attachment-section">
+                    <label>Current Invoice Document</label>
+                    <div id="current-invoice-attachment" class="current-attachment-display">
+                        <span class="no-attachment">No invoice document attached</span>
+                    </div>
+                </div>
+                
+                <!-- Replace/Upload Invoice Attachment -->
+                <div class="form-group">
+                    <label for="edit-invoice-attachment">Replace Invoice Document <small class="text-muted">(Optional - PDF or Image)</small></label>
+                    <input type="file" id="edit-invoice-attachment" name="invoice_attachment" accept=".pdf,.jpg,.jpeg,.png">
+                    <small class="form-hint">Uploading a new file will replace the existing one. Supported formats: PDF, JPG, PNG</small>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" id="cancel-edit-invoice">Cancel</button>
+                <button type="submit" class="btn btn-primary">
+                    <i class="uil uil-save"></i> Save Changes
+                </button>
+            </div>
+        </form>
+    </div>
+</div>
+
 <!-- Status Update Modal -->
 <div id="status-modal" class="modal">
     <div class="modal-content">
@@ -300,6 +356,11 @@
                             <label for="invoice-date">Invoice Date <span class="required">*</span></label>
                             <input type="date" id="invoice-date" name="invoice_date">
                         </div>
+                    </div>
+                    <div class="form-group">
+                        <label for="invoice-attachment">Attach Invoice Document <small class="text-muted">(Optional - PDF or Image)</small></label>
+                        <input type="file" id="invoice-attachment" name="invoice_attachment" accept=".pdf,.jpg,.jpeg,.png">
+                        <small class="form-hint">Supported formats: PDF, JPG, PNG</small>
                     </div>
                 </div>
                 <!-- Payment Fields (shown for finance-approve action) -->
@@ -358,6 +419,56 @@
             <div class="attachments-list" id="attachments-list">
                 <p class="no-attachments">No attachments yet.</p>
             </div>
+        </div>
+    </div>
+</div>
+
+<!-- Edit Attachment Modal -->
+<div id="edit-attachment-modal" class="modal">
+    <div class="modal-content modal-sm">
+        <div class="modal-header">
+            <h3><i class="uil uil-edit"></i> Edit Attachment</h3>
+            <span class="close-btn">&times;</span>
+        </div>
+        <div class="modal-body">
+            <form id="edit-attachment-form">
+                <input type="hidden" id="edit-attachment-request-id">
+                <input type="hidden" id="edit-attachment-id">
+                
+                <div class="form-group">
+                    <label>Current File</label>
+                    <div id="edit-attachment-current-file" class="current-file-display"></div>
+                </div>
+                
+                <div class="form-group">
+                    <label for="edit-attachment-type">Attachment Type</label>
+                    <select id="edit-attachment-type" required>
+                        <option value="general">General</option>
+                        <option value="invoice">Invoice</option>
+                        <option value="receipt">Receipt</option>
+                        <option value="photo">Photo</option>
+                        <option value="document">Document</option>
+                    </select>
+                </div>
+                
+                <div class="form-group">
+                    <label for="edit-attachment-notes">Notes</label>
+                    <textarea id="edit-attachment-notes" rows="2" placeholder="Optional notes..."></textarea>
+                </div>
+                
+                <div class="form-group">
+                    <label for="edit-attachment-file">Replace File (Optional)</label>
+                    <input type="file" id="edit-attachment-file" accept=".pdf,.jpg,.jpeg,.png,.doc,.docx,.xls,.xlsx">
+                    <small class="form-text text-muted">Leave empty to keep the current file</small>
+                </div>
+                
+                <div class="form-actions">
+                    <button type="button" class="btn btn-secondary" onclick="closeEditAttachmentModal()">Cancel</button>
+                    <button type="submit" class="btn btn-primary">
+                        <i class="uil uil-check"></i> Save Changes
+                    </button>
+                </div>
+            </form>
         </div>
     </div>
 </div>

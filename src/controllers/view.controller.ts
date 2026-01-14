@@ -1,7 +1,7 @@
 import { Request, Response } from 'express';
 import LookupService from '../services/lookup.service';
 import { ExpenseService, AssignmentService, UserService, BranchService, DepartmentService, ActionLogService, AssetStatusService, AssetTypeService, ExpenseTypeService, RepairRequestTypeService, RepairRequestStatusService, RepairRequestPriorityService } from '../services';
-import { AssetModel, EmployeeModel, ReportModel, AssignmentModel, AssetTypeModel, AssetStatusModel, ExpenseTypeModel, ExpenseModel, LocationModel, DepartmentModel, RepairRequestTypeModel, RepairRequestStatusModel, RepairRequestPriorityModel } from '../models';
+import { AssetModel, EmployeeModel, ReportModel, AssignmentModel, AssetTypeModel, AssetStatusModel, ExpenseTypeModel, ExpenseModel, LocationModel, DepartmentModel, RepairRequestTypeModel, RepairRequestStatusModel, RepairRequestPriorityModel, RoleModel } from '../models';
 import { AuthenticatedRequest } from '../types';
 import { logger } from '../utils';
 import BulkUserImportService from '../services/bulkUserImport.service';
@@ -645,6 +645,42 @@ class ViewsController {
         } catch (error) {
             console.error('Error rendering bulk import history page:', error);
             res.status(500).send('Failed to load bulk import history page.');
+        }
+    }
+
+    /**
+     * Rendering the Repair Workflow Configuration page
+     */
+    async renderManageRepairWorkflow(req: Request, res: Response): Promise<void> {
+        try {
+            // Fetch statuses for dropdowns
+            const statuses = await RepairRequestStatusModel.findAll();
+            
+            // Fetch roles from database
+            const roles = await RoleModel.findAll();
+            
+            res.render('manage-repair-workflow', {
+                user: req.user,
+                statuses: statuses,
+                roles: roles
+            });
+        } catch (error) {
+            logger.error('Error rendering manage repair workflow page:', error);
+            res.status(500).send('Failed to load repair workflow configuration page.');
+        }
+    }
+
+    /**
+     * Rendering the Manage Roles EJS view.
+     */
+    async renderManageRoles(req: Request, res: Response): Promise<void> {
+        try {
+            res.render('manage-roles', {
+                user: req.user
+            });
+        } catch (error) {
+            logger.error('Error rendering manage roles page:', error);
+            res.status(500).send('Failed to load roles management page.');
         }
     }
 }
