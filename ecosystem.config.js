@@ -1,15 +1,15 @@
 module.exports = {
         apps: [{
-                name: "asset-management-app",
+                name: "asset-management-app-2",
                 script: "dist/server.js",
                 env: {
                         NODE_ENV: "production",
-                        PORT: 4000,
+                        PORT: 5000,
 
-                        DATABASE_URL: "postgresql://postgres:postgres@localhost:5432/ict_asset_register",
+                        DATABASE_URL: "postgresql://complianceadmin:compliance@25JSLICT!@localhost:5432/ict_asset_register_2",
 
-                        JWT_ACCESS_SECRET: "assetmanagementaccesssecret",
-                        JWT_REFRESH_SECRET: "assetmanagementrefreshsecret",
+                        JWT_ACCESS_SECRET: "assetmanagement_accesssecret",
+                        JWT_REFRESH_SECRET: "assetmanagement_refreshsecret",
                         JWT_ACCESS_EXPIRATION: "15m",
                         JWT_REFRESH_EXPIRATION: "7d",
 
