@@ -1,0 +1,124 @@
+<%
+    // Assuming 'user' object is passed to EJS and contains user role information (e.g., user.role_id or user.role_name)
+    const userRole = locals.user?.role_name || locals.user?.role || 'Standard User';
+    
+    // Debug: Log the user object to see what properties it has
+    // console.log('Sidebar user object:', JSON.stringify(locals.user));
+    // console.log('User role detected:', userRole);
+    
+    // Get current path to determine active menu item
+    const currentPath = locals.currentPath || '';
+    
+    // Get logo and app name
+    const appName = locals.systemConfig?.app_name || 'Asset Management System';
+    const companyLogo = locals.systemConfig?.company_logo_url || null;
+    
+    // Check if user is admin
+    const isAdmin = userRole === 'Admin';
+    
+    // Access rules for navigation items
+    // Using '*' to indicate all authenticated users have access
+    const menuItems = [
+        { title: 'Dashboard', icon: 'uil-dashboard', url: '/dashboard', roles: ['*'] },
+        { 
+            title: 'Assets', icon: 'uil-briefcase', roles: ['*'], id: 'assets-menu', submenu: [
+                { title: 'Create', url: '/assets/create', roles: ['*'] },
+                { title: 'View', url: '/assets/view', roles: ['*'], parent: 'assets-menu' },
+            ]
+        },
+        { 
+            title: 'Assignments', icon: 'uil-clipboard-notes', roles: ['*'], id: 'assignments-menu', submenu: [
+                { title: 'View', url: '/assets/view', roles: ['*'], parent: 'assignments-menu' },
+                { title: 'Assign', url: '/assets/assign', roles: ['Admin'] }, // Only Admin can assign
+            ]
+        },
+        { 
+            title: 'Expenses', icon: 'uil-receipt', roles: ['*'], id: 'expenses-menu', submenu: [
+                { title: 'Create', url: '/expenses/create', roles: ['*'] },
+            ]
+        },
+        { 
+            title: 'Repair Requests', icon: 'uil-wrench', roles: ['*'], id: 'repair-requests-menu', submenu: [
+                { title: 'All Requests', url: '/repair-requests', roles: ['*'] },
+                { title: 'New Request', url: '/repair-requests/new', roles: ['*'] },
+                { title: 'Workflow Config', url: '/repair-requests/workflow', roles: ['Admin'] },
+            ]
+        },
+        { title: 'Reports', icon: 'uil-analytics', url: '/reports', roles: ['*'], id: 'reports-menu', submenu: [
+                { title: 'Assets', url: '/reports/assets', roles: ['*'] },
+                { title: 'Expenses', url: '/reports/expenses', roles: ['*'] },
+                { title: 'Assignments', url: '/reports/assignments', roles: ['*'] },
+                { title: 'Repair Summary', url: '/reports/repair-summary', roles: ['*'] },
+                { title: 'Action Logs', url: '/reports/action-logs', roles: ['Admin'] }, // Only Admin can access Action Logs
+            ] 
+        },
+        { 
+            title: 'Administration', icon: 'uil-cog', roles: ['Admin'], id: 'admin-menu', submenu: [ // Restricted to Admin
+                { title: 'Users', url: '/users/manage', roles: ['Admin'] },
+                { title: 'Roles', url: '/roles/manage', roles: ['Admin'] },
+                { title: 'Branches', url: '/branches/manage', roles: ['Admin'] },
+                { title: 'Departments', url: '/departments/manage', roles: ['Admin'] },
+                { title: 'Asset Statuses', url: '/asset-statuses/manage', roles: ['Admin'] },
+                { title: 'Asset Types', url: '/asset-types/manage', roles: ['Admin'] },
+                { title: 'Expense Types', url: '/expense-types/manage', roles: ['Admin'] },
+                { title: 'Repair Types', url: '/repair-request-types/manage', roles: ['Admin'] },
+                { title: 'Repair Statuses', url: '/repair-request-statuses/manage', roles: ['Admin'] },
+                { title: 'Repair Priorities', url: '/repair-request-priorities/manage', roles: ['Admin'] },
+            ]
+        },
+        { 
+            title: 'Settings', icon: 'uil-setting', roles: ['Admin'], id: 'settings-menu', submenu: [ // Restricted to Admin
+                { title: 'System Configuration', url: '/settings/configuration', roles: ['Admin'] },
+            ]
+        },
+    ];
+
+    // hasAccess now supports '*' wildcard for any authenticated user
+    const hasAccess = (requiredRoles) => requiredRoles.includes('*') || requiredRoles.includes(userRole);
+%>
+
+<aside class="sidebar" id="sidebar">
+    <div class="sidebar-logo">
+        <% if (companyLogo) { %>
+            <img src="<%= companyLogo %>" alt="<%= appName %>" class="sidebar-logo-img">
+        <% } else { %>
+            <div class="sidebar-logo-placeholder">
+                <i class="uil uil-building"></i>
+            </div>
+        <% } %>
+    </div>
+    <ul id="menu">
+        <% menuItems.forEach((item, itemIndex) => { %>
+            <% if (hasAccess(item.roles)) { %>
+                <% if (item.submenu) { %>
+                    <% 
+                        // Check if any submenu item matches current path
+                        const hasMatchingUrl = item.submenu.some(subItem => 
+                            subItem.url === currentPath && hasAccess(subItem.roles)
+                        );
+                    %>
+                    <li class="has-sub" data-menu-id="<%= item.id || '' %>" data-has-match="<%= hasMatchingUrl %>">
+                        <i class="<%= item.icon %>"></i><span><%= item.title %></span>
+                        <ul class="submenu">
+                            <% item.submenu.forEach(subItem => { %>
+                                <% if (hasAccess(subItem.roles)) { %>
+                                    <% const menuParam = subItem.parent || item.id || ''; %>
+                                    <li data-parent-menu="<%= menuParam %>">
+                                        <a href="<%= subItem.url %>?from=<%= menuParam %>"><%= subItem.title %></a>
+                                    </li>
+                                <% } %>
+                            <% }) %>
+                        </ul>
+                    </li>
+                <% } else { %>
+                    <% const isActive = item.url === currentPath; %>
+                    <li data-content="<%= item.title.toLowerCase().replace(/\s/g, '-') %>" class="<%= isActive ? 'active' : '' %>">
+                        <a href="<%= item.url %>">
+                            <i class="<%= item.icon %>"></i><span><%= item.title %></span>
+                        </a>
+                    </li>
+                <% } %>
+            <% } %>
+        <% }) %>
+    </ul>
+</aside>

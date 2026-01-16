@@ -1,0 +1,195 @@
+<%- include('partials/header', { pageTitle: 'Assign Assets', cssFile: 'assign', cssFile2: 'branch-transfer-dialog' }) %>
+<!-- Select2 CSS -->
+<link href="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/css/select2.min.css" rel="stylesheet" />
+<%- include('partials/navbar') %>
+
+<div class="main">
+    <%- include('partials/sidebar') %>
+    <section class="content-wrapper">
+        <div class="page-header">
+            <h2>Asset Assignment Management</h2>
+        </div>
+
+        <div class="form-section">
+            
+            <form id="assignment-form">
+                <div class="form-row">
+                    <div class="form-group">
+                        <label for="asset_id">Asset</label>
+                        <select id="asset_id" class="select2-dropdown" required style="width: 100%;">
+                            <option value="">-- Select Asset --</option>
+                            <% locals.assets.forEach(asset => { %>
+                            <option value="<%= asset.id %>">
+                                <%= asset.asset_tag %> - <%= asset.manufacturer %> <%= asset.model %>
+                            </option>
+                            <% }); %>
+                        </select>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="employee_id">Employee</label>
+                        <select id="employee_id" class="select2-dropdown" required style="width: 100%;">
+                            <option value="">-- Select Employee --</option>
+                            <% locals.employees.forEach(employee => { %>
+                            <option value="<%= employee.id %>">
+                                <%= employee.first_name %> <%= employee.last_name %> (<%= employee.emp_email %>)
+                            </option>
+                            <% }); %>
+                        </select>
+                    </div>
+                </div>
+
+                <div class="form-row">
+                    <div class="form-group">
+                        <label for="assignment_date">Assignment Date</label>
+                        <input type="date" id="assignment_date" required>
+                        <script>
+                            const assignDateInput = document.getElementById('assignment_date');
+                            const today = DateUtils.getTodayForInput();
+                            assignDateInput.setAttribute('max', today);
+                            assignDateInput.value = today;
+                        </script>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label for="notes">Notes</label>
+                        <textarea id="notes" rows="3" 
+                                  placeholder="Enter assignment details..."></textarea>
+                    </div>
+                </div>
+
+                <div class="form-actions">
+                    <button type="submit" class="btn btn-primary">Assign Asset</button>
+                </div>
+            </form>
+        </div>
+
+        <div class="table-section">
+            <div class="section-header">
+                <h3>Current Assignments</h3>
+            </div>
+            
+            <div class="search-filter-section">
+                <input type="text" id="search-input" placeholder="Search by asset tag, model, employee, or notes..." class="search-input">
+            </div>
+            
+            <%- include('partials/asset-assignments', { assignments: locals.assignments }) %>
+        </div>
+    </section>
+</div>
+
+<!-- Branch Transfer Confirmation Dialog -->
+<div id="branchTransferOverlay" class="branch-transfer-overlay">
+    <div class="branch-transfer-dialog">
+        <div class="dialog-header">
+            <div class="dialog-icon">
+                <i class="uil uil-exchange-alt"></i>
+            </div>
+            <h3>Branch Transfer Required</h3>
+        </div>
+        <div class="dialog-body">
+            <p class="dialog-message">
+                The selected asset and employee are in different branches. 
+            </p>
+            <div class="branch-info-box">
+                <div class="branch-info-item">
+                    <span class="branch-info-label">Asset:</span>
+                    <span class="branch-info-value" id="transfer-asset-name"></span>
+                </div>
+                <div class="branch-info-item">
+                    <span class="branch-info-label">Current Asset Branch:</span>
+                    <span class="branch-info-value" id="transfer-asset-branch"></span>
+                </div>
+                <div class="branch-arrow">↓</div>
+                <div class="branch-info-item">
+                    <span class="branch-info-label">Employee:</span>
+                    <span class="branch-info-value" id="transfer-employee-name"></span>
+                </div>
+                <div class="branch-info-item">
+                    <span class="branch-info-label">Employee Branch:</span>
+                    <span class="branch-info-value" id="transfer-employee-branch"></span>
+                </div>
+            </div>
+            <p class="dialog-question">
+                Would you like to transfer this asset to the employee's branch?
+            </p>
+        </div>
+        <div class="dialog-actions">
+            <button type="button" class="dialog-btn dialog-btn-cancel" id="cancelTransferBtn">
+                Cancel Assignment
+            </button>
+            <button type="button" class="dialog-btn dialog-btn-proceed" id="proceedWithoutTransferBtn">
+                Assign Without Transfer
+            </button>
+            <button type="button" class="dialog-btn dialog-btn-confirm" id="confirmTransferBtn">
+                Transfer & Assign
+            </button>
+        </div>
+    </div>
+</div>
+
+<!-- Return Asset Modal -->
+<div id="returnModal" class="modal">
+    <div class="modal-content">
+        <div class="modal-header">
+            <h3>Return Asset</h3>
+            <span class="close">&times;</span>
+        </div>
+        <div class="modal-body">
+            <form id="return-form">
+                <input type="hidden" id="return_assignment_id">
+                <div class="form-group">
+                    <label for="return_date">Return Date</label>
+                    <input type="date" id="return_date" required>
+                    <script>
+                        const returnDateInput = document.getElementById('return_date');
+                        const todayForReturn = DateUtils.getTodayForInput();
+                        returnDateInput.setAttribute('max', todayForReturn);
+                        returnDateInput.value = todayForReturn;
+                    </script>
+                </div>
+                <div class="form-group">
+                    <label for="return_notes">Return Notes</label>
+                    <textarea id="return_notes" rows="3" 
+                              placeholder="Enter return details (optional)..."></textarea>
+                </div>
+                <div class="modal-actions">
+                    <button type="submit" class="btn btn-primary">Confirm Return</button>
+                    <button type="button" class="btn btn-cancel" id="cancel-return">Cancel</button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+
+<!-- Assignment Attachments Modal -->
+<div id="assignmentAttachmentsModal" class="modal">
+    <div class="modal-content" style="max-width: 900px;">
+        <div class="modal-header">
+            <h3>Assignment Attachments</h3>
+            <span class="close" onclick="closeAssignmentAttachments()">&times;</span>
+        </div>
+        <div class="modal-body">
+            <div id="assignment-attachments-content">
+                <p style="text-align: center; color: #888;">Loading...</p>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Select2 JS -->
+<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/js/select2.min.js"></script>
+<script src="/assets/js/attachmentManager.js"></script>
+
+<script>
+$(document).ready(function() {
+    $('.select2-dropdown').select2({
+        placeholder: 'Select an option',
+        allowClear: true,
+        width: 'style',
+        minimumResultsForSearch: 0
+    });
+});
+</script>
+<%- include('partials/footer', { jsFile: 'assign' }) %>

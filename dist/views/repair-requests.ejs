@@ -1,0 +1,531 @@
+<%- include('partials/header', { pageTitle: 'Repair Requests', cssFile: 'repair-requests' }) %>
+<!-- Select2 CSS -->
+<link href="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/css/select2.min.css" rel="stylesheet" />
+<%- include('partials/navbar', { user: locals.user }) %>
+
+<div class="main">
+    <%- include('partials/sidebar') %>
+    <section class="content-area">
+        <div class="repair-requests-container">
+            <!-- Page Header -->
+            <div class="page-header">
+                <div class="header-left">
+                    <h2><i class="uil uil-wrench"></i> Repair Requests</h2>
+                    <p class="subtitle">Manage and track equipment repair requests</p>
+                </div>
+                <div class="header-right">
+                    <button id="new-request-btn" class="btn btn-primary">
+                        <i class="uil uil-plus"></i> New Request
+                    </button>
+                </div>
+            </div>
+
+            <!-- Statistics Cards -->
+            <div class="stats-grid">
+                <div class="stat-card stat-total">
+                    <div class="stat-icon"><i class="uil uil-clipboard-notes"></i></div>
+                    <div class="stat-content">
+                        <span class="stat-value" id="stat-total">0</span>
+                        <span class="stat-label">Total Requests</span>
+                    </div>
+                </div>
+                <div class="stat-card stat-pending">
+                    <div class="stat-icon"><i class="uil uil-clock"></i></div>
+                    <div class="stat-content">
+                        <span class="stat-value" id="stat-pending">0</span>
+                        <span class="stat-label">Pending</span>
+                    </div>
+                </div>
+                <div class="stat-card stat-progress">
+                    <div class="stat-icon"><i class="uil uil-sync"></i></div>
+                    <div class="stat-content">
+                        <span class="stat-value" id="stat-progress">0</span>
+                        <span class="stat-label">In Progress</span>
+                    </div>
+                </div>
+                <div class="stat-card stat-completed">
+                    <div class="stat-icon"><i class="uil uil-check-circle"></i></div>
+                    <div class="stat-content">
+                        <span class="stat-value" id="stat-completed">0</span>
+                        <span class="stat-label">Completed</span>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Filters Section -->
+            <div class="filters-section">
+                <div class="filter-row">
+                    <div class="filter-group">
+                        <label>Status</label>
+                        <select id="filter-status" class="filter-select select2-dropdown">
+                            <option value="">All Statuses</option>
+                            <% if (locals.statuses) { %>
+                                <% locals.statuses.forEach(status => { %>
+                                    <option value="<%= status.id %>"><%= status.name %></option>
+                                <% }); %>
+                            <% } %>
+                        </select>
+                    </div>
+                    <div class="filter-group">
+                        <label>Priority</label>
+                        <select id="filter-priority" class="filter-select select2-dropdown">
+                            <option value="">All Priorities</option>
+                            <% if (locals.priorities) { %>
+                                <% locals.priorities.forEach(priority => { %>
+                                    <option value="<%= priority.id %>"><%= priority.name %></option>
+                                <% }); %>
+                            <% } %>
+                        </select>
+                    </div>
+                    <div class="filter-group">
+                        <label>Type</label>
+                        <select id="filter-type" class="filter-select select2-dropdown">
+                            <option value="">All Types</option>
+                            <% if (locals.requestTypes) { %>
+                                <% locals.requestTypes.forEach(type => { %>
+                                    <option value="<%= type.id %>"><%= type.name %></option>
+                                <% }); %>
+                            <% } %>
+                        </select>
+                    </div>
+                    <div class="filter-group">
+                        <label>Branch</label>
+                        <select id="filter-branch" class="filter-select select2-dropdown">
+                            <option value="">All Branches</option>
+                            <% if (locals.branches) { %>
+                                <% locals.branches.forEach(branch => { %>
+                                    <option value="<%= branch.id %>"><%= branch.name %></option>
+                                <% }); %>
+                            <% } %>
+                        </select>
+                    </div>
+                    <div class="filter-group filter-search">
+                        <label>Search</label>
+                        <input type="text" id="filter-search" placeholder="Search requests..." class="filter-input">
+                    </div>
+                    <div class="filter-group filter-actions">
+                        <label>&nbsp;</label>
+                        <div class="filter-buttons">
+                            <button id="apply-filters" class="btn btn-secondary btn-sm">
+                                <i class="uil uil-filter"></i> Filter
+                            </button>
+                            <button id="clear-filters" class="btn btn-outline btn-sm">
+                                <i class="uil uil-times"></i> Clear
+                            </button>
+                            <label class="checkbox-label">
+                                <input type="checkbox" id="my-requests-only">
+                                <span>My Requests Only</span>
+                            </label>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Requests Table -->
+            <div class="table-section">
+                <table class="requests-table" id="requests-table">
+                    <thead>
+                        <tr>
+                            <th>Request #</th>
+                            <th>Title</th>
+                            <th>Asset</th>
+                            <th>Type</th>
+                            <th>Priority</th>
+                            <th>Status</th>
+                            <th>Requested By</th>
+                            <th>Date</th>
+                            <th>Actions</th>
+                        </tr>
+                    </thead>
+                    <tbody id="requests-table-body">
+                        <tr>
+                            <td colspan="9" class="loading-row">
+                                <i class="uil uil-spinner-alt spin"></i> Loading requests...
+                            </td>
+                        </tr>
+                    </tbody>
+                </table>
+
+                <!-- Pagination -->
+                <div class="pagination-controls">
+                    <div class="pagination-info">
+                        <select id="page-size">
+                            <option value="10">10 per page</option>
+                            <option value="20" selected>20 per page</option>
+                            <option value="50">50 per page</option>
+                        </select>
+                        <span id="page-info">Page 1 of 1 (0 total)</span>
+                    </div>
+                    <div class="pagination-buttons">
+                        <button id="prev-btn" class="btn btn-page" disabled>
+                            <i class="uil uil-angle-left"></i> Previous
+                        </button>
+                        <button id="next-btn" class="btn btn-page" disabled>
+                            Next <i class="uil uil-angle-right"></i>
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+</div>
+
+<!-- New/Edit Request Modal -->
+<div id="request-modal" class="modal">
+    <div class="modal-content modal-lg">
+        <div class="modal-header">
+            <h3 id="modal-title"><i class="uil uil-plus"></i> New Repair Request</h3>
+            <span class="close-btn">&times;</span>
+        </div>
+        <form id="request-form">
+            <input type="hidden" id="request-id">
+            <div class="modal-body">
+                <div class="form-row">
+                    <div class="form-group">
+                        <label for="request-title">Title <span class="required">*</span></label>
+                        <input type="text" id="request-title" name="title" required placeholder="Brief description of the issue">
+                    </div>
+                </div>
+                <div class="form-row">
+                    <div class="form-group">
+                        <label for="request-type">Request Type <span class="required">*</span></label>
+                        <select id="request-type" name="request_type_id" class="select2-dropdown" required>
+                            <option value="">Select Type</option>
+                            <% if (locals.requestTypes) { %>
+                                <% locals.requestTypes.forEach(type => { %>
+                                    <option value="<%= type.id %>"><%= type.name %></option>
+                                <% }); %>
+                            <% } %>
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label for="request-priority">Priority <span class="required">*</span></label>
+                        <select id="request-priority" name="priority_id" class="select2-dropdown" required>
+                            <option value="">Select Priority</option>
+                            <% if (locals.priorities) { %>
+                                <% locals.priorities.forEach(priority => { %>
+                                    <option value="<%= priority.id %>" <%= priority.name === 'Medium' ? 'selected' : '' %>><%= priority.name %></option>
+                                <% }); %>
+                            <% } %>
+                        </select>
+                    </div>
+                </div>
+                <div class="form-row">
+                    <div class="form-group">
+                        <label for="request-asset">Asset (Optional)</label>
+                        <select id="request-asset" name="asset_id" class="select2-dropdown">
+                            <option value="">Select Asset (if applicable)</option>
+                            <% if (locals.assets) { %>
+                                <% locals.assets.forEach(asset => { %>
+                                    <option value="<%= asset.id %>"><%= asset.asset_tag %> - <%= asset.manufacturer %> <%= asset.model %></option>
+                                <% }); %>
+                            <% } %>
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label for="request-branch">Branch</label>
+                        <select id="request-branch" name="branch_id" class="select2-dropdown">
+                            <option value="">Select Branch</option>
+                            <% if (locals.branches) { %>
+                                <% locals.branches.forEach(branch => { %>
+                                    <option value="<%= branch.id %>" <%= locals.user?.branch_id == branch.id ? 'selected' : '' %>><%= branch.name %></option>
+                                <% }); %>
+                            <% } %>
+                        </select>
+                    </div>
+                </div>
+                <div class="form-row">
+                    <div class="form-group full-width">
+                        <label for="request-description">Description <span class="required">*</span></label>
+                        <textarea id="request-description" name="description" rows="4" required placeholder="Provide detailed information about the repair/replacement needed..."></textarea>
+                    </div>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" id="cancel-request">Cancel</button>
+                <button type="submit" class="btn btn-primary">
+                    <i class="uil uil-check"></i> Submit Request
+                </button>
+            </div>
+        </form>
+    </div>
+</div>
+
+<!-- Request Details Modal -->
+<div id="details-modal" class="modal">
+    <div class="modal-content modal-xl">
+        <div class="modal-header">
+            <h3 id="details-title"><i class="uil uil-file-info-alt"></i> Request Details</h3>
+            <span class="close-btn">&times;</span>
+        </div>
+        <div class="modal-body" id="details-body">
+            <!-- Content loaded dynamically -->
+        </div>
+    </div>
+</div>
+
+<!-- Edit Invoice Modal -->
+<div id="edit-invoice-modal" class="modal">
+    <div class="modal-content">
+        <div class="modal-header">
+            <h3><i class="uil uil-edit"></i> Edit Invoice Details</h3>
+            <span class="close-btn">&times;</span>
+        </div>
+        <form id="edit-invoice-form">
+            <input type="hidden" id="edit-invoice-request-id">
+            <div class="modal-body">
+                <div class="form-row">
+                    <div class="form-group">
+                        <label for="edit-vendor-name">Vendor Name <span class="required">*</span></label>
+                        <input type="text" id="edit-vendor-name" name="vendor_name" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="edit-invoice-number">Invoice Number <span class="required">*</span></label>
+                        <input type="text" id="edit-invoice-number" name="invoice_number" required>
+                    </div>
+                </div>
+                <div class="form-row">
+                    <div class="form-group">
+                        <label for="edit-invoice-amount">Amount (Ksh) <span class="required">*</span></label>
+                        <input type="number" id="edit-invoice-amount" name="invoice_amount" step="0.01" min="0" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="edit-invoice-date">Invoice Date <span class="required">*</span></label>
+                        <input type="date" id="edit-invoice-date" name="invoice_date" required>
+                    </div>
+                </div>
+                
+                <!-- Current Invoice Attachment Section -->
+                <div class="form-group" id="current-invoice-attachment-section">
+                    <label>Current Invoice Document</label>
+                    <div id="current-invoice-attachment" class="current-attachment-display">
+                        <span class="no-attachment">No invoice document attached</span>
+                    </div>
+                </div>
+                
+                <!-- Replace/Upload Invoice Attachment -->
+                <div class="form-group">
+                    <label for="edit-invoice-attachment">Replace Invoice Document <small class="text-muted">(Optional - PDF or Image)</small></label>
+                    <input type="file" id="edit-invoice-attachment" name="invoice_attachment" accept=".pdf,.jpg,.jpeg,.png">
+                    <small class="form-hint">Uploading a new file will replace the existing one. Supported formats: PDF, JPG, PNG</small>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" id="cancel-edit-invoice">Cancel</button>
+                <button type="submit" class="btn btn-primary">
+                    <i class="uil uil-save"></i> Save Changes
+                </button>
+            </div>
+        </form>
+    </div>
+</div>
+
+<!-- Status Update Modal -->
+<div id="status-modal" class="modal">
+    <div class="modal-content">
+        <div class="modal-header">
+            <h3 id="status-modal-title"><i class="uil uil-exchange"></i> Update Status</h3>
+            <span class="close-btn">&times;</span>
+        </div>
+        <form id="status-form">
+            <input type="hidden" id="status-request-id">
+            <input type="hidden" id="status-action">
+            <div class="modal-body">
+                <div class="form-group">
+                    <label for="status-notes">Notes <span id="notes-required" class="required" style="display:none;">*</span></label>
+                    <textarea id="status-notes" name="notes" rows="3" placeholder="Add any relevant notes..."></textarea>
+                </div>
+                <!-- Invoice Fields (shown for submit-invoice action) -->
+                <div id="invoice-fields" style="display:none;">
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label for="vendor-name">Vendor Name <span class="required">*</span></label>
+                            <input type="text" id="vendor-name" name="vendor_name">
+                        </div>
+                        <div class="form-group">
+                            <label for="invoice-number">Invoice Number <span class="required">*</span></label>
+                            <input type="text" id="invoice-number" name="invoice_number">
+                        </div>
+                    </div>
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label for="invoice-amount">Amount (Ksh) <span class="required">*</span></label>
+                            <input type="number" id="invoice-amount" name="invoice_amount" step="0.01" min="0">
+                        </div>
+                        <div class="form-group">
+                            <label for="invoice-date">Invoice Date <span class="required">*</span></label>
+                            <input type="date" id="invoice-date" name="invoice_date">
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label for="invoice-attachment">Attach Invoice Document <small class="text-muted">(Optional - PDF or Image)</small></label>
+                        <input type="file" id="invoice-attachment" name="invoice_attachment" accept=".pdf,.jpg,.jpeg,.png">
+                        <small class="form-hint">Supported formats: PDF, JPG, PNG</small>
+                    </div>
+                </div>
+                <!-- Payment Fields (shown for finance-approve action) -->
+                <div id="payment-fields" style="display:none;">
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label for="payment-reference">Payment Reference</label>
+                            <input type="text" id="payment-reference" name="payment_reference">
+                        </div>
+                        <div class="form-group">
+                            <label for="payment-date">Payment Date</label>
+                            <input type="date" id="payment-date" name="payment_date">
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" id="cancel-status">Cancel</button>
+                <button type="submit" class="btn btn-primary" id="confirm-status-btn">
+                    <i class="uil uil-check"></i> Confirm
+                </button>
+            </div>
+        </form>
+    </div>
+</div>
+
+<!-- Attachments Modal -->
+<div id="attachments-modal" class="modal">
+    <div class="modal-content">
+        <div class="modal-header">
+            <h3><i class="uil uil-paperclip"></i> Manage Attachments</h3>
+            <span class="close-btn">&times;</span>
+        </div>
+        <div class="modal-body">
+            <input type="hidden" id="attachments-request-id">
+            <div class="upload-section">
+                <div class="form-group">
+                    <label for="attachment-type">Attachment Type</label>
+                    <select id="attachment-type">
+                        <option value="general">General</option>
+                        <option value="invoice">Invoice</option>
+                        <option value="receipt">Receipt</option>
+                        <option value="photo">Photo</option>
+                        <option value="document">Document</option>
+                    </select>
+                </div>
+                <div class="form-group">
+                    <label for="attachment-files">Upload Files</label>
+                    <input type="file" id="attachment-files" multiple accept=".pdf,.jpg,.jpeg,.png,.doc,.docx,.xls,.xlsx">
+                </div>
+                <button type="button" id="upload-attachments-btn" class="btn btn-primary btn-sm">
+                    <i class="uil uil-upload"></i> Upload
+                </button>
+            </div>
+            <hr>
+            <div class="attachments-list" id="attachments-list">
+                <p class="no-attachments">No attachments yet.</p>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Edit Attachment Modal -->
+<div id="edit-attachment-modal" class="modal">
+    <div class="modal-content modal-sm">
+        <div class="modal-header">
+            <h3><i class="uil uil-edit"></i> Edit Attachment</h3>
+            <span class="close-btn">&times;</span>
+        </div>
+        <div class="modal-body">
+            <form id="edit-attachment-form">
+                <input type="hidden" id="edit-attachment-request-id">
+                <input type="hidden" id="edit-attachment-id">
+                
+                <div class="form-group">
+                    <label>Current File</label>
+                    <div id="edit-attachment-current-file" class="current-file-display"></div>
+                </div>
+                
+                <div class="form-group">
+                    <label for="edit-attachment-type">Attachment Type</label>
+                    <select id="edit-attachment-type" required>
+                        <option value="general">General</option>
+                        <option value="invoice">Invoice</option>
+                        <option value="receipt">Receipt</option>
+                        <option value="photo">Photo</option>
+                        <option value="document">Document</option>
+                    </select>
+                </div>
+                
+                <div class="form-group">
+                    <label for="edit-attachment-notes">Notes</label>
+                    <textarea id="edit-attachment-notes" rows="2" placeholder="Optional notes..."></textarea>
+                </div>
+                
+                <div class="form-group">
+                    <label for="edit-attachment-file">Replace File (Optional)</label>
+                    <input type="file" id="edit-attachment-file" accept=".pdf,.jpg,.jpeg,.png,.doc,.docx,.xls,.xlsx">
+                    <small class="form-text text-muted">Leave empty to keep the current file</small>
+                </div>
+                
+                <div class="form-actions">
+                    <button type="button" class="btn btn-secondary" onclick="closeEditAttachmentModal()">Cancel</button>
+                    <button type="submit" class="btn btn-primary">
+                        <i class="uil uil-check"></i> Save Changes
+                    </button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+
+<!-- Store user info for JS -->
+<script>
+    window.currentUser = {
+        id: <%= locals.user?.id || 'null' %>,
+        role: '<%= locals.user?.role_name || "Standard User" %>',
+        branchId: <%= locals.user?.branch_id || 'null' %>
+    };
+</script>
+
+<!-- jQuery (required for Select2) -->
+<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+<!-- Select2 JS -->
+<script src="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/js/select2.min.js"></script>
+<script>
+    $(document).ready(function() {
+        // Initialize Select2 on filter dropdowns
+        $('.filter-select.select2-dropdown').select2({
+            allowClear: true,
+            placeholder: function() {
+                return $(this).data('placeholder') || $(this).find('option:first').text();
+            },
+            width: '100%'
+        });
+        
+        // Initialize Select2 on modal dropdowns with parent modal
+        function initModalSelect2() {
+            $('#request-type, #request-priority').select2({
+                dropdownParent: $('#request-modal'),
+                width: '100%'
+            });
+            
+            $('#request-asset').select2({
+                dropdownParent: $('#request-modal'),
+                allowClear: true,
+                placeholder: 'Select Asset (if applicable)',
+                width: '100%'
+            });
+            
+            $('#request-branch').select2({
+                dropdownParent: $('#request-modal'),
+                allowClear: true,
+                placeholder: 'Select Branch',
+                width: '100%'
+            });
+        }
+        
+        initModalSelect2();
+        
+        // Re-initialize when modal opens
+        $(document).on('click', '#new-request-btn', function() {
+            setTimeout(initModalSelect2, 100);
+        });
+    });
+</script>
+
+<%- include('partials/footer', { jsFile: 'repair-requests' }) %>

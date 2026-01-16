@@ -1,0 +1,361 @@
+.reports-container {
+    background: #fff;
+    padding: 20px;
+    border-radius: 8px;
+    max-width: 100%;
+    margin: 10px auto;
+  }
+  h2 { margin-bottom: 20px; }
+  .report-buttons {
+    display: flex;
+    gap: 15px;
+    flex-wrap: wrap;
+    margin-bottom: 20px;
+  }
+  .report-btn {
+    flex: 1;
+    min-width: 50px;
+    min-height: 100px;
+    padding: 15px;
+    font-size: 16px;
+    border: none;
+    border-radius: 6px;
+    background: #F37635;
+    color: #fff;
+    cursor: pointer;
+    transition: background .2s;
+  }
+  .report-btn:hover { background: #4CAF50; }
+  .report-form {
+    display: none;
+    margin-bottom: 20px;
+    padding: 15px;
+    border: 1px solid #ddd;
+    border-radius: 6px;
+    background: #fafafa;
+  }
+  .report-form input {
+    padding: 8px;
+    margin-right: 10px;
+    border: 1px solid #ccc;
+    border-radius: 4px;
+  }
+  .report-form button {
+    padding: 8px 15px;
+    border: none;
+    border-radius: 4px;
+    background: #28a745;
+    color: #fff;
+    cursor: pointer;
+  }
+  table {
+    width: 100%;
+    border-collapse: collapse;
+    font-size: 14px;
+    margin-top: 15px;
+  }
+  th, td {
+    border: 1px solid #ddd;
+    padding: 8px;
+    text-align: left;
+  }
+  th { background: #f8f9fa; }
+  tr:nth-child(even) { background: #fdfdfd; }
+  .hidden { display: none; }
+  
+  /* Pagination Controls */
+  .pagination-controls {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 15px;
+    padding: 15px 0;
+    margin-top: 20px;
+    border-top: 1px solid #e0e0e0;
+    flex-wrap: wrap;
+  }
+  
+  .pagination-info {
+    display: flex;
+    align-items: center;
+    gap: 15px;
+    flex-wrap: wrap;
+  }
+  
+  .pagination-buttons {
+    display: flex;
+    gap: 8px;
+  }
+  
+  .pagination-controls select {
+    padding: 6px 12px;
+    border: 1px solid #ccc;
+    border-radius: 4px;
+    font-size: 14px;
+    cursor: pointer;
+    background-color: #fff;
+    transition: border-color 0.2s, box-shadow 0.2s;
+  }
+  
+  .pagination-controls select:focus {
+    outline: none;
+    border-color: #F37635;
+    box-shadow: 0 0 0 3px rgba(243, 118, 53, 0.1);
+  }
+  
+  .btn-page {
+    padding: 8px 16px;
+    font-size: 16px;
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
+    background-color: #F37635;
+    color: #fff;
+    transition: all 0.2s;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    min-width: 44px;
+    height: 38px;
+  }
+  
+  .btn-page:hover:not(:disabled) {
+    background-color: #e06525;
+    transform: translateY(-1px);
+    box-shadow: 0 2px 4px rgba(243, 118, 53, 0.3);
+  }
+  
+  .btn-page:disabled {
+    background-color: #ccc;
+    cursor: not-allowed;
+    opacity: 0.6;
+  }
+  
+  .btn-page i {
+    font-size: 14px;
+  }
+  
+  .pagination-controls #page-info {
+    font-size: 14px;
+    color: #495057;
+    font-weight: 500;
+    white-space: nowrap;
+  }
+  
+  /* ============================
+     RESPONSIVE STYLES
+     ============================ */
+  
+  /* Tablets (max-width: 1024px) */
+  @media (max-width: 1024px) {
+    .reports-container {
+      padding: 15px;
+      margin: 8px auto;
+    }
+  
+    .report-btn {
+      min-width: 150px;
+      padding: 12px;
+      font-size: 15px;
+    }
+  }
+  
+  /* Mobile (max-width: 768px) */
+  @media (max-width: 768px) {
+    .reports-container {
+      padding: 12px;
+      margin: 5px;
+    }
+  
+    h2 {
+      font-size: 20px;
+      margin-bottom: 15px;
+    }
+  
+    .report-buttons {
+      display: grid;
+      grid-template-columns: repeat(2, 1fr);
+      gap: 10px;
+    }
+  
+    .report-btn {
+      min-width: auto;
+      min-height: 80px;
+      padding: 10px;
+      font-size: 14px;
+    }
+  
+    .report-form {
+      padding: 12px;
+    }
+  
+    .report-form input {
+      width: 100%;
+      margin-right: 0;
+      margin-bottom: 10px;
+      padding: 10px;
+      font-size: 16px; /* Prevents zoom on iOS */
+    }
+  
+    .report-form button {
+      width: 100%;
+      padding: 12px;
+      font-size: 15px;
+    }
+  
+    table {
+      font-size: 12px;
+    }
+  
+    th, td {
+      padding: 6px 4px;
+      font-size: 11px;
+    }
+  
+    /* Make table scrollable horizontally */
+    .table-wrapper {
+      overflow-x: auto;
+      -webkit-overflow-scrolling: touch;
+    }
+    
+    /* Pagination responsive */
+    .pagination-controls {
+      flex-direction: column;
+      gap: 12px;
+      padding: 12px 0;
+    }
+    
+    .pagination-info {
+      width: 100%;
+      justify-content: space-between;
+      gap: 10px;
+    }
+    
+    .pagination-buttons {
+      width: 100%;
+      justify-content: center;
+    }
+    
+    .pagination-controls select {
+      padding: 8px 12px;
+      font-size: 14px;
+      flex: 0 1 auto;
+    }
+    
+    .btn-page {
+      padding: 10px 20px;
+      font-size: 16px;
+      min-width: 60px;
+    }
+    
+    .pagination-controls #page-info {
+      text-align: right;
+      flex: 1;
+    }
+  }
+  
+  /* Small Mobile (max-width: 480px) */
+  @media (max-width: 480px) {
+    .reports-container {
+      padding: 10px;
+      margin: 3px;
+    }
+  
+    h2 {
+      font-size: 18px;
+    }
+  
+    .report-buttons {
+      grid-template-columns: 1fr;
+    }
+  
+    .report-btn {
+      min-height: 70px;
+      font-size: 13px;
+    }
+    
+    /* Pagination responsive */
+    .pagination-controls {
+      gap: 10px;
+      padding: 10px 5px;
+    }
+    
+    .pagination-info {
+      flex-direction: column;
+      align-items: stretch;
+      gap: 8px;
+    }
+    
+    .pagination-controls select {
+      padding: 10px;
+      font-size: 16px; /* Prevents iOS zoom */
+      width: 100%;
+    }
+    
+    .pagination-buttons {
+      gap: 10px;
+    
+    /* Pagination responsive */
+    .pagination-controls {
+      gap: 8px;
+      padding: 8px 3px;
+    }
+    
+    .pagination-controls select {
+      padding: 8px;
+      font-size: 14px;
+    }
+    
+    .btn-page {
+      padding: 10px 20px;
+      font-size: 16px;
+      min-width: 45px;
+    }
+    
+    .btn-page i {
+      font-size: 14px;
+    }
+    
+    .pagination-controls #page-info {
+      font-size: 12px;
+    } padding: 12px 24px;
+      font-size: 18px;
+      min-width: 50px;
+      flex: 1;
+    }
+    
+    .btn-page i {
+      font-size: 16px;
+    }
+    
+    .pagination-controls #page-info {
+      font-size: 13px;
+      text-align: center;
+    }
+  
+    th, td {
+      padding: 5px 3px;
+      font-size: 10px;
+    }
+  }
+  
+  /* Extra Small Mobile (max-width: 360px) */
+  @media (max-width: 360px) {
+    h2 {
+      font-size: 16px;
+    }
+  
+    .report-btn {
+      font-size: 12px;
+      padding: 8px;
+    }
+  
+    table {
+      font-size: 10px;
+    }
+  
+    th, td {
+      padding: 4px 2px;
+      font-size: 9px;
+    }
+  }

@@ -1,0 +1,78 @@
+<div class="table-responsive">
+                <table id="assignment-table">
+                    <thead>
+                        <tr>
+                            <th>ID</th>
+                            <th>Asset Tag</th>
+                            <th>Manufacturer</th>
+                            <th>Model Name</th>
+                            <th>Employee</th>
+                            <th>Assigned Date</th>
+                            <th>Amount</th>
+                            <th>Notes</th>
+                            <th>Return Date</th>
+                            <th>Attachments</th>
+                            <th>Actions</th>
+                        </tr>
+                    </thead>
+                    <tbody id="assignment-table-body">
+                        <% if (locals.assignments && locals.assignments.length > 0) { %>
+                            <% locals.assignments.forEach(assignment => { %>
+                            <tr>
+                                <td><%= assignment.id %></td>
+                                <td><%= assignment.asset_tag %></td>
+                                <td><%= assignment.manufacturer %></td>
+                                <td><%= assignment.model %></td>
+                                <td>
+                                    <%= assignment.employee_first_name %>
+                                    <%= assignment.employee_middle_name ? assignment.employee_middle_name : '' %>
+                                    <%= assignment.employee_last_name %>
+                                </td>
+                                <td><span data-date="<%= assignment.assignment_date %>"></span></td>
+                                <td>Ksh. <%= assignment.purchase_price ? parseFloat(assignment.purchase_price).toLocaleString() : '0' %></td>
+                                <td><%= assignment.notes || 'N/A' %></td>
+                                <td>
+                                    <%= assignment.return_date ? 
+                                        '<span data-date="' + assignment.return_date + '"></span>' : 'N/A' %>
+                                </td>
+                                <td>
+                                    <button class="btn btn-attachment" onclick="showAssignmentAttachments(<%= assignment.id %>)">
+                                        <i class="uil uil-paperclip"></i> View
+                                    </button>
+                                </td>
+                                <td>
+                                    <% if (!assignment.return_date) { %>
+                                    <button class="btn btn-return" data-id="<%= assignment.id %>">
+                                        Return
+                                    </button>
+                                    <% } %>
+                                </td>
+                            </tr>
+                            <% }); %>
+                        <% } else { %>
+                            <tr>
+                                <td colspan="11" class="no-data">No current assignments</td>
+                            </tr>
+                        <% } %>
+                    </tbody>
+                </table>
+            </div>
+            
+            <div class="pagination-controls">
+                <div class="pagination-info">
+                    <select id="page-size">
+                        <option value="10" selected>10 per page</option>
+                        <option value="20">20 per page</option>
+                        <option value="50">50 per page</option>
+                    </select>
+                    <span id="page-info">Page 1 of 1 (0 total)</span>
+                </div>
+                <div class="pagination-buttons">
+                    <button id="prev-btn" class="btn btn-page" disabled title="Previous Page">
+                        <i class="fa fa-chevron-left"></i>
+                    </button>
+                    <button id="next-btn" class="btn btn-page" disabled title="Next Page">
+                        <i class="fa fa-chevron-right"></i>
+                    </button>
+                </div>
+            </div>

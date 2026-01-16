@@ -1,0 +1,282 @@
+<%- include('partials/header', { pageTitle: 'System Configuration', cssFile: 'system-configuration' }) %>
+<%- include('partials/navbar') %>
+
+<div class="main">
+    <%- include('partials/sidebar') %>
+    <section class="content-area">
+        <div class="config-container">
+            <h2>System Configuration</h2>
+            
+            <!-- Configuration Tabs -->
+            <div class="config-tabs">
+                <button class="tab-button active" data-tab="general">General Settings</button>
+                <button class="tab-button" data-tab="company">Company Information</button>
+                <button class="tab-button" data-tab="email">Email Settings</button>
+                <button class="tab-button" data-tab="security">Security & Users</button>
+                <button class="tab-button" data-tab="storage">Storage Settings</button>
+            </div>
+
+            <!-- General Settings Tab -->
+            <div class="tab-content active" id="general-tab">
+                <form id="generalSettingsForm" class="config-form">
+                    <h3>General Settings</h3>
+                    
+                    <div class="form-field">
+                        <label for="app_name">Application Name</label>
+                        <input type="text" id="app_name" name="app_name" required>
+                        <small>This name will appear in the header and login page</small>
+                    </div>
+
+                    <div class="form-buttons">
+                        <button type="submit" class="btn btn-save">Save Changes</button>
+                    </div>
+                </form>
+            </div>
+
+            <!-- Company Information Tab -->
+            <div class="tab-content" id="company-tab">
+                <form id="companyInfoForm" class="config-form">
+                    <h3>Company Information</h3>
+                    
+                    <div class="logo-section">
+                        <div class="logo-preview">
+                            <img id="logo_preview" src="" alt="Company Logo">
+                            <div id="logo_placeholder" class="logo-placeholder">
+                                <i class="uil uil-image"></i>
+                                <p>No logo uploaded</p>
+                            </div>
+                        </div>
+                        <div class="logo-upload">
+                            <label for="company_logo" class="btn btn-secondary">
+                                <i class="uil uil-upload"></i> Upload Logo
+                            </label>
+                            <input type="file" id="company_logo" name="company_logo" accept="image/*" style="display: none;">
+                            <small>Recommended size: 200x60px. Max size: 5MB</small>
+                        </div>
+                    </div>
+
+                    <div class="form-field">
+                        <label for="company_email">Company Email</label>
+                        <input type="email" id="company_email" name="company_email">
+                    </div>
+
+                    <div class="form-field">
+                        <label for="company_phone">Company Phone</label>
+                        <input type="tel" id="company_phone" name="company_phone">
+                    </div>
+
+                    <div class="form-field full-width">
+                        <label for="company_address">Company Address</label>
+                        <textarea id="company_address" name="company_address" rows="3"></textarea>
+                    </div>
+
+                    <div class="form-buttons">
+                        <button type="submit" class="btn btn-save">Save Changes</button>
+                    </div>
+                </form>
+            </div>
+
+            <!-- Email Settings Tab -->
+            <div class="tab-content" id="email-tab">
+                <form id="emailSettingsForm" class="config-form">
+                    <h3>Email Configuration</h3>
+                    <p class="info-text">Configure SMTP settings to enable email notifications, password emails, and other system communications.</p>
+                    
+                    <div class="form-section">
+                        <h4>SMTP Server Settings</h4>
+                        
+                        <div class="form-row">
+                            <div class="form-field">
+                                <label for="smtp_host">SMTP Host</label>
+                                <input type="text" id="smtp_host" name="smtp_host" placeholder="e.g., smtp.gmail.com">
+                                <small>The hostname of your SMTP server</small>
+                            </div>
+                            <div class="form-field">
+                                <label for="smtp_port">SMTP Port</label>
+                                <input type="number" id="smtp_port" name="smtp_port" placeholder="587">
+                                <small>Common ports: 587 (TLS), 465 (SSL), 25 (unencrypted)</small>
+                            </div>
+                        </div>
+
+                        <div class="form-field">
+                            <div class="switch-row">
+                                <div class="switch-info">
+                                    <label for="smtp_secure">Use SSL/TLS</label>
+                                    <small>Enable for secure connection (recommended for port 465)</small>
+                                </div>
+                                <label class="switch">
+                                    <input type="checkbox" id="smtp_secure" name="smtp_secure">
+                                    <span class="slider round"></span>
+                                </label>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="form-section">
+                        <h4>Authentication</h4>
+                        
+                        <div class="form-field">
+                            <label for="smtp_user">SMTP Username</label>
+                            <input type="text" id="smtp_user" name="smtp_user" placeholder="email@gmail.com">
+                            <small>Usually your email address</small>
+                        </div>
+
+                        <div class="form-field">
+                            <label for="smtp_password">SMTP Password</label>
+                            <div class="password-input-wrapper">
+                                <input type="password" id="smtp_password" name="smtp_password" placeholder="Enter password or app-specific password">
+                                <button type="button" class="toggle-password" onclick="togglePasswordVisibility('smtp_password')">
+                                    <i class="uil uil-eye"></i>
+                                </button>
+                            </div>
+                            <small>For Gmail, use an App Password instead of your regular password</small>
+                        </div>
+                    </div>
+
+                    <div class="form-section">
+                        <h4>Sender Information</h4>
+                        
+                        <div class="form-row">
+                            <div class="form-field">
+                                <label for="smtp_from_name">From Name</label>
+                                <input type="text" id="smtp_from_name" name="smtp_from_name" placeholder="Asset Management System">
+                                <small>Name that appears as the sender</small>
+                            </div>
+                            <div class="form-field">
+                                <label for="smtp_from_email">From Email</label>
+                                <input type="email" id="smtp_from_email" name="smtp_from_email" placeholder="noreply@jiranismart.com">
+                                <small>Email address that appears as the sender</small>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="form-section">
+                        <h4>Test Configuration</h4>
+                        <div class="test-email-section">
+                            <div class="form-field">
+                                <label for="test_email">Send Test Email To</label>
+                                <div class="input-with-button">
+                                    <input type="email" id="test_email" name="test_email" placeholder="test@jiranismart.com">
+                                    <button type="button" id="send-test-email" class="btn btn-secondary">
+                                        <i class="uil uil-message"></i> Send Test
+                                    </button>
+                                </div>
+                                <small>Send a test email to verify your SMTP configuration</small>
+                            </div>
+                            <div id="test-email-result" class="test-result" style="display: none;"></div>
+                        </div>
+                    </div>
+
+                    <div class="form-buttons">
+                        <button type="submit" class="btn btn-save">Save Changes</button>
+                    </div>
+                </form>
+            </div>
+
+            <!-- Security & Users Tab -->
+            <div class="tab-content" id="security-tab">
+                <form id="securitySettingsForm" class="config-form">
+                    <h3>Security & User Settings</h3>
+                    
+                    <div class="form-section">
+                        <h4>Password Settings</h4>
+                        
+                        <div class="form-field">
+                            <div class="switch-row">
+                                <div class="switch-info">
+                                    <label for="auto_send_password">Auto-Send Password to Users</label>
+                                    <small>When enabled, newly created users will automatically receive their login credentials via email</small>
+                                </div>
+                                <label class="switch">
+                                    <input type="checkbox" id="auto_send_password" name="auto_send_password">
+                                    <span class="slider round"></span>
+                                </label>
+                            </div>
+                        </div>
+
+                        <div id="email-notification-settings" class="sub-settings" style="display: none;">
+                            <div class="info-box info">
+                                <i class="uil uil-info-circle"></i>
+                                <p>For auto-send to work, ensure SMTP settings are configured in the <a href="#" onclick="switchToTab('email'); return false;">Email Settings</a> tab.</p>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="form-buttons">
+                        <button type="submit" class="btn btn-save">Save Changes</button>
+                    </div>
+                </form>
+            </div>
+
+            <!-- Storage Settings Tab -->
+            <div class="tab-content" id="storage-tab">
+                <form id="storageSettingsForm" class="config-form">
+                    <h3>Storage Configuration</h3>
+                    
+                    <div class="form-field">
+                        <label>Storage Type</label>
+                        <div class="radio-group">
+                            <label class="radio-label">
+                                <input type="radio" name="storage_type" value="server" checked>
+                                <span class="radio-custom"></span>
+                                <span class="radio-text">
+                                    <strong>Server Storage</strong>
+                                    <small>Store files on the server's local file system</small>
+                                </span>
+                            </label>
+                            <label class="radio-label">
+                                <input type="radio" name="storage_type" value="firebase">
+                                <span class="radio-custom"></span>
+                                <span class="radio-text">
+                                    <strong>Firebase Storage</strong>
+                                    <small>Store files in Google Firebase Cloud Storage</small>
+                                </span>
+                            </label>
+                        </div>
+                    </div>
+
+                    <div id="firebase-settings" class="firebase-settings" style="display: none;">
+                        <h4>Firebase Configuration</h4>
+                        <p class="info-text">Enter your Firebase project credentials below. These can be found in your Firebase project settings.</p>
+                        
+                        <div class="form-field">
+                            <label for="firebase_api_key">API Key</label>
+                            <input type="text" id="firebase_api_key" name="firebase_api_key">
+                        </div>
+
+                        <div class="form-field">
+                            <label for="firebase_auth_domain">Auth Domain</label>
+                            <input type="text" id="firebase_auth_domain" name="firebase_auth_domain">
+                        </div>
+
+                        <div class="form-field">
+                            <label for="firebase_project_id">Project ID</label>
+                            <input type="text" id="firebase_project_id" name="firebase_project_id">
+                        </div>
+
+                        <div class="form-field">
+                            <label for="firebase_storage_bucket">Storage Bucket</label>
+                            <input type="text" id="firebase_storage_bucket" name="firebase_storage_bucket">
+                        </div>
+
+                        <div class="form-field">
+                            <label for="firebase_messaging_sender_id">Messaging Sender ID</label>
+                            <input type="text" id="firebase_messaging_sender_id" name="firebase_messaging_sender_id">
+                        </div>
+
+                        <div class="form-field">
+                            <label for="firebase_app_id">App ID</label>
+                            <input type="text" id="firebase_app_id" name="firebase_app_id">
+                        </div>
+                    </div>
+
+                    <div class="form-buttons">
+                        <button type="submit" class="btn btn-save">Save Changes</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </section>
+</div>
+
+<%- include('partials/footer', { jsFile: 'system-configuration' }) %>

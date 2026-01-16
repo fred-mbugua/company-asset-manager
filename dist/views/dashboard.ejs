@@ -1,0 +1,230 @@
+<%- include('partials/header', { pageTitle: 'Dashboard', cssFile: 'styles' }) %>
+<%- include('partials/navbar') %>
+
+<div class="main">
+    <%- include('partials/sidebar') %>
+
+    <section class="dashboard" id="dashboard-content" data-current-page="dashboard">
+        <h2>Dashboard Overview</h2>
+        
+        <!-- KPI Cards -->
+        <div class="kpi-grid">
+            <div class="kpi-card kpi-blue">
+                <div class="kpi-icon">
+                    <i class="uil uil-box"></i>
+                </div>
+                <div class="kpi-content">
+                    <h3>Total Assets</h3>
+                    <p class="kpi-value"><%= (locals.assetStats?.totalAssets || 0).toLocaleString() %></p>
+                    <span class="kpi-label">Items in inventory</span>
+                </div>
+            </div>
+
+            <div class="kpi-card kpi-green">
+                <div class="kpi-icon">
+                    <i class="uil uil-dollar-alt"></i>
+                </div>
+                <div class="kpi-content">
+                    <h3>Total Asset Value</h3>
+                    <p class="kpi-value">Ksh. <%= locals.assetStats?.totalAssetValue.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ',') || 0 %></p>
+                    <span class="kpi-label">Total inventory value</span>
+                </div>
+            </div>
+
+            <div class="kpi-card kpi-orange">
+                <div class="kpi-icon">
+                    <i class="uil uil-receipt"></i>
+                </div>
+                <div class="kpi-content">
+                    <h3>Total Expenses</h3>
+                    <p class="kpi-value">Ksh. <%= locals.assetStats?.totalExpenses.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ',') || 0 %></p>
+                    <span class="kpi-label">Accumulated expenses</span>
+                </div>
+            </div>
+
+            <div class="kpi-card kpi-red">
+                <div class="kpi-icon">
+                    <i class="uil uil-briefcase"></i>
+                </div>
+                <div class="kpi-content">
+                    <h3>Active Assignments</h3>
+                    <p class="kpi-value"><%= (locals.assetStats?.activeAssignments || 0).toLocaleString() %></p>
+                    <span class="kpi-label">Currently assigned</span>
+                </div>
+            </div>
+        </div>
+
+        <!-- Charts Grid -->
+        <div class="charts-grid">
+            <!-- Assets by Type Chart -->
+            <div class="chart-card chart-blue">
+                <div class="chart-header">
+                    <h3>Assets by Type</h3>
+                    <i class="uil uil-chart-pie"></i>
+                </div>
+                <div class="chart-container">
+                    <canvas id="assetsByTypeChart"></canvas>
+                </div>
+            </div>
+
+            <!-- Assets by Status Chart -->
+            <div class="chart-card chart-green">
+                <div class="chart-header">
+                    <h3>Assets by Status</h3>
+                    <i class="uil uil-chart"></i>
+                </div>
+                <div class="chart-container">
+                    <canvas id="assetsByStatusChart"></canvas>
+                </div>
+            </div>
+
+            <!-- Assets by Branch Chart -->
+            <div class="chart-card wide chart-orange">
+                <div class="chart-header">
+                    <h3>Assets Distribution by Branch</h3>
+                    <i class="uil uil-chart-bar"></i>
+                </div>
+                <div class="chart-container">
+                    <canvas id="assetsByBranchChart"></canvas>
+                </div>
+            </div>
+
+            <!-- Monthly Expenses Chart -->
+            <div class="chart-card wide chart-red">
+                <div class="chart-header">
+                    <h3>Monthly Expenses Trend</h3>
+                    <i class="uil uil-chart-line"></i>
+                </div>
+                <div class="chart-container">
+                    <canvas id="monthlyExpensesChart"></canvas>
+                </div>
+            </div>
+        </div>
+
+        <!-- Data Tables Grid -->
+        <div class="tables-grid">
+            <!-- Recent Expenses -->
+            <div class="table-card table-orange">
+                <div class="table-header">
+                    <h3>Recent Expenses</h3>
+                    <i class="uil uil-invoice"></i>
+                </div>
+                <div class="table-container">
+                    <% if (locals.analytics?.recentExpenses && locals.analytics.recentExpenses.length > 0) { %>
+                        <table class="data-table">
+                            <thead>
+                                <tr>
+                                    <th>Date</th>
+                                    <th>Asset</th>
+                                    <th>Type</th>
+                                    <th>Vendor</th>
+                                    <th>Amount</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <% locals.analytics.recentExpenses.forEach(expense => { %>
+                                    <tr>
+                                        <td><span data-date="<%= expense.expense_date %>"></span></td>
+                                        <td><span class="badge badge-primary"><%= expense.asset_tag %></span></td>
+                                        <td><%= expense.expense_type %></td>
+                                        <td><%= expense.vendor || 'N/A' %></td>
+                                        <td class="amount">Ksh. <%= parseFloat(expense.amount).toLocaleString() %></td>
+                                    </tr>
+                                <% }) %>
+                            </tbody>
+                        </table>
+                    <% } else { %>
+                        <p class="no-data">No recent expenses</p>
+                    <% } %>
+                </div>
+            </div>
+
+            <!-- Recent Assignments -->
+            <div class="table-card table-blue">
+                <div class="table-header">
+                    <h3>Recent Assignments</h3>
+                    <i class="uil uil-clipboard-alt"></i>
+                </div>
+                <div class="table-container">
+                    <% if (locals.analytics?.recentAssignments && locals.analytics.recentAssignments.length > 0) { %>
+                        <table class="data-table">
+                            <thead>
+                                <tr>
+                                    <th>Date</th>
+                                    <th>Employee</th>
+                                    <th>Asset Tag</th>
+                                    <th>Type</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <% locals.analytics.recentAssignments.forEach(assignment => { %>
+                                    <tr>
+                                        <td><span data-date="<%= assignment.assignment_date %>"></span></td>
+                                        <td><%= assignment.employee_name %></td>
+                                        <td><span class="badge badge-primary"><%= assignment.asset_tag %></span></td>
+                                        <td><%= assignment.asset_type %></td>
+                                    </tr>
+                                <% }) %>
+                            </tbody>
+                        </table>
+                    <% } else { %>
+                        <p class="no-data">No recent assignments</p>
+                    <% } %>
+                </div>
+            </div>
+
+            <!-- Top Expensive Assets -->
+            <div class="table-card table-green">
+                <div class="table-header">
+                    <h3>Most Expensive Assets</h3>
+                    <i class="uil uil-moneybag"></i>
+                </div>
+                <div class="table-container">
+                    <% if (locals.analytics?.topExpensiveAssets && locals.analytics.topExpensiveAssets.length > 0) { %>
+                        <table class="data-table">
+                            <thead>
+                                <tr>
+                                    <th>Asset Tag</th>
+                                    <th>Type</th>
+                                    <th>Model</th>
+                                    <th>Total Cost</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <% locals.analytics.topExpensiveAssets.forEach(asset => { %>
+                                    <tr>
+                                        <td><span class="badge badge-primary"><%= asset.asset_tag %></span></td>
+                                        <td><%= asset.asset_type %></td>
+                                        <td><%= asset.manufacturer %> <%= asset.model %></td>
+                                        <td class="amount">Ksh. <%= parseFloat(asset.total_cost).toLocaleString() %></td>
+                                    </tr>
+                                <% }) %>
+                            </tbody>
+                        </table>
+                    <% } else { %>
+                        <p class="no-data">No asset data available</p>
+                    <% } %>
+                </div>
+            </div>
+        </div>
+
+        <!-- Hidden data for charts -->
+        <script id="chartData" type="application/json">
+            {
+                "assetsByType": <%- JSON.stringify(locals.analytics?.assetsByType || []) %>,
+                "assetsByStatus": <%- JSON.stringify(locals.analytics?.assetsByStatus || []) %>,
+                "assetsByBranch": <%- JSON.stringify(locals.analytics?.assetsByBranch || []) %>,
+                "monthlyExpenses": <%- JSON.stringify(locals.analytics?.monthlyExpenses || []) %>
+            }
+        </script>
+
+        <% if (locals.message) { %>
+            <script>
+                // Show dynamic message upon page load
+                showMessage('<%= locals.message.type %>', '<%= locals.message.text %>');
+            </script>
+        <% } %>
+    </section>
+</div>
+
+<%- include('partials/footer', { jsFile: 'dashboard' }) %>

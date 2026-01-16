@@ -1,0 +1,320 @@
+<%- include('partials/header', { pageTitle: isViewingOtherUser ? 'User Profile' : 'My Profile', cssFile: 'profile' }) %>
+<%- include('partials/navbar', { user: locals.user }) %>
+
+<div class="main">
+    <%- include('partials/sidebar') %>
+    <section class="content-area">
+        <% if (isViewingOtherUser) { %>
+        <div style="margin-bottom: 20px;">
+            <a href="/users/manage" class="btn" style="display: inline-flex; align-items: center; gap: 8px;">
+                <i class="fa fa-arrow-left"></i> Back to User Management
+            </a>
+        </div>
+        <% } %>
+        <div class="profile-container">
+            <div class="profile-header">
+                <div class="profile-avatar">
+                    <i class="fa fa-user-circle"></i>
+                </div>
+                <div class="profile-title">
+                    <h3><%= user.first_name %> <%= user.last_name %></h3>
+                    <span class="profile-role"><%= user.role_name %></span>
+                </div>
+            </div>
+
+            <div class="profile-content">
+                <div class="profile-section">
+                    <h4>Personal Information</h4>
+                    <form id="profile-form">
+                        <div class="form-row">
+                            <div class="form-group">
+                                <label for="first_name">First Name:</label>
+                                <input type="text" id="first_name" name="first_name" value="<%= user.first_name %>" <%= user.role_name !== 'Admin' ? 'readonly' : '' %>>
+                            </div>
+                            <div class="form-group">
+                                <label for="middle_name">Middle Name:</label>
+                                <input type="text" id="middle_name" name="middle_name" value="<%= user.middle_name || '' %>" <%= user.role_name !== 'Admin' ? 'readonly' : '' %>>
+                            </div>
+                        </div>
+
+                        <div class="form-row">
+                            <div class="form-group">
+                                <label for="last_name">Last Name:</label>
+                                <input type="text" id="last_name" name="last_name" value="<%= user.last_name %>" <%= user.role_name !== 'Admin' ? 'readonly' : '' %>>
+                            </div>
+                            <div class="form-group">
+                                <label for="email">Email (Username):</label>
+                                <input type="email" id="email" name="email" value="<%= user.email %>" readonly>
+                            </div>
+                        </div>
+
+                        <div class="form-row">
+                            <div class="form-group">
+                                <label for="phone">Phone:</label>
+                                <input type="text" id="phone" name="phone" value="<%= user.phone || '' %>" <%= user.role_name !== 'Admin' ? 'readonly' : '' %>>
+                            </div>
+                            <div class="form-group">
+                                <label for="department">Department:</label>
+                                <input type="text" id="department" name="department" value="<%= user.department_name || 'N/A' %>" readonly>
+                            </div>
+                        </div>
+
+                        <div class="form-row">
+                            <div class="form-group">
+                                <label for="branch">Branch:</label>
+                                <input type="text" id="branch" name="branch" value="<%= user.branch_name || 'N/A' %>" readonly>
+                            </div>
+                            <div class="form-group">
+                                <label for="company">Company:</label>
+                                <input type="text" id="company" name="company" value="<%= user.company_name || 'N/A' %>" readonly>
+                            </div>
+                        </div>
+
+                        <div class="form-row">
+                            <div class="form-group">
+                                <label for="status">Status:</label>
+                                <input type="text" id="status" name="status" value="<%= user.is_active ? 'Active' : 'Inactive' %>" readonly>
+                            </div>
+                            <div class="form-group">
+                                <!-- Empty for alignment -->
+                            </div>
+                        </div>
+
+                        <% if (viewerIsAdmin && !isViewingOtherUser) { %>
+                        <div class="form-actions">
+                            <button type="submit" class="btn btn-save">
+                                <i class="fa fa-save"></i> Save Changes
+                            </button>
+                        </div>
+                        <% } %>
+                    </form>
+                </div>
+
+                <% if (isViewingOtherUser && user.is_bulk_imported && bulkImportInfo) { %>
+                <div class="profile-section bulk-import-section">
+                    <h4><i class="fa fa-upload"></i> Bulk Import Information</h4>
+                    <div class="bulk-import-info">
+                        <div class="info-row">
+                            <span class="info-label">Import Method:</span>
+                            <span class="info-value"><span class="badge badge-info">Bulk Import</span></span>
+                        </div>
+                        <div class="info-row">
+                            <span class="info-label">Import Date:</span>
+                            <span class="info-value"><%= new Date(bulkImportInfo.created_at).toLocaleString() %></span>
+                        </div>
+                        <div class="info-row">
+                            <span class="info-label">Password Status:</span>
+                            <span class="info-value">
+                                <% if (bulkImportInfo.password_changed) { %>
+                                    <span class="badge badge-success"><i class="fa fa-check"></i> Password Changed</span>
+                                <% } else { %>
+                                    <span class="badge badge-warning"><i class="fa fa-exclamation-triangle"></i> Not Changed</span>
+                                <% } %>
+                            </span>
+                        </div>
+                        <% if (!bulkImportInfo.password_changed && bulkImportInfo.visible_password) { %>
+                        <div class="info-row">
+                            <span class="info-label">Auto-Generated Password:</span>
+                            <span class="info-value">
+                                <span class="password-display" id="password-display">
+                                    <span class="password-hidden">••••••••••</span>
+                                    <span class="password-visible" style="display: none;"><%= bulkImportInfo.visible_password %></span>
+                                </span>
+                                <button type="button" class="btn btn-sm btn-toggle-password" onclick="togglePasswordVisibility()">
+                                    <i class="fa fa-eye" id="toggle-icon"></i>
+                                </button>
+                                <button type="button" class="btn btn-sm btn-copy-password" onclick="copyPassword()">
+                                    <i class="fa fa-copy"></i>
+                                </button>
+                            </span>
+                        </div>
+                        <div class="password-warning">
+                            <i class="fa fa-info-circle"></i>
+                            This password will be hidden once the user changes it.
+                        </div>
+                        <% } %>
+                    </div>
+                </div>
+                <% } %>
+
+                <% if (viewerIsAdmin && !isViewingOtherUser) { %>
+                <div class="profile-section">
+                    <h4>Change Password</h4>
+                    <form id="password-form">
+                        <div class="form-group">
+                            <label for="current_password">Current Password:</label>
+                            <input type="password" id="current_password" name="current_password" required>
+                        </div>
+                        <div class="form-group">
+                            <label for="new_password">New Password:</label>
+                            <input type="password" id="new_password" name="new_password" required>
+                        </div>
+                        <div class="form-group">
+                            <label for="confirm_password">Confirm New Password:</label>
+                            <input type="password" id="confirm_password" name="confirm_password" required>
+                        </div>
+                        <div class="form-actions">
+                            <button type="submit" class="btn btn-change-password">
+                                <i class="fa fa-lock"></i> Change Password
+                            </button>
+                        </div>
+                    </form>
+                </div>
+                <% } %>
+
+                
+            </div>
+        </div>
+    </section>
+</div>
+
+<style>
+.bulk-import-section {
+    background: #f8f9fa;
+    border: 1px solid #e9ecef;
+    border-radius: 8px;
+}
+
+.bulk-import-section h4 {
+    color: #495057;
+    border-bottom: 2px solid #007bff;
+    padding-bottom: 10px;
+}
+
+.bulk-import-info {
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+}
+
+.info-row {
+    display: flex;
+    align-items: center;
+    gap: 15px;
+    flex-wrap: wrap;
+}
+
+.info-label {
+    font-weight: 600;
+    color: #495057;
+    min-width: 180px;
+}
+
+.info-value {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+}
+
+.badge {
+    padding: 5px 12px;
+    border-radius: 20px;
+    font-size: 12px;
+    font-weight: 500;
+}
+
+.badge-info {
+    background: #17a2b8;
+    color: white;
+}
+
+.badge-success {
+    background: #28a745;
+    color: white;
+}
+
+.badge-warning {
+    background: #ffc107;
+    color: #212529;
+}
+
+.password-display {
+    font-family: 'Courier New', monospace;
+    background: #fff;
+    padding: 6px 12px;
+    border-radius: 4px;
+    border: 1px solid #ddd;
+    font-size: 14px;
+}
+
+.password-visible {
+    letter-spacing: 1px;
+    font-weight: 500;
+}
+
+.btn-toggle-password,
+.btn-copy-password {
+    padding: 6px 10px;
+    border: 1px solid #ddd;
+    background: #fff;
+    cursor: pointer;
+    border-radius: 4px;
+    transition: all 0.2s;
+}
+
+.btn-toggle-password:hover,
+.btn-copy-password:hover {
+    background: #f0f0f0;
+    border-color: #bbb;
+}
+
+.btn-copy-password {
+    color: #17a2b8;
+}
+
+.password-warning {
+    margin-top: 8px;
+    padding: 10px 15px;
+    background: #fff3cd;
+    border: 1px solid #ffc107;
+    border-radius: 4px;
+    color: #856404;
+    font-size: 13px;
+}
+
+.password-warning i {
+    margin-right: 8px;
+}
+</style>
+
+<script>
+function togglePasswordVisibility() {
+    const hiddenEl = document.querySelector('.password-hidden');
+    const visibleEl = document.querySelector('.password-visible');
+    const toggleIcon = document.getElementById('toggle-icon');
+    
+    if (hiddenEl.style.display !== 'none') {
+        hiddenEl.style.display = 'none';
+        visibleEl.style.display = 'inline';
+        toggleIcon.classList.remove('fa-eye');
+        toggleIcon.classList.add('fa-eye-slash');
+    } else {
+        hiddenEl.style.display = 'inline';
+        visibleEl.style.display = 'none';
+        toggleIcon.classList.remove('fa-eye-slash');
+        toggleIcon.classList.add('fa-eye');
+    }
+}
+
+function copyPassword() {
+    const passwordEl = document.querySelector('.password-visible');
+    const password = passwordEl.textContent;
+    
+    navigator.clipboard.writeText(password).then(() => {
+        // Show a brief notification
+        const btn = document.querySelector('.btn-copy-password');
+        const originalHTML = btn.innerHTML;
+        btn.innerHTML = '<i class="fa fa-check"></i>';
+        btn.style.color = '#28a745';
+        
+        setTimeout(() => {
+            btn.innerHTML = originalHTML;
+            btn.style.color = '#17a2b8';
+        }, 1500);
+    }).catch(err => {
+        console.error('Failed to copy password:', err);
+    });
+}
+</script>
+
+<%- include('partials/footer', { jsFile: 'profile' }) %>

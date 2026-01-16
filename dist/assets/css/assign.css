@@ -1,0 +1,1159 @@
+.content-wrapper {
+    padding: 20px;
+    height: calc(100vh - 60px);
+    width: calc(100% - 250px);
+    overflow-y: auto;
+    background-color: #f5f7fa;
+}
+
+.page-header {
+    margin-bottom: 20px;
+}
+
+.page-header h2 {
+    color: #000;
+    font-size: 24px;
+    font-weight: 600;
+}
+
+/* Section Styling */
+.form-section,
+.table-section {
+    background: #ffffff;
+    border-radius: 8px;
+    box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+    padding: 25px;
+    margin-bottom: 20px;
+}
+
+.section-header {
+    margin-bottom: 20px;
+    padding-bottom: 10px;
+    border-bottom: 2px solid #eef2f7;
+}
+
+.section-header h3 {
+    color: #2c3e50;
+    font-size: 18px;
+    font-weight: 600;
+}
+
+/* Search/Filter Section */
+.search-filter-section {
+    display: flex;
+    gap: 10px;
+    margin-bottom: 15px;
+    padding-bottom: 15px;
+    border-bottom: 2px solid #eef2f7;
+}
+
+.search-input {
+    flex: 1;
+    padding: 10px;
+    border: 1px solid #ccc;
+    border-radius: 4px;
+    font-size: 14px;
+}
+
+.search-input:focus {
+    outline: none;
+    border-color: #F37635;
+    box-shadow: 0 0 0 3px rgba(243, 118, 53, 0.1);
+}
+
+/* Form Styling */
+#assignment-form {
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
+}
+
+.form-row {
+    display: flex;
+    flex-direction: column;
+    gap: 15px;
+}
+
+.form-group {
+    flex: 1;
+}
+
+.form-group label {
+    display: block;
+    margin-bottom: 8px;
+    color: #495057;
+    font-weight: 500;
+}
+
+.form-group select,
+.form-group input,
+.form-group textarea {
+    width: 100%;
+    padding: 8px 12px;
+    border: 1px solid #cbd5e0;
+    border-radius: 4px;
+    font-size: 14px;
+    transition: border-color 0.2s;
+    box-sizing: border-box;
+}
+
+.form-group select,
+.form-group input[type="date"] {
+    height: 38px;
+}
+
+.form-group textarea {
+    min-height: 80px;
+}
+
+.form-group select:focus,
+.form-group input:focus,
+.form-group textarea:focus {
+    border-color: #ff9800;
+    outline: none;
+    box-shadow: 0 0 0 2px rgba(255, 152, 0, 0.2);
+}
+
+/* Table Styling */
+.table-responsive {
+    overflow-x: auto;
+    -webkit-overflow-scrolling: touch;
+    margin: 0;
+    padding: 0;
+}
+
+table {
+    width: 100%;
+    border-collapse: collapse;
+    font-size: 14px;
+    background: white;
+}
+
+th, td {
+    border: 1px solid #ddd;
+    padding: 12px;
+    text-align: left;
+    vertical-align: middle;
+}
+
+th {
+    background: #f8f9fa;
+    font-weight: 600;
+    color: #2c3e50;
+    white-space: nowrap;
+}
+
+td {
+    color: #4a5568;
+}
+
+tr:nth-child(even) {
+    background: #fdfdfd;
+}
+
+tr:hover {
+    background: #f0f0f0;
+}
+
+.no-data {
+    text-align: center;
+    color: #718096;
+    padding: 20px;
+    font-style: italic;
+}
+
+/* Pagination Controls */
+.pagination-controls {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 15px;
+    padding: 20px 0 5px 0;
+    margin-top: auto;
+    border-top: 1px solid #e0e0e0;
+    flex-wrap: wrap;
+}
+
+.pagination-info {
+    display: flex;
+    align-items: center;
+    gap: 15px;
+    flex-wrap: wrap;
+}
+
+.pagination-buttons {
+    display: flex;
+    gap: 8px;
+}
+
+.pagination-controls select {
+    padding: 6px 12px;
+    border: 1px solid #ccc;
+    border-radius: 4px;
+    font-size: 14px;
+    cursor: pointer;
+}
+
+.btn-page {
+    padding: 8px 16px;
+    font-size: 16px;
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
+    background-color: #F37635;
+    color: #fff;
+    transition: all 0.2s;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    min-width: 44px;
+    height: 38px;
+}
+
+.btn-page:hover:not(:disabled) {
+    background-color: #e06525;
+    transform: translateY(-1px);
+}
+
+.btn-page:disabled {
+    background-color: #ccc;
+    cursor: not-allowed;
+    opacity: 0.6;
+}
+
+.btn-page i {
+    font-size: 14px;
+}
+
+.pagination-controls #page-info {
+    font-size: 14px;
+    color: #4a5568;
+}
+
+/* Button Styling */
+.btn {
+    padding: 8px 16px;
+    border-radius: 4px;
+    font-weight: 500;
+    cursor: pointer;
+    transition: all 0.2s;
+}
+
+.btn-primary {
+    background-color: #F37635;
+    color: white;
+    border: none;
+}
+
+.btn-primary:hover {
+    background-color: #e06525;
+}
+
+.btn-return {
+    background-color: #48bb78;
+    color: white;
+    border: none;
+    padding: 6px 12px;
+    border-radius: 4px;
+}
+
+.btn-return:hover {
+    background-color: #38a169;
+}
+
+.btn-attachment {
+    background-color: #3498db;
+    color: white;
+    border: none;
+    padding: 6px 12px;
+    border-radius: 4px;
+    font-size: 13px;
+    display: inline-flex;
+    align-items: center;
+    gap: 5px;
+}
+
+.btn-attachment:hover {
+    background-color: #2980b9;
+}
+
+/* Select2 Dropdown Styles */
+.select2-container {
+    font-size: 14px;
+}
+
+.select2-container--default .select2-selection--single {
+    border: 1px solid #cbd5e0 !important;
+    border-radius: 4px !important;
+    height: 38px !important;
+    line-height: 36px !important;
+    box-sizing: border-box !important;
+    padding: 0 !important;
+}
+
+.select2-container--default .select2-selection--single .select2-selection__rendered {
+    line-height: 36px !important;
+    color: #4a5568 !important;
+    padding-left: 12px !important;
+    padding-right: 30px !important;
+    display: block;
+}
+
+.select2-container--default .select2-selection--single .select2-selection__placeholder {
+    color: #a0aec0;
+}
+
+.select2-container--default .select2-selection--single .select2-selection__arrow {
+    height: 36px !important;
+    top: 1px !important;
+    right: 1px !important;
+}
+
+.select2-container--default .select2-selection--single .select2-selection__arrow b {
+    border-color: #4a5568 transparent transparent transparent;
+    border-style: solid;
+    border-width: 5px 4px 0 4px;
+    height: 0;
+    left: 50%;
+    margin-left: -4px;
+    margin-top: -2px;
+    position: absolute;
+    top: 50%;
+    width: 0;
+}
+
+.select2-container--default.select2-container--focus .select2-selection--single,
+.select2-container--default.select2-container--open .select2-selection--single {
+    border-color: #4299e1 !important;
+    box-shadow: 0 0 0 2px rgba(66, 153, 225, 0.2) !important;
+    outline: none !important;
+}
+
+.select2-container--default .select2-results__option--highlighted[aria-selected] {
+    background-color: #4A9D5F !important;
+    color: white !important;
+}
+
+.select2-dropdown {
+    border: 1px solid #cbd5e0 !important;
+    border-radius: 4px !important;
+}
+
+.select2-container--default .select2-search--dropdown .select2-search__field {
+    border: 1px solid #cbd5e0;
+    border-radius: 4px;
+    padding: 6px 12px;
+}
+
+/* Modal Styles */
+.modal {
+    display: none;
+    position: fixed;
+    z-index: 1000;
+    left: 0;
+    top: 0;
+    width: 100%;
+    height: 100%;
+    overflow: auto;
+    background-color: rgba(0, 0, 0, 0.5);
+    animation: fadeIn 0.3s;
+}
+
+@keyframes fadeIn {
+    from { opacity: 0; }
+    to { opacity: 1; }
+}
+
+.modal-content {
+    background-color: #ffffff;
+    margin: 5% auto;
+    padding: 0;
+    border-radius: 8px;
+    width: 90%;
+    max-width: 900px;
+    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.3);
+    animation: slideDown 0.3s;
+}
+
+@keyframes slideDown {
+    from {
+        transform: translateY(-50px);
+        opacity: 0;
+    }
+    to {
+        transform: translateY(0);
+        opacity: 1;
+    }
+}
+
+.modal-header {
+    padding: 20px;
+    border-bottom: 1px solid #e2e8f0;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.modal-header h3 {
+    margin: 0;
+    color: #2c3e50;
+    font-size: 20px;
+    font-weight: 600;
+}
+
+.close {
+    color: #a0aec0;
+    font-size: 28px;
+    font-weight: bold;
+    cursor: pointer;
+    transition: color 0.2s;
+}
+
+.close:hover,
+.close:focus {
+    color: #2c3e50;
+}
+
+.modal-body {
+    padding: 20px;
+}
+
+.modal-actions {
+    display: flex;
+    gap: 10px;
+    margin-top: 20px;
+    justify-content: flex-end;
+}
+
+.btn-cancel {
+    background-color: #a0aec0;
+    color: white;
+    border: none;
+}
+
+.btn-cancel:hover {
+    background-color: #718096;
+}
+
+/* Assignment Attachments Modal Styling */
+.attachment-item {
+    display: flex;
+    align-items: center;
+    gap: 15px;
+    padding: 15px;
+    border: 1px solid #e9ecef;
+    border-radius: 8px;
+    margin-bottom: 12px;
+    background: #ffffff;
+    transition: all 0.2s ease;
+}
+
+.attachment-item:hover {
+    border-color: #F37635;
+    box-shadow: 0 2px 8px rgba(243, 118, 53, 0.1);
+    transform: translateY(-1px);
+}
+
+.attachment-icon {
+    font-size: 2rem;
+    color: #F37635;
+    flex-shrink: 0;
+}
+
+.attachment-info {
+    flex: 1;
+    min-width: 0;
+}
+
+.attachment-name {
+    font-weight: 600;
+    color: #2c3e50;
+    margin-bottom: 6px;
+    word-break: break-word;
+}
+
+.attachment-meta {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px;
+    font-size: 13px;
+    color: #6c757d;
+    align-items: center;
+}
+
+.attachment-meta span {
+    display: inline-flex;
+    align-items: center;
+    gap: 4px;
+}
+
+.attachment-meta i {
+    font-size: 14px;
+}
+
+.attachment-notes {
+    margin-top: 8px;
+    padding: 8px 12px;
+    background: #f8f9fa;
+    border-left: 3px solid #F37635;
+    border-radius: 4px;
+    font-size: 13px;
+    color: #495057;
+    display: flex;
+    align-items: start;
+    gap: 6px;
+}
+
+.attachment-notes i {
+    margin-top: 2px;
+    flex-shrink: 0;
+}
+
+.attachment-actions {
+    display: flex;
+    gap: 8px;
+    flex-shrink: 0;
+}
+
+.btn-small {
+    padding: 6px 12px;
+    font-size: 13px;
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
+    display: inline-flex;
+    align-items: center;
+    gap: 5px;
+    transition: all 0.2s ease;
+    font-weight: 500;
+}
+
+.btn-download {
+    background-color: #3498db;
+    color: white;
+}
+
+.btn-download:hover {
+    background-color: #2980b9;
+    transform: translateY(-1px);
+    box-shadow: 0 2px 4px rgba(52, 152, 219, 0.3);
+}
+
+.btn-delete-attachment {
+    background-color: #e74c3c;
+    color: white;
+}
+
+.btn-delete-attachment:hover {
+    background-color: #c0392b;
+    transform: translateY(-1px);
+    box-shadow: 0 2px 4px rgba(231, 76, 60, 0.3);
+}
+
+.no-attachments {
+    text-align: center;
+    padding: 40px 20px;
+    color: #95a5a6;
+    font-style: italic;
+    background: #f8f9fa;
+    border-radius: 6px;
+    border: 2px dashed #dee2e6;
+}
+
+.assignment-detail-info {
+    background: linear-gradient(135deg, #f8f9fa 0%, #e9ecef 100%);
+    border-radius: 8px;
+    padding: 20px;
+    margin-bottom: 25px;
+    border: 1px solid #dee2e6;
+}
+
+.detail-row {
+    padding: 10px 0;
+    border-bottom: 1px solid #e9ecef;
+    display: flex;
+    align-items: center;
+}
+
+.detail-row:last-child {
+    border-bottom: none;
+}
+
+.detail-row strong {
+    display: inline-block;
+    min-width: 150px;
+    color: #495057;
+    font-weight: 600;
+}
+
+.attachments-section h4 {
+    margin-bottom: 20px;
+    color: #2c3e50;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    font-size: 18px;
+}
+
+.attachments-section h4 i {
+    color: #F37635;
+}
+
+/* Upload Form Styling */
+.attachment-upload-form {
+    background: white;
+    padding: 20px;
+    border-radius: 8px;
+    margin-bottom: 20px;
+    border: 1px solid #e9ecef;
+}
+
+.upload-area {
+    margin-bottom: 15px;
+}
+
+.upload-label {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 8px;
+    padding: 30px;
+    border: 2px dashed #ced4da;
+    border-radius: 8px;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    background: #fafafa;
+    text-align: center;
+}
+
+.upload-label:hover {
+    border-color: #F37635;
+    background: #fff5f0;
+}
+
+.upload-label i {
+    font-size: 2.5rem;
+    color: #F37635;
+}
+
+.upload-label span {
+    font-weight: 500;
+    color: #495057;
+}
+
+.upload-label small {
+    color: #7f8c8d;
+    font-size: 0.875rem;
+}
+
+.selected-file {
+    display: none;
+    align-items: center;
+    gap: 10px;
+    padding: 15px;
+    border: 2px solid #F37635;
+    border-radius: 8px;
+    background: #fff5f0;
+}
+
+.selected-file i {
+    font-size: 1.5rem;
+    color: #F37635;
+}
+
+.file-name {
+    flex: 1;
+    color: #2c3e50;
+    font-weight: 500;
+}
+
+.clear-file-btn {
+    background: #e74c3c;
+    color: white;
+    border: none;
+    border-radius: 50%;
+    width: 28px;
+    height: 28px;
+    cursor: pointer;
+    font-size: 20px;
+    line-height: 1;
+    padding: 0;
+    transition: all 0.2s ease;
+}
+
+.clear-file-btn:hover {
+    background: #c0392b;
+    transform: scale(1.1);
+}
+
+.upload-notes label {
+    display: block;
+    margin-bottom: 8px;
+    color: #495057;
+    font-weight: 500;
+}
+
+.attachment-notes-input {
+    width: 100%;
+    padding: 10px;
+    border: 1px solid #ced4da;
+    border-radius: 6px;
+    font-size: 14px;
+    font-family: inherit;
+    resize: vertical;
+    transition: border-color 0.2s ease;
+}
+
+.attachment-notes-input:focus {
+    outline: none;
+    border-color: #F37635;
+    box-shadow: 0 0 0 3px rgba(243, 118, 53, 0.1);
+}
+
+.btn-upload-attachment {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    padding: 10px 20px;
+    background: #F37635;
+    color: white;
+    border: none;
+    border-radius: 6px;
+    font-size: 14px;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.2s ease;
+}
+
+.btn-upload-attachment:hover {
+    background: #d85d2a;
+    transform: translateY(-1px);
+    box-shadow: 0 4px 8px rgba(243, 118, 53, 0.3);
+}
+
+.btn-upload-attachment i {
+    font-size: 16px;
+}
+
+/* Responsive Design */
+@media (min-width: 768px) {
+    .form-row {
+        flex-direction: row;
+    }
+    
+    .form-group + .form-group {
+        margin-left: 20px;
+    }
+
+    .content-wrapper {
+        width: 100%;
+    }
+}
+
+@media (max-width: 767px) {
+    .content-wrapper {
+        padding: 10px;
+        width: 100%;
+    }
+    
+    .page-header h2 {
+        font-size: 20px;
+    }
+    
+    .form-section,
+    .table-section {
+        padding: 15px;
+        margin-bottom: 15px;
+    }
+    
+    .section-header {
+        margin-bottom: 15px;
+        padding-bottom: 8px;
+    }
+    
+    .section-header h3 {
+        font-size: 16px;
+    }
+    
+    .search-input {
+        padding: 10px;
+        font-size: 14px;
+    }
+    
+    .form-group input,
+    .form-group select,
+    .form-group textarea {
+        font-size: 16px; /* Prevents zoom on iOS */
+        padding: 10px;
+    }
+    
+    .table-responsive {
+        margin: 0;
+        padding: 0;
+        overflow-x: auto;
+        -webkit-overflow-scrolling: touch;
+    }
+    
+    table {
+        min-width: 800px;
+        font-size: 12px;
+    }
+    
+    td, th {
+        padding: 8px 6px;
+        font-size: 11px;
+    }
+    
+    /* Pagination responsive styles */
+    .pagination-controls {
+        padding: 15px 0 5px 0;
+        gap: 10px;
+    }
+    
+    .pagination-info {
+        gap: 10px;
+    }
+    
+    .pagination-controls select {
+        font-size: 16px;
+        padding: 8px 10px;
+    }
+    
+    .btn-page {
+        min-width: 44px;
+        height: 44px;
+    }
+    
+    .btn {
+        padding: 6px 12px;
+        font-size: 13px;
+    }
+    
+    .btn-primary,
+    .btn-return,
+    .btn-attachment {
+        width: 100%;
+        margin-bottom: 8px;
+        justify-content: center;
+    }
+    
+    /* Modal responsive styles */
+    .modal-content {
+        width: 95%;
+        max-width: 95%;
+        margin: 10px auto;
+        border-radius: 6px;
+    }
+    
+    .modal-header {
+        padding: 15px;
+    }
+    
+    .modal-header h3 {
+        font-size: 18px;
+    }
+    
+    .modal-body {
+        padding: 15px;
+        max-height: calc(100vh - 150px);
+        overflow-y: auto;
+    }
+    
+    .attachment-item {
+        flex-direction: column;
+        align-items: flex-start;
+        gap: 12px;
+        padding: 12px;
+    }
+    
+    .attachment-content {
+        width: 100%;
+    }
+    
+    .attachment-actions {
+        width: 100%;
+        justify-content: stretch;
+        gap: 10px;
+    }
+    
+    .btn-small {
+        flex: 1;
+        justify-content: center;
+        padding: 10px 12px;
+        font-size: 14px;
+    }
+    
+    .detail-row {
+        flex-direction: column;
+        align-items: flex-start;
+        gap: 5px;
+        padding: 12px 0;
+    }
+    
+    .detail-row strong {
+        min-width: auto;
+        margin-bottom: 4px;
+    }
+    
+    .upload-label {
+        padding: 20px;
+    }
+    
+    .upload-label i {
+        font-size: 2rem;
+    }
+    
+    .attachment-notes-input {
+        font-size: 16px;
+    }
+}
+
+@media (max-width: 480px) {
+    .content-wrapper {
+        padding: 8px;
+    }
+    
+    .page-header h2 {
+        font-size: 18px;
+    }
+    
+    .form-section,
+    .table-section {
+        padding: 12px;
+    }
+    
+    .section-header h3 {
+        font-size: 15px;
+    }
+    
+    .form-group label {
+        font-size: 13px;
+    }
+    
+    .search-container {
+        min-width: 100%;
+    }
+    
+    .search-filter-section {
+        padding-bottom: 12px;
+    }
+    
+    .search-input {
+        font-size: 13px;
+    }
+    
+    table {
+        min-width: 700px;
+        font-size: 11px;
+    }
+    
+    td, th {
+        padding: 6px 4px;
+        font-size: 10px;
+    }
+    
+    .no-data {
+        font-size: 13px;
+        padding: 15px;
+    }
+    
+    /* Pagination responsive styles for small mobile */
+    .pagination-controls {
+        flex-direction: column;
+        align-items: stretch;
+        gap: 12px;
+        padding: 15px 0 5px 0;
+    }
+    
+    .pagination-info {
+        flex-direction: column;
+        align-items: stretch;
+        gap: 10px;
+    }
+    
+    .pagination-buttons {
+        justify-content: center;
+    }
+    
+    .pagination-controls select {
+        width: 100%;
+    }
+    
+    /* Modal responsive styles for small mobile */
+    .modal-content {
+        width: 98%;
+        margin: 5px auto;
+        max-height: calc(100vh - 20px);
+        overflow-y: auto;
+    }
+    
+    .modal-header {
+        padding: 12px;
+    }
+    
+    .modal-header h3 {
+        font-size: 16px;
+    }
+    
+    .close {
+        font-size: 24px;
+    }
+    
+    .modal-body {
+        padding: 12px;
+        max-height: calc(100vh - 100px);
+    }
+    
+    .attachment-item {
+        padding: 10px;
+        gap: 10px;
+    }
+    
+    .attachment-icon {
+        font-size: 1.5rem;
+    }
+    
+    .attachment-meta {
+        font-size: 11px;
+        gap: 8px;
+    }
+    
+    .attachment-notes {
+        font-size: 12px;
+        padding: 6px 10px;
+    }
+    
+    .btn-small {
+        padding: 8px 10px;
+        font-size: 13px;
+    }
+    
+    .assignment-detail-info {
+        padding: 15px;
+    }
+    
+    .detail-row {
+        padding: 10px 0;
+    }
+    
+    .attachments-section h4 {
+        font-size: 16px;
+    }
+    
+    .upload-label {
+        padding: 15px;
+    }
+    
+    .upload-label i {
+        font-size: 1.8rem;
+    }
+    
+    .upload-label span {
+        font-size: 14px;
+    }
+    
+    .upload-label small {
+        font-size: 12px;
+    }
+}
+
+@media (max-width: 360px) {
+    .page-header h2 {
+        font-size: 16px;
+    }
+    
+    .section-header h3 {
+        font-size: 14px;
+    }
+    
+    .form-section,
+    .table-section {
+        padding: 10px;
+    }
+    
+    .search-filter-section {
+        padding-bottom: 10px;
+    }
+    
+    .search-input {
+        font-size: 12px;
+        padding: 8px;
+    }
+    
+    table {
+        font-size: 10px;
+    }
+    
+    td, th {
+        padding: 5px 3px;
+        font-size: 9px;
+    }
+    
+    .btn {
+        padding: 8px 10px;
+        font-size: 12px;
+    }
+    
+    /* Modal responsive styles for extra small mobile */
+    .modal-header {
+        padding: 10px;
+    }
+    
+    .modal-header h3 {
+        font-size: 15px;
+    }
+    
+    .modal-body {
+        padding: 10px;
+    }
+    
+    .attachment-item {
+        padding: 8px;
+    }
+    
+    .attachment-icon {
+        font-size: 1.3rem;
+    }
+    
+    .attachment-meta {
+        font-size: 10px;
+    }
+    
+    .attachment-notes {
+        font-size: 11px;
+        padding: 5px 8px;
+    }
+    
+    .btn-small {
+        padding: 6px 8px;
+        font-size: 12px;
+    }
+    
+    .assignment-detail-info {
+        padding: 12px;
+    }
+    
+    .detail-row strong {
+        font-size: 13px;
+    }
+    
+    .attachments-section h4 {
+        font-size: 15px;
+    }
+    
+    .upload-label {
+        padding: 12px;
+    }
+    
+    .upload-label i {
+        font-size: 1.5rem;
+    }
+    
+    .upload-label span {
+        font-size: 13px;
+    }
+    
+    .upload-label small {
+        font-size: 11px;
+    }
+}

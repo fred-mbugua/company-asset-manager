@@ -1,0 +1,95 @@
+<%- include('partials/header', { pageTitle: 'Manage Branches', cssFile: 'manage-branches' }) %>
+<%- include('partials/navbar', { user: locals.user }) %>
+
+<div class="main">
+    <%- include('partials/sidebar') %>
+    <section class="content-area">
+        <div class="branch-management-container">
+            <h3>Branch Management</h3>
+            
+            <button id="add-branch-btn" class="btn btn-add">
+                <i class="uil-plus"></i> Add New Branch
+            </button>
+
+            <div id="branch-form-modal" class="modal">
+                <div class="modal-content">
+                    <span class="close-btn">&times;</span>
+                    <h4><span id="modal-title">Add New Branch</span></h4>
+                    
+                    <form id="branch-form">
+                        <input type="hidden" id="branch-id" name="id"> 
+
+                        <label for="name">Branch Name:</label>
+                        <input type="text" id="name" name="name" required>
+                        
+                        <label for="location">Location (City, State):</label>
+                        <input type="text" id="location" name="location" required>
+                        
+                        <button type="submit" class="btn btn-primary mt-3"><i class="uil-plus"></i> Save Branch</button>
+                    </form>
+                </div>
+            </div>
+            
+            <div class="branch-list-section mt-5">
+                <h4>Existing Branches</h4>
+                
+                <div class="search-filter-section mb-3">
+                    <input type="text" id="search-input" placeholder="Search by branch name or location..." class="search-input">
+                </div>
+
+                <div class="responsive-table-wrapper">
+                    <table id="branches-table" class="data-table">
+                        <thead>
+                            <tr>
+                                <th>ID</th>
+                                <th>Name</th>
+                                <th>Location (City, State)</th>
+                                <th>Actions</th>
+                            </tr>
+                        </thead>
+                        <tbody id="branches-table-body">
+                            <% if (locals.branches && locals.branches.length > 0) { %>
+                                <% locals.branches.forEach(branch => { %>
+                                    <tr data-branch-id="<%= branch.id %>">
+                                        <td data-label="ID"><%= branch.id %></td>
+                                        <td data-label="Name"><%= branch.name %></td>
+                                        <td data-label="Location (City, State)"><%= branch.location %></td>
+                                        <td data-label="Actions" class="actions-cell">
+                                            <button class="btn btn-sm btn-edit" data-id="<%= branch.id %>">Edit</button>
+                                            <button class="btn btn-sm btn-delete" data-id="<%= branch.id %>">Delete</button>
+                                        </td>
+                                    </tr>
+                                <% }); %>
+                            <% } else { %>
+                                <tr>
+                                    <td colspan="4" style="text-align:center;">No branches found.</td>
+                                </tr>
+                            <% } %>
+                        </tbody>
+                    </table>
+                </div>
+                
+                <div class="pagination-controls">
+                    <div class="pagination-info">
+                        <select id="page-size">
+                            <option value="10" selected>10 per page</option>
+                            <option value="20">20 per page</option>
+                            <option value="50">50 per page</option>
+                        </select>
+                        <span id="page-info">Page 1 of 1 (0 total)</span>
+                    </div>
+                    <div class="pagination-buttons">
+                        <button id="prev-btn" class="btn btn-page" disabled title="Previous Page">
+                            <i class="fa fa-chevron-left"></i>
+                        </button>
+                        <button id="next-btn" class="btn btn-page" disabled title="Next Page">
+                            <i class="fa fa-chevron-right"></i>
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+</div>
+
+<%- include('partials/footer', { jsFile: 'manage-branches' }) %>

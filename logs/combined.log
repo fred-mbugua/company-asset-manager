@@ -181,3 +181,41 @@
 2026-01-14 16:28:46 info: Database connected successfully!
 2026-01-14 16:35:34 info: Server running on port 4000
 2026-01-14 16:35:34 info: Database connected successfully!
+2026-01-16 14:51:19 info: Server running on port 4000
+2026-01-16 14:51:19 info: Database connected successfully!
+2026-01-16 14:51:29 error: Error: Failed to lookup view "dashboard" in views directory "C:\Users\HomePC\Documents\JSL\JSL SYSTEMS\asset-manager\dist\views"
+    at app.render (C:\Users\HomePC\Documents\JSL\JSL SYSTEMS\asset-manager\node_modules\express\lib\application.js:597:17)
+    at ServerResponse.render (C:\Users\HomePC\Documents\JSL\JSL SYSTEMS\asset-manager\node_modules\express\lib\response.js:1049:7)
+    at renderDashboard (C:\Users\HomePC\Documents\JSL\JSL SYSTEMS\asset-manager\dist\controllers\view.controller.js:40:17)
+    at process.processTicksAndRejections (node:internal/process/task_queues:103:5)
+2026-01-16 14:51:44 error: Error: Failed to lookup view "dashboard" in views directory "C:\Users\HomePC\Documents\JSL\JSL SYSTEMS\asset-manager\dist\views"
+    at app.render (C:\Users\HomePC\Documents\JSL\JSL SYSTEMS\asset-manager\node_modules\express\lib\application.js:597:17)
+    at ServerResponse.render (C:\Users\HomePC\Documents\JSL\JSL SYSTEMS\asset-manager\node_modules\express\lib\response.js:1049:7)
+    at renderDashboard (C:\Users\HomePC\Documents\JSL\JSL SYSTEMS\asset-manager\dist\controllers\view.controller.js:40:17)
+    at process.processTicksAndRejections (node:internal/process/task_queues:103:5)
+2026-01-16 14:51:44 error: Error: Failed to lookup view "dashboard" in views directory "C:\Users\HomePC\Documents\JSL\JSL SYSTEMS\asset-manager\dist\views"
+    at app.render (C:\Users\HomePC\Documents\JSL\JSL SYSTEMS\asset-manager\node_modules\express\lib\application.js:597:17)
+    at ServerResponse.render (C:\Users\HomePC\Documents\JSL\JSL SYSTEMS\asset-manager\node_modules\express\lib\response.js:1049:7)
+    at renderDashboard (C:\Users\HomePC\Documents\JSL\JSL SYSTEMS\asset-manager\dist\controllers\view.controller.js:40:17)
+    at process.processTicksAndRejections (node:internal/process/task_queues:103:5)
+2026-01-16 14:51:44 error: Error: Failed to lookup view "404" in views directory "C:\Users\HomePC\Documents\JSL\JSL SYSTEMS\asset-manager\dist\views"
+    at app.render (C:\Users\HomePC\Documents\JSL\JSL SYSTEMS\asset-manager\node_modules\express\lib\application.js:597:17)
+    at ServerResponse.render (C:\Users\HomePC\Documents\JSL\JSL SYSTEMS\asset-manager\node_modules\express\lib\response.js:1049:7)
+    at C:\Users\HomePC\Documents\JSL\JSL SYSTEMS\asset-manager\dist\server.js:66:21
+    at newFn (C:\Users\HomePC\Documents\JSL\JSL SYSTEMS\asset-manager\node_modules\express-async-errors\index.js:16:20)
+    at Layer.handle [as handle_request] (C:\Users\HomePC\Documents\JSL\JSL SYSTEMS\asset-manager\node_modules\express\lib\router\layer.js:95:5)
+    at trim_prefix (C:\Users\HomePC\Documents\JSL\JSL SYSTEMS\asset-manager\node_modules\express\lib\router\index.js:328:13)
+    at C:\Users\HomePC\Documents\JSL\JSL SYSTEMS\asset-manager\node_modules\express\lib\router\index.js:286:9
+    at router.process_params (C:\Users\HomePC\Documents\JSL\JSL SYSTEMS\asset-manager\node_modules\express\lib\router\index.js:346:12)
+    at next (C:\Users\HomePC\Documents\JSL\JSL SYSTEMS\asset-manager\node_modules\express\lib\router\index.js:280:10)
+    at C:\Users\HomePC\Documents\JSL\JSL SYSTEMS\asset-manager\node_modules\express\lib\router\index.js:646:15
+    at next (C:\Users\HomePC\Documents\JSL\JSL SYSTEMS\asset-manager\node_modules\express\lib\router\index.js:265:14)
+    at router.handle (C:\Users\HomePC\Documents\JSL\JSL SYSTEMS\asset-manager\node_modules\express\lib\router\index.js:175:3)
+    at router (C:\Users\HomePC\Documents\JSL\JSL SYSTEMS\asset-manager\node_modules\express\lib\router\index.js:47:12)
+    at newFn (C:\Users\HomePC\Documents\JSL\JSL SYSTEMS\asset-manager\node_modules\express-async-errors\index.js:16:20)
+    at Layer.handle [as handle_request] (C:\Users\HomePC\Documents\JSL\JSL SYSTEMS\asset-manager\node_modules\express\lib\router\layer.js:95:5)
+    at trim_prefix (C:\Users\HomePC\Documents\JSL\JSL SYSTEMS\asset-manager\node_modules\express\lib\router\index.js:328:13)
+2026-01-16 14:56:06 info: Server running on port 4000
+2026-01-16 14:56:06 info: Database connected successfully!
+2026-01-16 15:00:17 info: Server running on port 4000
+2026-01-16 15:00:17 info: Database connected successfully!

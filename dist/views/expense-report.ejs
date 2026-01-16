@@ -1,0 +1,162 @@
+<%- include('partials/header', { pageTitle: 'Expenses Report', cssFile: 'expenses-report' }) %>
+<!-- Select2 CSS -->
+<link href="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/css/select2.min.css" rel="stylesheet" />
+<%- include('partials/navbar', { user: locals.user }) %>
+
+<div class="main">
+    <%- include('partials/sidebar') %>
+    <section class="content-area">
+        <div class="report-container">
+            <h3>Asset Expenses Report</h3>
+
+            <div class="filters">
+                <div class="filter-row">
+                    <div class="filter-group">
+                        <label for="filter-tag">Asset Tag:</label>
+                        <select id="filter-tag" class="select2-dropdown">
+                            <option value="">All Tags</option>
+                            <% if (locals.assetTags && locals.assetTags.length) { %>
+                                <% locals.assetTags.forEach(tag => { %>
+                                    <option value="<%= tag %>"><%= tag %></option>
+                                <% }); %>
+                            <% } %>
+                        </select>
+                    </div>
+                    
+                    <div class="filter-group">
+                        <label for="filter-type">Expense Type:</label>
+                        <select id="filter-type" class="select2-dropdown">
+                            <option value="">All Expense Types</option>
+                            <% if (locals.expenseTypes && locals.expenseTypes.length) { %>
+                                <% locals.expenseTypes.forEach(type => { %>
+                                    <option value="<%= type.name %>"><%= type.name %></option>
+                                <% }); %>
+                            <% } %>
+                        </select>
+                    </div>
+                    
+                    <div class="filter-group">
+                        <label for="filter-department">Department:</label>
+                        <select id="filter-department" class="select2-dropdown">
+                            <option value="">All Departments</option>
+                            <% if (locals.departments && locals.departments.length) { %>
+                                <% locals.departments.forEach(dept => { %>
+                                    <option value="<%= dept.name %>"><%= dept.name %></option>
+                                <% }); %>
+                            <% } %>
+                        </select>
+                    </div>
+                    
+                    <div class="filter-group">
+                        <label for="filter-location">Location:</label>
+                        <select id="filter-location" class="select2-dropdown">
+                            <option value="">All Locations</option>
+                            <% if (locals.locations && locals.locations.length) { %>
+                                <% locals.locations.forEach(loc => { %>
+                                    <option value="<%= loc.name %>"><%= loc.name %></option>
+                                <% }); %>
+                            <% } %>
+                        </select>
+                    </div>
+                </div>
+                
+                <div class="filter-row">
+                    <div class="filter-group date-range">
+                        <label>Date Range:</label>
+                        <div class="date-inputs">
+                            <input type="date" id="filter-from-date" placeholder="From Date">
+                            <span class="date-separator">to</span>
+                            <input type="date" id="filter-to-date" placeholder="To Date">
+                        </div>
+                    </div>
+                    
+                    <div class="filter-actions">
+                        <button class="btn btn-view" id="search-btn">Search</button>
+                        <button class="btn btn-export" id="export-btn">Export to Excel</button>
+                    </div>
+                </div>
+            </div>
+
+            <div class="table-wrapper">
+                <table class="report-table">
+                    <thead>
+                        <tr>
+                            <th>ID</th>
+                            <th>Asset Tag</th>
+                            <th>Expense Type</th>
+                            <th>Assigned Employee</th>
+                            <th>Company</th>
+                            <th>Date</th>
+                            <th>Amount</th>
+                            <th>Vendor</th>
+                            <th>Invoice No.</th>
+                            <th>Department</th>
+                            <th>Location</th>
+                            <th>Notes</th>
+                        </tr>
+                    </thead>
+                    <tbody id="expenses-table-body">
+                        <% if (locals.initialExpenses && locals.initialExpenses.length > 0) { %>
+                            <% locals.initialExpenses.forEach(expense => { %>
+                                <tr>
+                                    <td><%= expense.id %></td>
+                                    <td><%= expense.asset_tag %></td>
+                                    <td><%= expense.expense_type_name %></td>
+                                    <td><%= expense.assigned_employee_name || 'N/A' %></td>
+                                    <td><%= expense.employee_company || 'N/A' %></td>
+                                    <td><span data-date="<%= expense.date %>"></span></td>
+                                    <td><%= expense.amount %></td>
+                                    <td title="<%= expense.vendor || '' %>"><%= expense.vendor || 'N/A' %></td>
+                                    <td><%= expense.invoice_number || 'N/A' %></td>
+                                    <td title="<%= expense.department || '' %>"><%= expense.department || 'N/A' %></td>
+                                    <td><%= expense.location || 'N/A' %></td>
+                                    <td title="<%= expense.notes || '' %>"><%= expense.notes ? expense.notes.substring(0, 50) + '...' : 'N/A' %></td>
+                                </tr>
+                            <% }); %>
+                        <% } else { %>
+                            <tr>
+                                <td colspan="12" style="text-align:center;color:#888;">No expenses found.</td>
+                            </tr>
+                        <% } %>
+                    </tbody>
+                </table>
+            </div>
+
+            <div class="pagination-controls">
+                <div class="pagination-info">
+                    <select id="page-size">
+                        <option value="20" <%= locals.pagination.itemsPerPage === 20 ? 'selected' : '' %>>20 per page</option>
+                        <option value="30" <%= locals.pagination.itemsPerPage === 30 ? 'selected' : '' %>>30 per page</option>
+                        <option value="50" <%= locals.pagination.itemsPerPage === 50 ? 'selected' : '' %>>50 per page</option>
+                    </select>
+                    <span id="page-info">Page <%= locals.pagination.currentPage %> of <%= locals.pagination.totalPages %> (<%= locals.totalExpenses %> total)</span>
+                </div>
+                <div class="pagination-buttons">
+                    <button id="prev-btn" class="btn btn-page" <%= locals.pagination.currentPage === 1 ? 'disabled' : '' %> title="Previous Page">
+                        <i class="fa fa-chevron-left"></i>
+                    </button>
+                    <button id="next-btn" class="btn btn-page" <%= locals.pagination.currentPage >= locals.pagination.totalPages ? 'disabled' : '' %> title="Next Page">
+                        <i class="fa fa-chevron-right"></i>
+                    </button>
+                </div>
+            </div>
+        </div>
+    </section>
+</div>
+
+<!-- jQuery (required for Select2) -->
+<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+<!-- Select2 JS -->
+<script src="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/js/select2.min.js"></script>
+<script>
+$(document).ready(function() {
+    $('.select2-dropdown').select2({
+        placeholder: 'Select an option',
+        allowClear: true,
+        width: 'style',
+        minimumResultsForSearch: 0
+    });
+});
+</script>
+
+<%- include('partials/footer', { jsFile: 'expenses-report' }) %> 

@@ -1,0 +1,330 @@
+<%- include('partials/header', { pageTitle: 'Manage Users', cssFile: 'manage-users' }) %>
+<%- include('partials/navbar', { user: locals.user }) %>
+
+<div class="main">
+    <%- include('partials/sidebar') %>
+    <section class="content-area">
+        <div class="user-management-container">
+            <h3>User Management</h3>
+            
+            <div class="action-buttons">
+                <button id="add-user-btn" class="btn btn-add">
+                    <i class="uil-plus"></i> Add New User
+                </button>
+                
+                <% if (locals.user && locals.user.role === 'Admin') { %>
+                <div class="bulk-import-actions">
+                    <button id="bulk-import-btn" class="btn btn-import">
+                        <i class="uil-file-upload-alt"></i> Bulk Import
+                    </button>
+                    <a href="/api/bulk-user-import/template" class="btn-link">
+                        <i class="uil-file-download-alt"></i> Download Template
+                    </a>
+                    <a href="/users/import-history" class="btn-link">
+                        <i class="uil-history"></i> Import History
+                    </a>
+                </div>
+                <% } %>
+            </div>
+
+            <!-- Bulk Import Modal -->
+            <div id="bulk-import-modal" class="modal">
+                <div class="modal-content modal-lg">
+                    <span class="close-btn" id="close-import-modal">&times;</span>
+                    <h4>Bulk User Import</h4>
+                    
+                    <div class="import-steps">
+                        <div class="step active" data-step="1">
+                            <span class="step-number">1</span>
+                            <span class="step-title">Upload File</span>
+                        </div>
+                        <div class="step" data-step="2">
+                            <span class="step-number">2</span>
+                            <span class="step-title">Preview</span>
+                        </div>
+                        <div class="step" data-step="3">
+                            <span class="step-number">3</span>
+                            <span class="step-title">Import</span>
+                        </div>
+                    </div>
+
+                    <!-- Step 1: Upload -->
+                    <div class="import-step-content" id="step-1-content">
+                        <div class="upload-section">
+                            <div class="upload-area" id="upload-area">
+                                <i class="uil uil-cloud-upload"></i>
+                                <p>Drag and drop your file here, or click to browse</p>
+                                <p class="upload-hint">Supported formats: Excel (.xlsx, .xls) or CSV</p>
+                                <input type="file" id="import-file" accept=".xlsx,.xls,.csv" style="display: none;">
+                            </div>
+                            <div class="file-info" id="file-info" style="display: none;">
+                                <i class="uil uil-file-check"></i>
+                                <span id="file-name">filename.xlsx</span>
+                                <button class="btn btn-sm btn-danger" id="remove-file">
+                                    <i class="uil uil-times"></i>
+                                </button>
+                            </div>
+                        </div>
+                        <div class="import-actions">
+                            <button class="btn btn-secondary" id="cancel-import-btn">Cancel</button>
+                            <button class="btn btn-primary" id="preview-btn" disabled>
+                                <i class="uil uil-eye"></i> Preview Data
+                            </button>
+                        </div>
+                    </div>
+
+                    <!-- Step 2: Preview -->
+                    <div class="import-step-content" id="step-2-content" style="display: none;">
+                        <div class="preview-summary">
+                            <div class="summary-card summary-valid">
+                                <span class="summary-value" id="valid-count">0</span>
+                                <span class="summary-label">Valid Records</span>
+                            </div>
+                            <div class="summary-card summary-invalid">
+                                <span class="summary-value" id="invalid-count">0</span>
+                                <span class="summary-label">Invalid Records</span>
+                            </div>
+                        </div>
+
+                        <div class="preview-tabs">
+                            <button class="tab-btn active" data-tab="valid">Valid Records</button>
+                            <button class="tab-btn" data-tab="invalid">Invalid Records</button>
+                        </div>
+
+                        <div class="preview-table-container">
+                            <div id="valid-table-container" class="tab-content active">
+                                <table class="data-table">
+                                    <thead>
+                                        <tr>
+                                            <th>First Name</th>
+                                            <th>Last Name</th>
+                                            <th>Email</th>
+                                            <th>Phone</th>
+                                            <th>Department</th>
+                                            <th>Branch</th>
+                                            <th>Company</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody id="valid-preview-body">
+                                    </tbody>
+                                </table>
+                            </div>
+                            <div id="invalid-table-container" class="tab-content">
+                                <table class="data-table">
+                                    <thead>
+                                        <tr>
+                                            <th>Row</th>
+                                            <th>Data</th>
+                                            <th>Errors</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody id="invalid-preview-body">
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
+
+                        <div class="import-actions">
+                            <button class="btn btn-secondary" id="back-to-upload-btn">
+                                <i class="uil uil-arrow-left"></i> Back
+                            </button>
+                            <button class="btn btn-success" id="start-import-btn" disabled>
+                                <i class="uil uil-import"></i> Import <span id="import-count">0</span> Users
+                            </button>
+                        </div>
+                    </div>
+
+                    <!-- Step 3: Import Results -->
+                    <div class="import-step-content" id="step-3-content" style="display: none;">
+                        <div class="import-progress" id="import-progress">
+                            <div class="spinner"></div>
+                            <p>Importing users... Please wait.</p>
+                        </div>
+                        
+                        <div class="import-results" id="import-results" style="display: none;">
+                            <div class="results-summary">
+                                <div class="result-card result-success">
+                                    <i class="uil uil-check-circle"></i>
+                                    <span class="result-value" id="result-success">0</span>
+                                    <span class="result-label">Successfully Imported</span>
+                                </div>
+                                <div class="result-card result-failed">
+                                    <i class="uil uil-times-circle"></i>
+                                    <span class="result-value" id="result-failed">0</span>
+                                    <span class="result-label">Failed</span>
+                                </div>
+                            </div>
+
+                            <div class="import-note">
+                                <i class="uil uil-info-circle"></i>
+                                <p>Passwords have been auto-generated for all successfully imported users. 
+                                   You can view them in the <a href="/users/import-history">Import History</a> page.</p>
+                            </div>
+
+                            <div class="import-actions">
+                                <button class="btn btn-secondary" id="close-results-btn">Close</button>
+                                <a href="/users/import-history" class="btn btn-primary">
+                                    <i class="uil uil-eye"></i> View Import History
+                                </a>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div id="user-form-modal" class="modal">
+                <div class="modal-content">
+                    <span class="close-btn">&times;</span>
+                    <h4><span id="modal-title">Add New User</span></h4>
+                    
+                    <form id="user-form">
+                        <input type="hidden" id="user-id" name="id"> 
+                        <input type="hidden" id="employee_id" name="employee_id"> 
+
+                        <label for="first_name">First Name:</label>
+                        <input type="text" id="first_name" name="first_name" required>
+
+                        <label for="middle_name">Middle Name:</label>
+                        <input type="text" id="middle_name" name="middle_name" >
+
+                        <label for="last_name">Last Name:</label>
+                        <input type="text" id="last_name" name="last_name" required>
+
+                        <label for="email">Email (Username):</label>
+                        <input type="text" id="email" name="email" required>
+
+                        <label for="phone">Phone:</label>
+                        <input type="text" id="phone" name="phone" required>
+                        
+                        <label for="password">Password:</label>
+                        <input type="password" id="password" name="password" autocomplete="new-password">
+
+                        <label for="password_confirm">Confirm Password:</label>
+                        <input type="password" id="password_confirm" name="password_confirm" autocomplete="new-password">
+                        
+                        <label for="role">Role:</label>
+                        <select id="role" name="role" required>
+                            <option value="">Select Role</option>
+                            <% if (locals.userRoles && locals.userRoles.length) { %>
+                                <% locals.userRoles.forEach(role => { %>
+                                    <option value="<%= role.id %>"><%= role.name %></option>
+                                <% }); %>
+                            <% } %>
+                        </select>
+
+                        <label for="department_id">Department:</label>
+                        <select id="department_id" name="department_id">
+                            <option value="">Select Department</option>
+                            <% if (locals.departments && locals.departments.length) { %>
+                                <% locals.departments.forEach(dept => { %>
+                                    <option value="<%= dept.id %>"><%= dept.name %></option>
+                                <% }); %>
+                            <% } %>
+                        </select>
+                        
+                        <label for="branch_id">Branch:</label>
+                        <select id="branch_id" name="branch_id">
+                            <option value="">Select Branch</option>
+                            <% if (locals.locations && locals.locations.length) { %>
+                                <% locals.locations.forEach(branch => { %>
+                                    <option value="<%= branch.id %>"><%= branch.name %></option>
+                                <% }); %>
+                            <% } %>
+                        </select>
+                        
+                        <label for="company_id">Company:</label>
+                        <select id="company_id" name="company_id">
+                            <option value="">Select Company</option>
+                            <% if (locals.companies && locals.companies.length) { %>
+                                <% locals.companies.forEach(company => { %>
+                                    <option value="<%= company.id %>" <%= company.name === 'Jirani Smart' ? 'selected' : '' %>><%= company.name %></option>
+                                <% }); %>
+                            <% } %>
+                        </select>
+                        
+
+                        <button type="submit" class="btn btn-primary mt-3"><i class="uil-plus"></i> Save User</button>
+                    </form>
+                </div>
+            </div>
+            
+            <div class="user-list-section mt-5">
+                <h4>Existing Users</h4>
+                
+                <div class="search-filter-section mb-3">
+                    <input type="text" id="search-input" placeholder="Search by email, role, department, or branch..." class="search-input">
+                </div>
+
+                <table id="users-table" class="data-table">
+                    <thead>
+                        <tr>
+                            <th>ID</th>
+                            <th>Email</th>
+                            <th>Role</th>
+                            <th>Department</th>
+                            <th>Branch</th>
+                            <th>Company</th>
+                            <th>Employee Link</th>
+                            <th>Status</th>
+                            <th>Actions</th>
+                        </tr>
+                    </thead>
+                    <tbody id="users-table-body">
+                        <% if (locals.users && locals.users.length > 0) { %>
+                            <% locals.users.forEach(user => { %>
+                                <tr data-user-id="<%= user.id %>">
+                                    <td data-label="ID"><%= user.id %></td>
+                                    <td data-label="Email"><%= user.email %></td>
+                                    <td data-label="Role"><%= user.role_name %></td>
+                                    <td data-label="Department"><%= user.department_name || 'N/A' %></td>
+                                    <td data-label="Branch"><%= user.branch_name || 'N/A' %></td>
+                                    <td data-label="Company"><%= user.company_name || 'N/A' %></td>
+                                    <td data-label="Employee Link"><%= (user.employee_first_name + ' ' + user.employee_middle_name + ' ' + user.employee_last_name) || 'Unlinked' %></td>
+                                    <td data-label="Status"><%= user.is_active === true ? 'Active' : (user.is_active === false ? 'Disabled' : 'N/A') %></td>
+                                    <td data-label="Actions">
+                                        <% if (locals.user && locals.user.role === 'Admin') { %>
+                                        <a href="/profile?userId=<%= user.id %>" class="btn btn-sm btn-view" title="View Profile">
+                                            <i class="fa fa-user"></i> View
+                                        </a>
+                                        <% } %>
+                                        <button class="btn btn-sm btn-edit" data-id="<%= user.id %>">Edit</button>
+                                        <button class="btn btn-sm btn-reset-password" data-id="<%= user.id %>">Reset Pwd</button>
+                                        <button class="btn btn-sm btn-toggle-status" data-id="<%= user.id %>" data-status="<%= user.is_active %>">
+                                            <%= user.is_active === true ? 'Disable' : 'Enable' %>
+                                        </button>
+                                    </td>
+                                </tr>
+                            <% }); %>
+                        <% } else { %>
+                            <tr>
+                                <td colspan="9" style="text-align:center;">No users found.</td>
+                            </tr>
+                        <% } %>
+                    </tbody>
+                </table>
+                
+                <div class="pagination-controls">
+                    <div class="pagination-info">
+                        <select id="page-size">
+                            <option value="10" selected>10 per page</option>
+                            <option value="20">20 per page</option>
+                            <option value="50">50 per page</option>
+                        </select>
+                        <span id="page-info">Page 1 of 1 (0 total)</span>
+                    </div>
+                    <div class="pagination-buttons">
+                        <button id="prev-btn" class="btn btn-page" disabled title="Previous Page">
+                            <i class="fa fa-chevron-left"></i>
+                        </button>
+                        <button id="next-btn" class="btn btn-page" disabled title="Next Page">
+                            <i class="fa fa-chevron-right"></i>
+                        </button>
+                    </div>
+                </div>
+            </div>
+
+        </div>
+    </section>
+</div>
+
+<%- include('partials/footer', { jsFile: 'manage-users' }) %>

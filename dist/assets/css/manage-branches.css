@@ -1,0 +1,315 @@
+/* General Layout */
+.branch-management-container {
+    padding: 20px;
+    max-width: 1200px;
+    margin: 0 auto;
+}
+
+h3 {
+    border-bottom: 2px solid #eee;
+    padding-bottom: 10px;
+    margin-bottom: 20px;
+}
+
+/* Add Branch Button */
+#add-branch-btn {
+    background-color: #4A9D5F;
+    color: white;
+    border: none;
+    padding: 10px 15px;
+    border-radius: 5px;
+    cursor: pointer;
+    margin-bottom: 20px;
+    transition: background-color 0.2s;
+}
+
+#add-branch-btn:hover {
+    background-color: #07601d;
+}
+
+/* Search/Filter Section */
+.search-filter-section {
+    display: flex;
+    gap: 10px;
+    margin-bottom: 15px;
+}
+
+.search-input {
+    flex: 1;
+    padding: 10px;
+    border: 1px solid #ccc;
+    border-radius: 4px;
+    font-size: 14px;
+}
+
+.search-input:focus {
+    outline: none;
+    border-color: #1abc9c;
+    box-shadow: 0 0 0 3px rgba(26, 188, 156, 0.1);
+}
+
+/* Data Table Styling */
+.data-table {
+    width: 100%;
+    border-collapse: collapse;
+    margin-top: 20px;
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+}
+
+.data-table th, .data-table td {
+    padding: 12px 15px;
+    text-align: left;
+    border-bottom: 1px solid #ddd;
+}
+
+.data-table th {
+    background-color: #f8f8f8;
+    color: #333;
+    font-weight: 600;
+}
+
+.data-table tr:hover {
+    background-color: #f1f9ff;
+}
+
+/* Action Buttons in Table */
+.data-table .btn-sm {
+    padding: 5px 10px;
+    margin-right: 5px;
+    font-size: 0.85rem;
+    cursor: pointer;
+    border: 1px solid transparent;
+    border-radius: 3px;
+    transition: background-color 0.2s;
+    margin-bottom: 5px; 
+}
+
+.btn-edit {
+    background-color: #ffc107;
+    color: #333;
+}
+
+.btn-delete {
+    background-color: #dc3545;
+    color: white;
+}
+
+/* Modal Styling */
+.modal {
+    display: none; 
+    position: fixed; 
+    z-index: 10; 
+    left: 0;
+    top: 0;
+    width: 100%; 
+    height: 100%; 
+    overflow: auto; 
+    background-color: rgba(0,0,0,0.4); 
+}
+
+.modal-content {
+    background-color: #fefefe;
+    margin: 20px auto; 
+    padding: 30px;
+    border: 1px solid #888;
+    width: 90%; 
+    max-width: 500px;
+    border-radius: 8px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+}
+
+/* ... (Form styling for inputs/buttons) ... */
+.modal-content h4 { margin-top: 0; padding-bottom: 15px; border-bottom: 1px solid #eee; }
+.close-btn { color: #aaa; float: right; font-size: 28px; font-weight: bold; }
+.close-btn:hover, .close-btn:focus { color: #000; text-decoration: none; cursor: pointer; }
+#branch-form label { display: block; margin-top: 10px; font-weight: 500; color: #555; }
+#branch-form input[type="text"], #branch-form input[type="email"] {
+    width: 100%; padding: 10px; margin-top: 5px; margin-bottom: 15px; border: 1px solid #ccc;
+    border-radius: 4px; box-sizing: border-box; 
+}
+#branch-form button[type="submit"] {
+    width: 100%; padding: 12px; background-color: #4A9D5F; color: white; border: none;
+    border-radius: 4px; cursor: pointer; font-size: 1rem;
+}
+#branch-form button[type="submit"]:hover { background-color: #07601d; }
+
+
+/* ========================================= */
+/* RESPONSIVE STYLES (Table Stacking) */
+/* ========================================= */
+
+@media screen and (max-width: 768px) {
+
+    .data-table, .data-table tbody, .data-table tr, .data-table td {
+        display: block;
+        width: 100%;
+    }
+
+    .data-table thead {
+        display: none;
+    }
+
+    .data-table tr {
+        border: 1px solid #ccc;
+        margin-bottom: 15px;
+        box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+        border-radius: 4px;
+    }
+
+    .data-table td {
+        text-align: right;
+        padding-left: 50%; 
+        position: relative;
+        border: none; 
+        border-bottom: 1px dashed #eee;
+    }
+
+    .data-table td::before {
+        content: attr(data-label);
+        position: absolute;
+        left: 10px;
+        width: 45%;
+        padding-right: 10px;
+        white-space: nowrap;
+        font-weight: 600;
+        text-align: left;
+        color: #555;
+    }
+
+    .data-table td.actions-cell {
+        text-align: center;
+        padding-left: 10px;
+        padding-top: 15px;
+        padding-bottom: 15px;
+    }
+    
+    .data-table td.actions-cell::before {
+        display: none;
+    }
+
+    .data-table td.actions-cell .btn-sm {
+        display: inline-block; /* Keep buttons next to each other in the action cell */
+        width: 45%;
+        margin: 5px 2%;
+    }
+}
+
+/* ========================================= */
+/* Pagination Controls                       */
+/* ========================================= */
+.pagination-controls {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 20px 0;
+    margin-top: 15px;
+    border-top: 1px solid #eee;
+}
+
+.pagination-info {
+    display: flex;
+    align-items: center;
+    gap: 15px;
+}
+
+.pagination-buttons {
+    display: flex;
+    gap: 8px;
+}
+
+.pagination-controls select {
+    padding: 6px 12px;
+    border: 1px solid #ccc;
+    border-radius: 4px;
+    font-size: 14px;
+    cursor: pointer;
+    background-color: #fff;
+    transition: border-color 0.2s, box-shadow 0.2s;
+}
+
+.pagination-controls select:focus {
+    outline: none;
+    border-color: #F37635;
+    box-shadow: 0 0 0 3px rgba(243, 118, 53, 0.1);
+}
+
+.btn-page {
+    padding: 8px 16px;
+    font-size: 16px;
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
+    background-color: #F37635;
+    color: #fff;
+    transition: all 0.2s;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    min-width: 44px;
+    height: 38px;
+}
+
+.btn-page:hover:not(:disabled) {
+    background-color: #e06525;
+    transform: translateY(-1px);
+    box-shadow: 0 2px 4px rgba(243, 118, 53, 0.3);
+}
+
+.btn-page:disabled {
+    background-color: #ccc;
+    cursor: not-allowed;
+    opacity: 0.6;
+}
+
+.btn-page i {
+    font-size: 14px;
+}
+
+.pagination-controls #page-info {
+    font-size: 14px;
+    color: #495057;
+    font-weight: 500;
+    white-space: nowrap;
+}
+
+/* Pagination Responsive Styles */
+@media (max-width: 768px) {
+    .pagination-controls {
+        flex-direction: column;
+        gap: 12px;
+        align-items: stretch;
+    }
+
+    .pagination-info {
+        width: 100%;
+        justify-content: space-between;
+    }
+
+    .pagination-buttons {
+        width: 100%;
+        justify-content: center;
+    }
+
+    .btn-page {
+        min-width: 60px;
+    }
+}
+
+@media (max-width: 480px) {
+    .pagination-controls {
+        padding: 15px 0;
+    }
+
+    .pagination-info {
+        flex-direction: column;
+        gap: 8px;
+    }
+
+    .pagination-controls select {
+        width: 100%;
+    }
+
+    .btn-page {
+        flex: 1;
+    }
+}

@@ -1,0 +1,514 @@
+/* ========================================= */
+/* General Layout and Container Styles       */
+/* ========================================= */
+.report-container {
+    padding: 25px;
+    background-color: #ffffff;
+    border-radius: 8px;
+    box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+    max-width: 1400px;
+    margin: 20px auto;
+}
+
+.report-container h3 {
+    color: #333;
+    border-bottom: 2px solid #f0f0f0;
+    padding-bottom: 12px;
+    margin-bottom: 25px;
+    font-size: 1.6em;
+    font-weight: 600;
+}
+
+/* ========================================= */
+/* Filters Layout and Inputs                 */
+/* ========================================= */
+.filters {
+    display: flex;
+    flex-direction: column;
+    gap: 15px;
+    margin-bottom: 25px;
+    padding: 20px;
+    background-color: #f8f8f8;
+    border-radius: 6px;
+    border: 1px solid #eee;
+}
+
+.filter-row {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 15px;
+    align-items: flex-end;
+}
+
+.filter-group {
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+    flex: 1 1 auto;
+    min-width: 200px;
+}
+
+.filter-group label {
+    font-size: 0.85em;
+    font-weight: 600;
+    color: #555;
+    margin-bottom: 2px;
+}
+
+.filter-group.date-range {
+    flex: 1 1 auto;
+}
+
+.date-range label {
+    display: block;
+    margin-bottom: 6px;
+}
+
+.date-inputs {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+}
+
+.date-inputs input[type="date"] {
+    flex: 1;
+    min-width: 0;
+    width: 100%;
+}
+
+.date-separator {
+    color: #666;
+    font-size: 0.9em;
+    font-weight: 500;
+    padding: 0 5px;
+    flex-shrink: 0;
+}
+
+.filter-actions {
+    display: flex;
+    gap: 10px;
+    margin-left: auto;
+    align-items: flex-end;
+}
+
+.filters input,
+.filters select {
+    padding: 10px 12px;
+    border: 1px solid #ccc;
+    border-radius: 4px;
+    font-size: 0.9em;
+    width: 100%;
+    transition: border-color 0.2s;
+    background-color: white;
+}
+
+.filters input[type="date"] {
+    flex: 1;
+    min-width: 0;
+}
+
+.filters input:focus,
+.filters select:focus {
+    border-color: #F37635;
+    outline: none;
+    box-shadow: 0 0 0 2px rgba(243, 118, 53, 0.1);
+}
+
+/* ========================================= */
+/* Button Styles                             */
+/* ========================================= */
+.btn {
+    padding: 10px 18px;
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
+    font-weight: 600;
+    transition: background-color 0.2s, transform 0.1s;
+    font-size: 0.9em;
+    margin-left: 5px;
+}
+
+.btn-view {
+    background-color: #F37635; /* Orange for Search */
+    color: white;
+}
+
+.btn-export {
+    background-color: #28a745; /* Green for Export */
+    color: white;
+}
+
+.btn:hover {
+    opacity: 0.95;
+    transform: translateY(-1px);
+}
+
+.btn:disabled {
+    background-color: #ccc;
+    cursor: not-allowed;
+    opacity: 0.6;
+}
+
+/* ========================================= */
+/* Report Table Styles                       */
+/* ========================================= */
+.table-wrapper {
+    overflow-x: auto;
+    -webkit-overflow-scrolling: touch;
+    margin-bottom: 10px;
+}
+
+.report-table {
+    width: 100%;
+    border-collapse: collapse;
+    font-size: 0.9em;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
+}
+
+.report-table thead th {
+    padding: 12px 15px;
+    background-color: #e9ecef;
+    color: #495057;
+    font-weight: 700;
+    text-align: left;
+    text-transform: uppercase;
+    border: 1px solid #dee2e6;
+    white-space: nowrap;
+}
+
+.report-table tbody td {
+    padding: 12px 15px;
+    border: 1px solid #eee;
+    color: #555;
+    vertical-align: top;
+    max-width: 250px;
+    word-wrap: break-word;
+    word-break: break-word;
+    overflow-wrap: break-word;
+}
+
+.report-table tbody tr {
+    transition: background-color 0.15s;
+}
+
+.report-table tbody tr:hover {
+    background-color: #f9f9f9;
+}
+
+.report-table tbody tr:nth-child(even) {
+    background-color: #fafafa;
+}
+
+/* ========================================= */
+/* Pagination Controls                       */
+/* ========================================= */
+.pagination-controls {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 15px;
+    padding: 15px 0;
+    margin-top: 20px;
+    border-top: 1px solid #eee;
+    flex-wrap: wrap;
+}
+
+.pagination-info {
+    display: flex;
+    align-items: center;
+    gap: 15px;
+    flex-wrap: wrap;
+}
+
+.pagination-buttons {
+    display: flex;
+    gap: 8px;
+}
+
+.pagination-controls select {
+    padding: 6px 12px;
+    border: 1px solid #ccc;
+    border-radius: 4px;
+    font-size: 14px;
+    cursor: pointer;
+}
+
+.btn-page {
+    padding: 8px 16px;
+    font-size: 16px;
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
+    background-color: #F37635;
+    color: #fff;
+    transition: all 0.2s;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    min-width: 44px;
+    height: 38px;
+}
+
+.btn-page:hover:not(:disabled) {
+    background-color: #e06525;
+    transform: translateY(-1px);
+}
+
+.btn-page:disabled {
+    background-color: #ccc;
+    cursor: not-allowed;
+    opacity: 0.6;
+}
+
+.btn-page i {
+    font-size: 14px;
+}
+
+.pagination-controls #page-info {
+    font-size: 14px;
+    color: #495057;
+    font-weight: 500;
+    white-space: nowrap;
+}
+
+/* ========================================= */
+/* Responsive Design                         */
+/* ========================================= */
+/* Tablets and Small Desktops (max-width: 1024px) */
+@media (max-width: 1024px) {
+    .report-container {
+        padding: 20px;
+        margin: 15px;
+    }
+
+    .filter-group {
+        min-width: auto;
+    }
+
+    .filters {
+        padding: 15px;
+        gap: 12px;
+    }
+
+    .filter-row {
+        gap: 12px;
+    }
+
+    .filters input,
+    .filters select {
+        flex: 0 1 auto;
+        min-width: 150px;
+        font-size: 0.85em;
+    }
+}
+
+/* Mobile Landscape and Tablets (max-width: 768px) */
+@media (max-width: 768px) {
+    .report-container {
+        padding: 15px;
+        margin: 10px;
+        border-radius: 6px;
+    }
+
+    .report-container h3 {
+        font-size: 1.3em;
+        margin-bottom: 20px;
+    }
+
+    .filters {
+        padding: 15px;
+        gap: 10px;
+    }
+
+    .filter-row {
+        gap: 10px;
+    }
+
+    .filter-group {
+        flex: 1 1 100%;
+        min-width: auto;
+    }
+
+    .filter-group.date-range {
+        flex: 1 1 100%;
+    }
+
+    .filter-actions {
+        flex: 1 1 100%;
+        margin-left: 0;
+        width: 100%;
+        flex-direction: row;
+        gap: 10px;
+    }
+
+    .filter-actions .btn {
+        flex: 1;
+    }
+
+    .filters input,
+    .filters select {
+        width: 100%;
+        min-width: auto;
+        font-size: 16px; /* Prevents zoom on iOS */
+    }
+
+    .date-inputs {
+        flex-direction: column;
+        gap: 10px;
+        align-items: stretch;
+    }
+
+    .date-separator {
+        display: none;
+    }
+
+    .date-inputs input[type="date"] {
+        width: 100%;
+    }
+
+    .table-wrapper {
+        margin: 0;
+        padding: 0;
+    }
+
+    .report-table th,
+    .report-table td {
+        padding: 8px 10px;
+        font-size: 0.85em;
+        max-width: 150px;
+    }
+
+    /* Pagination responsive */
+    .pagination-controls {
+        flex-direction: column;
+        gap: 12px;
+        padding: 12px 0;
+    }
+
+    .pagination-info {
+        width: 100%;
+        justify-content: space-between;
+        gap: 10px;
+    }
+
+    .pagination-buttons {
+        width: 100%;
+        justify-content: center;
+    }
+
+    .pagination-controls select {
+        padding: 8px 12px;
+        font-size: 14px;
+        flex: 0 1 auto;
+    }
+
+    .btn-page {
+        padding: 10px 20px;
+        font-size: 16px;
+        min-width: 60px;
+    }
+
+    .pagination-controls #page-info {
+        text-align: right;
+        flex: 1;
+    }
+}
+
+/* Mobile Portrait (max-width: 480px) */
+@media (max-width: 480px) {
+    .report-container {
+        padding: 12px;
+        margin: 8px;
+    }
+
+    .report-container h3 {
+        font-size: 1.1em;
+    }
+
+    .filters {
+        padding: 12px;
+        gap: 10px;
+    }
+
+    .filter-row {
+        gap: 10px;
+    }
+
+    .date-inputs {
+        gap: 8px;
+    }
+
+    .filter-group label {
+        font-size: 0.8em;
+    }
+
+    .filters input,
+    .filters select {
+        font-size: 14px;
+        padding: 8px 10px;
+    }
+
+    .btn {
+        padding: 10px 15px;
+        font-size: 0.85em;
+    }
+
+    .table-wrapper {
+        margin: 0;
+        padding: 0;
+    }
+
+    .report-table td {
+        max-width: 120px;
+        font-size: 0.8em;
+    }
+
+    .report-table th {
+        font-size: 0.8em;
+    }
+
+    .pagination-controls {
+        flex-direction: column;
+        align-items: stretch;
+        gap: 10px;
+        padding: 15px 0 5px 0;
+    }
+
+    .pagination-controls .btn {
+        width: 48%;
+    }
+}
+
+/* Extra Small Mobile (max-width: 360px) */
+@media (max-width: 360px) {
+    .content-area,
+    .report-container {
+        padding: 8px;
+    }
+
+    .filters {
+        padding: 10px;
+        gap: 8px;
+    }
+
+    .report-container h3 {
+        font-size: 1em;
+    }
+
+    .filters input,
+    .filters select {
+        font-size: 13px;
+        padding: 8px;
+    }
+
+    .btn {
+        padding: 8px 12px;
+        font-size: 0.8em;
+    }
+
+    .report-table td,
+    .report-table th {
+        font-size: 0.75em;
+        padding: 6px 5px;
+    }
+}

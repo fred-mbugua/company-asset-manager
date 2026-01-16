@@ -1,0 +1,29 @@
+<%
+    // Optional data population for SEO/title
+    const pageTitle = locals.pageTitle || "Asset Management System - AMS";
+%>
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title><%= pageTitle %></title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="/assets/css/styles.css">
+  <% if (locals.cssFile) { %>
+  <link rel="stylesheet" href="/assets/css/<%= cssFile %>.css">
+  <% } %>
+  <% if (locals.cssFile2) { %>
+  <link rel="stylesheet" href="/assets/css/<%= cssFile2 %>.css">
+  <% } %>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css" />
+  <link rel="stylesheet" href="https://unicons.iconscout.com/release/v4.2.0/css/line.css">
+  <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js"></script>
+  <!-- Date formatting utility - must load before other scripts -->
+  <script src="/assets/js/dateUtils.js"></script>
+</head>
+
+<body>

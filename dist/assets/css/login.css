@@ -1,0 +1,167 @@
+body {
+    font-family: 'Poppins', sans-serif;
+    background: #f0f2f5;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 100vh;
+    margin: 0;
+  }
+  
+  .login-container {
+    background: #fff;
+    padding: 30px;
+    border-radius: 8px;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.2);
+    width: 300px;
+  }
+
+  .app-name {
+    text-align: center;
+    margin-bottom: 25px;
+    padding-bottom: 20px;
+    border-bottom: 2px solid #f0f2f5;
+  }
+
+  .login-logo {
+    max-width: 200px;
+    max-height: 80px;
+    margin-bottom: 15px;
+    object-fit: contain;
+  }
+
+  .app-name h1 {
+    margin: 0;
+    font-size: 24px;
+    color: #4A9D5F;
+    font-weight: 700;
+    margin-bottom: 5px;
+  }
+
+  .app-subtitle {
+    margin: 0;
+    font-size: 14px;
+    color: #666;
+    font-weight: 500;
+    letter-spacing: 2px;
+  }
+  
+  .login-container h2 {
+    text-align: center;
+    margin-bottom: 20px;
+    color: #333;
+  }
+  
+  .login-container input {
+    width: 100%;
+    padding: 10px;
+    margin-bottom: 12px;
+    border: 1px solid #ccc;
+    border-radius: 4px;
+  }
+  
+  .login-container button {
+    width: 100%;
+    padding: 10px;
+    background: #4A9D5F;
+    color: #fff;
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
+  }
+  
+  .login-container button:hover {
+    background: #3d8450;
+  }
+  
+  #error {
+    color: red;
+    margin-top: 10px;
+    text-align: center;
+    display: none;
+  }
+  
+  /* ============================
+     RESPONSIVE STYLES
+     ============================ */
+  
+  /* Tablets (max-width: 768px) */
+  @media (max-width: 768px) {
+    .login-container {
+      width: 90%;
+      padding: 25px;
+    }
+  
+    .app-name h1 {
+      font-size: 22px;
+    }
+  
+    .app-subtitle {
+      font-size: 13px;
+    }
+  
+    .login-logo {
+      max-width: 180px;
+      max-height: 70px;
+    }
+  }
+  
+  /* Mobile (max-width: 480px) */
+  @media (max-width: 480px) {
+    body {
+      padding: 10px;
+    }
+  
+    .login-container {
+      width: 100%;
+      padding: 20px;
+      box-shadow: 0 1px 4px rgba(0, 0, 0, 0.15);
+    }
+  
+    .app-name {
+      margin-bottom: 20px;
+      padding-bottom: 15px;
+    }
+  
+    .app-name h1 {
+      font-size: 20px;
+    }
+  
+    .app-subtitle {
+      font-size: 12px;
+      letter-spacing: 1.5px;
+    }
+  
+    .login-logo {
+      max-width: 150px;
+      max-height: 60px;
+    }
+  
+    .login-container h2 {
+      font-size: 18px;
+      margin-bottom: 18px;
+    }
+  
+    .login-container input,
+    .login-container button {
+      padding: 12px;
+      font-size: 16px; /* Prevents zoom on iOS */
+    }
+  }
+  
+  /* Small Mobile (max-width: 360px) */
+  @media (max-width: 360px) {
+    .login-container {
+      padding: 15px;
+    }
+  
+    .app-name h1 {
+      font-size: 18px;
+    }
+  
+    .login-logo {
+      max-width: 130px;
+      max-height: 50px;
+    }
+  }
+  

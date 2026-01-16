@@ -1,0 +1,46 @@
+<%- include('partials/header', { pageTitle: 'Reports', cssFile: 'reports', cssFile2: 'assign' }) %>
+<%- include('partials/navbar') %>
+
+<div class="main">
+    <%- include('partials/sidebar') %>
+    <section class="content-area">
+        <div class="reports-container">
+            <h2>Reports</h2>
+
+            <div class="report-buttons">
+                <button class="report-btn" onclick="showForm('employee')">Employee Assets Report</button>
+                <button class="report-btn" onclick="showForm('branch')">Branch Assets Report</button>
+                <button class="report-btn" onclick="showForm('expenses')">Expenses Report (Time Period)</button>
+            </div>
+
+            <div class="report-form" id="employee-form" style="display:none;">
+                <label>Employee ID: </label>
+                <input type="number" id="employeeId" placeholder="Enter Employee ID"/>
+                <button onclick="fetchEmployeeReport()">Generate</button>
+            </div>
+
+            <div class="report-form" id="branch-form" style="display:none;">
+                <label>Branch ID: </label>
+                <input type="number" id="branchId" placeholder="Enter Branch ID"/>
+                <button onclick="fetchBranchReport()">Generate</button>
+            </div>
+
+            <div class="report-form" id="expenses-form" style="display:none;">
+                <label>Start Date: </label>
+                <input type="date" id="startDate"/>
+                <label>End Date: </label>
+                <input type="date" id="endDate"/>
+                <button onclick="fetchExpensesReport()">Generate</button>
+            </div>
+
+            <!-- <div id="report-output">
+                <p style="text-align: center; color: #888;">Select a report type to generate.</p>
+            </div> -->
+            <div id="report-output">
+                <%- include('partials/asset-assignments', { assignments: locals.assignments }) %>
+            </div>
+        </div>
+    </section>
+</div>
+
+<%- include('partials/footer', { jsFile: 'reports' }) %>

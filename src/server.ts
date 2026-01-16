@@ -52,12 +52,12 @@ app.use(systemConfigMiddleware); // Add system configuration to all views
 connectDB();
 
 // Serve static files (CSS, JS, images)
-app.use('/assets', express.static(path.join(__dirname, 'assets')));
+app.use('/assets', express.static(path.join(process.cwd(), 'src', 'assets')));
 app.use('/uploads', express.static(path.join(process.cwd(), 'uploads')));
 
 // Configure EJS as the view engine
 app.set('view engine', 'ejs');
-app.set('views', path.join(__dirname, 'views'));
+app.set('views', path.join(process.cwd(), 'src', 'views'));
 
 // API Routes
 app.use('/api', mainRoutes);

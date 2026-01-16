@@ -1,0 +1,144 @@
+<%- include('partials/header', { pageTitle: 'Manage Repair Request Statuses', cssFile: 'manage-repair-statuses' }) %>
+<%- include('partials/navbar', { user: locals.user }) %>
+
+<div class="main">
+    <%- include('partials/sidebar') %>
+    <section class="content-area">
+        <div class="management-container">
+            <div class="page-header">
+                <div class="header-left">
+                    <h3><i class="uil uil-toggle-on"></i> Repair Request Status Management</h3>
+                    <p class="subtitle">Configure workflow statuses for repair requests</p>
+                </div>
+                <div class="header-right">
+                    <button id="add-status-btn" class="btn btn-add">
+                        <i class="uil uil-plus"></i> Add New Status
+                    </button>
+                </div>
+            </div>
+
+            <div id="status-form-modal" class="modal">
+                <div class="modal-content">
+                    <span class="close-btn">&times;</span>
+                    <h4><i class="uil uil-edit"></i> <span id="modal-title">Add New Status</span></h4>
+                    
+                    <form id="status-form">
+                        <input type="hidden" id="status-id" name="id">
+
+                        <div class="form-group">
+                            <label for="name">Status Name:<span class="required">*</span></label>
+                            <input type="text" id="name" name="name" required placeholder="e.g., Pending Approval">
+                        </div>
+
+                        <div class="form-group">
+                            <label for="description">Description:</label>
+                            <textarea id="description" name="description" rows="3" placeholder="Brief description of this status..."></textarea>
+                        </div>
+
+                        <div class="form-row">
+                            <div class="form-group">
+                                <label for="color_code">Color Code:</label>
+                                <div class="color-input-group">
+                                    <input type="color" id="color_picker" value="#3498db">
+                                    <input type="text" id="color_code" name="color_code" value="#3498db" placeholder="#3498db">
+                                </div>
+                            </div>
+                            <div class="form-group">
+                                <label for="display_order">Display Order:</label>
+                                <input type="number" id="display_order" name="display_order" min="0" value="0">
+                            </div>
+                        </div>
+
+                        <div class="form-row">
+                            <div class="form-group">
+                                <label for="is_active">Active Status:</label>
+                                <select id="is_active" name="is_active">
+                                    <option value="true">Active</option>
+                                    <option value="false">Inactive</option>
+                                </select>
+                            </div>
+                            <div class="form-group">
+                                <label>Status Preview:</label>
+                                <span id="status-preview" class="status-badge" style="background-color: #3498db;">Preview</span>
+                            </div>
+                        </div>
+
+                        <button type="submit" class="btn btn-primary mt-3">
+                            <i class="uil uil-save"></i> Save Status
+                        </button>
+                    </form>
+                </div>
+            </div>
+            
+            <div class="list-section mt-4">
+                <div class="search-filter-section mb-3">
+                    <input type="text" id="search-input" placeholder="Search statuses..." class="search-input">
+                    <label class="checkbox-label">
+                        <input type="checkbox" id="show-inactive" checked>
+                        <span>Show Inactive</span>
+                    </label>
+                </div>
+
+                <table id="statuses-table" class="data-table">
+                    <thead>
+                        <tr>
+                            <th>ID</th>
+                            <th>Name</th>
+                            <th>Description</th>
+                            <th>Preview</th>
+                            <th>Order</th>
+                            <th>Status</th>
+                            <th>Actions</th>
+                        </tr>
+                    </thead>
+                    <tbody id="statuses-table-body">
+                        <% if (locals.repairStatuses && locals.repairStatuses.length > 0) { %>
+                            <% locals.repairStatuses.forEach(status => { %>
+                                <tr data-status-id="<%= status.id %>" class="<%= !status.is_active ? 'row-inactive' : '' %>">
+                                    <td data-label="ID"><%= status.id %></td>
+                                    <td data-label="Name"><%= status.name %></td>
+                                    <td data-label="Description"><%= status.description || 'N/A' %></td>
+                                    <td data-label="Preview">
+                                        <span class="status-badge" style="background-color: <%= status.color_code || '#6c757d' %>;">
+                                            <%= status.name %>
+                                        </span>
+                                    </td>
+                                    <td data-label="Order"><%= status.display_order || 0 %></td>
+                                    <td data-label="Status">
+                                        <span class="status-badge <%= status.is_active ? 'status-active' : 'status-inactive' %>">
+                                            <%= status.is_active ? 'Active' : 'Inactive' %>
+                                        </span>
+                                    </td>
+                                    <td data-label="Actions">
+                                        <button class="btn btn-sm btn-edit" data-id="<%= status.id %>" title="Edit">
+                                            <i class="uil uil-edit"></i>
+                                        </button>
+                                        <button class="btn btn-sm btn-toggle" data-id="<%= status.id %>" data-active="<%= status.is_active %>" title="<%= status.is_active ? 'Deactivate' : 'Activate' %>">
+                                            <i class="uil <%= status.is_active ? 'uil-toggle-on' : 'uil-toggle-off' %>"></i>
+                                        </button>
+                                        <button class="btn btn-sm btn-delete" data-id="<%= status.id %>" title="Delete">
+                                            <i class="uil uil-trash-alt"></i>
+                                        </button>
+                                    </td>
+                                </tr>
+                            <% }); %>
+                        <% } else { %>
+                            <tr>
+                                <td colspan="7" style="text-align:center;">No repair request statuses found.</td>
+                            </tr>
+                        <% } %>
+                    </tbody>
+                </table>
+                
+                <div class="pagination-controls">
+                    <div class="pagination-info">
+                        <span id="page-info">Showing all records</span>
+                    </div>
+                </div>
+            </div>
+
+        </div>
+    </section>
+</div>
+
+<%- include('partials/footer', { jsFile: 'manage-repair-statuses' }) %>
