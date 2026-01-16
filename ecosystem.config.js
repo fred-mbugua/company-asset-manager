@@ -6,7 +6,7 @@ module.exports = {
                         NODE_ENV: "production",
                         PORT: 5000,
 
-                        DATABASE_URL: "postgresql://complianceadmin:compliance@25JSLICT!@localhost:5432/ict_asset_register_2",
+                        DATABASE_URL: "postgresql://complianceadmin:compliance@25JSLICT!@localhost:5432/ict_asset_register_3",
 
                         JWT_ACCESS_SECRET: "assetmanagement_accesssecret",
                         JWT_REFRESH_SECRET: "assetmanagement_refreshsecret",
