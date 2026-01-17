@@ -29,16 +29,18 @@ class AuthController {
                 logger_1.default.warn(`Login failed: User not found for email ${email}`);
                 return (0, response_1.errorResponse)(res, 401, 'Invalid email or password');
             }
+            // Check if the request is actually using HTTPS (either directly or via proxy)
+            const isSecure = req.secure || req.headers['x-forwarded-proto'] === 'https';
             res.cookie('accessToken', accessToken, {
                 httpOnly: true,
-                secure: process.env.NODE_ENV === 'production',
-                sameSite: 'strict',
+                secure: isSecure,
+                sameSite: isSecure ? 'strict' : 'lax',
                 maxAge: 30 * 60 * 1000
             });
             res.cookie('refreshToken', refreshToken, {
                 httpOnly: true,
-                secure: process.env.NODE_ENV === 'production',
-                sameSite: 'strict',
+                secure: isSecure,
+                sameSite: isSecure ? 'strict' : 'lax',
                 maxAge: 7 * 24 * 60 * 60 * 1000
             });
             // Get the returnTo URL from session and clear it
@@ -53,15 +55,17 @@ class AuthController {
         }
     }
     async logout(req, res) {
+        // Check if the request is actually using HTTPS (either directly or via proxy)
+        const isSecure = req.secure || req.headers['x-forwarded-proto'] === 'https';
         res.clearCookie('accessToken', {
             httpOnly: true,
-            secure: process.env.NODE_ENV === 'production',
-            sameSite: 'strict'
+            secure: isSecure,
+            sameSite: isSecure ? 'strict' : 'lax'
         });
         res.clearCookie('refreshToken', {
             httpOnly: true,
-            secure: process.env.NODE_ENV === 'production',
-            sameSite: 'strict'
+            secure: isSecure,
+            sameSite: isSecure ? 'strict' : 'lax'
         });
         logger_1.default.info('User logged out successfully');
         (0, response_1.successResponse)(res, 200, 'Logged out successfully');
@@ -74,16 +78,18 @@ class AuthController {
                 return (0, response_1.errorResponse)(res, 401, 'Refresh token not found');
             }
             const { accessToken, newRefreshToken } = await services_1.AuthService.refresh(refreshToken);
+            // Check if the request is actually using HTTPS (either directly or via proxy)
+            const isSecure = req.secure || req.headers['x-forwarded-proto'] === 'https';
             res.cookie('accessToken', accessToken, {
                 httpOnly: true,
-                secure: process.env.NODE_ENV === 'production',
-                sameSite: 'strict',
+                secure: isSecure,
+                sameSite: isSecure ? 'strict' : 'lax',
                 maxAge: 30 * 60 * 1000
             });
             res.cookie('refreshToken', newRefreshToken, {
                 httpOnly: true,
-                secure: process.env.NODE_ENV === 'production',
-                sameSite: 'strict',
+                secure: isSecure,
+                sameSite: isSecure ? 'strict' : 'lax',
                 maxAge: 7 * 24 * 60 * 60 * 1000
             });
             // logger.info('Access token refreshed successfully');

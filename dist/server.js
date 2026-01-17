@@ -48,11 +48,16 @@ app.use(middlewares_1.systemConfigMiddleware); // Add system configuration to al
 // Connecting to database
 (0, database_1.connectDB)();
 // Serve static files (CSS, JS, images)
-app.use('/assets', express_1.default.static(path_1.default.join(process.cwd(), 'src', 'assets')));
+//app.use('/assets', express.static(path.join(__dirname, 'assets')));
 app.use('/uploads', express_1.default.static(path_1.default.join(process.cwd(), 'uploads')));
 // Configure EJS as the view engine
 app.set('view engine', 'ejs');
-app.set('views', path_1.default.join(process.cwd(), 'src', 'views'));
+//app.set('views', path.join(__dirname, 'views'));
+// Setting the path to the views directory
+app.set('views', path_1.default.join(__dirname, '..', 'src', 'views'));
+// Serving static files
+// app.use(express.static(path.join(__dirname, '../src/frontend/public')));
+app.use('/assets', express_1.default.static(path_1.default.join(__dirname, '..', 'src', 'assets')));
 // API Routes
 app.use('/api', routes_1.mainRoutes);
 // View Routes

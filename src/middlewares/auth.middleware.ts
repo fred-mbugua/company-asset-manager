@@ -85,10 +85,14 @@ export const authenticate = async (req: AuthenticatedRequest, res: Response, nex
         
             const { accessToken: newAccessToken } = await AuthService.refresh(refreshToken);
             
+            // Check if the request is actually using HTTPS (either directly or via proxy)
+            const isSecure = req.secure || req.headers['x-forwarded-proto'] === 'https';
+            
             // Setting the new Access Token in a cookie
             res.cookie('accessToken', newAccessToken, {
                 httpOnly: true,
-                secure: process.env.NODE_ENV === 'production',
+                secure: isSecure,
+                sameSite: isSecure ? 'strict' : 'lax',
                 maxAge: 7 * 24 * 60 * 60 * 1000 // 7 days (match token lifetime)
             });
 
