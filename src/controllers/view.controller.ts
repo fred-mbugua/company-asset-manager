@@ -343,6 +343,20 @@ class ViewsController {
     }
 
     /**
+     * Rendering the Branch Hierarchy Configuration page.
+     */
+    async renderBranchHierarchy(req: Request, res: Response): Promise<void> {
+        try {
+            res.render('branch-hierarchy', {
+                user: req.user,
+            });
+        } catch (error) {
+            console.error('Error rendering branch hierarchy page:', error);
+            res.status(500).send('Failed to load branch hierarchy page.');
+        }
+    }
+
+    /**
      * Rendering the Manage Departments EJS view.
      */
     async renderManageDepartments(req: Request, res: Response): Promise<void> {

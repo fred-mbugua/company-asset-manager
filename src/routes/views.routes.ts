@@ -26,6 +26,7 @@ router.get('/expenses/create', authenticate, checkPermission('EXPENSES_CREATE', 
 router.get('/users/manage', authenticate, checkPermission('ADMIN_USERS', 'read'), asyncHandler(ViewsController.renderCreateUser));
 router.get('/users/import-history', authenticate, checkPermission('ADMIN_USERS', 'read'), asyncHandler(ViewsController.renderBulkImportHistory));
 router.get('/branches/manage', authenticate, checkPermission('ADMIN_BRANCHES', 'read'), asyncHandler(ViewsController.renderManageBranches));
+router.get('/branches/hierarchy', authenticate, checkPermission('ADMIN_BRANCHES', 'read'), asyncHandler(ViewsController.renderBranchHierarchy));
 router.get('/departments/manage', authenticate, checkPermission('ADMIN_DEPARTMENTS', 'read'), asyncHandler(ViewsController.renderManageDepartments));
 router.get('/asset-statuses/manage', authenticate, checkPermission('ADMIN_ASSET_STATUSES', 'read'), asyncHandler(ViewsController.renderManageAssetStatuses));
 router.get('/asset-types/manage', authenticate, checkPermission('ADMIN_ASSET_TYPES', 'read'), asyncHandler(ViewsController.renderManageAssetTypes));

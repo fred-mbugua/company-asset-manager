@@ -80,6 +80,152 @@ class BranchController {
             errorResponse(res, 500, 'Failed to delete branch.');
         }
     }
+
+    // ==================== HIERARCHY ENDPOINTS ====================
+
+    /**
+     * Get all branches with hierarchy information
+     */
+    async getHierarchy(req: Request, res: Response): Promise<void> {
+        try {
+            const branches = await BranchService.findAllWithHierarchy();
+            successResponse(res, 200, 'Branch hierarchy retrieved successfully', branches);
+        } catch (error) {
+            logger.error(`Failed to retrieve branch hierarchy: ${(error as Error).message}`);
+            errorResponse(res, 500, 'Failed to retrieve branch hierarchy');
+        }
+    }
+
+    /**
+     * Get branch hierarchy as a tree structure
+     */
+    async getHierarchyTree(req: Request, res: Response): Promise<void> {
+        try {
+            const tree = await BranchService.getHierarchyTree();
+            successResponse(res, 200, 'Branch hierarchy tree retrieved successfully', tree);
+        } catch (error) {
+            logger.error(`Failed to retrieve branch hierarchy tree: ${(error as Error).message}`);
+            errorResponse(res, 500, 'Failed to retrieve branch hierarchy tree');
+        }
+    }
+
+    /**
+     * Get headquarters branch
+     */
+    async getHeadquarters(req: Request, res: Response): Promise<void> {
+        try {
+            const hq = await BranchService.getHeadquarters();
+            successResponse(res, 200, 'Headquarters retrieved successfully', hq);
+        } catch (error) {
+            logger.error(`Failed to retrieve headquarters: ${(error as Error).message}`);
+            errorResponse(res, 500, 'Failed to retrieve headquarters');
+        }
+    }
+
+    /**
+     * Set a branch as headquarters
+     */
+    async setHeadquarters(req: Request, res: Response): Promise<void> {
+        try {
+            const userId = req.user?.id;
+            if (!userId) {
+                errorResponse(res, 401, 'Unauthorized');
+                return;
+            }
+
+            const branchId = parseInt(req.params.id);
+            const branch = await BranchService.setHeadquarters(branchId, userId);
+            successResponse(res, 200, 'Headquarters set successfully', branch);
+        } catch (error) {
+            logger.error(`Failed to set headquarters: ${(error as Error).message}`);
+            errorResponse(res, 400, (error as Error).message);
+        }
+    }
+
+    /**
+     * Set parent branch for a branch
+     */
+    async setParent(req: Request, res: Response): Promise<void> {
+        try {
+            const userId = req.user?.id;
+            if (!userId) {
+                errorResponse(res, 401, 'Unauthorized');
+                return;
+            }
+
+            const branchId = parseInt(req.params.id);
+            const { parent_id } = req.body;
+            
+            const branch = await BranchService.setParentBranch(
+                branchId, 
+                parent_id !== undefined ? parent_id : null, 
+                userId
+            );
+            successResponse(res, 200, 'Branch parent updated successfully', branch);
+        } catch (error) {
+            logger.error(`Failed to set branch parent: ${(error as Error).message}`);
+            errorResponse(res, 400, (error as Error).message);
+        }
+    }
+
+    /**
+     * Update entire hierarchy structure
+     */
+    async updateHierarchy(req: Request, res: Response): Promise<void> {
+        try {
+            const userId = req.user?.id;
+            if (!userId) {
+                errorResponse(res, 401, 'Unauthorized');
+                return;
+            }
+
+            const { hierarchy } = req.body;
+            if (!hierarchy || !Array.isArray(hierarchy)) {
+                errorResponse(res, 400, 'Hierarchy array is required');
+                return;
+            }
+
+            await BranchService.updateHierarchy(hierarchy, userId);
+            successResponse(res, 200, 'Branch hierarchy updated successfully', null);
+        } catch (error) {
+            logger.error(`Failed to update hierarchy: ${(error as Error).message}`);
+            errorResponse(res, 400, (error as Error).message);
+        }
+    }
+
+    /**
+     * Get accessible branches for a user based on their branch
+     */
+    async getAccessibleBranches(req: Request, res: Response): Promise<void> {
+        try {
+            const userBranchId = req.user?.branch_id;
+            if (!userBranchId) {
+                // If no branch assigned, return empty array
+                successResponse(res, 200, 'Accessible branches retrieved', []);
+                return;
+            }
+
+            const branchIds = await BranchService.getAccessibleBranchIds(userBranchId);
+            successResponse(res, 200, 'Accessible branches retrieved', branchIds);
+        } catch (error) {
+            logger.error(`Failed to get accessible branches: ${(error as Error).message}`);
+            errorResponse(res, 500, 'Failed to get accessible branches');
+        }
+    }
+
+    /**
+     * Get children of a branch
+     */
+    async getChildren(req: Request, res: Response): Promise<void> {
+        try {
+            const branchId = parseInt(req.params.id);
+            const children = await BranchService.getChildren(branchId);
+            successResponse(res, 200, 'Children retrieved successfully', children);
+        } catch (error) {
+            logger.error(`Failed to get branch children: ${(error as Error).message}`);
+            errorResponse(res, 500, 'Failed to get branch children');
+        }
+    }
 }
 
 export default new BranchController();

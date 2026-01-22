@@ -1,0 +1,169 @@
+<%- include('partials/header', { pageTitle: 'Branch Hierarchy', cssFile: 'branch-hierarchy' }) %>
+<%- include('partials/navbar', { user: locals.user }) %>
+
+<div class="main">
+    <%- include('partials/sidebar') %>
+    <section class="content-area">
+        <div class="hierarchy-page">
+            <!-- Page Header -->
+            <div class="page-header">
+                <div class="header-content">
+                    <h3><i class="uil-sitemap"></i> Branch Hierarchy Configuration</h3>
+                    <p class="page-description">Configure your organization's branch structure. Set parent-child relationships to control data access across branches.</p>
+                </div>
+                <div class="header-actions">
+                    <button id="save-btn" class="btn btn-primary" disabled>
+                        <i class="uil-save"></i> Save Changes
+                    </button>
+                </div>
+            </div>
+
+            <!-- Info Banner -->
+            <div class="info-banner">
+                <i class="uil-info-circle"></i>
+                <div class="info-content">
+                    <strong>How Branch Hierarchy Works:</strong>
+                    <ul>
+                        <li><strong>Headquarters (HQ)</strong> - The main branch at the top of the hierarchy. Users in HQ can view data from all branches.</li>
+                        <li><strong>Parent branches</strong> - Can view data from their child branches.</li>
+                        <li><strong>Child branches</strong> - Can only view their own data (unless they have children).</li>
+                        <li>When a role has <strong>Branch Level Access</strong> enabled for a module, users can only see data within their accessible branches.</li>
+                    </ul>
+                </div>
+            </div>
+
+            <!-- Main Content -->
+            <div class="hierarchy-main">
+                <!-- Left Panel: Hierarchy Tree View -->
+                <div class="tree-panel">
+                    <div class="panel-header">
+                        <i class="uil-folder-network"></i> Organization Structure
+                    </div>
+                    <div class="panel-body">
+                        <div id="loading-tree" class="loading-state">
+                            <i class="uil-spinner-alt spin"></i>
+                            <p>Loading branches...</p>
+                        </div>
+                        <div id="hierarchy-tree" class="hierarchy-tree">
+                            <!-- Tree will be rendered here -->
+                        </div>
+                        <div id="empty-tree" class="empty-state" style="display: none;">
+                            <i class="uil-building"></i>
+                            <p>No branches configured yet.</p>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Right Panel: Branch Configuration -->
+                <div class="config-panel">
+                    <div class="panel-header">
+                        <i class="uil-setting"></i> Branch Configuration
+                    </div>
+                    <div class="panel-body">
+                        <!-- No Selection State -->
+                        <div id="no-selection" class="placeholder-state">
+                            <i class="uil-cursor"></i>
+                            <h5>Select a Branch</h5>
+                            <p>Click on a branch in the tree to configure its hierarchy settings.</p>
+                        </div>
+
+                        <!-- Configuration Form -->
+                        <div id="config-form" class="config-form" style="display: none;">
+                            <div class="branch-info">
+                                <div class="branch-icon">
+                                    <i class="uil-building"></i>
+                                </div>
+                                <div class="branch-details">
+                                    <h4 id="selected-branch-name">Branch Name</h4>
+                                    <span class="branch-location" id="selected-branch-location">Location</span>
+                                </div>
+                                <div id="hq-badge" class="hq-badge" style="display: none;">
+                                    <i class="uil-star"></i> Headquarters
+                                </div>
+                            </div>
+
+                            <input type="hidden" id="selected-branch-id" value="">
+
+                            <div class="form-section">
+                                <h5><i class="uil-sitemap"></i> Hierarchy Settings</h5>
+                                
+                                <div class="form-group">
+                                    <label for="parent-select">Parent Branch:</label>
+                                    <div class="searchable-select" id="parent-select-wrapper">
+                                        <input type="text" class="select-input" id="parent-search" placeholder="Search or select parent branch..." autocomplete="off">
+                                        <input type="hidden" id="parent-select" value="">
+                                        <div class="select-dropdown" id="parent-dropdown">
+                                            <!-- Options will be populated dynamically -->
+                                        </div>
+                                    </div>
+                                    <small class="form-text">Select which branch this branch reports to. Leave empty for root level.</small>
+                                </div>
+
+                                <div class="form-group">
+                                    <label>Hierarchy Level:</label>
+                                    <div class="level-display">
+                                        <span id="hierarchy-level" class="level-badge">0</span>
+                                        <small>Level 0 = Root, Level 1 = Direct child of root, etc.</small>
+                                    </div>
+                                </div>
+
+                                <div class="form-group checkbox-group">
+                                    <label class="checkbox-label">
+                                        <input type="checkbox" id="is-headquarters">
+                                        <span class="checkmark"></span>
+                                        <span class="label-text">
+                                            <strong>Set as Headquarters</strong>
+                                            <small>Users in headquarters can access data from all branches</small>
+                                        </span>
+                                    </label>
+                                </div>
+                            </div>
+
+                            <div class="form-section">
+                                <h5><i class="uil-users-alt"></i> Child Branches</h5>
+                                <div id="children-list" class="children-list">
+                                    <p class="no-children">This branch has no child branches.</p>
+                                </div>
+                            </div>
+
+                            <div class="form-section">
+                                <h5><i class="uil-eye"></i> Access Preview</h5>
+                                <div class="access-preview">
+                                    <p>Users in this branch can view data from:</p>
+                                    <div id="accessible-branches" class="accessible-list">
+                                        <!-- List of accessible branches -->
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="form-actions">
+                                <button id="apply-changes-btn" class="btn btn-primary">
+                                    <i class="uil-check"></i> Apply Changes
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Unsaved Changes Bar -->
+        <div id="save-bar" class="save-bar" style="display: none;">
+            <div class="message">
+                <i class="uil-exclamation-triangle"></i>
+                <span>You have unsaved changes</span>
+            </div>
+            <div class="actions">
+                <button id="cancel-btn" class="btn btn-cancel">
+                    <i class="uil-times"></i> Cancel
+                </button>
+                <button id="save-all-btn" class="btn btn-save">
+                    <i class="uil-save"></i> Save All Changes
+                </button>
+            </div>
+        </div>
+    </section>
+</div>
+
+<script src="/assets/js/branch-hierarchy.js"></script>
+<%- include('partials/footer') %>
