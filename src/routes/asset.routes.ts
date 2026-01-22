@@ -1,61 +1,69 @@
 import { Router } from 'express';
 import { AssetController, AssetTypeController, AssetStatusController } from '../controllers';
 import { authenticate, authorize } from '../middlewares';
+import { checkPermission } from '../middlewares/permission.middleware';
 import asyncHandler from 'express-async-handler';
 
 const router = Router();
 
-router.get('/', authenticate, authorize(['*']), asyncHandler(AssetController.getAll));
-router.get('/search', authenticate, authorize(['*']), asyncHandler(AssetController.search));
-router.get('/statuses/list', authenticate, authorize(['*']), asyncHandler(AssetController.statusList));
-router.get('/next-tag/:assetTypeId', authenticate, authorize(['*']), asyncHandler(AssetController.getNextTagPreview));
-router.get('/:id', authenticate, authorize(['*']), asyncHandler(AssetController.getById));
-router.post('/', authenticate, authorize(['Admin']), asyncHandler(AssetController.create));
-router.put('/:id', authenticate, authorize(['Admin']), asyncHandler(AssetController.update));
-router.delete('/:id', authenticate, authorize(['Admin']), asyncHandler(AssetController.delete));
+// Asset routes with permission-based access control
+router.get('/', authenticate, checkPermission('ASSETS', 'read'), asyncHandler(AssetController.getAll));
+router.get('/search', authenticate, checkPermission('ASSETS', 'read'), asyncHandler(AssetController.search));
+router.get('/statuses/list', authenticate, checkPermission('ASSETS', 'read'), asyncHandler(AssetController.statusList));
+router.get('/next-tag/:assetTypeId', authenticate, checkPermission('ASSETS', 'read'), asyncHandler(AssetController.getNextTagPreview));
+router.get('/:id', authenticate, checkPermission('ASSETS', 'read'), asyncHandler(AssetController.getById));
+router.post('/', authenticate, checkPermission('ASSETS', 'create'), asyncHandler(AssetController.create));
+router.put('/:id', authenticate, checkPermission('ASSETS', 'update'), asyncHandler(AssetController.update));
+router.delete('/:id', authenticate, checkPermission('ASSETS', 'delete'), asyncHandler(AssetController.delete));
+
+// Asset Types routes
 router.post(
     '/asset-types/create', 
     authenticate, 
-    authorize(['Admin']),
+    checkPermission('ADMIN_ASSET_TYPES', 'create'),
     asyncHandler(AssetTypeController.createAssetType)
 );
 
 router.get(
     '/asset-types/all', 
     authenticate, 
+    checkPermission('ADMIN_ASSET_TYPES', 'read'),
     asyncHandler(AssetTypeController.getAllAssetTypes)
 );
 
+// Asset Statuses routes
 router.post(
     '/asset-statuses/create', 
     authenticate, 
-    authorize(['Admin']), // Only Admin can create new statuses
+    checkPermission('ADMIN_ASSET_STATUSES', 'create'),
     asyncHandler(AssetStatusController.createAssetStatus)
 );
 
 router.get(
     '/asset-statuses/all', 
     authenticate, 
-    asyncHandler(AssetStatusController.getAllAssetStatuses) // Can be accessed by most authenticated users
+    checkPermission('ADMIN_ASSET_STATUSES', 'read'),
+    asyncHandler(AssetStatusController.getAllAssetStatuses)
 );
 
 router.get(
     '/asset-statuses/:id',
     authenticate,
+    checkPermission('ADMIN_ASSET_STATUSES', 'read'),
     asyncHandler(AssetStatusController.getAssetStatusById)
 );
 
 router.put(
     '/asset-statuses/:id',
     authenticate,
-    authorize(['Admin']),
+    checkPermission('ADMIN_ASSET_STATUSES', 'update'),
     asyncHandler(AssetStatusController.updateAssetStatus)
 );
 
 router.delete(
     '/asset-statuses/:id',
     authenticate,
-    authorize(['Admin']),
+    checkPermission('ADMIN_ASSET_STATUSES', 'delete'),
     asyncHandler(AssetStatusController.deleteAssetStatus)
 );
 

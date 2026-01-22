@@ -1,7 +1,7 @@
 import { Router } from 'express';
 import multer from 'multer';
 import SystemConfigurationController from '../controllers/systemConfiguration.controller';
-import { authenticate, authorize } from '../middlewares';
+import { checkPermission } from '../middlewares/permission.middleware';
 import asyncHandler from 'express-async-handler';
 
 const router = Router();
@@ -22,38 +22,32 @@ const upload = multer({
     }
 });
 
-// System configuration routes
+// Note: Authentication is handled at the main router level
+// Note: /public route is handled in main.routes.ts (before authentication)
+
+// System configuration routes - use permission-based authorization
 router.get(
     '/',
-    authenticate,
-    authorize(['Admin']),
+    checkPermission('SETTINGS_SYSTEM', 'read'),
     asyncHandler(SystemConfigurationController.getConfig)
-);
-
-router.get(
-    '/public',
-    asyncHandler(SystemConfigurationController.getPublicConfig)
 );
 
 router.put(
     '/',
-    authenticate,
-    authorize(['Admin']),
+    checkPermission('SETTINGS_SYSTEM', 'update'),
     asyncHandler(SystemConfigurationController.updateConfig)
 );
 
 router.post(
     '/upload-logo',
-    authenticate,
-    authorize(['Admin']),
+    checkPermission('SETTINGS_SYSTEM', 'update'),
     upload.single('logo'),
     asyncHandler(SystemConfigurationController.uploadLogo)
 );
 
 router.post(
     '/test-email',
-    authenticate,
-    authorize(['Admin']),
+    checkPermission('SETTINGS_SYSTEM', 'update'),
     asyncHandler(SystemConfigurationController.sendTestEmail)
 );
 

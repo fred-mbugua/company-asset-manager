@@ -479,7 +479,7 @@ document.addEventListener('DOMContentLoaded', function() {
             detailsModal.style.display = 'block';
         } catch (error) {
             console.error('Failed to load batch details:', error);
-            alert('Failed to load batch details');
+            AppNotify.error('Failed to load batch details');
         }
     }
 

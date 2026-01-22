@@ -33,7 +33,7 @@ document.addEventListener('DOMContentLoaded', () => {
             filterData();
         } catch (error) {
             console.error('Error fetching repair request types:', error);
-            alert('Failed to load repair request types.');
+            AppNotify.error('Failed to load repair request types.');
         }
     };
 
@@ -110,6 +110,7 @@ document.addEventListener('DOMContentLoaded', () => {
         isActiveField.value = 'true';
         modalTitle.textContent = 'Add New Repair Request Type';
         modal.style.display = 'block';
+        document.body.style.overflow = 'hidden';
     };
 
     /**
@@ -128,9 +129,10 @@ document.addEventListener('DOMContentLoaded', () => {
 
             modalTitle.textContent = `Edit Type: ${type.name}`;
             modal.style.display = 'block';
+            document.body.style.overflow = 'hidden';
         } catch (error) {
             console.error('Error fetching type data:', error);
-            alert('Failed to load type data for editing.');
+            AppNotify.error('Failed to load type data for editing.');
         }
     };
 
@@ -153,17 +155,18 @@ document.addEventListener('DOMContentLoaded', () => {
         try {
             if (isUpdate) {
                 await API.put(`${API_ENDPOINT}/${id}`, formData);
-                alert('Type updated successfully!');
+                AppNotify.success('Type updated successfully!');
             } else {
                 await API.post(API_ENDPOINT, formData);
-                alert('Type created successfully!');
+                AppNotify.success('Type created successfully!');
             }
             
             modal.style.display = 'none';
+            document.body.style.overflow = '';
             fetchData();
         } catch (error) {
             console.error('Save failed:', error);
-            alert(error.response?.data?.message || 'Failed to save type.');
+            AppNotify.error(error.response?.data?.message || 'Failed to save type.');
         }
     });
 
@@ -172,17 +175,18 @@ document.addEventListener('DOMContentLoaded', () => {
      */
     const handleToggle = async (id, currentActive) => {
         const action = currentActive === 'true' ? 'deactivate' : 'activate';
-        if (!confirm(`Are you sure you want to ${action} this type?`)) {
+        const confirmed = await AppConfirm.warn(`Are you sure you want to ${action} this type?`);
+        if (!confirmed) {
             return;
         }
 
         try {
             await API.patch(`${API_ENDPOINT}/${id}/toggle`);
-            alert(`Type ${action}d successfully!`);
+            AppNotify.success(`Type ${action}d successfully!`);
             fetchData();
         } catch (error) {
             console.error('Toggle failed:', error);
-            alert(error.response?.data?.message || `Failed to ${action} type.`);
+            AppNotify.error(error.response?.data?.message || `Failed to ${action} type.`);
         }
     };
 
@@ -190,17 +194,18 @@ document.addEventListener('DOMContentLoaded', () => {
      * Handle delete
      */
     const handleDelete = async (id) => {
-        if (!confirm('Are you sure you want to delete this type? This cannot be undone.')) {
+        const confirmed = await AppConfirm.delete('Are you sure you want to delete this type? This cannot be undone.');
+        if (!confirmed) {
             return;
         }
 
         try {
             await API.delete(`${API_ENDPOINT}/${id}`);
-            alert('Type deleted successfully!');
+            AppNotify.success('Type deleted successfully!');
             fetchData();
         } catch (error) {
             console.error('Delete failed:', error);
-            alert(error.response?.data?.message || 'Failed to delete type.');
+            AppNotify.error(error.response?.data?.message || 'Failed to delete type.');
         }
     };
 
@@ -235,11 +240,19 @@ document.addEventListener('DOMContentLoaded', () => {
     addBtn.addEventListener('click', openAddModal);
     closeModalBtn.addEventListener('click', () => {
         modal.style.display = 'none';
+        document.body.style.overflow = '';
     });
 
-    window.addEventListener('click', (e) => {
-        if (e.target === modal) {
+    // Prevent modal closing when clicking inside modal content
+    modal.querySelector('.modal-content').addEventListener('click', (e) => {
+        e.stopPropagation();
+    });
+
+    // Close modal with Escape key
+    document.addEventListener('keydown', (e) => {
+        if (e.key === 'Escape' && modal.style.display === 'block') {
             modal.style.display = 'none';
+            document.body.style.overflow = '';
         }
     });
 

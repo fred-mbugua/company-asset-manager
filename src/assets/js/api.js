@@ -1,5 +1,28 @@
 class API {
     /**
+     * Handle session expired - show notification and redirect to login
+     */
+    static handleSessionExpired(message = 'Your session has expired. Please login again.') {
+        // Show notification using AppNotify if available
+        if (typeof AppNotify !== 'undefined') {
+            AppNotify.warning(message);
+            setTimeout(() => {
+                window.location.href = '/login';
+            }, 2000);
+        } else if (typeof toastr !== 'undefined') {
+            toastr.warning(message, 'Session Expired', {
+                timeOut: 3000,
+                onHidden: () => {
+                    window.location.href = '/login';
+                }
+            });
+        } else {
+            AppNotify.warning(message);
+            window.location.href = '/login';
+        }
+    }
+
+    /**
      * Core request handler that constructs the URL, headers, and body.
      * @param {string} method - HTTP method (GET, POST, PUT, DELETE).
      * @param {string} url - API endpoint path (e.g., '/assets').
@@ -30,11 +53,23 @@ class API {
         try {
             const response = await fetch(fullUrl, options);
 
-            const jsonResponse = await response.json();
+            // Try to parse JSON response
+            let jsonResponse;
+            try {
+                jsonResponse = await response.json();
+            } catch (e) {
+                // If response is not JSON (e.g., redirect HTML), handle session expiry
+                if (response.status === 401) {
+                    this.handleSessionExpired();
+                    return;
+                }
+                throw new Error('Invalid server response');
+            }
 
             // Handle 401 Unauthorized for token expiration (but not for login endpoint)
             if (response.status === 401 && url !== '/auth/login') {
-                window.location.href = '/login'; 
+                const message = jsonResponse?.message || 'Your session has expired. Please login again.';
+                this.handleSessionExpired(message);
                 return; 
             }
 
@@ -78,10 +113,22 @@ class API {
                 // Don't set Content-Type header - browser will set it with boundary
             });
 
-            const jsonResponse = await response.json();
+            // Try to parse JSON response
+            let jsonResponse;
+            try {
+                jsonResponse = await response.json();
+            } catch (e) {
+                // If response is not JSON (e.g., redirect HTML), handle session expiry
+                if (response.status === 401) {
+                    this.handleSessionExpired();
+                    return;
+                }
+                throw new Error('Invalid server response');
+            }
 
             if (response.status === 401 && url !== '/auth/login') {
-                window.location.href = '/login'; 
+                const message = jsonResponse?.message || 'Your session has expired. Please login again.';
+                this.handleSessionExpired(message);
                 return; 
             }
 

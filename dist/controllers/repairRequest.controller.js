@@ -25,8 +25,8 @@ class RepairRequestController {
                 return;
             }
             const { asset_id, request_type_id, priority_id, title, description, branch_id, department_id } = req.body;
-            if (!request_type_id || !priority_id || !title || !description) {
-                (0, response_1.errorResponse)(res, 400, 'Missing required fields: request_type_id, priority_id, title, description');
+            if (!request_type_id || !priority_id || !title || !description || asset_id) {
+                (0, response_1.errorResponse)(res, 400, 'Missing required fields: request_type_id, priority_id, title, description, asset_id');
                 return;
             }
             const request = await repairRequest_service_1.default.createRequest({

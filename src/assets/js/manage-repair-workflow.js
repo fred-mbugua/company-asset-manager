@@ -11,6 +11,39 @@ document.addEventListener('DOMContentLoaded', function() {
     setupEventListeners();
 });
 
+// ============ Session Handling ============
+function handleSessionExpired(message = 'Your session has expired. Please login again.') {
+    if (typeof AppNotify !== 'undefined') {
+        AppNotify.warning(message);
+        setTimeout(() => { window.location.href = '/login'; }, 2000);
+    } else if (typeof toastr !== 'undefined') {
+        toastr.warning(message, 'Session Expired', {
+            timeOut: 3000,
+            onHidden: () => { window.location.href = '/login'; }
+        });
+    } else {
+        AppNotify.warning(message);
+        window.location.href = '/login';
+    }
+}
+
+// Wrapper for fetch with session handling
+async function secureFetch(url, options = {}) {
+    const response = await fetch(url, options);
+    
+    if (response.status === 401) {
+        let message = 'Your session has expired. Please login again.';
+        try {
+            const data = await response.clone().json();
+            message = data.message || message;
+        } catch (e) {}
+        handleSessionExpired(message);
+        throw new Error('Session expired');
+    }
+    
+    return response;
+}
+
 // ============ Tab Management ============
 function initTabs() {
     const tabButtons = document.querySelectorAll('.tab-btn');
@@ -37,23 +70,38 @@ function setupEventListeners() {
     document.querySelectorAll('.close-btn').forEach(btn => {
         btn.addEventListener('click', function() {
             this.closest('.modal').style.display = 'none';
+            document.body.style.overflow = '';
         });
     });
     
-    // Close modal on outside click
-    window.addEventListener('click', function(event) {
-        if (event.target.classList.contains('modal')) {
-            event.target.style.display = 'none';
+    // Prevent modal closing when clicking inside modal content
+    document.querySelectorAll('.modal-content').forEach(content => {
+        content.addEventListener('click', function(e) {
+            e.stopPropagation();
+        });
+    });
+    
+    // Close modal with Escape key
+    document.addEventListener('keydown', function(e) {
+        if (e.key === 'Escape') {
+            document.querySelectorAll('.modal').forEach(modal => {
+                if (modal.style.display === 'block') {
+                    modal.style.display = 'none';
+                    document.body.style.overflow = '';
+                }
+            });
         }
     });
     
     // Cancel buttons
     document.getElementById('cancel-stage')?.addEventListener('click', function() {
         document.getElementById('stage-modal').style.display = 'none';
+        document.body.style.overflow = '';
     });
     
     document.getElementById('cancel-permissions')?.addEventListener('click', function() {
         document.getElementById('permissions-modal').style.display = 'none';
+        document.body.style.overflow = '';
     });
     
     // Stage form submission
@@ -71,7 +119,7 @@ async function loadWorkflowStages() {
     tableBody.innerHTML = '<tr class="loading-row"><td colspan="9"><i class="uil uil-spinner-alt spin"></i> Loading stages...</td></tr>';
     
     try {
-        const response = await fetch('/api/repair-requests/workflow/stages');
+        const response = await secureFetch('/api/repair-requests/workflow/stages');
         const result = await response.json();
         
         if (result.success && result.data) {
@@ -167,11 +215,12 @@ function openStageModal(mode = 'add', stage = null) {
     }
     
     modal.style.display = 'block';
+    document.body.style.overflow = 'hidden';
 }
 
 async function editStage(stageId) {
     try {
-        const response = await fetch(`/api/repair-requests/workflow/stages/${stageId}`);
+        const response = await secureFetch(`/api/repair-requests/workflow/stages/${stageId}`);
         const result = await response.json();
         
         if (result.success && result.data) {
@@ -212,7 +261,7 @@ async function handleStageSubmit(event) {
             ? `/api/repair-requests/workflow/stages/${stageId}` 
             : '/api/repair-requests/workflow/stages';
         
-        const response = await fetch(url, {
+        const response = await secureFetch(url, {
             method: isEdit ? 'PUT' : 'POST',
             headers: { 'Content-Type': 'application/json' },
             body: JSON.stringify(data)
@@ -237,12 +286,13 @@ async function handleStageSubmit(event) {
 async function toggleStageStatus(stageId, newStatus) {
     const action = newStatus ? 'activate' : 'deactivate';
     
-    if (!confirm(`Are you sure you want to ${action} this stage?`)) {
+    const confirmed = await AppConfirm.warn(`Are you sure you want to ${action} this stage?`);
+    if (!confirmed) {
         return;
     }
     
     try {
-        const response = await fetch(`/api/repair-requests/workflow/stages/${stageId}`, {
+        const response = await secureFetch(`/api/repair-requests/workflow/stages/${stageId}`, {
             method: 'PUT',
             headers: { 'Content-Type': 'application/json' },
             body: JSON.stringify({ is_active: newStatus })
@@ -271,7 +321,7 @@ async function loadWorkflowPermissions() {
     
     try {
         // Load all stages with their permissions
-        const response = await fetch('/api/repair-requests/workflow/stages');
+        const response = await secureFetch('/api/repair-requests/workflow/stages');
         const result = await response.json();
         
         if (result.success && result.data) {
@@ -299,7 +349,7 @@ async function renderPermissionsCards(stages) {
         // Get permissions for this stage
         let permissions = [];
         try {
-            const permResponse = await fetch(`/api/repair-requests/workflow/stages/${stage.id}/permissions`);
+            const permResponse = await secureFetch(`/api/repair-requests/workflow/stages/${stage.id}/permissions`);
             const permResult = await permResponse.json();
             if (permResult.success && permResult.data) {
                 permissions = permResult.data;
@@ -343,7 +393,7 @@ async function editPermissions(stageId, stageName) {
     
     // Get current permissions for this stage
     try {
-        const permResponse = await fetch(`/api/repair-requests/workflow/stages/${stageId}/permissions`);
+        const permResponse = await secureFetch(`/api/repair-requests/workflow/stages/${stageId}/permissions`);
         const permResult = await permResponse.json();
         const currentRoleIds = permResult.success && permResult.data 
             ? permResult.data.map(p => p.role_id.toString()) 
@@ -355,9 +405,12 @@ async function editPermissions(stageId, stageName) {
         });
         
         modal.style.display = 'block';
+        document.body.style.overflow = 'hidden';
     } catch (error) {
         console.error('Error loading permissions:', error);
-        showToast('Error loading permissions', 'error');
+        if (!error.message.includes('Session expired')) {
+            showToast('Error loading permissions', 'error');
+        }
     }
 }
 
@@ -375,7 +428,7 @@ async function handlePermissionsSubmit(event) {
     }));
     
     try {
-        const response = await fetch(`/api/repair-requests/workflow/stages/${stageId}/permissions`, {
+        const response = await secureFetch(`/api/repair-requests/workflow/stages/${stageId}/permissions`, {
             method: 'PUT',
             headers: { 'Content-Type': 'application/json' },
             body: JSON.stringify({ permissions })
@@ -404,8 +457,13 @@ function escapeHtml(text) {
 }
 
 function showToast(message, type = 'info') {
-    // Use existing toast system if available
-    if (typeof Swal !== 'undefined') {
+    // Use AppNotify system
+    if (typeof AppNotify !== 'undefined') {
+        if (type === 'success') AppNotify.success(message);
+        else if (type === 'error') AppNotify.error(message);
+        else if (type === 'warning') AppNotify.warning(message);
+        else AppNotify.info(message);
+    } else if (typeof Swal !== 'undefined') {
         Swal.fire({
             toast: true,
             position: 'top-end',
@@ -417,6 +475,6 @@ function showToast(message, type = 'info') {
     } else if (typeof iziToast !== 'undefined') {
         iziToast[type]({ message: message, position: 'topRight' });
     } else {
-        alert(message);
+        console.log(`[${type}] ${message}`);
     }
 }

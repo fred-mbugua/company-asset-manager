@@ -25,21 +25,21 @@ document.addEventListener('DOMContentLoaded', () => {
 
             // Validation
             if (!formData.first_name || !formData.last_name) {
-                alert('First name and last name are required.');
+                AppNotify.warning('First name and last name are required.');
                 return;
             }
 
             try {
                 const response = await API.put('/users/profile', formData);
                 if (response.success) {
-                    alert('Profile updated successfully!');
+                    AppNotify.success('Profile updated successfully!');
                     window.location.reload();
                 } else {
-                    alert(response.message || 'Failed to update profile.');
+                    AppNotify.error(response.message || 'Failed to update profile.');
                 }
             } catch (error) {
                 console.error('Error updating profile:', error);
-                alert('An error occurred while updating your profile.');
+                AppNotify.error('An error occurred while updating your profile.');
             }
         });
     }
@@ -55,17 +55,17 @@ document.addEventListener('DOMContentLoaded', () => {
 
             // Validation
             if (!currentPassword || !newPassword || !confirmPassword) {
-                alert('All password fields are required.');
+                AppNotify.warning('All password fields are required.');
                 return;
             }
 
             if (newPassword !== confirmPassword) {
-                alert('New password and confirm password do not match.');
+                AppNotify.warning('New password and confirm password do not match.');
                 return;
             }
 
             if (newPassword.length < 6) {
-                alert('New password must be at least 6 characters long.');
+                AppNotify.warning('New password must be at least 6 characters long.');
                 return;
             }
 
@@ -76,14 +76,14 @@ document.addEventListener('DOMContentLoaded', () => {
                 });
 
                 if (response.success) {
-                    alert('Password changed successfully!');
+                    AppNotify.success('Password changed successfully!');
                     passwordForm.reset();
                 } else {
-                    alert(response.message || 'Failed to change password.');
+                    AppNotify.error(response.message || 'Failed to change password.');
                 }
             } catch (error) {
                 console.error('Error changing password:', error);
-                alert('An error occurred while changing your password.');
+                AppNotify.error('An error occurred while changing your password.');
             }
         });
     }

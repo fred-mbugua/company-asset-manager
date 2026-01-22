@@ -412,7 +412,7 @@ document.addEventListener('DOMContentLoaded', () => {
             detailsModal.style.display = 'block';
         } catch (error) {
             console.error('Error loading request details:', error);
-            alert('Failed to load request details.');
+            AppNotify.error('Failed to load request details.');
         }
     };
 
@@ -586,21 +586,21 @@ document.addEventListener('DOMContentLoaded', () => {
                         await API.upload(`${API_BASE}/${id}/attachments`, uploadFormData);
                     } catch (uploadError) {
                         console.error('Error uploading invoice attachment:', uploadError);
-                        alert('Invoice submitted but attachment upload failed. You can add it later via Attachments.');
+                        AppNotify.warning('Invoice submitted but attachment upload failed. You can add it later via Attachments.');
                     }
                 }
                 // Clear the file input
                 document.getElementById('invoice-attachment').value = '';
             }
             
-            alert('Status updated successfully!');
+            AppNotify.success('Status updated successfully!');
             statusModal.style.display = 'none';
             detailsModal.style.display = 'none';
             fetchRequests();
             fetchStatistics();
         } catch (error) {
             console.error('Error updating status:', error);
-            alert(error.response?.data?.message || 'Failed to update status.');
+            AppNotify.error(error.response?.data?.message || 'Failed to update status.');
         }
     });
 
@@ -672,7 +672,7 @@ document.addEventListener('DOMContentLoaded', () => {
         const files = document.getElementById('attachment-files').files;
 
         if (files.length === 0) {
-            alert('Please select files to upload.');
+            AppNotify.warning('Please select files to upload.');
             return;
         }
 
@@ -684,12 +684,12 @@ document.addEventListener('DOMContentLoaded', () => {
 
         try {
             await API.upload(`${API_BASE}/${id}/attachments`, formData);
-            alert('Attachments uploaded successfully!');
+            AppNotify.success('Attachments uploaded successfully!');
             document.getElementById('attachment-files').value = '';
             loadAttachments(id);
         } catch (error) {
             console.error('Error uploading attachments:', error);
-            alert(error.message || 'Failed to upload attachments.');
+            AppNotify.error(error.message || 'Failed to upload attachments.');
         }
     });
 
@@ -697,15 +697,16 @@ document.addEventListener('DOMContentLoaded', () => {
      * Delete attachment
      */
     window.deleteAttachment = async (requestId, attachmentId) => {
-        if (!confirm('Are you sure you want to delete this attachment?')) return;
+        const confirmed = await AppConfirm.delete('Are you sure you want to delete this attachment?');
+        if (!confirmed) return;
 
         try {
             await API.delete(`${API_BASE}/${requestId}/attachments/${attachmentId}`);
-            alert('Attachment deleted successfully!');
+            AppNotify.success('Attachment deleted successfully!');
             loadAttachments(requestId);
         } catch (error) {
             console.error('Error deleting attachment:', error);
-            alert(error.response?.data?.message || 'Failed to delete attachment.');
+            AppNotify.error(error.response?.data?.message || 'Failed to delete attachment.');
         }
     };
 
@@ -760,12 +761,12 @@ document.addEventListener('DOMContentLoaded', () => {
                 });
             }
 
-            alert('Attachment updated successfully!');
+            AppNotify.success('Attachment updated successfully!');
             editAttachmentModal.style.display = 'none';
             loadAttachments(requestId);
         } catch (error) {
             console.error('Error updating attachment:', error);
-            alert(error.message || 'Failed to update attachment.');
+            AppNotify.error(error.message || 'Failed to update attachment.');
         }
     });
 
@@ -905,16 +906,17 @@ document.addEventListener('DOMContentLoaded', () => {
      * Delete invoice attachment from edit modal
      */
     window.deleteInvoiceAttachment = async (requestId, attachmentId) => {
-        if (!confirm('Are you sure you want to delete this invoice document?')) return;
+        const confirmed = await AppConfirm.delete('Are you sure you want to delete this invoice document?');
+        if (!confirmed) return;
 
         try {
             await API.delete(`${API_BASE}/${requestId}/attachments/${attachmentId}`);
             // Reload the current attachment display
             await loadCurrentInvoiceAttachment(requestId);
-            alert('Invoice document deleted successfully!');
+            AppNotify.success('Invoice document deleted successfully!');
         } catch (error) {
             console.error('Error deleting invoice attachment:', error);
-            alert(error.message || 'Failed to delete invoice document.');
+            AppNotify.error(error.message || 'Failed to delete invoice document.');
         }
     };
 
@@ -960,17 +962,17 @@ document.addEventListener('DOMContentLoaded', () => {
                     await API.upload(`${API_BASE}/${id}/attachments`, uploadFormData);
                 } catch (uploadError) {
                     console.error('Error uploading new invoice attachment:', uploadError);
-                    alert('Invoice details updated but new attachment upload failed.');
+                    AppNotify.warning('Invoice details updated but new attachment upload failed.');
                 }
             }
             
-            alert('Invoice updated successfully!');
+            AppNotify.success('Invoice updated successfully!');
             editInvoiceModal.style.display = 'none';
             detailsModal.style.display = 'none';
             fetchRequests();
         } catch (error) {
             console.error('Error updating invoice:', error);
-            alert(error.message || 'Failed to update invoice.');
+            AppNotify.error(error.message || 'Failed to update invoice.');
         }
     });
 
@@ -1010,13 +1012,13 @@ document.addEventListener('DOMContentLoaded', () => {
 
         try {
             await API.post(API_BASE, formData);
-            alert('Repair request submitted successfully!');
+            AppNotify.success('Repair request submitted successfully!');
             requestModal.style.display = 'none';
             fetchRequests();
             fetchStatistics();
         } catch (error) {
             console.error('Error creating request:', error);
-            alert(error.response?.data?.message || 'Failed to submit request.');
+            AppNotify.error(error.response?.data?.message || 'Failed to submit request.');
         }
     });
 

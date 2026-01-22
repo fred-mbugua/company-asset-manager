@@ -471,7 +471,10 @@ class ViewsController {
                 bulkImportInfo = await bulkUserImport_service_1.default.getBulkImportInfoByUserId(parseInt(userIdToFetch));
             }
             res.render('profile', {
-                user: userDetails,
+                // Use 'user' for logged-in user (for sidebar/navbar navigation)
+                user: req.user,
+                // Use 'profileUser' for the user being viewed
+                profileUser: userDetails,
                 isViewingOtherUser,
                 viewerIsAdmin: ((_c = req.user) === null || _c === void 0 ? void 0 : _c.role) === 'Admin',
                 bulkImportInfo
@@ -615,6 +618,20 @@ class ViewsController {
         catch (error) {
             utils_1.logger.error('Error rendering manage roles page:', error);
             res.status(500).send('Failed to load roles management page.');
+        }
+    }
+    /**
+     * Rendering the Manage Permissions EJS view.
+     */
+    async renderManagePermissions(req, res) {
+        try {
+            res.render('manage-permissions', {
+                user: req.user
+            });
+        }
+        catch (error) {
+            utils_1.logger.error('Error rendering manage permissions page:', error);
+            res.status(500).send('Failed to load permissions management page.');
         }
     }
 }

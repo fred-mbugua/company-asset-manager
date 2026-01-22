@@ -36,7 +36,7 @@ document.addEventListener('DOMContentLoaded', () => {
             filterData();
         } catch (error) {
             console.error('Error fetching repair request priorities:', error);
-            alert('Failed to load repair request priorities.');
+            AppNotify.error('Failed to load repair request priorities.');
         }
     };
 
@@ -145,6 +145,7 @@ document.addEventListener('DOMContentLoaded', () => {
         previewBadge.textContent = 'Preview';
         modalTitle.textContent = 'Add New Priority';
         modal.style.display = 'block';
+        document.body.style.overflow = 'hidden';
     };
 
     /**
@@ -166,9 +167,10 @@ document.addEventListener('DOMContentLoaded', () => {
 
             modalTitle.textContent = `Edit Priority: ${priority.name}`;
             modal.style.display = 'block';
+            document.body.style.overflow = 'hidden';
         } catch (error) {
             console.error('Error fetching priority data:', error);
-            alert('Failed to load priority data for editing.');
+            AppNotify.error('Failed to load priority data for editing.');
         }
     };
 
@@ -192,17 +194,18 @@ document.addEventListener('DOMContentLoaded', () => {
         try {
             if (isUpdate) {
                 await API.put(`${API_ENDPOINT}/${id}`, formData);
-                alert('Priority updated successfully!');
+                AppNotify.success('Priority updated successfully!');
             } else {
                 await API.post(API_ENDPOINT, formData);
-                alert('Priority created successfully!');
+                AppNotify.success('Priority created successfully!');
             }
             
             modal.style.display = 'none';
+            document.body.style.overflow = '';
             fetchData();
         } catch (error) {
             console.error('Save failed:', error);
-            alert(error.response?.data?.message || 'Failed to save priority.');
+            AppNotify.error(error.response?.data?.message || 'Failed to save priority.');
         }
     });
 
@@ -211,17 +214,18 @@ document.addEventListener('DOMContentLoaded', () => {
      */
     const handleToggle = async (id, currentActive) => {
         const action = currentActive === 'true' ? 'deactivate' : 'activate';
-        if (!confirm(`Are you sure you want to ${action} this priority?`)) {
+        const confirmed = await AppConfirm.warn(`Are you sure you want to ${action} this priority?`);
+        if (!confirmed) {
             return;
         }
 
         try {
             await API.patch(`${API_ENDPOINT}/${id}/toggle`);
-            alert(`Priority ${action}d successfully!`);
+            AppNotify.success(`Priority ${action}d successfully!`);
             fetchData();
         } catch (error) {
             console.error('Toggle failed:', error);
-            alert(error.response?.data?.message || `Failed to ${action} priority.`);
+            AppNotify.error(error.response?.data?.message || `Failed to ${action} priority.`);
         }
     };
 
@@ -229,17 +233,18 @@ document.addEventListener('DOMContentLoaded', () => {
      * Handle delete
      */
     const handleDelete = async (id) => {
-        if (!confirm('Are you sure you want to delete this priority? This cannot be undone.')) {
+        const confirmed = await AppConfirm.delete('Are you sure you want to delete this priority? This cannot be undone.');
+        if (!confirmed) {
             return;
         }
 
         try {
             await API.delete(`${API_ENDPOINT}/${id}`);
-            alert('Priority deleted successfully!');
+            AppNotify.success('Priority deleted successfully!');
             fetchData();
         } catch (error) {
             console.error('Delete failed:', error);
-            alert(error.response?.data?.message || 'Failed to delete priority.');
+            AppNotify.error(error.response?.data?.message || 'Failed to delete priority.');
         }
     };
 
@@ -274,11 +279,19 @@ document.addEventListener('DOMContentLoaded', () => {
     addBtn.addEventListener('click', openAddModal);
     closeModalBtn.addEventListener('click', () => {
         modal.style.display = 'none';
+        document.body.style.overflow = '';
     });
 
-    window.addEventListener('click', (e) => {
-        if (e.target === modal) {
+    // Prevent modal closing when clicking inside modal content
+    modal.querySelector('.modal-content').addEventListener('click', (e) => {
+        e.stopPropagation();
+    });
+
+    // Close modal with Escape key
+    document.addEventListener('keydown', (e) => {
+        if (e.key === 'Escape' && modal.style.display === 'block') {
             modal.style.display = 'none';
+            document.body.style.overflow = '';
         }
     });
 

@@ -60,6 +60,8 @@ app.set('views', path_1.default.join(__dirname, '..', 'src', 'views'));
 app.use('/assets', express_1.default.static(path_1.default.join(__dirname, '..', 'src', 'assets')));
 // API Routes
 app.use('/api', routes_1.mainRoutes);
+// Apply loadUserPermissions middleware before view routes for dynamic menu visibility
+app.use(middlewares_1.loadUserPermissions);
 // View Routes
 app.use('/', routes_1.viewsRoutes);
 // Catch-all route to serve the login page as the default

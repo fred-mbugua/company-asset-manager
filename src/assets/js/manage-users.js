@@ -25,17 +25,207 @@ document.addEventListener('DOMContentLoaded', () => {
     // const API_ENDPOINT = '/api/admin/users'; // Assumed API endpoint
     const API_ENDPOINT = '/api';
 
+    // ==================== SEARCHABLE SELECT FUNCTIONALITY ====================
+    
+    function initSearchableSelects() {
+        const searchableSelects = document.querySelectorAll('.searchable-select');
+        
+        searchableSelects.forEach(select => {
+            const input = select.querySelector('.select-input');
+            const dropdown = select.querySelector('.select-dropdown');
+            const hiddenInput = select.querySelector('input[type="hidden"]');
+            const options = select.querySelectorAll('.select-option');
+            const allOptions = Array.from(options);
+            
+            // Store original options for filtering
+            select.allOptions = allOptions.map(opt => ({
+                value: opt.dataset.value,
+                text: opt.textContent,
+                isDefault: opt.dataset.default === 'true'
+            }));
+            
+            // Open dropdown on focus/click
+            input.addEventListener('focus', () => openSelectDropdown(select));
+            input.addEventListener('click', () => openSelectDropdown(select));
+            
+            // Filter on input
+            input.addEventListener('input', () => filterSelectOptions(select));
+            
+            // Handle option click
+            dropdown.addEventListener('click', (e) => {
+                const option = e.target.closest('.select-option');
+                if (option) {
+                    selectOption(select, option.dataset.value, option.textContent);
+                }
+            });
+            
+            // Keyboard navigation
+            input.addEventListener('keydown', (e) => handleSelectKeyboard(e, select));
+            
+            // Set default value if exists
+            const defaultOpt = select.allOptions.find(o => o.isDefault);
+            if (defaultOpt && defaultOpt.value) {
+                selectOption(select, defaultOpt.value, defaultOpt.text);
+            }
+        });
+        
+        // Close dropdowns when clicking outside
+        document.addEventListener('click', (e) => {
+            if (!e.target.closest('.searchable-select')) {
+                closeAllSelectDropdowns();
+            }
+        });
+    }
+    
+    function openSelectDropdown(select) {
+        closeAllSelectDropdowns();
+        select.classList.add('open');
+        filterSelectOptions(select);
+    }
+    
+    function closeAllSelectDropdowns() {
+        document.querySelectorAll('.searchable-select.open').forEach(s => {
+            s.classList.remove('open');
+        });
+    }
+    
+    function filterSelectOptions(select) {
+        const input = select.querySelector('.select-input');
+        const dropdown = select.querySelector('.select-dropdown');
+        const search = input.value.toLowerCase().trim();
+        
+        const filtered = select.allOptions.filter(opt => 
+            opt.text.toLowerCase().includes(search)
+        );
+        
+        if (filtered.length === 0) {
+            dropdown.innerHTML = '<div class="select-empty">No matches found</div>';
+        } else {
+            dropdown.innerHTML = filtered.map(opt => 
+                `<div class="select-option" data-value="${opt.value}">${opt.text}</div>`
+            ).join('');
+        }
+    }
+    
+    function selectOption(select, value, text) {
+        const input = select.querySelector('.select-input');
+        const hiddenInput = select.querySelector('input[type="hidden"]');
+        
+        input.value = text === '-- None --' ? '' : text;
+        hiddenInput.value = value;
+        
+        closeAllSelectDropdowns();
+    }
+    
+    function handleSelectKeyboard(e, select) {
+        const dropdown = select.querySelector('.select-dropdown');
+        const options = dropdown.querySelectorAll('.select-option');
+        const currentIndex = Array.from(options).findIndex(o => o.classList.contains('highlighted'));
+        
+        if (e.key === 'ArrowDown') {
+            e.preventDefault();
+            if (!select.classList.contains('open')) {
+                openSelectDropdown(select);
+            }
+            const nextIndex = currentIndex < options.length - 1 ? currentIndex + 1 : 0;
+            highlightSelectOption(options, nextIndex);
+        } else if (e.key === 'ArrowUp') {
+            e.preventDefault();
+            const prevIndex = currentIndex > 0 ? currentIndex - 1 : options.length - 1;
+            highlightSelectOption(options, prevIndex);
+        } else if (e.key === 'Enter') {
+            e.preventDefault();
+            const highlighted = dropdown.querySelector('.select-option.highlighted');
+            if (highlighted) {
+                selectOption(select, highlighted.dataset.value, highlighted.textContent);
+            } else if (options.length === 1) {
+                selectOption(select, options[0].dataset.value, options[0].textContent);
+            }
+        } else if (e.key === 'Escape') {
+            closeAllSelectDropdowns();
+        }
+    }
+    
+    function highlightSelectOption(options, index) {
+        options.forEach(o => o.classList.remove('highlighted'));
+        if (options[index]) {
+            options[index].classList.add('highlighted');
+            options[index].scrollIntoView({ block: 'nearest' });
+        }
+    }
+    
+    function setSearchableSelectValue(name, value, text) {
+        const select = document.querySelector(`.searchable-select[data-name="${name}"]`);
+        if (select) {
+            const input = select.querySelector('.select-input');
+            const hiddenInput = select.querySelector('input[type="hidden"]');
+            input.value = text || '';
+            hiddenInput.value = value || '';
+        }
+    }
+    
+    function getOptionTextByValue(name, value) {
+        const select = document.querySelector(`.searchable-select[data-name="${name}"]`);
+        if (select && select.allOptions) {
+            const opt = select.allOptions.find(o => o.value == value);
+            return opt ? opt.text : '';
+        }
+        return '';
+    }
+    
+    function resetSearchableSelects() {
+        document.querySelectorAll('.searchable-select').forEach(select => {
+            const input = select.querySelector('.select-input');
+            const hiddenInput = select.querySelector('input[type="hidden"]');
+            input.value = '';
+            hiddenInput.value = '';
+            
+            // Set default if exists
+            const defaultOpt = select.allOptions?.find(o => o.isDefault);
+            if (defaultOpt && defaultOpt.value) {
+                input.value = defaultOpt.text;
+                hiddenInput.value = defaultOpt.value;
+            }
+        });
+    }
+    
+    // Initialize searchable selects
+    initSearchableSelects();
+    
+    // ==================== PASSWORD TOGGLE ====================
+    
+    document.querySelectorAll('.toggle-password').forEach(toggle => {
+        toggle.addEventListener('click', () => {
+            const targetId = toggle.dataset.target;
+            const input = document.getElementById(targetId);
+            if (input.type === 'password') {
+                input.type = 'text';
+                toggle.classList.remove('uil-eye');
+                toggle.classList.add('uil-eye-slash');
+            } else {
+                input.type = 'password';
+                toggle.classList.remove('uil-eye-slash');
+                toggle.classList.add('uil-eye');
+            }
+        });
+    });
+
+    // ==================== MODAL FUNCTIONS ====================
+
     /**
      * Resets the form and prepares the modal for adding a new user.
      */
     const openAddModal = () => {
         userForm.reset();
+        resetSearchableSelects();
         userIdField.value = '';
         modalTitle.textContent = 'Add New User';
+        document.querySelector('.modal-header h4 i').className = 'uil-user-plus';
         passwordField.required = true;
         passwordField.placeholder = 'Required for new user';
         emailField.disabled = false;
         modal.style.display = 'block';
+        document.body.style.overflow = 'hidden'; // Prevent background scroll
     };
 
     /**
@@ -58,26 +248,27 @@ document.addEventListener('DOMContentLoaded', () => {
             lastNameField.value = user.last_name;
             emailField.value = user.email;
             emailField.disabled = true; // Prevent email change
-            
-            roleField.value = user.role_id;
-            // The || '' handles null values from the server
-            departmentField.value = user.departmnt_id || '';
-            branchField.value = user.branch_id || '';
-            companyField.value = user.company_id || '';
             phoneField.value = user.phone || '';
-            // employeeField.value = user.employee_id || '';
+            
+            // Set searchable select values
+            setSearchableSelectValue('role', user.role_id, getOptionTextByValue('role', user.role_id));
+            setSearchableSelectValue('department_id', user.departmnt_id || '', getOptionTextByValue('department_id', user.departmnt_id));
+            setSearchableSelectValue('branch_id', user.branch_id || '', getOptionTextByValue('branch_id', user.branch_id));
+            setSearchableSelectValue('company_id', user.company_id || '', getOptionTextByValue('company_id', user.company_id));
             
             // For editing, password is not required unless explicitly resetting
             passwordField.value = ''; 
             passwordField.required = false;
-            passwordField.placeholder = 'Leave blank to keep current password';
+            passwordField.placeholder = 'Leave blank to keep current';
 
             modalTitle.textContent = `Edit User: ${user.username}`;
+            document.querySelector('.modal-header h4 i').className = 'uil-edit';
             modal.style.display = 'block';
+            document.body.style.overflow = 'hidden';
 
         } catch (error) {
             console.error('Error fetching user data:', error);
-            alert('Failed to load user data for editing.');
+            AppNotify.error('Failed to load user data for editing.');
         }
     };
 
@@ -89,21 +280,22 @@ document.addEventListener('DOMContentLoaded', () => {
     const handleResetPassword = async (id) => {
         const newPassword = prompt("Enter new password for this user:");
         if (!newPassword || newPassword.length < 6) {
-            if (newPassword !== null) alert("Password must be at least 6 characters.");
+            if (newPassword !== null) AppNotify.warning("Password must be at least 6 characters.");
             return;
         }
 
-        if (!confirm(`Are you sure you want to reset the password for user ID ${id}?`)) {
+        const confirmed = await AppConfirm.warn(`Are you sure you want to reset the password for user ID ${id}?`);
+        if (!confirmed) {
             return;
         }
 
         try {
             // API call to the password reset endpoint
             await API.post(`/users/reset-password/${id}`, { password: newPassword });
-            alert('Password reset successfully!');
+            AppNotify.success('Password reset successfully!');
         } catch (error) {
             console.error('Password reset failed:', error);
-            alert('Password reset failed. Check server logs.');
+            AppNotify.error('Password reset failed. Check server logs.');
         }
     };
 
@@ -114,7 +306,8 @@ document.addEventListener('DOMContentLoaded', () => {
         const newStatus = currentStatus === 'true' ? false : true;
         const action = newStatus ? 'Enable' : 'Disable';
 
-        if (!confirm(`Are you sure you want to ${action} user ID ${id}?`)) {
+        const confirmed = await AppConfirm.warn(`Are you sure you want to ${action} user ID ${id}?`);
+        if (!confirmed) {
             return;
         }
 
@@ -122,7 +315,7 @@ document.addEventListener('DOMContentLoaded', () => {
             // API call to toggle status endpoint
             await API.post(`/users/toggle-status/${id}`, { is_active: newStatus });
             
-            alert(`User status changed to ${newStatus ? 'Active' : 'Disabled'}.`);
+            AppNotify.success(`User status changed to ${newStatus ? 'Active' : 'Disabled'}.`);
             
             // Optimistically update the UI
             const statusCell = button.closest('tr').children[6];
@@ -134,7 +327,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
         } catch (error) {
             console.error('Toggle status failed:', error);
-            alert('Failed to change user status.');
+            AppNotify.error('Failed to change user status.');
         }
     };
 
@@ -171,10 +364,10 @@ document.addEventListener('DOMContentLoaded', () => {
         try {
             let response;
             if (passwordField.value && passwordField.value.length < 6) {
-                alert('Password must be at least 6 characters long.');
+                AppNotify.warning('Password must be at least 6 characters long.');
                 return;
             } else if (passwordField.value !== passwordConfirmField.value) {
-                alert('Password and confirmation do not match.');
+                AppNotify.warning('Password and confirmation do not match.');
                 return;
             }
             
@@ -188,11 +381,11 @@ document.addEventListener('DOMContentLoaded', () => {
             if (isUpdate) {
                 // Update existing user
                 response = await API.put(`/auth/update-user/${id}`, payload);
-                alert(`User ${payload.email || id} updated successfully!`);
+                AppNotify.success(`User ${payload.email || id} updated successfully!`);
             } else {
                 // Create new user
                 response = await API.post(`/auth/register`, formData);
-                alert(`User ${payload.email} created successfully!`);
+                AppNotify.success(`User ${payload.email} created successfully!`);
             }
             
             // Close modal and reload the page or update table dynamically
@@ -201,7 +394,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
         } catch (error) {
             console.error('User save failed:', error);
-            alert('User save failed. Check the form data and server logs.');
+            AppNotify.error('User save failed. Check the form data and server logs.');
         }
     });
 
@@ -210,11 +403,25 @@ document.addEventListener('DOMContentLoaded', () => {
     // Open Add User Modal
     addUserBtn.addEventListener('click', openAddModal);
 
-    // Close Modal
-    closeModalBtn.addEventListener('click', () => { modal.style.display = 'none'; });
-    window.addEventListener('click', (e) => { 
-        if (e.target === modal) {
-            modal.style.display = 'none';
+    // Close Modal - Only via close button, NOT clicking outside
+    closeModalBtn.addEventListener('click', () => { 
+        modal.style.display = 'none';
+        document.body.style.overflow = '';
+    });
+    
+    // Prevent closing when clicking modal content
+    modal.querySelector('.modal-content').addEventListener('click', (e) => {
+        e.stopPropagation();
+    });
+    
+    // Optional: Allow closing with Escape key
+    document.addEventListener('keydown', (e) => {
+        if (e.key === 'Escape' && modal.style.display === 'block') {
+            // Don't close if a searchable dropdown is open
+            if (!document.querySelector('.searchable-select.open')) {
+                modal.style.display = 'none';
+                document.body.style.overflow = '';
+            }
         }
     });
 
@@ -454,7 +661,7 @@ function initBulkImport() {
         const fileExtension = '.' + file.name.split('.').pop().toLowerCase();
         
         if (!validExtensions.includes(fileExtension)) {
-            alert('Please upload an Excel (.xlsx, .xls) or CSV file');
+            AppNotify.warning('Please upload an Excel (.xlsx, .xls) or CSV file');
             return;
         }
 
@@ -482,6 +689,23 @@ function initBulkImport() {
                 body: formData
             });
 
+            // Handle 401 Unauthorized - session expired
+            if (response.status === 401) {
+                let message = 'Your session has expired. Please login again.';
+                try {
+                    const data = await response.json();
+                    message = data.message || message;
+                } catch (e) {}
+                if (typeof AppNotify !== 'undefined') {
+                    AppNotify.warning(message);
+                    setTimeout(() => { window.location.href = '/login'; }, 2000);
+                } else {
+                    AppNotify.warning(message);
+                    window.location.href = '/login';
+                }
+                return;
+            }
+
             const result = await response.json();
 
             if (!result.success) {
@@ -493,7 +717,7 @@ function initBulkImport() {
             goToStep(2);
         } catch (error) {
             console.error('Preview failed:', error);
-            alert('Failed to preview file: ' + error.message);
+            AppNotify.error('Failed to preview file: ' + error.message);
         } finally {
             previewBtn.disabled = false;
             previewBtn.innerHTML = '<i class="uil uil-eye"></i> Preview Data';
@@ -578,7 +802,7 @@ function initBulkImport() {
             document.getElementById('import-results').style.display = 'block';
         } catch (error) {
             console.error('Import failed:', error);
-            alert('Import failed: ' + (error.message || 'Unknown error'));
+            AppNotify.error('Import failed: ' + (error.message || 'Unknown error'));
             goToStep(2);
         }
     });

@@ -74,7 +74,8 @@ async function editUser(id) {
 // Attach edit/delete handlers to the window (required for EJS onclick events)
 window.editUser = editUser;
 window.deleteUser = async function(id) {
-    if (!confirm('Are you sure you want to delete this user?')) return;
+    const confirmed = await AppConfirm.delete('Are you sure you want to delete this user?');
+    if (!confirmed) return;
     try {
         const response = await API.delete(`/users/${id}`);
         showMessage('success', response.message || 'User deleted successfully.');

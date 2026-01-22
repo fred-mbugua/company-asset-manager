@@ -34,7 +34,7 @@ document.addEventListener('DOMContentLoaded', () => {
             renderTable();
         } catch (error) {
             console.error('Error fetching asset statuses:', error);
-            alert('Failed to load asset statuses.');
+            AppNotify.error('Failed to load asset statuses.');
         }
     };
 
@@ -138,6 +138,7 @@ document.addEventListener('DOMContentLoaded', () => {
         idField.value = '';
         modalTitle.textContent = 'Add New Asset Status';
         modal.style.display = 'block';
+        document.body.style.overflow = 'hidden';
     };
 
     /**
@@ -155,9 +156,10 @@ document.addEventListener('DOMContentLoaded', () => {
 
             modalTitle.textContent = `Edit Asset Status: ${status.name}`;
             modal.style.display = 'block';
+            document.body.style.overflow = 'hidden';
         } catch (error) {
             console.error('Error fetching asset status data:', error);
-            alert('Failed to load asset status data for editing.');
+            AppNotify.error('Failed to load asset status data for editing.');
         }
     };
 
@@ -179,17 +181,18 @@ document.addEventListener('DOMContentLoaded', () => {
         try {
             if (isUpdate) {
                 await API.put(`/assets/asset-statuses/${id}`, formData);
-                alert('Asset status updated successfully!');
+                AppNotify.success('Asset status updated successfully!');
             } else {
                 await API.post('/assets/asset-statuses/create', formData);
-                alert('Asset status created successfully!');
+                AppNotify.success('Asset status created successfully!');
             }
             
             modal.style.display = 'none';
+            document.body.style.overflow = '';
             fetchData();
         } catch (error) {
             console.error('Save failed:', error);
-            alert(error.response?.data?.message || 'Failed to save asset status.');
+            AppNotify.error(error.response?.data?.message || 'Failed to save asset status.');
         }
     });
 
@@ -197,17 +200,18 @@ document.addEventListener('DOMContentLoaded', () => {
      * Handle delete
      */
     const handleDelete = async (id) => {
-        if (!confirm('Are you sure you want to delete this asset status?')) {
+        const confirmed = await AppConfirm.delete('Are you sure you want to delete this asset status?');
+        if (!confirmed) {
             return;
         }
 
         try {
             await API.delete(`/assets/asset-statuses/${id}`);
-            alert('Asset status deleted successfully!');
+            AppNotify.success('Asset status deleted successfully!');
             fetchData();
         } catch (error) {
             console.error('Delete failed:', error);
-            alert(error.response?.data?.message || 'Failed to delete asset status.');
+            AppNotify.error(error.response?.data?.message || 'Failed to delete asset status.');
         }
     };
 
@@ -228,11 +232,19 @@ document.addEventListener('DOMContentLoaded', () => {
     addBtn.addEventListener('click', openAddModal);
     closeModalBtn.addEventListener('click', () => {
         modal.style.display = 'none';
+        document.body.style.overflow = '';
     });
 
-    window.addEventListener('click', (e) => {
-        if (e.target === modal) {
+    // Prevent modal closing when clicking inside modal content
+    modal.querySelector('.modal-content').addEventListener('click', (e) => {
+        e.stopPropagation();
+    });
+
+    // Close modal with Escape key
+    document.addEventListener('keydown', (e) => {
+        if (e.key === 'Escape' && modal.style.display === 'block') {
             modal.style.display = 'none';
+            document.body.style.overflow = '';
         }
     });
 

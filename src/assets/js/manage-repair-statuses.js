@@ -36,7 +36,7 @@ document.addEventListener('DOMContentLoaded', () => {
             filterData();
         } catch (error) {
             console.error('Error fetching repair request statuses:', error);
-            alert('Failed to load repair request statuses.');
+            AppNotify.error('Failed to load repair request statuses.');
         }
     };
 
@@ -145,6 +145,7 @@ document.addEventListener('DOMContentLoaded', () => {
         previewBadge.textContent = 'Preview';
         modalTitle.textContent = 'Add New Status';
         modal.style.display = 'block';
+        document.body.style.overflow = 'hidden';
     };
 
     /**
@@ -166,9 +167,10 @@ document.addEventListener('DOMContentLoaded', () => {
 
             modalTitle.textContent = `Edit Status: ${status.name}`;
             modal.style.display = 'block';
+            document.body.style.overflow = 'hidden';
         } catch (error) {
             console.error('Error fetching status data:', error);
-            alert('Failed to load status data for editing.');
+            AppNotify.error('Failed to load status data for editing.');
         }
     };
 
@@ -192,17 +194,18 @@ document.addEventListener('DOMContentLoaded', () => {
         try {
             if (isUpdate) {
                 await API.put(`${API_ENDPOINT}/${id}`, formData);
-                alert('Status updated successfully!');
+                AppNotify.success('Status updated successfully!');
             } else {
                 await API.post(API_ENDPOINT, formData);
-                alert('Status created successfully!');
+                AppNotify.success('Status created successfully!');
             }
             
             modal.style.display = 'none';
+            document.body.style.overflow = '';
             fetchData();
         } catch (error) {
             console.error('Save failed:', error);
-            alert(error.response?.data?.message || 'Failed to save status.');
+            AppNotify.error(error.response?.data?.message || 'Failed to save status.');
         }
     });
 
@@ -211,17 +214,18 @@ document.addEventListener('DOMContentLoaded', () => {
      */
     const handleToggle = async (id, currentActive) => {
         const action = currentActive === 'true' ? 'deactivate' : 'activate';
-        if (!confirm(`Are you sure you want to ${action} this status?`)) {
+        const confirmed = await AppConfirm.warn(`Are you sure you want to ${action} this status?`);
+        if (!confirmed) {
             return;
         }
 
         try {
             await API.patch(`${API_ENDPOINT}/${id}/toggle`);
-            alert(`Status ${action}d successfully!`);
+            AppNotify.success(`Status ${action}d successfully!`);
             fetchData();
         } catch (error) {
             console.error('Toggle failed:', error);
-            alert(error.response?.data?.message || `Failed to ${action} status.`);
+            AppNotify.error(error.response?.data?.message || `Failed to ${action} status.`);
         }
     };
 
@@ -229,17 +233,18 @@ document.addEventListener('DOMContentLoaded', () => {
      * Handle delete
      */
     const handleDelete = async (id) => {
-        if (!confirm('Are you sure you want to delete this status? This cannot be undone.')) {
+        const confirmed = await AppConfirm.delete('Are you sure you want to delete this status? This cannot be undone.');
+        if (!confirmed) {
             return;
         }
 
         try {
             await API.delete(`${API_ENDPOINT}/${id}`);
-            alert('Status deleted successfully!');
+            AppNotify.success('Status deleted successfully!');
             fetchData();
         } catch (error) {
             console.error('Delete failed:', error);
-            alert(error.response?.data?.message || 'Failed to delete status.');
+            AppNotify.error(error.response?.data?.message || 'Failed to delete status.');
         }
     };
 
@@ -274,11 +279,19 @@ document.addEventListener('DOMContentLoaded', () => {
     addBtn.addEventListener('click', openAddModal);
     closeModalBtn.addEventListener('click', () => {
         modal.style.display = 'none';
+        document.body.style.overflow = '';
     });
 
-    window.addEventListener('click', (e) => {
-        if (e.target === modal) {
+    // Prevent modal closing when clicking inside modal content
+    modal.querySelector('.modal-content').addEventListener('click', (e) => {
+        e.stopPropagation();
+    });
+
+    // Close modal with Escape key
+    document.addEventListener('keydown', (e) => {
+        if (e.key === 'Escape' && modal.style.display === 'block') {
             modal.style.display = 'none';
+            document.body.style.overflow = '';
         }
     });
 

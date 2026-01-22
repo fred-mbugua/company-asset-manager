@@ -1,6 +1,7 @@
 <%
     // Assuming 'user' object is passed to EJS and contains user role information (e.g., user.role_id or user.role_name)
     const userRole = locals.user?.role_name || locals.user?.role || 'Standard User';
+    const userPermissions = locals.userPermissions || null; // Will be populated by middleware
     
     // Debug: Log the user object to see what properties it has
     // console.log('Sidebar user object:', JSON.stringify(locals.user));
@@ -18,63 +19,92 @@
     
     // Access rules for navigation items
     // Using '*' to indicate all authenticated users have access
+    // module_code is used for permission checking when userPermissions is available
     const menuItems = [
-        { title: 'Dashboard', icon: 'uil-dashboard', url: '/dashboard', roles: ['*'] },
+        { title: 'Dashboard', icon: 'uil-dashboard', url: '/dashboard', roles: ['*'], module_code: 'DASHBOARD' },
         { 
-            title: 'Assets', icon: 'uil-briefcase', roles: ['*'], id: 'assets-menu', submenu: [
-                { title: 'Create', url: '/assets/create', roles: ['*'] },
-                { title: 'View', url: '/assets/view', roles: ['*'], parent: 'assets-menu' },
+            title: 'Assets', icon: 'uil-briefcase', roles: ['*'], id: 'assets-menu', module_code: 'ASSETS', submenu: [
+                { title: 'Create', url: '/assets/create', roles: ['*'], module_code: 'ASSETS_CREATE' },
+                { title: 'View', url: '/assets/view', roles: ['*'], parent: 'assets-menu', module_code: 'ASSETS_VIEW' },
             ]
         },
         { 
-            title: 'Assignments', icon: 'uil-clipboard-notes', roles: ['*'], id: 'assignments-menu', submenu: [
-                { title: 'View', url: '/assets/view', roles: ['*'], parent: 'assignments-menu' },
-                { title: 'Assign', url: '/assets/assign', roles: ['Admin'] }, // Only Admin can assign
+            title: 'Assignments', icon: 'uil-clipboard-notes', roles: ['*'], id: 'assignments-menu', module_code: 'ASSIGNMENTS', submenu: [
+                { title: 'View', url: '/assets/view', roles: ['*'], parent: 'assignments-menu', module_code: 'ASSIGNMENTS_VIEW' },
+                { title: 'Assign', url: '/assets/assign', roles: ['Admin'], module_code: 'ASSIGNMENTS_ASSIGN' },
             ]
         },
         { 
-            title: 'Expenses', icon: 'uil-receipt', roles: ['*'], id: 'expenses-menu', submenu: [
-                { title: 'Create', url: '/expenses/create', roles: ['*'] },
+            title: 'Expenses', icon: 'uil-receipt', roles: ['*'], id: 'expenses-menu', module_code: 'EXPENSES', submenu: [
+                { title: 'Create', url: '/expenses/create', roles: ['*'], module_code: 'EXPENSES_CREATE' },
             ]
         },
         { 
-            title: 'Repair Requests', icon: 'uil-wrench', roles: ['*'], id: 'repair-requests-menu', submenu: [
-                { title: 'All Requests', url: '/repair-requests', roles: ['*'] },
-                { title: 'New Request', url: '/repair-requests/new', roles: ['*'] },
-                { title: 'Workflow Config', url: '/repair-requests/workflow', roles: ['Admin'] },
+            title: 'Repair Requests', icon: 'uil-wrench', roles: ['*'], id: 'repair-requests-menu', module_code: 'REPAIR_REQUESTS', submenu: [
+                { title: 'All Requests', url: '/repair-requests', roles: ['*'], module_code: 'REPAIR_REQUESTS_LIST' },
+                { title: 'New Request', url: '/repair-requests/new', roles: ['*'], module_code: 'REPAIR_REQUESTS_NEW' },
+                { title: 'Workflow Config', url: '/repair-requests/workflow', roles: ['Admin'], module_code: 'REPAIR_REQUESTS_WORKFLOW' },
             ]
         },
-        { title: 'Reports', icon: 'uil-analytics', url: '/reports', roles: ['*'], id: 'reports-menu', submenu: [
-                { title: 'Assets', url: '/reports/assets', roles: ['*'] },
-                { title: 'Expenses', url: '/reports/expenses', roles: ['*'] },
-                { title: 'Assignments', url: '/reports/assignments', roles: ['*'] },
-                { title: 'Repair Summary', url: '/reports/repair-summary', roles: ['*'] },
-                { title: 'Action Logs', url: '/reports/action-logs', roles: ['Admin'] }, // Only Admin can access Action Logs
+        { title: 'Reports', icon: 'uil-analytics', url: '/reports', roles: ['*'], id: 'reports-menu', module_code: 'REPORTS', submenu: [
+                { title: 'Assets', url: '/reports/assets', roles: ['*'], module_code: 'REPORTS_ASSETS' },
+                { title: 'Expenses', url: '/reports/expenses', roles: ['*'], module_code: 'REPORTS_EXPENSES' },
+                { title: 'Assignments', url: '/reports/assignments', roles: ['*'], module_code: 'REPORTS_ASSIGNMENTS' },
+                { title: 'Repair Summary', url: '/reports/repair-summary', roles: ['*'], module_code: 'REPORTS_REPAIR_SUMMARY' },
+                { title: 'Action Logs', url: '/reports/action-logs', roles: ['Admin'], module_code: 'REPORTS_ACTION_LOGS' },
             ] 
         },
         { 
-            title: 'Administration', icon: 'uil-cog', roles: ['Admin'], id: 'admin-menu', submenu: [ // Restricted to Admin
-                { title: 'Users', url: '/users/manage', roles: ['Admin'] },
-                { title: 'Roles', url: '/roles/manage', roles: ['Admin'] },
-                { title: 'Branches', url: '/branches/manage', roles: ['Admin'] },
-                { title: 'Departments', url: '/departments/manage', roles: ['Admin'] },
-                { title: 'Asset Statuses', url: '/asset-statuses/manage', roles: ['Admin'] },
-                { title: 'Asset Types', url: '/asset-types/manage', roles: ['Admin'] },
-                { title: 'Expense Types', url: '/expense-types/manage', roles: ['Admin'] },
-                { title: 'Repair Types', url: '/repair-request-types/manage', roles: ['Admin'] },
-                { title: 'Repair Statuses', url: '/repair-request-statuses/manage', roles: ['Admin'] },
-                { title: 'Repair Priorities', url: '/repair-request-priorities/manage', roles: ['Admin'] },
+            title: 'Administration', icon: 'uil-cog', roles: ['Admin'], id: 'admin-menu', module_code: 'ADMINISTRATION', submenu: [
+                { title: 'Users', url: '/users/manage', roles: ['Admin'], module_code: 'ADMIN_USERS' },
+                { title: 'Roles', url: '/roles/manage', roles: ['Admin'], module_code: 'ADMIN_ROLES' },
+                { title: 'Permissions', url: '/permissions/manage', roles: ['Admin'], module_code: 'ADMIN_PERMISSIONS' },
+                { title: 'Branches', url: '/branches/manage', roles: ['Admin'], module_code: 'ADMIN_BRANCHES' },
+                { title: 'Departments', url: '/departments/manage', roles: ['Admin'], module_code: 'ADMIN_DEPARTMENTS' },
+                { title: 'Asset Statuses', url: '/asset-statuses/manage', roles: ['Admin'], module_code: 'ADMIN_ASSET_STATUSES' },
+                { title: 'Asset Types', url: '/asset-types/manage', roles: ['Admin'], module_code: 'ADMIN_ASSET_TYPES' },
+                { title: 'Expense Types', url: '/expense-types/manage', roles: ['Admin'], module_code: 'ADMIN_EXPENSE_TYPES' },
+                { title: 'Repair Types', url: '/repair-request-types/manage', roles: ['Admin'], module_code: 'ADMIN_REPAIR_TYPES' },
+                { title: 'Repair Statuses', url: '/repair-request-statuses/manage', roles: ['Admin'], module_code: 'ADMIN_REPAIR_STATUSES' },
+                { title: 'Repair Priorities', url: '/repair-request-priorities/manage', roles: ['Admin'], module_code: 'ADMIN_REPAIR_PRIORITIES' },
             ]
         },
         { 
-            title: 'Settings', icon: 'uil-setting', roles: ['Admin'], id: 'settings-menu', submenu: [ // Restricted to Admin
-                { title: 'System Configuration', url: '/settings/configuration', roles: ['Admin'] },
+            title: 'Settings', icon: 'uil-setting', roles: ['Admin'], id: 'settings-menu', module_code: 'SETTINGS', submenu: [
+                { title: 'System Configuration', url: '/settings/configuration', roles: ['Admin'], module_code: 'SETTINGS_SYSTEM' },
             ]
         },
     ];
 
-    // hasAccess now supports '*' wildcard for any authenticated user
-    const hasAccess = (requiredRoles) => requiredRoles.includes('*') || requiredRoles.includes(userRole);
+    /**
+     * Check access using dynamic permissions if available, otherwise fall back to role-based
+     * @param {object} item - Menu item with roles array and optional module_code
+     * @returns {boolean} - Whether user has access
+     */
+    const hasAccess = (item) => {
+        // Admin always has access
+        if (isAdmin) return true;
+        
+        // If dynamic permissions are available, check them first
+        if (userPermissions && item.module_code) {
+            const modulePerms = userPermissions[item.module_code];
+            
+            if (modulePerms && modulePerms.actions) {
+                // Check if user has at least read permission for this module
+                const actions = modulePerms.actions;
+                if (Array.isArray(actions)) {
+                    return actions.includes('read');
+                } else if (actions.has) {
+                    return actions.has('read');
+                }
+            }
+            // If module_code is specified but not in permissions, deny access
+            return false;
+        }
+        
+        // Fallback to role-based access
+        return item.roles.includes('*') || item.roles.includes(userRole);
+    };
 %>
 
 <aside class="sidebar" id="sidebar">
@@ -89,19 +119,19 @@
     </div>
     <ul id="menu">
         <% menuItems.forEach((item, itemIndex) => { %>
-            <% if (hasAccess(item.roles)) { %>
+            <% if (hasAccess(item)) { %>
                 <% if (item.submenu) { %>
                     <% 
                         // Check if any submenu item matches current path
                         const hasMatchingUrl = item.submenu.some(subItem => 
-                            subItem.url === currentPath && hasAccess(subItem.roles)
+                            subItem.url === currentPath && hasAccess(subItem)
                         );
                     %>
                     <li class="has-sub" data-menu-id="<%= item.id || '' %>" data-has-match="<%= hasMatchingUrl %>">
                         <i class="<%= item.icon %>"></i><span><%= item.title %></span>
                         <ul class="submenu">
                             <% item.submenu.forEach(subItem => { %>
-                                <% if (hasAccess(subItem.roles)) { %>
+                                <% if (hasAccess(subItem)) { %>
                                     <% const menuParam = subItem.parent || item.id || ''; %>
                                     <li data-parent-menu="<%= menuParam %>">
                                         <a href="<%= subItem.url %>?from=<%= menuParam %>"><%= subItem.title %></a>

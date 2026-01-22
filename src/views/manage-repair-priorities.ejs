@@ -19,9 +19,11 @@
 
             <div id="priority-form-modal" class="modal">
                 <div class="modal-content">
-                    <span class="close-btn">&times;</span>
-                    <h4><i class="uil uil-edit"></i> <span id="modal-title">Add New Priority</span></h4>
-                    
+                    <div class="modal-header">
+                        <h4><i class="uil uil-edit"></i> <span id="modal-title">Add New Priority</span></h4>
+                        <button type="button" class="close-btn">&times;</button>
+                    </div>
+                    <div class="modal-body">
                     <form id="priority-form">
                         <input type="hidden" id="priority-id" name="id">
 
@@ -67,6 +69,7 @@
                             <i class="uil uil-save"></i> Save Priority
                         </button>
                     </form>
+                    </div>
                 </div>
             </div>
             

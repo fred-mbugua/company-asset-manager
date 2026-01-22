@@ -19,6 +19,7 @@ class UserModel {
           branches.name AS branch_name,
           branches.location,
           roles.name As role_name,
+          roles.name As role,
           departments.name As department_name,
           employees.first_name As employee_first_name,
           employees.middle_name As employee_middle_name,
@@ -124,11 +125,12 @@ class UserModel {
       role_id = COALESCE($6, role_id),
       department_id = COALESCE($7, department_id),
       branch_id = COALESCE($8, branch_id),
-      company_id = COALESCE($9, company_id)
-      WHERE id = $10
-      RETURNING id, first_name, middle_name, last_name, email, role_id, department_id, branch_id, company_id;
+      company_id = COALESCE($9, company_id),
+      phone = COALESCE($10, phone)
+      WHERE id = $11
+      RETURNING id, first_name, middle_name, last_name, email, phone, role_id, department_id, branch_id, company_id;
     `;
-        const values = [updateData.first_name, updateData.middle_name, updateData.last_name, updateData.email, updateData.password_hash, updateData.role_id, updateData.department_id, updateData.branch_id, updateData.company_id, id];
+        const values = [updateData.first_name, updateData.middle_name, updateData.last_name, updateData.email, updateData.password_hash, updateData.role_id, updateData.department_id, updateData.branch_id, updateData.company_id, updateData.phone, id];
         const result = await database_1.default.query(query, values);
         return result.rows[0];
     }

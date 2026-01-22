@@ -22,9 +22,15 @@ const systemConfiguration_routes_1 = __importDefault(require("./systemConfigurat
 const bulkUserImport_routes_1 = __importDefault(require("./bulkUserImport.routes"));
 const repairRequest_routes_1 = __importDefault(require("./repairRequest.routes"));
 const role_routes_1 = __importDefault(require("./role.routes"));
+const permission_routes_1 = __importDefault(require("./permission.routes"));
+const systemConfiguration_controller_1 = __importDefault(require("../controllers/systemConfiguration.controller"));
+const express_async_handler_1 = __importDefault(require("express-async-handler"));
 const auth_middleware_1 = require("../middlewares/auth.middleware");
 const router = (0, express_1.Router)();
-router.use('/auth', auth_middleware_1.authenticate, auth_routes_1.default);
+// Public routes (no authentication required)
+router.use('/auth', auth_routes_1.default);
+router.get('/system-config/public', (0, express_async_handler_1.default)(systemConfiguration_controller_1.default.getPublicConfig));
+// All other routes require authentication
 router.use('/assets', auth_middleware_1.authenticate, asset_routes_1.default);
 router.use('/assignments', auth_middleware_1.authenticate, assignment_routes_1.default);
 router.use('/users', auth_middleware_1.authenticate, user_routes_1.default);
@@ -37,9 +43,10 @@ router.use('/branches', auth_middleware_1.authenticate, branches_routes_1.defaul
 router.use('/asset-attachments', auth_middleware_1.authenticate, assetAttachment_routes_1.default);
 router.use('/expense-attachments', auth_middleware_1.authenticate, expenseAttachment_routes_1.default);
 router.use('/assignment-attachments', auth_middleware_1.authenticate, assignmentAttachment_routes_1.default);
-router.use('/system-config', systemConfiguration_routes_1.default);
-router.use('/bulk-user-import', bulkUserImport_routes_1.default);
-router.use('/repair-requests', repairRequest_routes_1.default);
-router.use('/roles', role_routes_1.default);
+router.use('/system-config', auth_middleware_1.authenticate, systemConfiguration_routes_1.default);
+router.use('/bulk-user-import', auth_middleware_1.authenticate, bulkUserImport_routes_1.default);
+router.use('/repair-requests', auth_middleware_1.authenticate, repairRequest_routes_1.default);
+router.use('/roles', auth_middleware_1.authenticate, role_routes_1.default);
+router.use('/permissions', auth_middleware_1.authenticate, permission_routes_1.default);
 router.use('/', auth_middleware_1.authenticate, assetType_routes_1.default);
 exports.default = router;

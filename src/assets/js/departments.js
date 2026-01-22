@@ -102,7 +102,8 @@ window.editDepartment = function (id, name) {
 // Delete
 // =====================
 window.deleteDepartment = async function (id) {
-  if (!confirm("Are you sure you want to delete this department?")) return;
+  const confirmed = await AppConfirm.delete("Are you sure you want to delete this department?");
+  if (!confirmed) return;
 
   try {
     const res = await apiFetch(`/departments/${id}`, { method: "DELETE" });

@@ -19,3 +19,6 @@ export { default as RepairRequestService } from './repairRequest.service';
 export { default as RepairRequestTypeService } from './repairRequestType.service';
 export { default as RepairRequestStatusService } from './repairRequestStatus.service';
 export { default as RepairRequestPriorityService } from './repairRequestPriority.service';
+export { default as ModuleService } from './module.service';
+export { default as PermissionService } from './permission.service';
+export { default as RolePermissionService } from './rolePermission.service';

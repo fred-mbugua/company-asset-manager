@@ -14,8 +14,28 @@ const auth_service_1 = __importDefault(require("../services/auth.service"));
 const ACCESS_SECRET = config_1.JWT_ACCESS_SECRET_KEY;
 const REFRESH_SECRET = process.env.JWT_REFRESH_SECRET_KEY || 'assetManager@2025'; // Ensure this is correctly imported/defined in environment file
 /**
+ * Helper function to handle unauthenticated requests.
+ * Returns 401 JSON for API requests, redirects to login for page requests.
+ */
+const handleUnauthenticated = (req, res, message = 'Session expired. Please login again.') => {
+    res.clearCookie('accessToken');
+    res.clearCookie('refreshToken');
+    // Check if this is an API request
+    if (req.originalUrl.startsWith('/api')) {
+        return res.status(401).json({
+            success: false,
+            message: message,
+            sessionExpired: true
+        });
+    }
+    // For page requests, store the original URL and redirect to login
+    req.session.returnTo = req.originalUrl;
+    return res.redirect('/login');
+};
+/**
  * Middleware to authenticate user using JWT tokens stored in cookies.
  * Handles access token expiry by attempting to use the refresh token.
+ * Returns 401 JSON for API requests, redirects to login for page requests.
  */
 const authenticate = async (req, res, next) => {
     // Checking for tokens in HTTP-only cookies
@@ -24,13 +44,9 @@ const authenticate = async (req, res, next) => {
     if (req.path.includes('/login') || req.path.includes('/register')) {
         return next();
     }
-    // If no tokens, clear any potential stale cookies and redirect to login
+    // If no tokens, handle unauthenticated request
     if (!accessToken && !refreshToken) {
-        res.clearCookie('accessToken');
-        res.clearCookie('refreshToken');
-        // Store the original URL in the session to redirect back after successful login
-        req.session.returnTo = req.originalUrl;
-        return res.redirect('/login');
+        return handleUnauthenticated(req, res, 'No authentication token found. Please login.');
     }
     // Trying to verify Access Token
     if (accessToken) {
@@ -64,17 +80,11 @@ const authenticate = async (req, res, next) => {
         }
         catch (refreshError) {
             // Refresh token failed (expired, tampered, or not in DB).
-            res.clearCookie('accessToken');
-            res.clearCookie('refreshToken');
-            req.session.returnTo = req.originalUrl;
-            return res.redirect('/login');
+            return handleUnauthenticated(req, res, 'Session expired. Please login again.');
         }
     }
     // Fallback if somehow tokens existed but both checks failed
-    res.clearCookie('accessToken');
-    res.clearCookie('refreshToken');
-    req.session.returnTo = req.originalUrl;
-    return res.redirect('/login');
+    return handleUnauthenticated(req, res, 'Authentication failed. Please login again.');
 };
 exports.authenticate = authenticate;
 /**

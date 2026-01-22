@@ -3,6 +3,43 @@
 
 const AttachmentManager = {
     /**
+     * Handle session expiry
+     */
+    handleSessionExpired(message = 'Your session has expired. Please login again.') {
+        if (typeof AppNotify !== 'undefined') {
+            AppNotify.warning(message);
+            setTimeout(() => { window.location.href = '/login'; }, 2000);
+        } else if (typeof toastr !== 'undefined') {
+            toastr.warning(message, 'Session Expired', {
+                timeOut: 3000,
+                onHidden: () => { window.location.href = '/login'; }
+            });
+        } else {
+            AppNotify.warning(message);
+            window.location.href = '/login';
+        }
+    },
+
+    /**
+     * Secure fetch with session handling
+     */
+    async secureFetch(url, options = {}) {
+        const response = await fetch(url, options);
+        
+        if (response.status === 401) {
+            let message = 'Your session has expired. Please login again.';
+            try {
+                const data = await response.clone().json();
+                message = data.message || message;
+            } catch (e) {}
+            this.handleSessionExpired(message);
+            throw new Error('Session expired');
+        }
+        
+        return response;
+    },
+
+    /**
      * Initialize attachment functionality for an entity
      * @param {string} entityType - 'asset', 'expense', or 'assignment'
      * @param {number} entityId - The ID of the entity
@@ -143,11 +180,8 @@ const AttachmentManager = {
             const endpoint = entityType === 'asset' ? 'asset-attachments' : 
                            entityType === 'expense' ? 'expense-attachments' : 
                            'assignment-attachments';
-            const response = await fetch(`/api/${endpoint}/${entityId}/attachments`, {
+            const response = await this.secureFetch(`/api/${endpoint}/${entityId}/attachments`, {
                 method: 'POST',
-                headers: {
-                    'Authorization': `Bearer ${localStorage.getItem('accessToken')}`
-                },
                 body: formData
             });
 
@@ -170,7 +204,8 @@ const AttachmentManager = {
      * Delete an attachment
      */
     async deleteAttachment(entityType, entityId, attachmentId) {
-        if (!confirm('Are you sure you want to delete this attachment?')) {
+        const confirmed = await AppConfirm.delete('Are you sure you want to delete this attachment?');
+        if (!confirmed) {
             return;
         }
 

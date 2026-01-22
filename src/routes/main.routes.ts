@@ -17,12 +17,19 @@ import systemConfigurationRoutes from './systemConfiguration.routes';
 import bulkUserImportRoutes from './bulkUserImport.routes';
 import repairRequestRoutes from './repairRequest.routes';
 import roleRoutes from './role.routes';
+import permissionRoutes from './permission.routes';
+import SystemConfigurationController from '../controllers/systemConfiguration.controller';
+import asyncHandler from 'express-async-handler';
 
 import { authenticate, authorize } from '../middlewares/auth.middleware'; 
 
 const router = Router();
 
-router.use('/auth', authenticate, authRoutes);
+// Public routes (no authentication required)
+router.use('/auth', authRoutes);
+router.get('/system-config/public', asyncHandler(SystemConfigurationController.getPublicConfig));
+
+// All other routes require authentication
 router.use('/assets', authenticate, assetRoutes);
 router.use('/assignments', authenticate, assignmentRoutes);
 router.use('/users', authenticate, userRoutes);
@@ -35,9 +42,10 @@ router.use('/branches', authenticate, branchRoutes);
 router.use('/asset-attachments', authenticate, assetAttachmentRoutes);
 router.use('/expense-attachments', authenticate, expenseAttachmentRoutes);
 router.use('/assignment-attachments', authenticate, assignmentAttachmentRoutes);
-router.use('/system-config', systemConfigurationRoutes);
-router.use('/bulk-user-import', bulkUserImportRoutes);
-router.use('/repair-requests', repairRequestRoutes);
-router.use('/roles', roleRoutes);
+router.use('/system-config', authenticate, systemConfigurationRoutes);
+router.use('/bulk-user-import', authenticate, bulkUserImportRoutes);
+router.use('/repair-requests', authenticate, repairRequestRoutes);
+router.use('/roles', authenticate, roleRoutes);
+router.use('/permissions', authenticate, permissionRoutes);
 router.use('/', authenticate, assetTypeRoutes);
 export default router;

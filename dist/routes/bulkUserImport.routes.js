@@ -5,7 +5,7 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
 Object.defineProperty(exports, "__esModule", { value: true });
 const express_1 = require("express");
 const bulkUserImport_controller_1 = __importDefault(require("../controllers/bulkUserImport.controller"));
-const middlewares_1 = require("../middlewares");
+const permission_middleware_1 = require("../middlewares/permission.middleware");
 const express_async_handler_1 = __importDefault(require("express-async-handler"));
 const multer_1 = __importDefault(require("multer"));
 const router = (0, express_1.Router)();
@@ -33,14 +33,15 @@ const upload = (0, multer_1.default)({
         }
     }
 });
+// Note: Authentication is handled at the main router level
 // Download template
-router.get('/template', middlewares_1.authenticate, (0, middlewares_1.authorize)(['Admin']), (0, express_async_handler_1.default)(bulkUserImport_controller_1.default.downloadTemplate));
+router.get('/template', (0, permission_middleware_1.checkPermission)('ADMIN_USERS', 'read'), (0, express_async_handler_1.default)(bulkUserImport_controller_1.default.downloadTemplate));
 // Preview uploaded file
-router.post('/preview', middlewares_1.authenticate, (0, middlewares_1.authorize)(['Admin']), upload.single('file'), (0, express_async_handler_1.default)(bulkUserImport_controller_1.default.previewFile));
+router.post('/preview', (0, permission_middleware_1.checkPermission)('ADMIN_USERS', 'create'), upload.single('file'), (0, express_async_handler_1.default)(bulkUserImport_controller_1.default.previewFile));
 // Process import
-router.post('/process', middlewares_1.authenticate, (0, middlewares_1.authorize)(['Admin']), (0, express_async_handler_1.default)(bulkUserImport_controller_1.default.processImport));
+router.post('/process', (0, permission_middleware_1.checkPermission)('ADMIN_USERS', 'create'), (0, express_async_handler_1.default)(bulkUserImport_controller_1.default.processImport));
 // Get all import batches
-router.get('/batches', middlewares_1.authenticate, (0, middlewares_1.authorize)(['Admin']), (0, express_async_handler_1.default)(bulkUserImport_controller_1.default.getAllBatches));
+router.get('/batches', (0, permission_middleware_1.checkPermission)('ADMIN_USERS', 'read'), (0, express_async_handler_1.default)(bulkUserImport_controller_1.default.getAllBatches));
 // Get batch details
-router.get('/batches/:batchId', middlewares_1.authenticate, (0, middlewares_1.authorize)(['Admin']), (0, express_async_handler_1.default)(bulkUserImport_controller_1.default.getBatchDetails));
+router.get('/batches/:batchId', (0, permission_middleware_1.checkPermission)('ADMIN_USERS', 'read'), (0, express_async_handler_1.default)(bulkUserImport_controller_1.default.getBatchDetails));
 exports.default = router;

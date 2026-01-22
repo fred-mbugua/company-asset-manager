@@ -22,6 +22,7 @@ document.addEventListener('DOMContentLoaded', () => {
         branchIdField.value = '';
         modalTitle.textContent = 'Add New Branch';
         modal.style.display = 'block';
+        document.body.style.overflow = 'hidden';
     };
 
     /**
@@ -38,10 +39,11 @@ document.addEventListener('DOMContentLoaded', () => {
 
             modalTitle.textContent = `Edit Branch: ${branch.name}`;
             modal.style.display = 'block';
+            document.body.style.overflow = 'hidden';
 
         } catch (error) {
             console.error('Error fetching branch data:', error);
-            alert('Failed to load branch data for editing.');
+            AppNotify.error('Failed to load branch data for editing.');
         }
     };
 
@@ -64,11 +66,11 @@ document.addEventListener('DOMContentLoaded', () => {
             if (isUpdate) {
                 // Update existing branch
                 response = await API.put(`${API_ENDPOINT}/${id}`, formData);
-                alert(`Branch ${formData.name} updated successfully!`);
+                AppNotify.success(`Branch ${formData.name} updated successfully!`);
             } else {
                 // Create new branch
                 response = await API.post(API_ENDPOINT, formData);
-                alert(`Branch ${formData.name} created successfully!`);
+                AppNotify.success(`Branch ${formData.name} created successfully!`);
             }
             
             modal.style.display = 'none';
@@ -76,7 +78,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
         } catch (error) {
             console.error('Branch save failed:', error);
-            alert('Branch save failed. Ensure the name is unique and all fields are correct.');
+            AppNotify.error('Branch save failed. Ensure the name is unique and all fields are correct.');
         }
     });
     
@@ -84,17 +86,18 @@ document.addEventListener('DOMContentLoaded', () => {
      * Handles the delete action.
      */
     const handleDelete = async (id, name) => {
-        if (!confirm(`Are you sure you want to DELETE the branch: ${name}? This action cannot be undone and may affect linked assets/employees.`)) {
+        const confirmed = await AppConfirm.delete(`Are you sure you want to DELETE the branch: ${name}? This action cannot be undone and may affect linked assets/employees.`);
+        if (!confirmed) {
             return;
         }
 
         try {
             await API.delete(`${API_ENDPOINT}/${id}`);
-            alert(`Branch ${name} deleted successfully.`);
+            AppNotify.success(`Branch ${name} deleted successfully.`);
             window.location.reload(); 
         } catch (error) {
             console.error('Delete failed:', error);
-            alert('Failed to delete branch. Check if it is linked to any active assets or employees.');
+            AppNotify.error('Failed to delete branch. Check if it is linked to any active assets or employees.');
         }
     };
 
@@ -104,11 +107,22 @@ document.addEventListener('DOMContentLoaded', () => {
     // Open Add Branch Modal
     addBranchBtn.addEventListener('click', openAddModal);
 
-    // Close Modal
-    closeModalBtn.addEventListener('click', () => { modal.style.display = 'none'; });
-    window.addEventListener('click', (e) => { 
-        if (e.target === modal) {
+    // Close Modal - Only via close button, NOT clicking outside
+    closeModalBtn.addEventListener('click', () => { 
+        modal.style.display = 'none';
+        document.body.style.overflow = '';
+    });
+    
+    // Prevent closing when clicking modal content
+    modal.querySelector('.modal-content').addEventListener('click', (e) => {
+        e.stopPropagation();
+    });
+    
+    // Allow closing with Escape key
+    document.addEventListener('keydown', (e) => {
+        if (e.key === 'Escape' && modal.style.display === 'block') {
             modal.style.display = 'none';
+            document.body.style.overflow = '';
         }
     });
 

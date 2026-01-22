@@ -13,17 +13,22 @@
 
             <div id="dept-form-modal" class="modal">
                 <div class="modal-content">
-                    <span class="close-btn">&times;</span>
-                    <h4><span id="modal-title">Add New Department</span></h4>
-                    
-                    <form id="dept-form">
-                        <input type="hidden" id="dept-id" name="id"> 
+                    <div class="modal-header">
+                        <h4><i class="uil-building"></i> <span id="modal-title">Add New Department</span></h4>
+                        <span class="close-btn">&times;</span>
+                    </div>
+                    <div class="modal-body">
+                        <form id="dept-form">
+                            <input type="hidden" id="dept-id" name="id"> 
 
-                        <label for="name">Department Name:</label>
-                        <input type="text" id="name" name="name" required>
-                        
-                        <button type="submit" class="btn btn-primary mt-3"><i class="uil-plus"></i> Save Department</button>
-                    </form>
+                            <div class="form-group">
+                                <label for="name">Department Name <span class="required">*</span></label>
+                                <input type="text" id="name" name="name" class="form-control" placeholder="Enter department name" required>
+                            </div>
+                            
+                            <button type="submit" class="btn-submit"><i class="uil-check"></i> Save Department</button>
+                        </form>
+                    </div>
                 </div>
             </div>
             

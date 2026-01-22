@@ -8,16 +8,17 @@ const role_controller_1 = __importDefault(require("../controllers/role.controlle
 const auth_middleware_1 = require("../middlewares/auth.middleware");
 const express_async_handler_1 = __importDefault(require("express-async-handler"));
 const router = (0, express_1.Router)();
+// Note: Authentication is handled at the main router level
 // Get all roles
-router.get('/', auth_middleware_1.authenticate, (0, express_async_handler_1.default)(role_controller_1.default.getAll));
+router.get('/', (0, express_async_handler_1.default)(role_controller_1.default.getAll));
 // Get a single role
-router.get('/:id', auth_middleware_1.authenticate, (0, express_async_handler_1.default)(role_controller_1.default.getById));
+router.get('/:id', (0, express_async_handler_1.default)(role_controller_1.default.getById));
 // Create a new role
-router.post('/', auth_middleware_1.authenticate, (0, auth_middleware_1.authorize)(['Admin']), (0, express_async_handler_1.default)(role_controller_1.default.create));
+router.post('/', (0, auth_middleware_1.authorize)(['Admin']), (0, express_async_handler_1.default)(role_controller_1.default.create));
 // Update a role
-router.put('/:id', auth_middleware_1.authenticate, (0, auth_middleware_1.authorize)(['Admin']), (0, express_async_handler_1.default)(role_controller_1.default.update));
+router.put('/:id', (0, auth_middleware_1.authorize)(['Admin']), (0, express_async_handler_1.default)(role_controller_1.default.update));
 // Delete a role
-router.delete('/:id', auth_middleware_1.authenticate, (0, auth_middleware_1.authorize)(['Admin']), (0, express_async_handler_1.default)(role_controller_1.default.delete));
+router.delete('/:id', (0, auth_middleware_1.authorize)(['Admin']), (0, express_async_handler_1.default)(role_controller_1.default.delete));
 // Toggle role active status
-router.patch('/:id/toggle', auth_middleware_1.authenticate, (0, auth_middleware_1.authorize)(['Admin']), (0, express_async_handler_1.default)(role_controller_1.default.toggleActive));
+router.patch('/:id/toggle', (0, auth_middleware_1.authorize)(['Admin']), (0, express_async_handler_1.default)(role_controller_1.default.toggleActive));
 exports.default = router;

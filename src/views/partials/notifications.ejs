@@ -1,0 +1,341 @@
+<!-- Global Notification Toast Container -->
+<div id="notification-container" class="notification-container"></div>
+
+<!-- Custom Confirmation Dialog -->
+<div id="confirm-dialog" class="confirm-dialog-overlay">
+    <div class="confirm-dialog">
+        <div class="confirm-dialog-header">
+            <i id="confirm-dialog-icon" class="uil uil-question-circle"></i>
+            <h3 id="confirm-dialog-title">Confirm Action</h3>
+        </div>
+        <div class="confirm-dialog-body">
+            <p id="confirm-dialog-message">Are you sure you want to proceed?</p>
+        </div>
+        <div class="confirm-dialog-footer">
+            <button type="button" id="confirm-dialog-cancel" class="btn-dialog btn-dialog-cancel">
+                <i class="uil uil-times"></i> Cancel
+            </button>
+            <button type="button" id="confirm-dialog-confirm" class="btn-dialog btn-dialog-confirm">
+                <i class="uil uil-check"></i> Confirm
+            </button>
+        </div>
+    </div>
+</div>
+
+<style>
+/* ========================================
+   NOTIFICATION TOAST STYLES
+   ======================================== */
+.notification-container {
+    position: fixed;
+    top: 70px;
+    right: 20px;
+    z-index: 10000;
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+    max-width: 400px;
+    pointer-events: none;
+}
+
+.notification-toast {
+    display: flex;
+    align-items: flex-start;
+    gap: 12px;
+    padding: 14px 16px;
+    border-radius: 8px;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+    animation: slideIn 0.3s ease-out forwards;
+    pointer-events: auto;
+    min-width: 300px;
+    max-width: 400px;
+}
+
+.notification-toast.hiding {
+    animation: slideOut 0.3s ease-in forwards;
+}
+
+@keyframes slideIn {
+    from {
+        opacity: 0;
+        transform: translateX(100%);
+    }
+    to {
+        opacity: 1;
+        transform: translateX(0);
+    }
+}
+
+@keyframes slideOut {
+    from {
+        opacity: 1;
+        transform: translateX(0);
+    }
+    to {
+        opacity: 0;
+        transform: translateX(100%);
+    }
+}
+
+.notification-toast .notification-icon {
+    font-size: 22px;
+    flex-shrink: 0;
+    margin-top: 2px;
+}
+
+.notification-toast .notification-content {
+    flex: 1;
+}
+
+.notification-toast .notification-title {
+    font-weight: 600;
+    font-size: 14px;
+    margin-bottom: 4px;
+}
+
+.notification-toast .notification-message {
+    font-size: 13px;
+    line-height: 1.4;
+    opacity: 0.9;
+}
+
+.notification-toast .notification-close {
+    background: none;
+    border: none;
+    font-size: 18px;
+    cursor: pointer;
+    opacity: 0.7;
+    transition: opacity 0.2s;
+    padding: 0;
+    margin-left: 8px;
+    flex-shrink: 0;
+}
+
+.notification-toast .notification-close:hover {
+    opacity: 1;
+}
+
+/* Success Toast */
+.notification-toast.success {
+    background: #d4edda;
+    border-left: 4px solid #20c997;
+    color: #155724;
+}
+
+.notification-toast.success .notification-icon {
+    color: #20c997;
+}
+
+.notification-toast.success .notification-close {
+    color: #155724;
+}
+
+/* Error Toast */
+.notification-toast.error {
+    background: #f8d7da;
+    border-left: 4px solid #dc3545;
+    color: #721c24;
+}
+
+.notification-toast.error .notification-icon {
+    color: #dc3545;
+}
+
+.notification-toast.error .notification-close {
+    color: #721c24;
+}
+
+/* Warning Toast */
+.notification-toast.warning {
+    background: #fff3cd;
+    border-left: 4px solid #ffc107;
+    color: #856404;
+}
+
+.notification-toast.warning .notification-icon {
+    color: #d39e00;
+}
+
+.notification-toast.warning .notification-close {
+    color: #856404;
+}
+
+/* Info Toast */
+.notification-toast.info {
+    background: #d1ecf1;
+    border-left: 4px solid #17a2b8;
+    color: #0c5460;
+}
+
+.notification-toast.info .notification-icon {
+    color: #17a2b8;
+}
+
+.notification-toast.info .notification-close {
+    color: #0c5460;
+}
+
+/* ========================================
+   CONFIRMATION DIALOG STYLES
+   ======================================== */
+.confirm-dialog-overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: rgba(0, 0, 0, 0.5);
+    backdrop-filter: blur(4px);
+    display: none;
+    justify-content: center;
+    align-items: center;
+    z-index: 10001;
+    opacity: 0;
+    transition: opacity 0.2s ease;
+}
+
+.confirm-dialog-overlay.visible {
+    display: flex;
+    opacity: 1;
+}
+
+.confirm-dialog-overlay.showing {
+    display: flex;
+}
+
+.confirm-dialog {
+    background: #ffffff;
+    border-radius: 12px;
+    box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
+    max-width: 420px;
+    width: 90%;
+    transform: scale(0.9);
+    transition: transform 0.2s ease;
+    overflow: hidden;
+}
+
+.confirm-dialog-overlay.visible .confirm-dialog {
+    transform: scale(1);
+}
+
+.confirm-dialog-header {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    padding: 24px 24px 16px;
+    text-align: center;
+}
+
+.confirm-dialog-header i {
+    font-size: 48px;
+    margin-bottom: 12px;
+    color: #ffc107;
+}
+
+.confirm-dialog-header.danger i {
+    color: #dc3545;
+}
+
+.confirm-dialog-header.info i {
+    color: #17a2b8;
+}
+
+.confirm-dialog-header.success i {
+    color: #20c997;
+}
+
+.confirm-dialog-header h3 {
+    font-size: 18px;
+    font-weight: 600;
+    color: #333;
+    margin: 0;
+}
+
+.confirm-dialog-body {
+    padding: 0 24px 20px;
+    text-align: center;
+}
+
+.confirm-dialog-body p {
+    font-size: 14px;
+    color: #666;
+    line-height: 1.6;
+    margin: 0;
+}
+
+.confirm-dialog-footer {
+    display: flex;
+    gap: 12px;
+    padding: 16px 24px 24px;
+    justify-content: center;
+}
+
+.btn-dialog {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    padding: 10px 20px;
+    font-size: 14px;
+    font-weight: 500;
+    border-radius: 6px;
+    border: none;
+    cursor: pointer;
+    transition: all 0.2s ease;
+    min-width: 100px;
+    justify-content: center;
+}
+
+.btn-dialog-cancel {
+    background: #f0f0f0;
+    color: #666;
+}
+
+.btn-dialog-cancel:hover {
+    background: #e0e0e0;
+    color: #333;
+}
+
+.btn-dialog-confirm {
+    background: #20c997;
+    color: #ffffff;
+}
+
+.btn-dialog-confirm:hover {
+    background: #1aa179;
+}
+
+.btn-dialog-confirm.danger {
+    background: #dc3545;
+}
+
+.btn-dialog-confirm.danger:hover {
+    background: #c82333;
+}
+
+/* Mobile Responsiveness */
+@media (max-width: 480px) {
+    .notification-container {
+        right: 10px;
+        left: 10px;
+        max-width: none;
+    }
+    
+    .notification-toast {
+        min-width: auto;
+        max-width: none;
+    }
+    
+    .confirm-dialog {
+        width: 95%;
+        margin: 10px;
+    }
+    
+    .confirm-dialog-footer {
+        flex-direction: column-reverse;
+    }
+    
+    .btn-dialog {
+        width: 100%;
+    }
+}
+</style>

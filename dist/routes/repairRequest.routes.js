@@ -11,6 +11,7 @@ const repairRequestPriority_controller_1 = __importDefault(require("../controlle
 const repairRequestAttachment_controller_1 = __importDefault(require("../controllers/repairRequestAttachment.controller"));
 const repairWorkflow_controller_1 = __importDefault(require("../controllers/repairWorkflow.controller"));
 const middlewares_1 = require("../middlewares");
+const permission_middleware_1 = require("../middlewares/permission.middleware");
 const express_async_handler_1 = __importDefault(require("express-async-handler"));
 const multer_1 = __importDefault(require("multer"));
 const router = (0, express_1.Router)();
@@ -82,17 +83,17 @@ router.patch('/priorities/:id/toggle', middlewares_1.authenticate, (0, middlewar
 // REPAIR REQUEST CRUD ROUTES
 // =============================================================================
 // Create new repair request
-router.post('/', middlewares_1.authenticate, (0, express_async_handler_1.default)(repairRequest_controller_1.default.create));
+router.post('/', middlewares_1.authenticate, (0, permission_middleware_1.checkPermission)('REPAIR_REQUESTS', 'create'), (0, express_async_handler_1.default)(repairRequest_controller_1.default.create));
 // Get all repair requests with filters
-router.get('/', middlewares_1.authenticate, (0, express_async_handler_1.default)(repairRequest_controller_1.default.getAll));
+router.get('/', middlewares_1.authenticate, (0, permission_middleware_1.checkPermission)('REPAIR_REQUESTS', 'read'), (0, express_async_handler_1.default)(repairRequest_controller_1.default.getAll));
 // Get repair request by request number
-router.get('/number/:requestNumber', middlewares_1.authenticate, (0, express_async_handler_1.default)(repairRequest_controller_1.default.getByRequestNumber));
+router.get('/number/:requestNumber', middlewares_1.authenticate, (0, permission_middleware_1.checkPermission)('REPAIR_REQUESTS', 'read'), (0, express_async_handler_1.default)(repairRequest_controller_1.default.getByRequestNumber));
 // Get single repair request by ID
-router.get('/:id', middlewares_1.authenticate, (0, express_async_handler_1.default)(repairRequest_controller_1.default.getById));
+router.get('/:id', middlewares_1.authenticate, (0, permission_middleware_1.checkPermission)('REPAIR_REQUESTS', 'read'), (0, express_async_handler_1.default)(repairRequest_controller_1.default.getById));
 // Update repair request
-router.put('/:id', middlewares_1.authenticate, (0, express_async_handler_1.default)(repairRequest_controller_1.default.update));
+router.put('/:id', middlewares_1.authenticate, (0, permission_middleware_1.checkPermission)('REPAIR_REQUESTS', 'update'), (0, express_async_handler_1.default)(repairRequest_controller_1.default.update));
 // Delete repair request
-router.delete('/:id', middlewares_1.authenticate, (0, middlewares_1.authorize)(['Admin']), (0, express_async_handler_1.default)(repairRequest_controller_1.default.delete));
+router.delete('/:id', middlewares_1.authenticate, (0, permission_middleware_1.checkPermission)('REPAIR_REQUESTS', 'delete'), (0, express_async_handler_1.default)(repairRequest_controller_1.default.delete));
 // =============================================================================
 // WORKFLOW ACTION ROUTES
 // =============================================================================

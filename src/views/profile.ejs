@@ -17,8 +17,8 @@
                     <i class="fa fa-user-circle"></i>
                 </div>
                 <div class="profile-title">
-                    <h3><%= user.first_name %> <%= user.last_name %></h3>
-                    <span class="profile-role"><%= user.role_name %></span>
+                    <h3><%= profileUser.first_name %> <%= profileUser.last_name %></h3>
+                    <span class="profile-role"><%= profileUser.role_name || profileUser.role || 'User' %></span>
                 </div>
             </div>
 
@@ -29,58 +29,59 @@
                         <div class="form-row">
                             <div class="form-group">
                                 <label for="first_name">First Name:</label>
-                                <input type="text" id="first_name" name="first_name" value="<%= user.first_name %>" <%= user.role_name !== 'Admin' ? 'readonly' : '' %>>
+                                <input type="text" id="first_name" name="first_name" value="<%= profileUser.first_name %>" <%= isViewingOtherUser ? 'readonly' : '' %>>
                             </div>
                             <div class="form-group">
                                 <label for="middle_name">Middle Name:</label>
-                                <input type="text" id="middle_name" name="middle_name" value="<%= user.middle_name || '' %>" <%= user.role_name !== 'Admin' ? 'readonly' : '' %>>
+                                <input type="text" id="middle_name" name="middle_name" value="<%= profileUser.middle_name || '' %>" <%= isViewingOtherUser ? 'readonly' : '' %>>
                             </div>
                         </div>
 
                         <div class="form-row">
                             <div class="form-group">
                                 <label for="last_name">Last Name:</label>
-                                <input type="text" id="last_name" name="last_name" value="<%= user.last_name %>" <%= user.role_name !== 'Admin' ? 'readonly' : '' %>>
+                                <input type="text" id="last_name" name="last_name" value="<%= profileUser.last_name %>" <%= isViewingOtherUser ? 'readonly' : '' %>>
                             </div>
                             <div class="form-group">
                                 <label for="email">Email (Username):</label>
-                                <input type="email" id="email" name="email" value="<%= user.email %>" readonly>
+                                <input type="email" id="email" name="email" value="<%= profileUser.email %>" readonly>
                             </div>
                         </div>
 
                         <div class="form-row">
                             <div class="form-group">
                                 <label for="phone">Phone:</label>
-                                <input type="text" id="phone" name="phone" value="<%= user.phone || '' %>" <%= user.role_name !== 'Admin' ? 'readonly' : '' %>>
+                                <input type="text" id="phone" name="phone" value="<%= profileUser.phone || '' %>" <%= isViewingOtherUser ? 'readonly' : '' %>>
                             </div>
                             <div class="form-group">
                                 <label for="department">Department:</label>
-                                <input type="text" id="department" name="department" value="<%= user.department_name || 'N/A' %>" readonly>
+                                <input type="text" id="department" name="department" value="<%= profileUser.department_name || 'N/A' %>" readonly>
                             </div>
                         </div>
 
                         <div class="form-row">
                             <div class="form-group">
                                 <label for="branch">Branch:</label>
-                                <input type="text" id="branch" name="branch" value="<%= user.branch_name || 'N/A' %>" readonly>
+                                <input type="text" id="branch" name="branch" value="<%= profileUser.branch_name || 'N/A' %>" readonly>
                             </div>
                             <div class="form-group">
                                 <label for="company">Company:</label>
-                                <input type="text" id="company" name="company" value="<%= user.company_name || 'N/A' %>" readonly>
+                                <input type="text" id="company" name="company" value="<%= profileUser.company_name || 'N/A' %>" readonly>
                             </div>
                         </div>
 
                         <div class="form-row">
                             <div class="form-group">
-                                <label for="status">Status:</label>
-                                <input type="text" id="status" name="status" value="<%= user.is_active ? 'Active' : 'Inactive' %>" readonly>
+                                <label for="role">Role:</label>
+                                <input type="text" id="role" name="role" value="<%= profileUser.role_name || profileUser.role || 'N/A' %>" readonly>
                             </div>
                             <div class="form-group">
-                                <!-- Empty for alignment -->
+                                <label for="status">Status:</label>
+                                <input type="text" id="status" name="status" value="<%= profileUser.is_active ? 'Active' : 'Inactive' %>" readonly>
                             </div>
                         </div>
 
-                        <% if (viewerIsAdmin && !isViewingOtherUser) { %>
+                        <% if (!isViewingOtherUser) { %>
                         <div class="form-actions">
                             <button type="submit" class="btn btn-save">
                                 <i class="fa fa-save"></i> Save Changes
@@ -90,7 +91,7 @@
                     </form>
                 </div>
 
-                <% if (isViewingOtherUser && user.is_bulk_imported && bulkImportInfo) { %>
+                <% if (isViewingOtherUser && profileUser.is_bulk_imported && bulkImportInfo) { %>
                 <div class="profile-section bulk-import-section">
                     <h4><i class="fa fa-upload"></i> Bulk Import Information</h4>
                     <div class="bulk-import-info">
@@ -137,7 +138,7 @@
                 </div>
                 <% } %>
 
-                <% if (viewerIsAdmin && !isViewingOtherUser) { %>
+                <% if (!isViewingOtherUser) { %>
                 <div class="profile-section">
                     <h4>Change Password</h4>
                     <form id="password-form">

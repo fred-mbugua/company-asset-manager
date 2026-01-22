@@ -1,0 +1,174 @@
+<%- include('partials/header', { pageTitle: 'Manage Permissions', cssFile: 'manage-permissions' }) %>
+<%- include('partials/navbar', { user: locals.user }) %>
+
+<div class="main">
+    <%- include('partials/sidebar') %>
+    <section class="content-area">
+        <div class="permissions-page">
+            <!-- Page Header -->
+            <div class="page-header">
+                <h3><i class="uil-shield-check"></i> Role Permissions Management</h3>
+                <p class="page-description">Configure which modules and actions each role can access. Use checkboxes to grant or revoke permissions.</p>
+            </div>
+
+            <!-- Main Content -->
+            <div class="permissions-main">
+                <!-- Left Sidebar -->
+                <div class="sidebar-panel">
+                    <div class="panel-header">
+                        <i class="uil-users-alt"></i> Select Role
+                    </div>
+                    <div class="panel-body">
+                        <!-- Searchable Role Dropdown -->
+                        <div class="role-select-wrapper">
+                            <label>Choose a role to manage:</label>
+                            <div class="searchable-select" id="role-dropdown">
+                                <div class="search-input-wrapper">
+                                    <i class="uil-search"></i>
+                                    <input type="text" 
+                                           id="role-search" 
+                                           class="search-input" 
+                                           placeholder="Search roles..."
+                                           autocomplete="off">
+                                    <i class="uil-angle-down dropdown-icon"></i>
+                                </div>
+                                <div class="dropdown-list" id="role-list">
+                                    <!-- Roles populated by JS -->
+                                </div>
+                            </div>
+                            <input type="hidden" id="role-select" value="">
+                        </div>
+
+                        <!-- Role Info -->
+                        <div id="role-info" class="role-info">
+                            <h4><i class="uil-shield"></i> <span id="role-name">Role Name</span></h4>
+                            <p id="role-desc">Role description</p>
+                        </div>
+
+                        <!-- Stats -->
+                        <div class="stats-grid">
+                            <div class="stat-box">
+                                <span class="value" id="perm-count">0</span>
+                                <span class="label">Permissions</span>
+                            </div>
+                            <div class="stat-box modules">
+                                <span class="value" id="module-count">0</span>
+                                <span class="label">Modules</span>
+                            </div>
+                        </div>
+
+                        <!-- Legend -->
+                        <div class="legend">
+                            <h5>Permission Types</h5>
+                            <div class="legend-items">
+                                <div class="legend-item read">
+                                    <i class="uil-eye"></i> Read
+                                </div>
+                                <div class="legend-item create">
+                                    <i class="uil-plus"></i> Create
+                                </div>
+                                <div class="legend-item update">
+                                    <i class="uil-edit"></i> Update
+                                </div>
+                                <div class="legend-item delete">
+                                    <i class="uil-trash"></i> Delete
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Right Content Panel -->
+                <div class="content-panel">
+                    <div class="content-header">
+                        <h4><i class="uil-lock-access"></i> Module Permissions</h4>
+                        <div class="header-actions">
+                            <button id="select-all-btn" class="btn btn-outline-white">
+                                <i class="uil-check-square"></i> Select All
+                            </button>
+                            <button id="clear-all-btn" class="btn btn-outline-white">
+                                <i class="uil-times-square"></i> Clear All
+                            </button>
+                        </div>
+                    </div>
+
+                    <!-- Empty State -->
+                    <div id="empty-state" class="empty-state">
+                        <i class="uil-shield-question"></i>
+                        <h5>No Role Selected</h5>
+                        <p>Please select a role from the dropdown to view and manage its permissions.</p>
+                    </div>
+
+                    <!-- Loading State -->
+                    <div id="loading-state" class="loading-state">
+                        <i class="uil-spinner-alt spin"></i>
+                        <p>Loading permissions...</p>
+                    </div>
+
+                    <!-- Permissions Table -->
+                    <div id="table-wrapper" class="permissions-table-wrapper">
+                        <table class="permissions-table">
+                            <thead>
+                                <tr>
+                                    <th>Module</th>
+                                    <th class="action-col read-col">
+                                        <div class="action-header">
+                                            <i class="uil-eye"></i>
+                                            <span>Read</span>
+                                        </div>
+                                    </th>
+                                    <th class="action-col create-col">
+                                        <div class="action-header">
+                                            <i class="uil-plus"></i>
+                                            <span>Create</span>
+                                        </div>
+                                    </th>
+                                    <th class="action-col update-col">
+                                        <div class="action-header">
+                                            <i class="uil-edit"></i>
+                                            <span>Update</span>
+                                        </div>
+                                    </th>
+                                    <th class="action-col delete-col">
+                                        <div class="action-header">
+                                            <i class="uil-trash"></i>
+                                            <span>Delete</span>
+                                        </div>
+                                    </th>
+                                    <th class="action-col branch-col">
+                                        <div class="action-header">
+                                            <i class="uil-building"></i>
+                                            <span>Branch</span>
+                                        </div>
+                                    </th>
+                                </tr>
+                            </thead>
+                            <tbody id="permissions-tbody">
+                                <!-- Rows will be added dynamically -->
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Save Bar (Fixed at bottom) -->
+        <div id="save-bar" class="save-bar">
+            <div class="message">
+                <i class="uil-exclamation-triangle"></i>
+                <span>You have unsaved changes</span>
+            </div>
+            <div class="actions">
+                <button id="cancel-btn" class="btn btn-cancel">
+                    <i class="uil-times"></i> Cancel
+                </button>
+                <button id="save-btn" class="btn btn-save">
+                    <i class="uil-save"></i> Save Changes
+                </button>
+            </div>
+        </div>
+    </section>
+</div>
+
+<script src="/assets/js/manage-permissions.js"></script>
+<%- include('partials/footer') %>

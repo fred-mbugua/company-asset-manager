@@ -3,7 +3,7 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
     return (mod && mod.__esModule) ? mod : { "default": mod };
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.RepairRequestPriorityService = exports.RepairRequestStatusService = exports.RepairRequestTypeService = exports.RepairRequestService = exports.ReportExportService = exports.ExpenseTypeService = exports.AssetStatusService = exports.AssetTypeService = exports.DepartmentService = exports.ActionLogService = exports.BranchService = exports.UserService = exports.SMSService = exports.EmailService = exports.BulkUploadMiddleware = exports.BulkUploadService = exports.ReportService = exports.ExpenseService = exports.EmployeeService = exports.AssignmentService = exports.AuthService = exports.AssetService = void 0;
+exports.RolePermissionService = exports.PermissionService = exports.ModuleService = exports.RepairRequestPriorityService = exports.RepairRequestStatusService = exports.RepairRequestTypeService = exports.RepairRequestService = exports.ReportExportService = exports.ExpenseTypeService = exports.AssetStatusService = exports.AssetTypeService = exports.DepartmentService = exports.ActionLogService = exports.BranchService = exports.UserService = exports.SMSService = exports.EmailService = exports.BulkUploadMiddleware = exports.BulkUploadService = exports.ReportService = exports.ExpenseService = exports.EmployeeService = exports.AssignmentService = exports.AuthService = exports.AssetService = void 0;
 var asset_service_1 = require("./asset.service");
 Object.defineProperty(exports, "AssetService", { enumerable: true, get: function () { return __importDefault(asset_service_1).default; } });
 var auth_service_1 = require("./auth.service");
@@ -47,3 +47,9 @@ var repairRequestStatus_service_1 = require("./repairRequestStatus.service");
 Object.defineProperty(exports, "RepairRequestStatusService", { enumerable: true, get: function () { return __importDefault(repairRequestStatus_service_1).default; } });
 var repairRequestPriority_service_1 = require("./repairRequestPriority.service");
 Object.defineProperty(exports, "RepairRequestPriorityService", { enumerable: true, get: function () { return __importDefault(repairRequestPriority_service_1).default; } });
+var module_service_1 = require("./module.service");
+Object.defineProperty(exports, "ModuleService", { enumerable: true, get: function () { return __importDefault(module_service_1).default; } });
+var permission_service_1 = require("./permission.service");
+Object.defineProperty(exports, "PermissionService", { enumerable: true, get: function () { return __importDefault(permission_service_1).default; } });
+var rolePermission_service_1 = require("./rolePermission.service");
+Object.defineProperty(exports, "RolePermissionService", { enumerable: true, get: function () { return __importDefault(rolePermission_service_1).default; } });

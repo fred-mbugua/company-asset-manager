@@ -97,7 +97,8 @@ async function editBranch(id) {
 
 // Delete branch
 async function deleteBranch(id) {
-  if (!confirm("Are you sure you want to delete this branch?")) return;
+  const confirmed = await AppConfirm.delete("Are you sure you want to delete this branch?");
+  if (!confirmed) return;
 
   await apiFetch(`/branches/${id}`, { method: "DELETE" });
 

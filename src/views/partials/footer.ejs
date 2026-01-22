@@ -1,8 +1,59 @@
+<%- include('notifications') %>
+<script src="/assets/js/notifications.js"></script>
 <script src="/assets/js/main.js"></script>
 <script src="/assets/js/sidebar.js"></script>
 <script src="/assets/js/message.js"></script>
 <script src="/assets/js/api.js"></script>
 <script>
+  /**
+   * Legacy apiFetch function for backward compatibility
+   * Wraps fetch with API prefix and session expiry handling
+   */
+  async function apiFetch(url, options = {}) {
+    const fullUrl = `/api${url}`;
+    
+    // Set default headers
+    const defaultHeaders = {
+      'Content-Type': 'application/json'
+    };
+    
+    const fetchOptions = {
+      ...options,
+      headers: {
+        ...defaultHeaders,
+        ...(options.headers || {})
+      }
+    };
+    
+    try {
+      const response = await fetch(fullUrl, fetchOptions);
+      
+      // Handle 401 Unauthorized - session expired
+      if (response.status === 401) {
+        // Try to parse response to get message
+        let message = 'Your session has expired. Please login again.';
+        try {
+          const data = await response.clone().json();
+          message = data.message || message;
+        } catch (e) {}
+        
+        AppNotify.warning(message, { title: 'Session Expired', duration: 3000 });
+        setTimeout(() => {
+          window.location.href = '/login';
+        }, 3000);
+        return response; // Return for any code that checks response.ok
+      }
+      
+      return response;
+    } catch (error) {
+      console.error('API Fetch Error:', error);
+      throw error;
+    }
+  }
+  
+  // Make apiFetch globally available
+  window.apiFetch = apiFetch;
+  
   const logoutLink = document.getElementById('logout-link');
   
   // Global function to redirect on logout

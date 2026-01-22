@@ -1,28 +1,27 @@
 import { Router } from 'express';
 import RoleController from '../controllers/role.controller';
-import { authenticate, authorize } from '../middlewares/auth.middleware';
+import { authorize } from '../middlewares/auth.middleware';
 import asyncHandler from 'express-async-handler';
 
 const router = Router();
 
+// Note: Authentication is handled at the main router level
+
 // Get all roles
 router.get(
     '/',
-    authenticate,
     asyncHandler(RoleController.getAll)
 );
 
 // Get a single role
 router.get(
     '/:id',
-    authenticate,
     asyncHandler(RoleController.getById)
 );
 
 // Create a new role
 router.post(
     '/',
-    authenticate,
     authorize(['Admin']),
     asyncHandler(RoleController.create)
 );
@@ -30,7 +29,6 @@ router.post(
 // Update a role
 router.put(
     '/:id',
-    authenticate,
     authorize(['Admin']),
     asyncHandler(RoleController.update)
 );
@@ -38,7 +36,6 @@ router.put(
 // Delete a role
 router.delete(
     '/:id',
-    authenticate,
     authorize(['Admin']),
     asyncHandler(RoleController.delete)
 );
@@ -46,7 +43,6 @@ router.delete(
 // Toggle role active status
 router.patch(
     '/:id/toggle',
-    authenticate,
     authorize(['Admin']),
     asyncHandler(RoleController.toggleActive)
 );

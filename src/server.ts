@@ -37,7 +37,7 @@ import { mainRoutes, viewsRoutes } from './routes';
 import { PORT } from './config';
 import logger from './utils/logger';
 import 'express-async-errors'; // Handles async errors in Express
-import { currentPathMiddleware, systemConfigMiddleware } from './middlewares';
+import { currentPathMiddleware, systemConfigMiddleware, loadUserPermissions } from './middlewares';
 
 
 
@@ -69,6 +69,9 @@ app.use('/assets', express.static(path.join(__dirname, '..', 'src', 'assets')));
 
 // API Routes
 app.use('/api', mainRoutes);
+
+// Apply loadUserPermissions middleware before view routes for dynamic menu visibility
+app.use(loadUserPermissions);
 
 // View Routes
 app.use('/', viewsRoutes);

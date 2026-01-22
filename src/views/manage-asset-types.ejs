@@ -13,22 +13,29 @@
 
             <div id="type-form-modal" class="modal">
                 <div class="modal-content">
-                    <span class="close-btn">&times;</span>
-                    <h4><span id="modal-title">Add New Asset Type</span></h4>
-                    
-                    <form id="type-form">
-                        <input type="hidden" id="type-id" name="id">
+                    <div class="modal-header">
+                        <h4><i class="uil uil-edit"></i> <span id="modal-title">Add New Asset Type</span></h4>
+                        <button type="button" class="close-btn">&times;</button>
+                    </div>
+                    <div class="modal-body">
+                        <form id="type-form">
+                            <input type="hidden" id="type-id" name="id">
 
-                        <label for="name">Type Name:<span class="required">*</span></label>
-                        <input type="text" id="name" name="name" required>
+                            <div class="form-group">
+                                <label for="name">Type Name:<span class="required">*</span></label>
+                                <input type="text" id="name" name="name" required placeholder="Enter asset type name">
+                            </div>
 
-                        <label for="description">Description:</label>
-                        <textarea id="description" name="description" rows="3"></textarea>
+                            <div class="form-group">
+                                <label for="description">Description:</label>
+                                <textarea id="description" name="description" rows="3" placeholder="Enter description (optional)"></textarea>
+                            </div>
 
-                        <button type="submit" class="btn btn-primary mt-3">
-                            <i class="uil-save"></i> Save Type
-                        </button>
-                    </form>
+                            <button type="submit" class="btn btn-primary mt-3">
+                                <i class="uil uil-save"></i> Save Type
+                            </button>
+                        </form>
+                    </div>
                 </div>
             </div>
             

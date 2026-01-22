@@ -3,6 +3,39 @@
 document.addEventListener('DOMContentLoaded', function() {
     let currentConfig = {};
     
+    // Handle session expiry
+    function handleSessionExpired(message = 'Your session has expired. Please login again.') {
+        if (typeof AppNotify !== 'undefined') {
+            AppNotify.warning(message);
+            setTimeout(() => { window.location.href = '/login'; }, 2000);
+        } else if (typeof toastr !== 'undefined') {
+            toastr.warning(message, 'Session Expired', {
+                timeOut: 3000,
+                onHidden: () => { window.location.href = '/login'; }
+            });
+        } else {
+            AppNotify.warning(message);
+            window.location.href = '/login';
+        }
+    }
+
+    // Wrapper for fetch with session handling
+    async function secureFetch(url, options = {}) {
+        const response = await fetch(url, options);
+        
+        if (response.status === 401) {
+            let message = 'Your session has expired. Please login again.';
+            try {
+                const data = await response.clone().json();
+                message = data.message || message;
+            } catch (e) {}
+            handleSessionExpired(message);
+            throw new Error('Session expired');
+        }
+        
+        return response;
+    }
+    
     // Tab switching functionality
     const tabButtons = document.querySelectorAll('.tab-button');
     const tabContents = document.querySelectorAll('.tab-content');
@@ -160,11 +193,10 @@ document.addEventListener('DOMContentLoaded', function() {
         this.disabled = true;
 
         try {
-            const response = await fetch('/api/system-config/test-email', {
+            const response = await secureFetch('/api/system-config/test-email', {
                 method: 'POST',
                 headers: {
-                    'Content-Type': 'application/json',
-                    'Authorization': `Bearer ${localStorage.getItem('accessToken')}`
+                    'Content-Type': 'application/json'
                 },
                 body: JSON.stringify({ email: testEmail })
             });
@@ -211,11 +243,7 @@ document.addEventListener('DOMContentLoaded', function() {
     // Load configuration from API
     async function loadConfiguration() {
         try {
-            const response = await fetch('/api/system-config/', {
-                headers: {
-                    'Authorization': `Bearer ${localStorage.getItem('accessToken')}`
-                }
-            });
+            const response = await secureFetch('/api/system-config/');
 
             if (!response.ok) {
                 throw new Error('Failed to load configuration');
@@ -286,11 +314,10 @@ document.addEventListener('DOMContentLoaded', function() {
     // Update configuration via API
     async function updateConfiguration(data) {
         try {
-            const response = await fetch('/api/system-config/', {
+            const response = await secureFetch('/api/system-config/', {
                 method: 'PUT',
                 headers: {
-                    'Content-Type': 'application/json',
-                    'Authorization': `Bearer ${localStorage.getItem('accessToken')}`
+                    'Content-Type': 'application/json'
                 },
                 body: JSON.stringify(data)
             });
@@ -321,11 +348,8 @@ document.addEventListener('DOMContentLoaded', function() {
             const formData = new FormData();
             formData.append('logo', file);
 
-            const response = await fetch('/api/system-config/upload-logo', {
+            const response = await secureFetch('/api/system-config/upload-logo', {
                 method: 'POST',
-                headers: {
-                    'Authorization': `Bearer ${localStorage.getItem('accessToken')}`
-                },
                 body: formData
             });
 

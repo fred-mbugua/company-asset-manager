@@ -532,7 +532,10 @@ class ViewsController {
             }
             
             res.render('profile', { 
-                user: userDetails,
+                // Use 'user' for logged-in user (for sidebar/navbar navigation)
+                user: req.user,
+                // Use 'profileUser' for the user being viewed
+                profileUser: userDetails,
                 isViewingOtherUser,
                 viewerIsAdmin: req.user?.role === 'Admin',
                 bulkImportInfo
@@ -681,6 +684,20 @@ class ViewsController {
         } catch (error) {
             logger.error('Error rendering manage roles page:', error);
             res.status(500).send('Failed to load roles management page.');
+        }
+    }
+
+    /**
+     * Rendering the Manage Permissions EJS view.
+     */
+    async renderManagePermissions(req: Request, res: Response): Promise<void> {
+        try {
+            res.render('manage-permissions', {
+                user: req.user
+            });
+        } catch (error) {
+            logger.error('Error rendering manage permissions page:', error);
+            res.status(500).send('Failed to load permissions management page.');
         }
     }
 }

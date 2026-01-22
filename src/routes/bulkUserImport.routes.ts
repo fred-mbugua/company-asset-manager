@@ -1,6 +1,6 @@
 import { Router } from 'express';
 import BulkUserImportController from '../controllers/bulkUserImport.controller';
-import { authenticate, authorize } from '../middlewares';
+import { checkPermission } from '../middlewares/permission.middleware';
 import asyncHandler from 'express-async-handler';
 import multer from 'multer';
 
@@ -30,19 +30,19 @@ const upload = multer({
     }
 });
 
+// Note: Authentication is handled at the main router level
+
 // Download template
 router.get(
     '/template',
-    authenticate,
-    authorize(['Admin']),
+    checkPermission('ADMIN_USERS', 'read'),
     asyncHandler(BulkUserImportController.downloadTemplate)
 );
 
 // Preview uploaded file
 router.post(
     '/preview',
-    authenticate,
-    authorize(['Admin']),
+    checkPermission('ADMIN_USERS', 'create'),
     upload.single('file'),
     asyncHandler(BulkUserImportController.previewFile)
 );
@@ -50,24 +50,21 @@ router.post(
 // Process import
 router.post(
     '/process',
-    authenticate,
-    authorize(['Admin']),
+    checkPermission('ADMIN_USERS', 'create'),
     asyncHandler(BulkUserImportController.processImport)
 );
 
 // Get all import batches
 router.get(
     '/batches',
-    authenticate,
-    authorize(['Admin']),
+    checkPermission('ADMIN_USERS', 'read'),
     asyncHandler(BulkUserImportController.getAllBatches)
 );
 
 // Get batch details
 router.get(
     '/batches/:batchId',
-    authenticate,
-    authorize(['Admin']),
+    checkPermission('ADMIN_USERS', 'read'),
     asyncHandler(BulkUserImportController.getBatchDetails)
 );
 

@@ -21,6 +21,7 @@ document.addEventListener('DOMContentLoaded', () => {
         deptIdField.value = '';
         modalTitle.textContent = 'Add New Department';
         modal.style.display = 'block';
+        document.body.style.overflow = 'hidden';
     };
 
     /**
@@ -36,10 +37,11 @@ document.addEventListener('DOMContentLoaded', () => {
 
             modalTitle.textContent = `Edit Department: ${department.name}`;
             modal.style.display = 'block';
+            document.body.style.overflow = 'hidden';
 
         } catch (error) {
             console.error('Error fetching department data:', error);
-            alert('Failed to load department data for editing.');
+            AppNotify.error('Failed to load department data for editing.');
         }
     };
 
@@ -60,11 +62,11 @@ document.addEventListener('DOMContentLoaded', () => {
             if (isUpdate) {
                 // Update existing department
                 response = await API.put(`${API_ENDPOINT}/${id}`, formData);
-                alert(`Department ${formData.name} updated successfully!`);
+                AppNotify.success(`Department ${formData.name} updated successfully!`);
             } else {
                 // Create new department
                 response = await API.post(API_ENDPOINT, formData);
-                alert(`Department ${formData.name} created successfully!`);
+                AppNotify.success(`Department ${formData.name} created successfully!`);
             }
             
             modal.style.display = 'none';
@@ -72,7 +74,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
         } catch (error) {
             console.error('Department save failed:', error);
-            alert('Department save failed. Ensure the name is unique.');
+            AppNotify.error('Department save failed. Ensure the name is unique.');
         }
     });
     
@@ -80,17 +82,18 @@ document.addEventListener('DOMContentLoaded', () => {
      * Handles the delete action.
      */
     const handleDelete = async (id, name) => {
-        if (!confirm(`Are you sure you want to DELETE the department: ${name}? This action cannot be undone and may affect linked employees/users.`)) {
+        const confirmed = await AppConfirm.delete(`Are you sure you want to DELETE the department: ${name}? This action cannot be undone and may affect linked employees/users.`);
+        if (!confirmed) {
             return;
         }
 
         try {
             await API.delete(`${API_ENDPOINT}/${id}`);
-            alert(`Department ${name} deleted successfully.`);
+            AppNotify.success(`Department ${name} deleted successfully.`);
             window.location.reload(); 
         } catch (error) {
             console.error('Delete failed:', error);
-            alert('Failed to delete department. Please ensure no employees or users are currently linked to it.');
+            AppNotify.error('Failed to delete department. Please ensure no employees or users are currently linked to it.');
         }
     };
 
@@ -100,11 +103,22 @@ document.addEventListener('DOMContentLoaded', () => {
     // Open Add Department Modal
     addDeptBtn.addEventListener('click', openAddModal);
 
-    // Close Modal
-    closeModalBtn.addEventListener('click', () => { modal.style.display = 'none'; });
-    window.addEventListener('click', (e) => { 
-        if (e.target === modal) {
+    // Close Modal - Only via close button, NOT clicking outside
+    closeModalBtn.addEventListener('click', () => { 
+        modal.style.display = 'none';
+        document.body.style.overflow = '';
+    });
+    
+    // Prevent closing when clicking modal content
+    modal.querySelector('.modal-content').addEventListener('click', (e) => {
+        e.stopPropagation();
+    });
+    
+    // Allow closing with Escape key
+    document.addEventListener('keydown', (e) => {
+        if (e.key === 'Escape' && modal.style.display === 'block') {
             modal.style.display = 'none';
+            document.body.style.overflow = '';
         }
     });
 

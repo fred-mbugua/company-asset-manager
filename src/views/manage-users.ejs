@@ -174,77 +174,139 @@
 
             <div id="user-form-modal" class="modal">
                 <div class="modal-content">
-                    <span class="close-btn">&times;</span>
-                    <h4><span id="modal-title">Add New User</span></h4>
-                    
-                    <form id="user-form">
-                        <input type="hidden" id="user-id" name="id"> 
-                        <input type="hidden" id="employee_id" name="employee_id"> 
+                    <div class="modal-header">
+                        <h4><i class="uil-user-plus"></i> <span id="modal-title">Add New User</span></h4>
+                        <span class="close-btn">&times;</span>
+                    </div>
+                    <div class="modal-body">
+                        <form id="user-form">
+                            <input type="hidden" id="user-id" name="id"> 
+                            <input type="hidden" id="employee_id" name="employee_id"> 
 
-                        <label for="first_name">First Name:</label>
-                        <input type="text" id="first_name" name="first_name" required>
+                            <div class="form-row">
+                                <div class="form-group">
+                                    <label for="first_name">First Name <span class="required">*</span></label>
+                                    <input type="text" id="first_name" name="first_name" class="form-control" placeholder="Enter first name" required>
+                                </div>
+                                <div class="form-group">
+                                    <label for="middle_name">Middle Name</label>
+                                    <input type="text" id="middle_name" name="middle_name" class="form-control" placeholder="Enter middle name">
+                                </div>
+                            </div>
 
-                        <label for="middle_name">Middle Name:</label>
-                        <input type="text" id="middle_name" name="middle_name" >
+                            <div class="form-row">
+                                <div class="form-group">
+                                    <label for="last_name">Last Name <span class="required">*</span></label>
+                                    <input type="text" id="last_name" name="last_name" class="form-control" placeholder="Enter last name" required>
+                                </div>
+                                <div class="form-group">
+                                    <label for="phone">Phone <span class="required">*</span></label>
+                                    <input type="text" id="phone" name="phone" class="form-control" placeholder="Enter phone number" required>
+                                </div>
+                            </div>
 
-                        <label for="last_name">Last Name:</label>
-                        <input type="text" id="last_name" name="last_name" required>
+                            <div class="form-group">
+                                <label for="email">Email (Username) <span class="required">*</span></label>
+                                <input type="text" id="email" name="email" class="form-control" placeholder="Enter email address" required>
+                            </div>
 
-                        <label for="email">Email (Username):</label>
-                        <input type="text" id="email" name="email" required>
+                            <div class="form-row">
+                                <div class="form-group">
+                                    <label for="password">Password</label>
+                                    <div class="password-wrapper">
+                                        <input type="password" id="password" name="password" class="form-control" placeholder="Enter password" autocomplete="new-password">
+                                        <i class="uil-eye toggle-password" data-target="password"></i>
+                                    </div>
+                                </div>
+                                <div class="form-group">
+                                    <label for="password_confirm">Confirm Password</label>
+                                    <div class="password-wrapper">
+                                        <input type="password" id="password_confirm" name="password_confirm" class="form-control" placeholder="Confirm password" autocomplete="new-password">
+                                        <i class="uil-eye toggle-password" data-target="password_confirm"></i>
+                                    </div>
+                                </div>
+                            </div>
+                            
+                            <div class="form-group">
+                                <label for="role">Role <span class="required">*</span></label>
+                                <div class="searchable-select" data-name="role" data-required="true">
+                                    <div class="select-input-wrapper">
+                                        <input type="text" class="select-input" placeholder="Search roles..." autocomplete="off">
+                                        <i class="uil-angle-down select-arrow"></i>
+                                    </div>
+                                    <div class="select-dropdown">
+                                        <% if (locals.userRoles && locals.userRoles.length) { %>
+                                            <% locals.userRoles.forEach(role => { %>
+                                                <div class="select-option" data-value="<%= role.id %>"><%= role.name %></div>
+                                            <% }); %>
+                                        <% } %>
+                                    </div>
+                                    <input type="hidden" id="role" name="role" required>
+                                </div>
+                            </div>
 
-                        <label for="phone">Phone:</label>
-                        <input type="text" id="phone" name="phone" required>
-                        
-                        <label for="password">Password:</label>
-                        <input type="password" id="password" name="password" autocomplete="new-password">
+                            <div class="form-row">
+                                <div class="form-group">
+                                    <label for="department_id">Department</label>
+                                    <div class="searchable-select" data-name="department_id">
+                                        <div class="select-input-wrapper">
+                                            <input type="text" class="select-input" placeholder="Search departments..." autocomplete="off">
+                                            <i class="uil-angle-down select-arrow"></i>
+                                        </div>
+                                        <div class="select-dropdown">
+                                            <div class="select-option" data-value="">-- None --</div>
+                                            <% if (locals.departments && locals.departments.length) { %>
+                                                <% locals.departments.forEach(dept => { %>
+                                                    <div class="select-option" data-value="<%= dept.id %>"><%= dept.name %></div>
+                                                <% }); %>
+                                            <% } %>
+                                        </div>
+                                        <input type="hidden" id="department_id" name="department_id">
+                                    </div>
+                                </div>
+                                
+                                <div class="form-group">
+                                    <label for="branch_id">Branch</label>
+                                    <div class="searchable-select" data-name="branch_id">
+                                        <div class="select-input-wrapper">
+                                            <input type="text" class="select-input" placeholder="Search branches..." autocomplete="off">
+                                            <i class="uil-angle-down select-arrow"></i>
+                                        </div>
+                                        <div class="select-dropdown">
+                                            <div class="select-option" data-value="">-- None --</div>
+                                            <% if (locals.locations && locals.locations.length) { %>
+                                                <% locals.locations.forEach(branch => { %>
+                                                    <div class="select-option" data-value="<%= branch.id %>"><%= branch.name %></div>
+                                                <% }); %>
+                                            <% } %>
+                                        </div>
+                                        <input type="hidden" id="branch_id" name="branch_id">
+                                    </div>
+                                </div>
+                            </div>
+                            
+                            <div class="form-group">
+                                <label for="company_id">Company</label>
+                                <div class="searchable-select" data-name="company_id">
+                                    <div class="select-input-wrapper">
+                                        <input type="text" class="select-input" placeholder="Search companies..." autocomplete="off">
+                                        <i class="uil-angle-down select-arrow"></i>
+                                    </div>
+                                    <div class="select-dropdown">
+                                        <div class="select-option" data-value="">-- None --</div>
+                                        <% if (locals.companies && locals.companies.length) { %>
+                                            <% locals.companies.forEach(company => { %>
+                                                <div class="select-option" data-value="<%= company.id %>" <%= company.name === 'Jirani Smart' ? 'data-default="true"' : '' %>><%= company.name %></div>
+                                            <% }); %>
+                                        <% } %>
+                                    </div>
+                                    <input type="hidden" id="company_id" name="company_id">
+                                </div>
+                            </div>
 
-                        <label for="password_confirm">Confirm Password:</label>
-                        <input type="password" id="password_confirm" name="password_confirm" autocomplete="new-password">
-                        
-                        <label for="role">Role:</label>
-                        <select id="role" name="role" required>
-                            <option value="">Select Role</option>
-                            <% if (locals.userRoles && locals.userRoles.length) { %>
-                                <% locals.userRoles.forEach(role => { %>
-                                    <option value="<%= role.id %>"><%= role.name %></option>
-                                <% }); %>
-                            <% } %>
-                        </select>
-
-                        <label for="department_id">Department:</label>
-                        <select id="department_id" name="department_id">
-                            <option value="">Select Department</option>
-                            <% if (locals.departments && locals.departments.length) { %>
-                                <% locals.departments.forEach(dept => { %>
-                                    <option value="<%= dept.id %>"><%= dept.name %></option>
-                                <% }); %>
-                            <% } %>
-                        </select>
-                        
-                        <label for="branch_id">Branch:</label>
-                        <select id="branch_id" name="branch_id">
-                            <option value="">Select Branch</option>
-                            <% if (locals.locations && locals.locations.length) { %>
-                                <% locals.locations.forEach(branch => { %>
-                                    <option value="<%= branch.id %>"><%= branch.name %></option>
-                                <% }); %>
-                            <% } %>
-                        </select>
-                        
-                        <label for="company_id">Company:</label>
-                        <select id="company_id" name="company_id">
-                            <option value="">Select Company</option>
-                            <% if (locals.companies && locals.companies.length) { %>
-                                <% locals.companies.forEach(company => { %>
-                                    <option value="<%= company.id %>" <%= company.name === 'Jirani Smart' ? 'selected' : '' %>><%= company.name %></option>
-                                <% }); %>
-                            <% } %>
-                        </select>
-                        
-
-                        <button type="submit" class="btn btn-primary mt-3"><i class="uil-plus"></i> Save User</button>
-                    </form>
+                            <button type="submit" class="btn-submit"><i class="uil-check"></i> Save User</button>
+                        </form>
+                    </div>
                 </div>
             </div>
             

@@ -6,6 +6,7 @@ import RepairRequestPriorityController from '../controllers/repairRequestPriorit
 import RepairRequestAttachmentController from '../controllers/repairRequestAttachment.controller';
 import RepairWorkflowController from '../controllers/repairWorkflow.controller';
 import { authenticate, authorize } from '../middlewares';
+import { checkPermission } from '../middlewares/permission.middleware';
 import asyncHandler from 'express-async-handler';
 import multer from 'multer';
 
@@ -194,6 +195,7 @@ router.patch(
 router.post(
     '/',
     authenticate,
+    checkPermission('REPAIR_REQUESTS', 'create'),
     asyncHandler(RepairRequestController.create)
 );
 
@@ -201,6 +203,7 @@ router.post(
 router.get(
     '/',
     authenticate,
+    checkPermission('REPAIR_REQUESTS', 'read'),
     asyncHandler(RepairRequestController.getAll)
 );
 
@@ -208,6 +211,7 @@ router.get(
 router.get(
     '/number/:requestNumber',
     authenticate,
+    checkPermission('REPAIR_REQUESTS', 'read'),
     asyncHandler(RepairRequestController.getByRequestNumber)
 );
 
@@ -215,6 +219,7 @@ router.get(
 router.get(
     '/:id',
     authenticate,
+    checkPermission('REPAIR_REQUESTS', 'read'),
     asyncHandler(RepairRequestController.getById)
 );
 
@@ -222,6 +227,7 @@ router.get(
 router.put(
     '/:id',
     authenticate,
+    checkPermission('REPAIR_REQUESTS', 'update'),
     asyncHandler(RepairRequestController.update)
 );
 
@@ -229,7 +235,7 @@ router.put(
 router.delete(
     '/:id',
     authenticate,
-    authorize(['Admin']),
+    checkPermission('REPAIR_REQUESTS', 'delete'),
     asyncHandler(RepairRequestController.delete)
 );
 
