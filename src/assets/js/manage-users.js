@@ -261,7 +261,7 @@ document.addEventListener('DOMContentLoaded', () => {
             passwordField.required = false;
             passwordField.placeholder = 'Leave blank to keep current';
 
-            modalTitle.textContent = `Edit User: ${user.username}`;
+            modalTitle.textContent = `Edit User: ${user.first_name} ${user.last_name}`;
             document.querySelector('.modal-header h4 i').className = 'uil-edit';
             modal.style.display = 'block';
             document.body.style.overflow = 'hidden';
@@ -340,9 +340,14 @@ document.addEventListener('DOMContentLoaded', () => {
         const id = userIdField.value;
         const isUpdate = !!id;
 
-        const departmentText = departmentField.options[departmentField.selectedIndex].text;
-        const branchText = branchField.options[branchField.selectedIndex].text;
-        const companyText = companyField.options[companyField.selectedIndex].text;
+        // Get text values from searchable select inputs (not the hidden fields)
+        const departmentSelect = departmentField.closest('.searchable-select');
+        const branchSelect = branchField.closest('.searchable-select');
+        const companySelect = companyField.closest('.searchable-select');
+        
+        const departmentText = departmentSelect ? departmentSelect.querySelector('.select-input').value : '';
+        const branchText = branchSelect ? branchSelect.querySelector('.select-input').value : '';
+        const companyText = companySelect ? companySelect.querySelector('.select-input').value : '';
 
         const formData = {
             "first_name": firstNameField.value,
