@@ -214,6 +214,22 @@ class RolePermissionModel {
   }
 
   /**
+   * Update branch level access for all permissions of a specific module for a role
+   */
+  async updateBranchAccessByModule(roleId: number, moduleCode: string, branchLevelAccess: boolean): Promise<void> {
+    const query = `
+      UPDATE role_permissions rp
+      SET branch_level_access = $3,
+          updated_at = CURRENT_TIMESTAMP
+      FROM permissions p
+      WHERE rp.permission_id = p.id
+        AND rp.role_id = $1
+        AND p.module_code = $2;
+    `;
+    await pool.query(query, [roleId, moduleCode, branchLevelAccess]);
+  }
+
+  /**
    * Delete a role permission
    */
   async delete(id: number): Promise<void> {

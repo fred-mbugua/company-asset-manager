@@ -383,6 +383,9 @@ class PermissionController {
 
   /**
    * Bulk assign permissions to a role
+   * Supports two formats:
+   * 1. { permissions: [...] } - replaces all permissions
+   * 2. { add: [...], remove: [...], branch_updates: [...] } - incremental updates
    */
   async bulkAssignRolePermissions(req: AuthenticatedRequest, res: Response): Promise<void> {
     try {
@@ -393,8 +396,63 @@ class PermissionController {
       }
 
       const roleId = parseInt(req.params.roleId);
-      const { permissions } = req.body;
+      const { permissions, add, remove, branch_updates } = req.body;
 
+      // Handle incremental add/remove format
+      if (add || remove || branch_updates) {
+        const results: any = { added: 0, removed: 0, branch_updated: 0 };
+
+        // Add new permissions
+        if (add && Array.isArray(add)) {
+          for (const perm of add) {
+            try {
+              await RolePermissionService.assignPermission(
+                {
+                  role_id: roleId,
+                  permission_id: perm.permission_id,
+                  branch_level_access: perm.branch_level_access || false
+                },
+                userId
+              );
+              results.added++;
+            } catch (e) {
+              // Permission may already exist, continue
+              logger.warn(`Permission ${perm.permission_id} may already be assigned to role ${roleId}`);
+            }
+          }
+        }
+
+        // Remove permissions
+        if (remove && Array.isArray(remove)) {
+          for (const permId of remove) {
+            try {
+              await RolePermissionService.removePermission(roleId, permId, userId);
+              results.removed++;
+            } catch (e) {
+              // Permission may not exist, continue
+              logger.warn(`Permission ${permId} may not be assigned to role ${roleId}`);
+            }
+          }
+        }
+
+        // Update branch level access
+        if (branch_updates && Array.isArray(branch_updates)) {
+          for (const update of branch_updates) {
+            try {
+              // Update branch level access for permissions with this module code
+              await RolePermissionService.updateBranchAccessByModule(roleId, update.moduleCode, update.value);
+              results.branch_updated++;
+            } catch (e) {
+              logger.warn(`Failed to update branch access for ${update.moduleCode}`);
+            }
+          }
+        }
+
+        successResponse(res, 200, 'Permissions updated successfully', results);
+        return;
+      }
+
+      // Handle full replacement format
       if (!permissions || !Array.isArray(permissions)) {
         errorResponse(res, 400, 'Permissions array is required');
         return;

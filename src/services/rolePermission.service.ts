@@ -128,6 +128,15 @@ class RolePermissionService {
   }
 
   /**
+   * Update branch level access for all permissions of a module for a role
+   */
+  async updateBranchAccessByModule(roleId: number, moduleCode: string, branchLevelAccess: boolean): Promise<void> {
+    await RolePermissionModel.updateBranchAccessByModule(roleId, moduleCode, branchLevelAccess);
+    this.invalidateCache(roleId);
+    logger.info(`Branch access updated for module ${moduleCode} on role ${roleId}: ${branchLevelAccess}`);
+  }
+
+  /**
    * Bulk assign permissions to a role (replaces existing)
    */
   async bulkAssign(
