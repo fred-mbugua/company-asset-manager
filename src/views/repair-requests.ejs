@@ -212,9 +212,9 @@
                 </div>
                 <div class="form-row">
                     <div class="form-group">
-                        <label for="request-asset">Asset (Optional)</label>
-                        <select id="request-asset" name="asset_id" class="select2-dropdown">
-                            <option value="">Select Asset (if applicable)</option>
+                        <label for="request-asset">Asset <span class="required">*</span></label>
+                        <select id="request-asset" name="asset_id" class="select2-dropdown" required>
+                            <option value="">Select Asset</option>
                             <% if (locals.assets) { %>
                                 <% locals.assets.forEach(asset => { %>
                                     <option value="<%= asset.id %>"><%= asset.asset_tag %> - <%= asset.manufacturer %> <%= asset.model %></option>
@@ -507,7 +507,7 @@
             $('#request-asset').select2({
                 dropdownParent: $('#request-modal'),
                 allowClear: true,
-                placeholder: 'Select Asset (if applicable)',
+                placeholder: 'Select Asset',
                 width: '100%'
             });
             
