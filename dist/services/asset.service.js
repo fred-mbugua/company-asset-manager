@@ -19,8 +19,8 @@ class AssetService {
         await actionLog_service_1.default.logAction(userId, 'CREATE', 'Asset', newAsset.id, { asset_tag: newAsset.asset_tag });
         return newAsset;
     }
-    async getAll() {
-        return asset_model_1.default.findAll();
+    async getAll(permissionContext) {
+        return asset_model_1.default.findAll(1, 10000, permissionContext);
     }
     async getById(id) {
         const asset = await asset_model_1.default.findById(id);
@@ -42,8 +42,8 @@ class AssetService {
         await actionLog_service_1.default.logAction(userId, 'DELETE', 'Asset', id, { asset_tag: asset.asset_tag });
         return { message: 'Asset deleted successfully.' };
     }
-    async search(query) {
-        return asset_model_1.default.search(query);
+    async search(query, permissionContext) {
+        return asset_model_1.default.search(query, permissionContext);
     }
     async statusList() {
         return asset_model_1.default.getAssetStatuses();

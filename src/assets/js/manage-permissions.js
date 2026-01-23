@@ -310,6 +310,9 @@
                 <td class="action-col">
                     ${renderBranchCheckbox(module)}
                 </td>
+                <td class="action-col">
+                    ${renderCompanyCheckbox(module)}
+                </td>
             `;
 
             tableBody.appendChild(row);
@@ -364,11 +367,31 @@
         `;
     }
 
+    function renderCompanyCheckbox(module) {
+        const hasCompany = module.actions && module.actions.some(a => a.company_level_access);
+        const hasAnyPerm = module.actions && module.actions.some(a => a.has_permission);
+        
+        if (!hasAnyPerm) {
+            return '<span class="no-perm">-</span>';
+        }
+
+        return `
+            <label class="perm-checkbox company">
+                <input type="checkbox" 
+                       data-company="true"
+                       data-module="${module.module_code}"
+                       ${hasCompany ? 'checked' : ''}>
+                <span class="checkmark"></span>
+            </label>
+        `;
+    }
+
     // Handle permission change
     function onPermissionChange(e) {
         const checkbox = e.target;
         const permId = checkbox.dataset.permissionId;
         const isBranch = checkbox.dataset.branch === 'true';
+        const isCompany = checkbox.dataset.company === 'true';
         const moduleCode = checkbox.dataset.module;
         const isChecked = checkbox.checked;
 
@@ -377,6 +400,14 @@
             const key = `branch_${moduleCode}`;
             pendingChanges.set(key, {
                 type: 'branch',
+                moduleCode: moduleCode,
+                value: isChecked
+            });
+        } else if (isCompany) {
+            // Company level change
+            const key = `company_${moduleCode}`;
+            pendingChanges.set(key, {
+                type: 'company',
                 moduleCode: moduleCode,
                 value: isChecked
             });
@@ -397,7 +428,7 @@
 
     // Select all permissions
     function selectAll() {
-        tableBody.querySelectorAll('.perm-checkbox input:not([data-branch])').forEach(cb => {
+        tableBody.querySelectorAll('.perm-checkbox input:not([data-branch]):not([data-company])').forEach(cb => {
             if (!cb.checked) {
                 cb.checked = true;
                 cb.dispatchEvent(new Event('change'));
@@ -427,19 +458,26 @@
             const permissionsToAdd = [];
             const permissionsToRemove = [];
             const branchChanges = [];
+            const companyChanges = [];
 
             pendingChanges.forEach((change, key) => {
                 if (change.type === 'permission') {
                     if (change.value) {
                         permissionsToAdd.push({
                             permission_id: change.permissionId,
-                            branch_level_access: false
+                            branch_level_access: false,
+                            company_level_access: false
                         });
                     } else {
                         permissionsToRemove.push(change.permissionId);
                     }
                 } else if (change.type === 'branch') {
                     branchChanges.push({
+                        moduleCode: change.moduleCode,
+                        value: change.value
+                    });
+                } else if (change.type === 'company') {
+                    companyChanges.push({
                         moduleCode: change.moduleCode,
                         value: change.value
                     });
@@ -450,7 +488,8 @@
             const response = await API.put(`/permissions/roles/${selectedRoleId}/bulk`, {
                 add: permissionsToAdd,
                 remove: permissionsToRemove,
-                branch_updates: branchChanges
+                branch_updates: branchChanges,
+                company_updates: companyChanges
             });
 
             if (response.success) {

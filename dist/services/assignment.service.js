@@ -95,8 +95,8 @@ class AssignmentService {
         });
         return updatedAssignment;
     }
-    async getAll() {
-        return assignment_model_1.default.findAll();
+    async getAll(permissionContext) {
+        return assignment_model_1.default.findAll(permissionContext);
     }
     async getById(id) {
         const assignment = await assignment_model_1.default.findById(id);

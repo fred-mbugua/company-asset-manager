@@ -6,6 +6,7 @@ export interface IRolePermission {
   role_id: number;
   permission_id: number;
   branch_level_access: boolean;  // If true, data is filtered by user's branch
+  company_level_access: boolean; // If true, data is filtered by accessible companies
   created_at: Date;
   updated_at: Date;
 }
@@ -23,6 +24,7 @@ export interface ICreateRolePermission {
   role_id: number;
   permission_id: number;
   branch_level_access?: boolean;
+  company_level_access?: boolean;
 }
 
 export interface IRolePermissionBulkAssign {
@@ -42,6 +44,7 @@ export interface IRolePermissionGrouped {
     action: PermissionAction;
     has_permission: boolean;
     branch_level_access: boolean;
+    company_level_access: boolean;
     permission_id: number;
   }[];
 }
@@ -140,7 +143,8 @@ class RolePermissionModel {
     const rolePermissionsQuery = `
       SELECT 
         rp.permission_id,
-        rp.branch_level_access
+        rp.branch_level_access,
+        rp.company_level_access
       FROM role_permissions rp
       WHERE rp.role_id = $1
     `;
@@ -150,9 +154,12 @@ class RolePermissionModel {
       pool.query(rolePermissionsQuery, [roleId])
     ]);
 
-    const rolePermMap = new Map<number, boolean>();
-    rolePerms.rows.forEach((rp: { permission_id: number; branch_level_access: boolean }) => {
-      rolePermMap.set(rp.permission_id, rp.branch_level_access);
+    const rolePermMap = new Map<number, { branch: boolean; company: boolean }>();
+    rolePerms.rows.forEach((rp: { permission_id: number; branch_level_access: boolean; company_level_access: boolean }) => {
+      rolePermMap.set(rp.permission_id, { 
+        branch: rp.branch_level_access, 
+        company: rp.company_level_access || false 
+      });
     });
 
     // Group by module
@@ -169,10 +176,12 @@ class RolePermissionModel {
       }
       
       const module = moduleMap.get(perm.module_code)!;
+      const permData = rolePermMap.get(perm.permission_id);
       module.actions.push({
         action: perm.action,
         has_permission: rolePermMap.has(perm.permission_id),
-        branch_level_access: rolePermMap.get(perm.permission_id) || false,
+        branch_level_access: permData?.branch || false,
+        company_level_access: permData?.company || false,
         permission_id: perm.permission_id
       });
     });
@@ -230,6 +239,22 @@ class RolePermissionModel {
   }
 
   /**
+   * Update company level access for all permissions of a specific module for a role
+   */
+  async updateCompanyAccessByModule(roleId: number, moduleCode: string, companyLevelAccess: boolean): Promise<void> {
+    const query = `
+      UPDATE role_permissions rp
+      SET company_level_access = $3,
+          updated_at = CURRENT_TIMESTAMP
+      FROM permissions p
+      WHERE rp.permission_id = p.id
+        AND rp.role_id = $1
+        AND p.module_code = $2;
+    `;
+    await pool.query(query, [roleId, moduleCode, companyLevelAccess]);
+  }
+
+  /**
    * Delete a role permission
    */
   async delete(id: number): Promise<void> {
@@ -246,7 +271,7 @@ class RolePermissionModel {
   /**
    * Bulk assign permissions to a role (replaces existing permissions)
    */
-  async bulkAssign(roleId: number, permissionConfigs: { permission_id: number; branch_level_access: boolean }[]): Promise<IRolePermission[]> {
+  async bulkAssign(roleId: number, permissionConfigs: { permission_id: number; branch_level_access: boolean; company_level_access?: boolean }[]): Promise<IRolePermission[]> {
     // Start transaction
     const client = await pool.connect();
     try {
@@ -259,8 +284,8 @@ class RolePermissionModel {
       const results: IRolePermission[] = [];
       for (const config of permissionConfigs) {
         const result = await client.query(
-          'INSERT INTO role_permissions (role_id, permission_id, branch_level_access) VALUES ($1, $2, $3) RETURNING *',
-          [roleId, config.permission_id, config.branch_level_access]
+          'INSERT INTO role_permissions (role_id, permission_id, branch_level_access, company_level_access) VALUES ($1, $2, $3, $4) RETURNING *',
+          [roleId, config.permission_id, config.branch_level_access, config.company_level_access || false]
         );
         results.push(result.rows[0]);
       }
@@ -299,9 +324,56 @@ class RolePermissionModel {
     const sourcePermissions = await this.findByRoleId(fromRoleId);
     const permissionConfigs = sourcePermissions.map(p => ({
       permission_id: p.permission_id,
-      branch_level_access: p.branch_level_access
+      branch_level_access: p.branch_level_access,
+      company_level_access: p.company_level_access
     }));
     return this.bulkAssign(toRoleId, permissionConfigs);
+  }
+
+  /**
+   * Get company access for a role
+   */
+  async getCompanyAccess(roleId: number): Promise<{ company_id: number; company_name: string }[]> {
+    const query = `
+      SELECT rca.company_id, c.name as company_name
+      FROM role_company_access rca
+      JOIN companies c ON rca.company_id = c.id
+      WHERE rca.role_id = $1
+      ORDER BY c.name
+    `;
+    const result = await pool.query(query, [roleId]);
+    return result.rows;
+  }
+
+  /**
+   * Update company access for a role (replaces existing)
+   */
+  async updateCompanyAccess(roleId: number, companyIds: number[]): Promise<{ company_id: number; company_name: string }[]> {
+    const client = await pool.connect();
+    try {
+      await client.query('BEGIN');
+
+      // Delete existing company access
+      await client.query('DELETE FROM role_company_access WHERE role_id = $1', [roleId]);
+
+      // Insert new company access
+      for (const companyId of companyIds) {
+        await client.query(
+          'INSERT INTO role_company_access (role_id, company_id) VALUES ($1, $2)',
+          [roleId, companyId]
+        );
+      }
+
+      await client.query('COMMIT');
+
+      // Return updated company access
+      return this.getCompanyAccess(roleId);
+    } catch (error) {
+      await client.query('ROLLBACK');
+      throw error;
+    } finally {
+      client.release();
+    }
   }
 }
 

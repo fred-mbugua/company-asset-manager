@@ -2,6 +2,7 @@ import AssetModel from '../models/asset.model';
 import AssetTagPrefixModel from '../models/assetTagPrefix.model';
 import ActionLogService from './actionLog.service';
 import logger from '../utils/logger';
+import { AccessFilterContext } from '../utils/accessFilter.util';
 
 class AssetService {
     async create(assetData: any, userId: number) {
@@ -26,8 +27,8 @@ class AssetService {
         return newAsset;
     }
 
-    async getAll() {
-        return AssetModel.findAll();
+    async getAll(permissionContext?: AccessFilterContext) {
+        return AssetModel.findAll(1, 10000, permissionContext);
     }
     
     async getById(id: number) {
@@ -70,8 +71,8 @@ class AssetService {
         return { message: 'Asset deleted successfully.' };
     }
 
-    async search(query: any) {
-        return AssetModel.search(query);
+    async search(query: any, permissionContext?: AccessFilterContext) {
+        return AssetModel.search(query, permissionContext);
     }
 
     async statusList() {

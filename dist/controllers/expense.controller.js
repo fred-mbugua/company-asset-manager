@@ -7,6 +7,7 @@ const services_1 = require("../services");
 const response_1 = require("../utils/response");
 const logger_1 = __importDefault(require("../utils/logger"));
 const models_1 = require("../models");
+const accessFilter_util_1 = __importDefault(require("../utils/accessFilter.util"));
 class ExpenseController {
     async addExpense(req, res) {
         var _a;
@@ -21,8 +22,11 @@ class ExpenseController {
         }
     }
     async getAll(req, res) {
+        var _a, _b;
         try {
-            const expenses = await services_1.ExpenseService.getAll();
+            // Build permission context using req.user object
+            const permissionContext = await accessFilter_util_1.default.buildContext(req.user, { branchLevelAccess: ((_a = req.permissionContext) === null || _a === void 0 ? void 0 : _a.branchLevelAccess) || false, userBranchId: ((_b = req.user) === null || _b === void 0 ? void 0 : _b.branch_id) || null });
+            const expenses = await services_1.ExpenseService.getAll(permissionContext);
             (0, response_1.successResponse)(res, 200, 'Expenses retrieved successfully', expenses);
         }
         catch (error) {

@@ -137,12 +137,26 @@ export class AuthService {
 
   private generateAccessToken(user: any) {
     // console.log('Generating access token for user:', user);
-    const payload = { id: user.id, email: user.email, role: user.role, role_id: user.role_id };
+    const payload = { 
+      id: user.id, 
+      email: user.email, 
+      role: user.role, 
+      role_id: user.role_id,
+      branch_id: user.branch_id || null,
+      company_id: user.company_id || null
+    };
     return jwt.sign(payload, jwtConfig.JWT_ACCESS_SECRET_KEY, { expiresIn: jwtConfig.JWT_ACCESS_EXPIRATION_TIME });
   }
 
   private generateRefreshToken(user: any) {
-    const payload = { id: user.id, email: user.email, role: user.role, role_id: user.role_id };
+    const payload = { 
+      id: user.id, 
+      email: user.email, 
+      role: user.role, 
+      role_id: user.role_id,
+      branch_id: user.branch_id || null,
+      company_id: user.company_id || null
+    };
     return jwt.sign(payload, jwtConfig.JWT_REFRESH_SECRET_KEY, { expiresIn: jwtConfig.JWT_REFRESH_EXPIRATION_TIME });
   }
 

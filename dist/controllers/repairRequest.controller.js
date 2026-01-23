@@ -6,6 +6,8 @@ Object.defineProperty(exports, "__esModule", { value: true });
 const repairRequest_service_1 = __importDefault(require("../services/repairRequest.service"));
 const response_1 = require("../utils/response");
 const logger_1 = __importDefault(require("../utils/logger"));
+const accessFilter_util_1 = __importDefault(require("../utils/accessFilter.util"));
+const rolePermission_service_1 = __importDefault(require("../services/rolePermission.service"));
 // ============================================================================
 // REPAIR REQUEST CONTROLLER
 // ============================================================================
@@ -50,7 +52,7 @@ class RepairRequestController {
      * Get all repair requests with filters
      */
     async getAll(req, res) {
-        var _a;
+        var _a, _b, _c;
         try {
             const page = parseInt(req.query.page) || 1;
             const limit = parseInt(req.query.limit) || 20;
@@ -66,7 +68,9 @@ class RepairRequestController {
                 date_from: req.query.date_from,
                 date_to: req.query.date_to
             };
-            const result = await repairRequest_service_1.default.getRequests(filters, page, limit);
+            // Build permission context using req.user object
+            const permissionContext = await accessFilter_util_1.default.buildContext(req.user, { branchLevelAccess: ((_b = req.permissionContext) === null || _b === void 0 ? void 0 : _b.branchLevelAccess) || false, userBranchId: ((_c = req.user) === null || _c === void 0 ? void 0 : _c.branch_id) || null });
+            const result = await repairRequest_service_1.default.getRequests(filters, page, limit, permissionContext);
             (0, response_1.successResponse)(res, 200, 'Repair requests retrieved successfully', result);
         }
         catch (error) {
@@ -426,11 +430,29 @@ class RepairRequestController {
      * Get dashboard statistics
      */
     async getStatistics(req, res) {
-        var _a;
+        var _a, _b, _c, _d, _e, _f;
         try {
             const userId = req.query.my_stats === 'true' ? (_a = req.user) === null || _a === void 0 ? void 0 : _a.id : undefined;
-            const branchId = req.query.branch_id ? parseInt(req.query.branch_id) : undefined;
-            const stats = await repairRequest_service_1.default.getStatistics(userId, branchId);
+            // Get branch level access - from permission context or lookup from DB
+            let branchLevelAccess = (_b = req.permissionContext) === null || _b === void 0 ? void 0 : _b.branchLevelAccess;
+            if (branchLevelAccess === undefined && ((_c = req.user) === null || _c === void 0 ? void 0 : _c.role_id)) {
+                try {
+                    const permissions = await rolePermission_service_1.default.getPermissionsGroupedByModule(req.user.role_id);
+                    branchLevelAccess = permissions.some(p => p.actions.some(a => a.has_permission && a.branch_level_access));
+                }
+                catch (error) {
+                    logger_1.default.error('Error fetching branch level access:', error);
+                    branchLevelAccess = false;
+                }
+            }
+            // Build access filter context for branch filtering
+            const permissionContext = await accessFilter_util_1.default.buildContext(req.user, {
+                branchLevelAccess: branchLevelAccess || false,
+                userBranchId: ((_d = req.user) === null || _d === void 0 ? void 0 : _d.branch_id) || null
+            });
+            logger_1.default.info(`getStatistics - User: ${(_e = req.user) === null || _e === void 0 ? void 0 : _e.id}, Branch: ${(_f = req.user) === null || _f === void 0 ? void 0 : _f.branch_id}, branchLevelAccess: ${branchLevelAccess}`);
+            logger_1.default.info(`getStatistics - permissionContext: ${JSON.stringify(permissionContext)}`);
+            const stats = await repairRequest_service_1.default.getStatistics(userId, permissionContext);
             (0, response_1.successResponse)(res, 200, 'Statistics retrieved successfully', stats);
         }
         catch (error) {

@@ -4,6 +4,35 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
 };
 Object.defineProperty(exports, "__esModule", { value: true });
 const database_1 = __importDefault(require("../config/database"));
+// Helper function to build access filter for expenses (joins to assets for branch filtering)
+function buildAccessFilter(AccessFilterContext) {
+    const conditions = [];
+    const params = [];
+    if (!AccessFilterContext) {
+        return { conditions, params };
+    }
+    // Admin users with no branch/company restrictions see everything
+    if (AccessFilterContext.isAdmin &&
+        !AccessFilterContext.branchLevelAccess &&
+        !AccessFilterContext.companyLevelAccess) {
+        return { conditions, params };
+    }
+    // Branch level access - filter by asset branch_id
+    if (AccessFilterContext.branchLevelAccess &&
+        AccessFilterContext.accessibleBranchIds &&
+        AccessFilterContext.accessibleBranchIds.length > 0) {
+        params.push(AccessFilterContext.accessibleBranchIds);
+        conditions.push(`a.branch_id = ANY($${params.length})`);
+    }
+    // Company level access - filter by asset company (through branch)
+    if (AccessFilterContext.companyLevelAccess &&
+        AccessFilterContext.accessibleCompanyIds &&
+        AccessFilterContext.accessibleCompanyIds.length > 0) {
+        params.push(AccessFilterContext.accessibleCompanyIds);
+        conditions.push(`b.company_id = ANY($${params.length})`);
+    }
+    return { conditions, params };
+}
 class ExpenseModel {
     async create(expenseData) {
         // console.log('Creating expense with data:', expenseData);
@@ -64,6 +93,33 @@ class ExpenseModel {
     async findallAssets() {
         const query = 'SELECT * FROM expenses ORDER BY date DESC';
         const result = await database_1.default.query(query);
+        return result.rows;
+    }
+    async findAll(AccessFilterContext) {
+        const { conditions, params } = buildAccessFilter(AccessFilterContext);
+        let query = `
+      SELECT 
+        e.*,
+        a.asset_tag,
+        a.manufacturer,
+        a.model,
+        a.branch_id,
+        et.name as expense_type_name,
+        emp.first_name || ' ' || emp.last_name AS assigned_employee_name,
+        b.name AS branch_name,
+        c.name AS company_name
+      FROM expenses e
+      LEFT JOIN assets a ON e.asset_id = a.id
+      LEFT JOIN branches b ON a.branch_id = b.id
+      LEFT JOIN companies c ON b.company_id = c.id
+      LEFT JOIN expense_types et ON e.expense_type_id = et.id
+      LEFT JOIN employees emp ON e.assigned_employee_id = emp.id
+    `;
+        if (conditions.length > 0) {
+            query += ` WHERE ${conditions.join(' AND ')}`;
+        }
+        query += ` ORDER BY e.date DESC`;
+        const result = await database_1.default.query(query, params);
         return result.rows;
     }
     async update(id, updateData) {

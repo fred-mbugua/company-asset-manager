@@ -3,6 +3,7 @@ import { AuthenticatedRequest } from '../types';
 import RolePermissionService from '../services/rolePermission.service';
 import { PermissionAction } from '../models/permission.model';
 import logger from '../utils/logger';
+import AccessFilterUtil, { AccessFilterContext } from '../utils/accessFilter.util';
 
 /**
  * Permission context stored in request after permission check
@@ -10,7 +11,12 @@ import logger from '../utils/logger';
 export interface PermissionContext {
   hasAccess: boolean;
   branchLevelAccess: boolean;
+  companyLevelAccess: boolean;
   userBranchId: number | null;
+  userCompanyId: number | null;
+  accessibleBranchIds?: number[];
+  accessibleCompanyIds?: number[];
+  isAdmin: boolean;
 }
 
 /**
@@ -144,7 +150,10 @@ export const checkPermission = (moduleCode: string, action: PermissionAction) =>
         req.permissionContext = {
           hasAccess: true,
           branchLevelAccess: false,
-          userBranchId: user.branch_id || null
+          companyLevelAccess: false,
+          userBranchId: user.branch_id || null,
+          userCompanyId: user.company_id || null,
+          isAdmin: true
         };
         return next();
       }
@@ -165,11 +174,22 @@ export const checkPermission = (moduleCode: string, action: PermissionAction) =>
         });
       }
 
+      // Build full access context with accessible branch and company IDs
+      const accessContext = await AccessFilterUtil.buildContext(user, {
+        branchLevelAccess: result.branchLevelAccess,
+        userBranchId: user.branch_id || null
+      });
+
       // Store permission context for use in controllers
       req.permissionContext = {
         hasAccess: true,
-        branchLevelAccess: result.branchLevelAccess,
-        userBranchId: user.branch_id || null
+        branchLevelAccess: accessContext.branchLevelAccess,
+        companyLevelAccess: accessContext.companyLevelAccess,
+        userBranchId: accessContext.branchId,
+        userCompanyId: accessContext.companyId,
+        accessibleBranchIds: accessContext.accessibleBranchIds,
+        accessibleCompanyIds: accessContext.accessibleCompanyIds,
+        isAdmin: false
       };
 
       next();
@@ -209,7 +229,10 @@ export const autoCheckPermission = async (req: PermissionRequest, res: Response,
       req.permissionContext = {
         hasAccess: true,
         branchLevelAccess: false,
-        userBranchId: user.branch_id || null
+        companyLevelAccess: false,
+        userBranchId: user.branch_id || null,
+        userCompanyId: user.company_id || null,
+        isAdmin: true
       };
       return next();
     }
@@ -217,11 +240,20 @@ export const autoCheckPermission = async (req: PermissionRequest, res: Response,
     const moduleCode = getModuleCodeForRoute(req.path);
     
     if (!moduleCode) {
-      // Route not mapped - allow access (fallback to role-based auth)
-      req.permissionContext = {
-        hasAccess: true,
+      // Route not mapped - build access context anyway for data filtering
+      const accessContext = await AccessFilterUtil.buildContext(user, {
         branchLevelAccess: false,
         userBranchId: user.branch_id || null
+      });
+      req.permissionContext = {
+        hasAccess: true,
+        branchLevelAccess: accessContext.branchLevelAccess,
+        companyLevelAccess: accessContext.companyLevelAccess,
+        userBranchId: accessContext.branchId,
+        userCompanyId: accessContext.companyId,
+        accessibleBranchIds: accessContext.accessibleBranchIds,
+        accessibleCompanyIds: accessContext.accessibleCompanyIds,
+        isAdmin: false
       };
       return next();
     }
@@ -243,10 +275,21 @@ export const autoCheckPermission = async (req: PermissionRequest, res: Response,
       });
     }
 
-    req.permissionContext = {
-      hasAccess: true,
+    // Build full access context with accessible branch and company IDs
+    const accessContext = await AccessFilterUtil.buildContext(user, {
       branchLevelAccess: result.branchLevelAccess,
       userBranchId: user.branch_id || null
+    });
+
+    req.permissionContext = {
+      hasAccess: true,
+      branchLevelAccess: accessContext.branchLevelAccess,
+      companyLevelAccess: accessContext.companyLevelAccess,
+      userBranchId: accessContext.branchId,
+      userCompanyId: accessContext.companyId,
+      accessibleBranchIds: accessContext.accessibleBranchIds,
+      accessibleCompanyIds: accessContext.accessibleCompanyIds,
+      isAdmin: false
     };
 
     next();
@@ -276,7 +319,10 @@ export const checkAnyPermission = (permissions: { moduleCode: string; action: Pe
         req.permissionContext = {
           hasAccess: true,
           branchLevelAccess: false,
-          userBranchId: user.branch_id || null
+          companyLevelAccess: false,
+          userBranchId: user.branch_id || null,
+          userCompanyId: user.company_id || null,
+          isAdmin: true
         };
         return next();
       }
@@ -305,10 +351,21 @@ export const checkAnyPermission = (permissions: { moduleCode: string; action: Pe
         });
       }
 
-      req.permissionContext = {
-        hasAccess: true,
+      // Build full access context
+      const accessContext = await AccessFilterUtil.buildContext(user, {
         branchLevelAccess,
         userBranchId: user.branch_id || null
+      });
+
+      req.permissionContext = {
+        hasAccess: true,
+        branchLevelAccess: accessContext.branchLevelAccess,
+        companyLevelAccess: accessContext.companyLevelAccess,
+        userBranchId: accessContext.branchId,
+        userCompanyId: accessContext.companyId,
+        accessibleBranchIds: accessContext.accessibleBranchIds,
+        accessibleCompanyIds: accessContext.accessibleCompanyIds,
+        isAdmin: false
       };
 
       next();
@@ -342,7 +399,10 @@ export const checkAllPermissions = (permissions: { moduleCode: string; action: P
         req.permissionContext = {
           hasAccess: true,
           branchLevelAccess: false,
-          userBranchId: user.branch_id || null
+          companyLevelAccess: false,
+          userBranchId: user.branch_id || null,
+          userCompanyId: user.company_id || null,
+          isAdmin: true
         };
         return next();
       }
@@ -373,10 +433,21 @@ export const checkAllPermissions = (permissions: { moduleCode: string; action: P
         });
       }
 
-      req.permissionContext = {
-        hasAccess: true,
+      // Build full access context
+      const accessContext = await AccessFilterUtil.buildContext(user, {
         branchLevelAccess,
         userBranchId: user.branch_id || null
+      });
+
+      req.permissionContext = {
+        hasAccess: true,
+        branchLevelAccess: accessContext.branchLevelAccess,
+        companyLevelAccess: accessContext.companyLevelAccess,
+        userBranchId: accessContext.branchId,
+        userCompanyId: accessContext.companyId,
+        accessibleBranchIds: accessContext.accessibleBranchIds,
+        accessibleCompanyIds: accessContext.accessibleCompanyIds,
+        isAdmin: false
       };
 
       next();
@@ -393,6 +464,7 @@ export const checkAllPermissions = (permissions: { moduleCode: string; action: P
 /**
  * Helper to apply branch-level filtering to queries
  * Use in controllers when branchLevelAccess is true
+ * @deprecated Use AccessFilterUtil instead
  */
 export function applyBranchFilter<T extends object>(
   query: T, 
@@ -411,6 +483,7 @@ export function applyBranchFilter<T extends object>(
 
 /**
  * Get branch filter SQL condition
+ * @deprecated Use AccessFilterUtil instead
  */
 export function getBranchFilterSQL(
   permissionContext: PermissionContext | undefined,
@@ -426,4 +499,67 @@ export function getBranchFilterSQL(
     condition: ` AND ${field} = $BRANCH_ID`,
     value: permissionContext.userBranchId 
   };
+}
+
+/**
+ * Get access filter for branch and company
+ * Returns SQL conditions and values for filtering queries
+ */
+export function getAccessFilter(
+  permissionContext: PermissionContext | undefined,
+  config: {
+    branchTable?: string;
+    branchField?: string;
+    companyTable?: string;
+    companyField?: string;
+  } = {},
+  startParamIndex: number = 1
+): { conditions: string[]; values: any[]; nextParamIndex: number } {
+  const conditions: string[] = [];
+  const values: any[] = [];
+  let paramIndex = startParamIndex;
+
+  if (!permissionContext || permissionContext.isAdmin) {
+    return { conditions, values, nextParamIndex: paramIndex };
+  }
+
+  // Branch level filtering
+  if (permissionContext.branchLevelAccess && permissionContext.accessibleBranchIds && permissionContext.accessibleBranchIds.length > 0) {
+    const branchTable = config.branchTable || '';
+    const branchField = config.branchField || 'branch_id';
+    const fullField = branchTable ? `${branchTable}.${branchField}` : branchField;
+
+    if (permissionContext.accessibleBranchIds.length === 1) {
+      conditions.push(`${fullField} = $${paramIndex}`);
+      values.push(permissionContext.accessibleBranchIds[0]);
+      paramIndex++;
+    } else {
+      const placeholders = permissionContext.accessibleBranchIds.map((_, i) => `$${paramIndex + i}`).join(', ');
+      conditions.push(`${fullField} IN (${placeholders})`);
+      values.push(...permissionContext.accessibleBranchIds);
+      paramIndex += permissionContext.accessibleBranchIds.length;
+    }
+  }
+
+  // Company level filtering
+  if (permissionContext.companyLevelAccess && permissionContext.accessibleCompanyIds && permissionContext.accessibleCompanyIds.length > 0) {
+    if (config.companyTable || config.companyField) {
+      const companyTable = config.companyTable || '';
+      const companyField = config.companyField || 'company_id';
+      const fullField = companyTable ? `${companyTable}.${companyField}` : companyField;
+
+      if (permissionContext.accessibleCompanyIds.length === 1) {
+        conditions.push(`(${fullField} = $${paramIndex} OR ${fullField} IS NULL)`);
+        values.push(permissionContext.accessibleCompanyIds[0]);
+        paramIndex++;
+      } else {
+        const placeholders = permissionContext.accessibleCompanyIds.map((_, i) => `$${paramIndex + i}`).join(', ');
+        conditions.push(`(${fullField} IN (${placeholders}) OR ${fullField} IS NULL)`);
+        values.push(...permissionContext.accessibleCompanyIds);
+        paramIndex += permissionContext.accessibleCompanyIds.length;
+      }
+    }
+  }
+
+  return { conditions, values, nextParamIndex: paramIndex };
 }

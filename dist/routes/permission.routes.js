@@ -50,4 +50,9 @@ router.put('/roles/:roleId/bulk', (0, auth_middleware_1.authorize)(['Admin']), (
 router.post('/roles/:roleId/clone', (0, auth_middleware_1.authorize)(['Admin']), (0, express_async_handler_1.default)(permission_controller_1.default.cloneRolePermissions));
 // Remove a permission from a role
 router.delete('/roles/:roleId/:permissionId', (0, auth_middleware_1.authorize)(['Admin']), (0, express_async_handler_1.default)(permission_controller_1.default.removeRolePermission));
+// ==================== COMPANY ACCESS ROUTES ====================
+// Get company access for a role
+router.get('/roles/:roleId/company-access', (0, express_async_handler_1.default)(permission_controller_1.default.getRoleCompanyAccess));
+// Update company access for a role
+router.put('/roles/:roleId/company-access', (0, auth_middleware_1.authorize)(['Admin']), (0, express_async_handler_1.default)(permission_controller_1.default.updateRoleCompanyAccess));
 exports.default = router;

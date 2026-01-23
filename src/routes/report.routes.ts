@@ -6,18 +6,18 @@ import asyncHandler from 'express-async-handler';
 
 const router = Router();
 
-// Asset reports
-router.get('/assets', authenticate, checkPermission('REPORTS', 'read'), asyncHandler(ReportController.getFilteredAssets));
-router.get('/assets/all', authenticate, checkPermission('REPORTS', 'read'), asyncHandler(ReportController.getAssetsByEmployee));
-router.get('/assets/assignments', authenticate, checkPermission('REPORTS', 'read'), asyncHandler(ReportController.getAssetsByEmployee));
-router.get('/expenses/all', authenticate, checkPermission('REPORTS', 'read'), asyncHandler(ReportController.getAssetsByEmployee));
-router.get('/assets/employee/:employeeId', authenticate, checkPermission('REPORTS', 'read'), asyncHandler(ReportController.getAssetsByEmployee));
-router.get('/assets/branch/:location', authenticate, checkPermission('REPORTS', 'read'), asyncHandler(ReportController.getAssetsByBranch));
-router.get('/expenses/time-period', authenticate, checkPermission('REPORTS', 'read'), asyncHandler(ReportController.getExpensesByTimePeriod));
+// Asset reports - use REPORTS_ASSETS permission
+router.get('/assets', authenticate, checkPermission('REPORTS_ASSETS', 'read'), asyncHandler(ReportController.getFilteredAssets));
+router.get('/assets/all', authenticate, checkPermission('REPORTS_ASSETS', 'read'), asyncHandler(ReportController.getAssetsByEmployee));
+router.get('/assets/assignments', authenticate, checkPermission('REPORTS_ASSETS', 'read'), asyncHandler(ReportController.getAssetsByEmployee));
+router.get('/expenses/all', authenticate, checkPermission('REPORTS_EXPENSES', 'read'), asyncHandler(ReportController.getAssetsByEmployee));
+router.get('/assets/employee/:employeeId', authenticate, checkPermission('REPORTS_ASSETS', 'read'), asyncHandler(ReportController.getAssetsByEmployee));
+router.get('/assets/branch/:location', authenticate, checkPermission('REPORTS_ASSETS', 'read'), asyncHandler(ReportController.getAssetsByBranch));
+router.get('/expenses/time-period', authenticate, checkPermission('REPORTS_EXPENSES', 'read'), asyncHandler(ReportController.getExpensesByTimePeriod));
 router.get(
     '/assets/export', 
     authenticate, 
-    checkPermission('REPORTS', 'read'),
+    checkPermission('REPORTS_ASSETS', 'read'),
     asyncHandler(ReportController.exportAssetReport)
 );
 
@@ -26,7 +26,7 @@ router.get(
 router.get(
     '/expenses', 
     authenticate,
-    checkPermission('REPORTS', 'read'),
+    checkPermission('REPORTS_EXPENSES', 'read'),
     asyncHandler(ReportController.getExpenseReportData)
 );
 
@@ -35,7 +35,7 @@ router.get(
 router.get(
     '/expenses/export', 
     authenticate, 
-    checkPermission('REPORTS', 'read'),
+    checkPermission('REPORTS_EXPENSES', 'read'),
     asyncHandler(ReportController.exportExpenseReport)
 );
 
@@ -44,7 +44,7 @@ router.get(
 router.get(
     '/assignments', 
     authenticate,
-    checkPermission('REPORTS', 'read'),
+    checkPermission('REPORTS_ASSIGNMENTS', 'read'),
     asyncHandler(ReportController.getAssignmentReportData) 
 );
 
@@ -54,7 +54,7 @@ router.get(
 router.get(
     '/assignments/export', 
     authenticate,
-    checkPermission('REPORTS', 'read'),
+    checkPermission('REPORTS_ASSIGNMENTS', 'read'),
     asyncHandler(ReportController.exportAssignmentReport)
 );
 
@@ -81,7 +81,7 @@ router.get(
 router.get(
     '/repair-summary', 
     authenticate,
-    checkPermission('REPORTS', 'read'),
+    checkPermission('REPORTS_REPAIR_SUMMARY', 'read'),
     asyncHandler(ReportController.getRepairSummaryReportData) 
 );
 
@@ -90,7 +90,7 @@ router.get(
 router.get(
     '/repair-summary/asset/:assetId',
     authenticate,
-    checkPermission('REPORTS', 'read'),
+    checkPermission('REPORTS_REPAIR_SUMMARY', 'read'),
     asyncHandler(ReportController.getAssetRepairExpenses)
 );
 
@@ -99,7 +99,7 @@ router.get(
 router.get(
     '/repair-summary/export', 
     authenticate,
-    checkPermission('REPORTS', 'read'),
+    checkPermission('REPORTS_REPAIR_SUMMARY', 'read'),
     asyncHandler(ReportController.exportRepairSummaryReport)
 );
 

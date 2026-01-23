@@ -4,6 +4,8 @@ import logger from '../utils/logger';
 import AssignmentService from '../services/assignment.service';
 import AssignmentModel from '../models/assignment.model';
 import { AuthenticatedRequest } from '../types';
+import { PermissionRequest } from '../middlewares/permission.middleware';
+import AccessFilterUtil from '../utils/accessFilter.util';
 
 export class AssignmentController {
 
@@ -34,9 +36,15 @@ export class AssignmentController {
         }
     }
 
-    async getAll(req: Request, res: Response) {
+    async getAll(req: PermissionRequest, res: Response) {
         try {
-            const assignments = await AssignmentService.getAll();
+            // Build permission context using req.user object
+            const permissionContext = await AccessFilterUtil.buildContext(
+                req.user,
+                { branchLevelAccess: req.permissionContext?.branchLevelAccess || false, userBranchId: req.user?.branch_id || null }
+            );
+
+            const assignments = await AssignmentService.getAll(permissionContext);
             logger.info('All assignments retrieved successfully');
             successResponse(res, 200, 'Assignments retrieved successfully', assignments);
         } catch (error) {

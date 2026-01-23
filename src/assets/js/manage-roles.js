@@ -401,10 +401,18 @@ document.addEventListener('DOMContentLoaded', () => {
     const savePermissionsBtn = document.getElementById('save-permissions-btn');
     const cancelPermissionsBtn = document.getElementById('cancel-permissions-btn');
     
+    // Access Control Elements
+    const branchLevelAccessToggle = document.getElementById('branch-level-access-toggle');
+    const companyLevelAccessToggle = document.getElementById('company-level-access-toggle');
+    const companySelectionSection = document.getElementById('company-selection-section');
+    const companyAccessList = document.getElementById('company-access-list');
+    
     let currentPermissionsRoleId = null;
     let allModules = [];
     let allPermissions = [];
     let currentRolePermissions = [];
+    let allCompanies = [];
+    let currentRoleCompanyAccess = [];
 
     /**
      * Open permissions modal for a role
@@ -419,19 +427,44 @@ document.addEventListener('DOMContentLoaded', () => {
         permissionsLoading.style.display = 'block';
         permissionsGrid.innerHTML = '';
         
+        // Reset access control toggles
+        if (branchLevelAccessToggle) branchLevelAccessToggle.checked = false;
+        if (companyLevelAccessToggle) companyLevelAccessToggle.checked = false;
+        if (companySelectionSection) companySelectionSection.style.display = 'none';
+        if (companyAccessList) companyAccessList.innerHTML = '';
+        
         try {
-            // Fetch modules, all permissions, and role permissions in parallel
-            const [modulesRes, permissionsRes, rolePermissionsRes] = await Promise.all([
+            // Fetch modules, all permissions, role permissions, companies, and role company access
+            const [modulesRes, permissionsRes, rolePermissionsRes, companiesRes, roleCompanyAccessRes] = await Promise.all([
                 API.get('/permissions/modules?hierarchy=true'),
                 API.get('/permissions'),
-                API.get(`/permissions/roles/${roleId}`)
+                API.get(`/permissions/roles/${roleId}`),
+                API.get('/companies'),
+                API.get(`/permissions/roles/${roleId}/company-access`).catch(() => ({ data: [] }))
             ]);
             
             allModules = modulesRes.data || [];
             allPermissions = permissionsRes.data || [];
             currentRolePermissions = rolePermissionsRes.data || [];
+            allCompanies = (companiesRes.data || []).filter(c => c.is_active !== false);
+            currentRoleCompanyAccess = roleCompanyAccessRes.data || [];
+            
+            // Load access control settings from first permission (they should all be the same)
+            if (currentRolePermissions.length > 0) {
+                const firstPerm = currentRolePermissions[0];
+                if (branchLevelAccessToggle) {
+                    branchLevelAccessToggle.checked = firstPerm.branch_level_access === true;
+                }
+                if (companyLevelAccessToggle) {
+                    companyLevelAccessToggle.checked = firstPerm.company_level_access === true;
+                    if (firstPerm.company_level_access === true && companySelectionSection) {
+                        companySelectionSection.style.display = 'block';
+                    }
+                }
+            }
             
             renderPermissionsGrid();
+            renderCompanyAccessList();
         } catch (error) {
             console.error('Failed to load permissions:', error);
             permissionsGrid.innerHTML = `
@@ -444,6 +477,46 @@ document.addEventListener('DOMContentLoaded', () => {
             permissionsLoading.style.display = 'none';
         }
     };
+    
+    /**
+     * Render the company access list
+     */
+    const renderCompanyAccessList = () => {
+        if (!companyAccessList) return;
+        
+        if (!allCompanies.length) {
+            companyAccessList.innerHTML = '<div class="company-list-empty">No companies found.</div>';
+            return;
+        }
+        
+        // Create a set of currently accessible company IDs
+        const accessibleCompanyIds = new Set(currentRoleCompanyAccess.map(c => c.company_id));
+        
+        let html = '';
+        allCompanies.forEach(company => {
+            const isChecked = accessibleCompanyIds.has(company.id);
+            html += `
+                <div class="company-list-item">
+                    <input type="checkbox" 
+                           id="company-access-${company.id}" 
+                           data-company-id="${company.id}"
+                           ${isChecked ? 'checked' : ''}>
+                    <label for="company-access-${company.id}">${escapeHtml(company.name)}</label>
+                </div>
+            `;
+        });
+        
+        companyAccessList.innerHTML = html;
+    };
+    
+    // Toggle company selection visibility
+    if (companyLevelAccessToggle) {
+        companyLevelAccessToggle.addEventListener('change', () => {
+            if (companySelectionSection) {
+                companySelectionSection.style.display = companyLevelAccessToggle.checked ? 'block' : 'none';
+            }
+        });
+    }
 
     /**
      * Render the permissions grid
@@ -569,6 +642,10 @@ document.addEventListener('DOMContentLoaded', () => {
 
         const permissions = [];
         
+        // Get access control settings
+        const branchLevelAccess = branchLevelAccessToggle ? branchLevelAccessToggle.checked : false;
+        const companyLevelAccess = companyLevelAccessToggle ? companyLevelAccessToggle.checked : false;
+        
         permissionsGrid.querySelectorAll('.permission-toggle').forEach(btn => {
             const permissionId = btn.dataset.permissionId;
             const isActive = btn.classList.contains('active');
@@ -576,16 +653,35 @@ document.addEventListener('DOMContentLoaded', () => {
             if (permissionId && isActive) {
                 permissions.push({
                     permission_id: parseInt(permissionId),
-                    branch_level_access: false // Default, can be enhanced later
+                    branch_level_access: branchLevelAccess,
+                    company_level_access: companyLevelAccess
                 });
             }
         });
+        
+        // Get selected companies for company access
+        const companyAccess = [];
+        if (companyLevelAccess && companyAccessList) {
+            companyAccessList.querySelectorAll('input[type="checkbox"]:checked').forEach(checkbox => {
+                companyAccess.push(parseInt(checkbox.dataset.companyId));
+            });
+        }
 
         try {
             savePermissionsBtn.disabled = true;
-            savePermissionsBtn.textContent = 'Saving...';
+            savePermissionsBtn.innerHTML = '<i class="uil-spinner-alt spin"></i> Saving...';
 
-            await API.put(`/permissions/roles/${currentPermissionsRoleId}/bulk`, { permissions });
+            // Save permissions
+            await API.put(`/permissions/roles/${currentPermissionsRoleId}/bulk`, { 
+                permissions,
+                branch_level_access: branchLevelAccess,
+                company_level_access: companyLevelAccess
+            });
+            
+            // Save company access if company level access is enabled
+            await API.put(`/permissions/roles/${currentPermissionsRoleId}/company-access`, {
+                company_ids: companyAccess
+            });
             
             AppNotify.success('Permissions saved successfully!');
             closePermissionsModal();
@@ -594,7 +690,7 @@ document.addEventListener('DOMContentLoaded', () => {
             AppNotify.error(error.response?.data?.message || 'Failed to save permissions.');
         } finally {
             savePermissionsBtn.disabled = false;
-            savePermissionsBtn.textContent = 'Save Permissions';
+            savePermissionsBtn.innerHTML = '<i class="uil-save"></i> Save Permissions';
         }
     };
 

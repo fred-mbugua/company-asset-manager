@@ -3,6 +3,7 @@ import ActionLogService from './actionLog.service';
 import AssignmentReportModel, { IAssignmentReportFilters } from '../models/assignmentReport.model';
 import AssetModel from '../models/asset.model';
 import logger from '../utils/logger';
+import { AccessFilterContext } from '../utils/accessFilter.util';
 
 class AssignmentService {
     async assignAsset(assignmentData: any, userId: number) {
@@ -132,8 +133,8 @@ class AssignmentService {
         return updatedAssignment;
     }
 
-    async getAll() {
-        return AssignmentModel.findAll();
+    async getAll(permissionContext?: AccessFilterContext) {
+        return AssignmentModel.findAll(permissionContext);
     }
 
     async getById(id: number) {

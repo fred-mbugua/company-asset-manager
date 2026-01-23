@@ -7,10 +7,17 @@ exports.AssetController = void 0;
 const asset_service_1 = __importDefault(require("../services/asset.service"));
 const response_1 = require("../utils/response");
 const logger_1 = __importDefault(require("../utils/logger"));
+const accessFilter_util_1 = __importDefault(require("../utils/accessFilter.util"));
 class AssetController {
     async getAll(req, res) {
+        var _a, _b, _c, _d;
         try {
-            const assets = await asset_service_1.default.getAll();
+            logger_1.default.info(`Asset getAll - User: ${(_a = req.user) === null || _a === void 0 ? void 0 : _a.id}, Branch: ${(_b = req.user) === null || _b === void 0 ? void 0 : _b.branch_id}`);
+            logger_1.default.info(`Asset getAll - PermissionContext: ${JSON.stringify(req.permissionContext)}`);
+            // Build permission context using req.user object
+            const permissionContext = await accessFilter_util_1.default.buildContext(req.user, { branchLevelAccess: ((_c = req.permissionContext) === null || _c === void 0 ? void 0 : _c.branchLevelAccess) || false, userBranchId: ((_d = req.user) === null || _d === void 0 ? void 0 : _d.branch_id) || null });
+            logger_1.default.info(`Asset getAll - Built AccessFilterContext: ${JSON.stringify(permissionContext)}`);
+            const assets = await asset_service_1.default.getAll(permissionContext);
             (0, response_1.successResponse)(res, 200, 'Assets retrieved successfully', assets);
         }
         catch (error) {
@@ -66,8 +73,11 @@ class AssetController {
         }
     }
     async search(req, res) {
+        var _a, _b;
         try {
-            const assets = await asset_service_1.default.search(req.query);
+            // Build permission context using req.user object
+            const permissionContext = await accessFilter_util_1.default.buildContext(req.user, { branchLevelAccess: ((_a = req.permissionContext) === null || _a === void 0 ? void 0 : _a.branchLevelAccess) || false, userBranchId: ((_b = req.user) === null || _b === void 0 ? void 0 : _b.branch_id) || null });
+            const assets = await asset_service_1.default.search(req.query, permissionContext);
             (0, response_1.successResponse)(res, 200, 'Assets retrieved successfully', assets);
         }
         catch (error) {

@@ -138,4 +138,19 @@ router.delete(
   asyncHandler(PermissionController.removeRolePermission)
 );
 
+// ==================== COMPANY ACCESS ROUTES ====================
+
+// Get company access for a role
+router.get(
+  '/roles/:roleId/company-access',
+  asyncHandler(PermissionController.getRoleCompanyAccess)
+);
+
+// Update company access for a role
+router.put(
+  '/roles/:roleId/company-access',
+  authorize(['Admin']),
+  asyncHandler(PermissionController.updateRoleCompanyAccess)
+);
+
 export default router;

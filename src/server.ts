@@ -37,7 +37,7 @@ import { mainRoutes, viewsRoutes } from './routes';
 import { PORT } from './config';
 import logger from './utils/logger';
 import 'express-async-errors'; // Handles async errors in Express
-import { currentPathMiddleware, systemConfigMiddleware, loadUserPermissions } from './middlewares';
+import { currentPathMiddleware, systemConfigMiddleware } from './middlewares';
 
 
 
@@ -70,10 +70,7 @@ app.use('/assets', express.static(path.join(__dirname, '..', 'src', 'assets')));
 // API Routes
 app.use('/api', mainRoutes);
 
-// Apply loadUserPermissions middleware before view routes for dynamic menu visibility
-app.use(loadUserPermissions);
-
-// View Routes
+// View Routes (loadUserPermissions is applied inside views routes after authentication)
 app.use('/', viewsRoutes);
 
 // Catch-all route to serve the login page as the default
