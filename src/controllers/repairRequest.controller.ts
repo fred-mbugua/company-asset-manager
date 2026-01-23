@@ -6,6 +6,9 @@ import RepairRequestPriorityService from '../services/repairRequestPriority.serv
 import { successResponse, errorResponse } from '../utils/response';
 import logger from '../utils/logger';
 import { AuthenticatedRequest } from '../types';
+import { PermissionContext, PermissionRequest } from '../middlewares/permission.middleware';
+import AccessFilterUtil from '../utils/accessFilter.util';
+import RolePermissionService from '../services/rolePermission.service';
 
 // ============================================================================
 // REPAIR REQUEST CONTROLLER
@@ -55,7 +58,7 @@ class RepairRequestController {
     /**
      * Get all repair requests with filters
      */
-    async getAll(req: AuthenticatedRequest, res: Response): Promise<void> {
+    async getAll(req: PermissionRequest, res: Response): Promise<void> {
         try {
             const page = parseInt(req.query.page as string) || 1;
             const limit = parseInt(req.query.limit as string) || 20;
@@ -73,7 +76,13 @@ class RepairRequestController {
                 date_to: req.query.date_to as string
             };
 
-            const result = await RepairRequestService.getRequests(filters, page, limit);
+            // Build permission context using req.user object
+            const permissionContext = await AccessFilterUtil.buildContext(
+                req.user,
+                { branchLevelAccess: req.permissionContext?.branchLevelAccess || false, userBranchId: req.user?.branch_id || null }
+            );
+
+            const result = await RepairRequestService.getRequests(filters, page, limit, permissionContext);
             successResponse(res, 200, 'Repair requests retrieved successfully', result);
         } catch (error: any) {
             logger.error('Error getting repair requests:', error);
@@ -460,12 +469,38 @@ class RepairRequestController {
     /**
      * Get dashboard statistics
      */
-    async getStatistics(req: AuthenticatedRequest, res: Response): Promise<void> {
+    async getStatistics(req: PermissionRequest, res: Response): Promise<void> {
         try {
             const userId = req.query.my_stats === 'true' ? req.user?.id : undefined;
-            const branchId = req.query.branch_id ? parseInt(req.query.branch_id as string) : undefined;
+            
+            // Get branch level access - from permission context or lookup from DB
+            let branchLevelAccess = req.permissionContext?.branchLevelAccess;
+            
+            if (branchLevelAccess === undefined && req.user?.role_id) {
+                try {
+                    const permissions = await RolePermissionService.getPermissionsGroupedByModule(req.user.role_id);
+                    branchLevelAccess = permissions.some(p => 
+                        p.actions.some(a => a.has_permission && a.branch_level_access)
+                    );
+                } catch (error) {
+                    logger.error('Error fetching branch level access:', error);
+                    branchLevelAccess = false;
+                }
+            }
+            
+            // Build access filter context for branch filtering
+            const permissionContext = await AccessFilterUtil.buildContext(
+                req.user,
+                { 
+                    branchLevelAccess: branchLevelAccess || false, 
+                    userBranchId: req.user?.branch_id || null 
+                }
+            );
+            
+            logger.info(`getStatistics - User: ${req.user?.id}, Branch: ${req.user?.branch_id}, branchLevelAccess: ${branchLevelAccess}`);
+            logger.info(`getStatistics - permissionContext: ${JSON.stringify(permissionContext)}`);
 
-            const stats = await RepairRequestService.getStatistics(userId, branchId);
+            const stats = await RepairRequestService.getStatistics(userId, permissionContext);
             successResponse(res, 200, 'Statistics retrieved successfully', stats);
         } catch (error: any) {
             logger.error('Error getting statistics:', error);

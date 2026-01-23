@@ -385,7 +385,7 @@ class PermissionController {
    * Bulk assign permissions to a role
    * Supports two formats:
    * 1. { permissions: [...] } - replaces all permissions
-   * 2. { add: [...], remove: [...], branch_updates: [...] } - incremental updates
+   * 2. { add: [...], remove: [...], branch_updates: [...], company_updates: [...] } - incremental updates
    */
   async bulkAssignRolePermissions(req: AuthenticatedRequest, res: Response): Promise<void> {
     try {
@@ -396,11 +396,11 @@ class PermissionController {
       }
 
       const roleId = parseInt(req.params.roleId);
-      const { permissions, add, remove, branch_updates } = req.body;
+      const { permissions, add, remove, branch_updates, company_updates } = req.body;
 
       // Handle incremental add/remove format
-      if (add || remove || branch_updates) {
-        const results: any = { added: 0, removed: 0, branch_updated: 0 };
+      if (add || remove || branch_updates || company_updates) {
+        const results: any = { added: 0, removed: 0, branch_updated: 0, company_updated: 0 };
 
         // Add new permissions
         if (add && Array.isArray(add)) {
@@ -410,7 +410,8 @@ class PermissionController {
                 {
                   role_id: roleId,
                   permission_id: perm.permission_id,
-                  branch_level_access: perm.branch_level_access || false
+                  branch_level_access: perm.branch_level_access || false,
+                  company_level_access: perm.company_level_access || false
                 },
                 userId
               );
@@ -448,6 +449,19 @@ class PermissionController {
           }
         }
 
+        // Update company level access
+        if (company_updates && Array.isArray(company_updates)) {
+          for (const update of company_updates) {
+            try {
+              // Update company level access for permissions with this module code
+              await RolePermissionService.updateCompanyAccessByModule(roleId, update.moduleCode, update.value);
+              results.company_updated++;
+            } catch (e) {
+              logger.warn(`Failed to update company access for ${update.moduleCode}`);
+            }
+          }
+        }
+
         successResponse(res, 200, 'Permissions updated successfully', results);
         return;
       }
@@ -457,6 +471,10 @@ class PermissionController {
         errorResponse(res, 400, 'Permissions array is required');
         return;
       }
+
+      // Get access control settings from request body
+      const branchLevelAccess = req.body.branch_level_access || false;
+      const companyLevelAccess = req.body.company_level_access || false;
 
       // Validate structure
       for (const perm of permissions) {
@@ -468,7 +486,8 @@ class PermissionController {
 
       const permissionConfigs = permissions.map((p: any) => ({
         permission_id: p.permission_id,
-        branch_level_access: p.branch_level_access || false
+        branch_level_access: p.branch_level_access !== undefined ? p.branch_level_access : branchLevelAccess,
+        company_level_access: p.company_level_access !== undefined ? p.company_level_access : companyLevelAccess
       }));
 
       const rolePermissions = await RolePermissionService.bulkAssign(roleId, permissionConfigs, userId);
@@ -552,6 +571,54 @@ class PermissionController {
     } catch (error: any) {
       logger.error('Error getting user permissions:', error);
       errorResponse(res, 500, error.message || 'Failed to get user permissions');
+    }
+  }
+
+  // ==================== COMPANY ACCESS ====================
+
+  /**
+   * Get company access for a role
+   */
+  async getRoleCompanyAccess(req: Request, res: Response): Promise<void> {
+    try {
+      const roleId = parseInt(req.params.roleId);
+      const companyAccess = await RolePermissionService.getCompanyAccess(roleId);
+      
+      successResponse(res, 200, 'Company access retrieved successfully', companyAccess);
+    } catch (error: any) {
+      logger.error('Error getting role company access:', error);
+      errorResponse(res, 500, error.message || 'Failed to get company access');
+    }
+  }
+
+  /**
+   * Update company access for a role
+   */
+  async updateRoleCompanyAccess(req: AuthenticatedRequest, res: Response): Promise<void> {
+    try {
+      const userId = req.user?.id;
+      if (!userId) {
+        errorResponse(res, 401, 'User not authenticated');
+        return;
+      }
+
+      const roleId = parseInt(req.params.roleId);
+      const { company_ids } = req.body;
+
+      if (!Array.isArray(company_ids)) {
+        errorResponse(res, 400, 'company_ids must be an array');
+        return;
+      }
+
+      const companyAccess = await RolePermissionService.updateCompanyAccess(roleId, company_ids, userId);
+
+      successResponse(res, 200, 'Company access updated successfully', {
+        count: companyAccess.length,
+        companies: companyAccess
+      });
+    } catch (error: any) {
+      logger.error('Error updating role company access:', error);
+      errorResponse(res, 400, error.message || 'Failed to update company access');
     }
   }
 }

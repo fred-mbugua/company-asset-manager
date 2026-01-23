@@ -28,9 +28,34 @@ Object.defineProperty(exports, "__esModule", { value: true });
 // }
 // export default new AssignmentModel();
 const database_1 = __importDefault(require("../config/database"));
+/**
+ * Build access filter conditions for assignment queries
+ */
+function buildAccessFilter(AccessFilterContext, startParamIndex = 1) {
+    const conditions = [];
+    const values = [];
+    let paramIndex = startParamIndex;
+    if (!AccessFilterContext || AccessFilterContext.isAdmin) {
+        return { conditions, values, nextParamIndex: paramIndex };
+    }
+    // Branch level filtering through assets
+    if (AccessFilterContext.branchLevelAccess && AccessFilterContext.accessibleBranchIds && AccessFilterContext.accessibleBranchIds.length > 0) {
+        if (AccessFilterContext.accessibleBranchIds.length === 1) {
+            conditions.push(`asts.branch_id = $${paramIndex}`);
+            values.push(AccessFilterContext.accessibleBranchIds[0]);
+            paramIndex++;
+        }
+        else {
+            const placeholders = AccessFilterContext.accessibleBranchIds.map((_, i) => `$${paramIndex + i}`).join(', ');
+            conditions.push(`asts.branch_id IN (${placeholders})`);
+            values.push(...AccessFilterContext.accessibleBranchIds);
+            paramIndex += AccessFilterContext.accessibleBranchIds.length;
+        }
+    }
+    return { conditions, values, nextParamIndex: paramIndex };
+}
 class AssignmentModel {
     static async create(assignmentData) {
-        // console.log('Creating assignment with data:', assignmentData);
         const query = `
             INSERT INTO assignments (asset_id, employee_id, assignment_date, return_date, notes)
             VALUES ($1, $2, NOW(), NULL, $3)
@@ -40,30 +65,35 @@ class AssignmentModel {
         const result = await database_1.default.query(query, values);
         return result.rows[0];
     }
-    static async findAll() {
-        const query = `Select
-                            ass.id As id,
-                            asts.asset_tag As asset_tag,
-                            emps.first_name As employee_first_name,
-                            emps.middle_name As employee_middle_name,
-                            emps.last_name As employee_last_name,
-                            ass.assignment_date As assignment_date,
-                            ass.return_date As return_date,
-                            ass.notes,
-                            asts.model,
-                            asts.serial_number,
-                            asts.manufacturer,
-                            asts.asset_type,
-                            asts.purchase_price
-                        From
-                            assignments ass Inner Join
-                            assets asts On ass.asset_id = asts.id Inner Join
-                            employees emps On ass.employee_id = emps.id
-                        Where
-                            ass.return_date IS NULL
-                        Order By
-                            assignment_date Desc`;
-        const result = await database_1.default.query(query);
+    static async findAll(AccessFilterContext) {
+        const { conditions, values } = buildAccessFilter(AccessFilterContext);
+        // Add the return_date condition
+        const allConditions = ['ass.return_date IS NULL', ...conditions];
+        const whereClause = 'WHERE ' + allConditions.join(' AND ');
+        const query = `
+            SELECT
+                ass.id As id,
+                asts.asset_tag As asset_tag,
+                emps.first_name As employee_first_name,
+                emps.middle_name As employee_middle_name,
+                emps.last_name As employee_last_name,
+                ass.assignment_date As assignment_date,
+                ass.return_date As return_date,
+                ass.notes,
+                asts.model,
+                asts.serial_number,
+                asts.manufacturer,
+                asts.asset_type,
+                asts.purchase_price,
+                branches.name As branch_name
+            FROM assignments ass 
+            INNER JOIN assets asts ON ass.asset_id = asts.id 
+            INNER JOIN employees emps ON ass.employee_id = emps.id
+            LEFT JOIN branches ON asts.branch_id = branches.id
+            ${whereClause}
+            ORDER BY assignment_date DESC
+        `;
+        const result = await database_1.default.query(query, values);
         return result.rows;
     }
     static async findById(id) {

@@ -5,8 +5,54 @@ import { AssetModel, EmployeeModel, ReportModel, AssignmentModel, AssetTypeModel
 import { AuthenticatedRequest } from '../types';
 import { logger } from '../utils';
 import BulkUserImportService from '../services/bulkUserImport.service';
+import { PermissionRequest, PermissionContext } from '../middlewares/permission.middleware';
+import AccessFilterUtil, { AccessFilterContext } from '../utils/accessFilter.util';
+import RolePermissionService from '../services/rolePermission.service';
 
 const currencyFormatter = new Intl.NumberFormat('en-US', { style: 'currency', currency: 'KES' });
+
+/**
+ * Get access filter context from request for data filtering
+ * This function fetches branch level access from the database when permission context is not available
+ */
+async function getAccessFilterContext(req: PermissionRequest): Promise<AccessFilterContext | undefined> {
+    // Build context from user
+    const user = req.user;
+    if (!user) return undefined;
+
+    // Use branch level access from permission context if available
+    let branchLevelAccess = req.permissionContext?.branchLevelAccess;
+    
+    logger.info(`getAccessFilterContext - User: ${user.id}, Role: ${user.role}, RoleID: ${user.role_id}, Branch: ${user.branch_id}`);
+    logger.info(`getAccessFilterContext - req.permissionContext: ${JSON.stringify(req.permissionContext)}`);
+    
+    // If permission context is not set (e.g., dashboard without checkPermission middleware),
+    // we need to look up the user's branch level access from any of their permissions
+    if (branchLevelAccess === undefined && user.role_id) {
+        try {
+            const permissions = await RolePermissionService.getPermissionsGroupedByModule(user.role_id);
+            // Check if any permission has branch level access enabled
+            branchLevelAccess = permissions.some(p => 
+                p.actions.some(a => a.has_permission && a.branch_level_access)
+            );
+            logger.info(`getAccessFilterContext - Fetched branchLevelAccess from DB: ${branchLevelAccess}`);
+        } catch (error) {
+            logger.error('Error fetching branch level access:', error);
+            branchLevelAccess = false;
+        }
+    }
+
+    // Build full context using AccessFilterUtil
+    const context = await AccessFilterUtil.buildContext(user, {
+        branchLevelAccess: branchLevelAccess || false,
+        userBranchId: user.branch_id || null
+    });
+    
+    logger.info(`getAccessFilterContext - Final context: ${JSON.stringify(context)}`);
+    
+    return context;
+}
+
 class ViewsController {
 
     // Rendering the login page
@@ -16,28 +62,25 @@ class ViewsController {
     }
 
     // Rendering the dashboard page with dynamic data
-    async renderDashboard(req: AuthenticatedRequest, res: Response) {
+    async renderDashboard(req: PermissionRequest, res: Response) {
         try {
-            // Fetch necessary data for the dashboard
-            const totalAssets = await ReportModel.getTotalAssetCount();
-            const totalExpenses = await ReportModel.getTotalExpenseSum();
-            const totalAssetValue = await ReportModel.getTotalAssetValue();
-            
-            // Fetch analytics data
-            const assetsByType = await ReportModel.getAssetsByType();
-            const assetsByStatus = await ReportModel.getAssetsByStatus();
-            const assetsByBranch = await ReportModel.getAssetsByBranch();
-            const monthlyExpenses = await ReportModel.getMonthlyExpenses(6);
-            const recentAssignments = await ReportModel.getRecentAssignments(10);
-            const topExpensiveAssets = await ReportModel.getTopExpensiveAssets(5);
-            const assignmentStats = await ReportModel.getAssignmentStats();
-            const recentExpenses = await ReportModel.getRecentExpenses(10);
+            // Get permission context for filtering
+            const permissionContext = await getAccessFilterContext(req);
 
-            // console.log('Rendering dashboard with data:', { 
-            //     user: req.user,
-            //     totalAssets: totalAssets,
-            //     totalExpenses: totalExpenses
-            // });
+            // Fetch necessary data for the dashboard with access filtering
+            const totalAssets = await ReportModel.getTotalAssetCount(permissionContext);
+            const totalExpenses = await ReportModel.getTotalExpenseSum(permissionContext);
+            const totalAssetValue = await ReportModel.getTotalAssetValue(permissionContext);
+            
+            // Fetch analytics data with access filtering
+            const assetsByType = await ReportModel.getAssetsByType(permissionContext);
+            const assetsByStatus = await ReportModel.getAssetsByStatus(permissionContext);
+            const assetsByBranch = await ReportModel.getAssetsByBranch(permissionContext);
+            const monthlyExpenses = await ReportModel.getMonthlyExpenses(6, permissionContext);
+            const recentAssignments = await ReportModel.getRecentAssignments(10, permissionContext);
+            const topExpensiveAssets = await ReportModel.getTopExpensiveAssets(5, permissionContext);
+            const assignmentStats = await ReportModel.getAssignmentStats(permissionContext);
+            const recentExpenses = await ReportModel.getRecentExpenses(10, permissionContext);
 
             // Pass the data to the EJS template
             res.render('dashboard', {
@@ -66,7 +109,7 @@ class ViewsController {
     }
 
     // Rendering the page for creating a new asset
-    async renderCreateAsset(req: Request, res: Response) {
+    async renderCreateAsset(req: PermissionRequest, res: Response) {
         try {
             const assetTypes = await AssetTypeModel.findAll();
             const assetStatuses = await AssetStatusModel.findAll();
@@ -79,19 +122,21 @@ class ViewsController {
     }
 
     // Rendering the page for viewing assets
-    async renderViewAssets(req: Request, res: Response) {
-        // res.render('view-assets');
+    async renderViewAssets(req: PermissionRequest, res: Response) {
         try {
             const page = 1;
             const itemsPerPage = 20;
+            
+            // Get permission context for filtering
+            const permissionContext = await getAccessFilterContext(req);
             
             // Fetch filter data
             const assetTypes = await AssetTypeModel.findAll();
             const branches = await LocationModel.findAll();
             const assetStatuses = await AssetStatusModel.findAll();
             
-            // Get total count of assets for pagination
-            const totalAssets = await AssetModel.count();
+            // Get total count of assets for pagination with access filtering
+            const totalAssets = await AssetModel.count(permissionContext);
             const totalPages = Math.ceil(totalAssets / itemsPerPage);
             const pagination = {
                 currentPage: page,
@@ -101,11 +146,10 @@ class ViewsController {
                 hasNextPage: page < totalPages
             };
             
-            // Get paginated assets
-            const result = await AssetModel.findAll(page, itemsPerPage);
+            // Get paginated assets with access filtering
+            const result = await AssetModel.findAll(page, itemsPerPage, permissionContext);
             const assets = result.assets;
             
-            // console.log('Rendering view-assets with assets:', assets);
             res.render('view-assets', {
                 user: req.user,
                 pageTitle: 'View Assets',
@@ -124,12 +168,14 @@ class ViewsController {
     }
 
     // Rendering the page for assigning assets. Requires lists of assets and employees.
-    async renderAssignAssets(req: Request, res: Response) {
+    async renderAssignAssets(req: PermissionRequest, res: Response) {
         try {
-            const assets = await AssetModel.findAll();
+            // Get permission context for filtering
+            const permissionContext = await getAccessFilterContext(req);
+            
+            const assets = await AssetModel.findAll(1, 1000, permissionContext); // Get all accessible assets
             const employees = await EmployeeModel.findEmployeesSpecificData();
-            const assignments = await AssignmentModel.findAll();
-            // console.log('Rendering assign-assets with data:', { assets, employees, assignments });
+            const assignments = await AssignmentModel.findAll(permissionContext);
             res.render('assign-assets', { user: req.user, assets: assets.assets, employees, assignments });
         } catch (error) {
             console.error('Error rendering assign-assets page:', error);
@@ -138,12 +184,14 @@ class ViewsController {
     }
 
     // Rendering the page for creating expenses. Requires a list of assets.
-    async renderCreateExpenses(req: Request, res: Response) {
+    async renderCreateExpenses(req: PermissionRequest, res: Response) {
         try {
-            const assets = await AssetModel.findAll();
+            // Get permission context for filtering
+            const permissionContext = await getAccessFilterContext(req);
+            
+            const assets = await AssetModel.findAll(1, 1000, permissionContext);
             const expenseTypes = await ExpenseTypeModel.findAll();
-            const expenses = await ReportModel.getExpenseDetailForAllAssets();
-            // console.log('Rendering create-expenses with data:', { assets, expenseTypes, expenses });
+            const expenses = await ReportModel.getExpenseDetailForAllAssets(permissionContext);
             res.render('create-expenses', { user: req.user, assets: assets.assets, expenseTypes, expenses });
         } catch (error) {
             console.error('Error rendering create-expenses page:', error);
@@ -577,14 +625,17 @@ class ViewsController {
     /**
      * Rendering the Repair Requests page
      */
-    async renderRepairRequests(req: Request, res: Response): Promise<void> {
+    async renderRepairRequests(req: PermissionRequest, res: Response): Promise<void> {
         try {
+            // Get permission context for filtering
+            const permissionContext = await getAccessFilterContext(req);
+            
             // Fetch dropdown data
             const requestTypes = await RepairRequestTypeModel.findAll();
             const statuses = await RepairRequestStatusModel.findAll();
             const priorities = await RepairRequestPriorityModel.findAll();
             const branches = await LocationModel.findAll();
-            const assets = await AssetModel.findAll();
+            const assets = await AssetModel.findAll(1, 1000, permissionContext);
             
             res.render('repair-requests', {
                 user: req.user,
@@ -592,7 +643,8 @@ class ViewsController {
                 statuses: statuses,
                 priorities: priorities,
                 branches: branches,
-                assets: assets.assets || []
+                assets: assets.assets || [],
+                permissionContext: permissionContext // Pass to view for client-side filtering hints
             });
         } catch (error) {
             logger.error('Error rendering repair requests page:', error);

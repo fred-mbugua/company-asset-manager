@@ -8,6 +8,7 @@ const response_1 = require("../utils/response");
 const logger_1 = __importDefault(require("../utils/logger"));
 const assignment_service_1 = __importDefault(require("../services/assignment.service"));
 const assignment_model_1 = __importDefault(require("../models/assignment.model"));
+const accessFilter_util_1 = __importDefault(require("../utils/accessFilter.util"));
 class AssignmentController {
     async assignAsset(req, res) {
         var _a;
@@ -39,8 +40,11 @@ class AssignmentController {
         }
     }
     async getAll(req, res) {
+        var _a, _b;
         try {
-            const assignments = await assignment_service_1.default.getAll();
+            // Build permission context using req.user object
+            const permissionContext = await accessFilter_util_1.default.buildContext(req.user, { branchLevelAccess: ((_a = req.permissionContext) === null || _a === void 0 ? void 0 : _a.branchLevelAccess) || false, userBranchId: ((_b = req.user) === null || _b === void 0 ? void 0 : _b.branch_id) || null });
+            const assignments = await assignment_service_1.default.getAll(permissionContext);
             logger_1.default.info('All assignments retrieved successfully');
             (0, response_1.successResponse)(res, 200, 'Assignments retrieved successfully', assignments);
         }

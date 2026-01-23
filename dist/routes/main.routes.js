@@ -24,6 +24,7 @@ const repairRequest_routes_1 = __importDefault(require("./repairRequest.routes")
 const role_routes_1 = __importDefault(require("./role.routes"));
 const permission_routes_1 = __importDefault(require("./permission.routes"));
 const systemConfiguration_controller_1 = __importDefault(require("../controllers/systemConfiguration.controller"));
+const lookup_model_1 = __importDefault(require("../models/lookup.model"));
 const express_async_handler_1 = __importDefault(require("express-async-handler"));
 const auth_middleware_1 = require("../middlewares/auth.middleware");
 const router = (0, express_1.Router)();
@@ -40,6 +41,11 @@ router.use('/reports', auth_middleware_1.authenticate, report_routes_1.default);
 router.use('/upload', auth_middleware_1.authenticate, upload_routes_1.default);
 router.use('/departments', auth_middleware_1.authenticate, departments_routes_1.default);
 router.use('/branches', auth_middleware_1.authenticate, branches_routes_1.default);
+// Companies endpoint - returns companies for access control
+router.get('/companies', auth_middleware_1.authenticate, (0, express_async_handler_1.default)(async (req, res) => {
+    const companies = await lookup_model_1.default.getAllCompanies();
+    res.json({ success: true, data: companies });
+}));
 router.use('/asset-attachments', auth_middleware_1.authenticate, assetAttachment_routes_1.default);
 router.use('/expense-attachments', auth_middleware_1.authenticate, expenseAttachment_routes_1.default);
 router.use('/assignment-attachments', auth_middleware_1.authenticate, assignmentAttachment_routes_1.default);

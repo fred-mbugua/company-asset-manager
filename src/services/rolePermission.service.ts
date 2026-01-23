@@ -137,6 +137,15 @@ class RolePermissionService {
   }
 
   /**
+   * Update company level access for all permissions of a module for a role
+   */
+  async updateCompanyAccessByModule(roleId: number, moduleCode: string, companyLevelAccess: boolean): Promise<void> {
+    await RolePermissionModel.updateCompanyAccessByModule(roleId, moduleCode, companyLevelAccess);
+    this.invalidateCache(roleId);
+    logger.info(`Company access updated for module ${moduleCode} on role ${roleId}: ${companyLevelAccess}`);
+  }
+
+  /**
    * Bulk assign permissions to a role (replaces existing)
    */
   async bulkAssign(
@@ -289,6 +298,42 @@ class RolePermissionService {
     this.permissionCache.clear();
     this.cacheTimeout.forEach(timeout => clearTimeout(timeout));
     this.cacheTimeout.clear();
+  }
+
+  /**
+   * Get company access for a role
+   */
+  async getCompanyAccess(roleId: number): Promise<{ company_id: number; company_name: string }[]> {
+    return await RolePermissionModel.getCompanyAccess(roleId);
+  }
+
+  /**
+   * Update company access for a role
+   */
+  async updateCompanyAccess(roleId: number, companyIds: number[], userId: number): Promise<{ company_id: number; company_name: string }[]> {
+    // Validate role exists
+    const role = await RoleModel.findById(roleId);
+    if (!role) {
+      throw new Error('Role not found');
+    }
+
+    const companyAccess = await RolePermissionModel.updateCompanyAccess(roleId, companyIds);
+
+    await ActionLogModel.create({
+      user_id: userId,
+      action_type: 'UPDATE',
+      entity_type: 'RoleCompanyAccess',
+      entity_id: roleId,
+      details: { 
+        role_name: role.name, 
+        company_ids: companyIds,
+        action: 'update_company_access'
+      }
+    });
+
+    this.invalidateCache(roleId);
+    logger.info(`Company access updated for role ${role.name}: ${companyIds.length} companies`);
+    return companyAccess;
   }
 }
 

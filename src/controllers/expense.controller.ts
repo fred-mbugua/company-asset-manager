@@ -4,6 +4,8 @@ import { successResponse, errorResponse } from '../utils/response';
 import logger from '../utils/logger';
 import { AuthenticatedRequest } from '../types';
 import { ExpenseModel } from '../models';
+import { PermissionRequest } from '../middlewares/permission.middleware';
+import AccessFilterUtil from '../utils/accessFilter.util';
 
 class ExpenseController {
   async addExpense(req: AuthenticatedRequest, res: Response) {
@@ -17,9 +19,15 @@ class ExpenseController {
     }
   }
 
-  async getAll(req: Request, res: Response) {
+  async getAll(req: PermissionRequest, res: Response) {
         try {
-            const expenses = await ExpenseService.getAll();
+            // Build permission context using req.user object
+            const permissionContext = await AccessFilterUtil.buildContext(
+                req.user,
+                { branchLevelAccess: req.permissionContext?.branchLevelAccess || false, userBranchId: req.user?.branch_id || null }
+            );
+
+            const expenses = await ExpenseService.getAll(permissionContext);
             successResponse(res, 200, 'Expenses retrieved successfully', expenses);
         } catch (error) {
             logger.error('Failed to retrieve expenses:', error);

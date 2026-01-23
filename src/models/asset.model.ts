@@ -1,5 +1,5 @@
 import db from '../config/database';
-
+import { AccessFilterContext } from '../utils/accessFilter.util';
 
 // Defining the expected structure for the data returned by the join query
 interface AssetReportData {
@@ -15,6 +15,61 @@ interface AssetReportData {
     purchase_date: Date;
     // Add other fields needed for the full report
 }
+
+/**
+ * Build access filter conditions for asset queries
+ * Filters by:
+ * 1. Branch level - user sees only their branch and child branches
+ * 2. Company level - user sees only assets from branches belonging to their company
+ */
+function buildAccessFilter(
+    AccessFilterContext?: AccessFilterContext,
+    startParamIndex: number = 1,
+    requireBranchJoin: boolean = false
+): { conditions: string[]; values: any[]; nextParamIndex: number; requireBranchJoin: boolean } {
+    const conditions: string[] = [];
+    const values: any[] = [];
+    let paramIndex = startParamIndex;
+    let needsBranchJoin = requireBranchJoin;
+
+    if (!AccessFilterContext || AccessFilterContext.isAdmin) {
+        return { conditions, values, nextParamIndex: paramIndex, requireBranchJoin: needsBranchJoin };
+    }
+
+    // Company level filtering - ALWAYS apply if user has a company_id
+    // This ensures users only see data from their company
+    if (AccessFilterContext.companyLevelAccess && AccessFilterContext.accessibleCompanyIds && AccessFilterContext.accessibleCompanyIds.length > 0) {
+        // Filter by branch's company_id (requires JOIN to branches table)
+        needsBranchJoin = true;
+        if (AccessFilterContext.accessibleCompanyIds.length === 1) {
+            conditions.push(`branches.company_id = $${paramIndex}`);
+            values.push(AccessFilterContext.accessibleCompanyIds[0]);
+            paramIndex++;
+        } else {
+            const placeholders = AccessFilterContext.accessibleCompanyIds.map((_, i) => `$${paramIndex + i}`).join(', ');
+            conditions.push(`branches.company_id IN (${placeholders})`);
+            values.push(...AccessFilterContext.accessibleCompanyIds);
+            paramIndex += AccessFilterContext.accessibleCompanyIds.length;
+        }
+    }
+
+    // Branch level filtering - additional filter within the company
+    if (AccessFilterContext.branchLevelAccess && AccessFilterContext.accessibleBranchIds && AccessFilterContext.accessibleBranchIds.length > 0) {
+        if (AccessFilterContext.accessibleBranchIds.length === 1) {
+            conditions.push(`assets.branch_id = $${paramIndex}`);
+            values.push(AccessFilterContext.accessibleBranchIds[0]);
+            paramIndex++;
+        } else {
+            const placeholders = AccessFilterContext.accessibleBranchIds.map((_, i) => `$${paramIndex + i}`).join(', ');
+            conditions.push(`assets.branch_id IN (${placeholders})`);
+            values.push(...AccessFilterContext.accessibleBranchIds);
+            paramIndex += AccessFilterContext.accessibleBranchIds.length;
+        }
+    }
+
+    return { conditions, values, nextParamIndex: paramIndex, requireBranchJoin: needsBranchJoin };
+}
+
 class AssetModel {
     static async create(assetData: any) {
         const query = `
@@ -27,14 +82,21 @@ class AssetModel {
         return result.rows[0];
     }
 
-    static async count(): Promise<number> {
+    static async count(AccessFilterContext?: AccessFilterContext): Promise<number> {
+        const { conditions, values, requireBranchJoin } = buildAccessFilter(AccessFilterContext);
+        
+        // Build JOIN clause if needed for company filtering
+        const joinClause = requireBranchJoin ? 'INNER JOIN branches ON assets.branch_id = branches.id' : '';
+        
         const query = `
-        SELECT COUNT(*) as count 
-        FROM assets;
-    `;
+            SELECT COUNT(*) as count 
+            FROM assets
+            ${joinClause}
+            ${conditions.length > 0 ? 'WHERE ' + conditions.join(' AND ') : ''}
+        `;
 
         try {
-            const result = await db.query(query);
+            const result = await db.query(query, values);
             return parseInt(result.rows[0].count);
         } catch (error) {
             console.error('Error counting assets:', error);
@@ -42,39 +104,48 @@ class AssetModel {
         }
     }
 
-    static async findAll(page: number = 1, itemsPerPage: number = 20) {
+    static async findAll(page: number = 1, itemsPerPage: number = 20, AccessFilterContext?: AccessFilterContext) {
+        const { conditions, values, nextParamIndex, requireBranchJoin } = buildAccessFilter(AccessFilterContext);
         const offset = (page - 1) * itemsPerPage;
+        
+        const whereClause = conditions.length > 0 ? 'WHERE ' + conditions.join(' AND ') : '';
+        
         const query = `
-    Select
-        assets.id,
-        assets.asset_tag,
-        assets.asset_type,
-        assets.manufacturer,
-        assets.model,
-        assets.serial_number,
-        assets.status,
-        assets.purchase_date,
-        assets.purchase_price,
-        assets.notes,
-        asset_types.name As type_name,
-        asset_statuses.name As status_name,
-        branches.name As location
-    From
-        assets Inner Join
-        asset_types On assets.asset_type_id = asset_types.id Inner Join
-        asset_statuses On assets.asset_status_id = asset_statuses.id Inner Join
-        branches On assets.branch_id = branches.id
-    Order By
-        assets.purchase_date Desc
-    Limit $1 Offset $2;`;
+            SELECT
+                assets.id,
+                assets.asset_tag,
+                assets.asset_type,
+                assets.manufacturer,
+                assets.model,
+                assets.serial_number,
+                assets.status,
+                assets.purchase_date,
+                assets.purchase_price,
+                assets.notes,
+                asset_types.name As type_name,
+                asset_statuses.name As status_name,
+                branches.name As location
+            FROM assets 
+            INNER JOIN asset_types ON assets.asset_type_id = asset_types.id 
+            INNER JOIN asset_statuses ON assets.asset_status_id = asset_statuses.id 
+            INNER JOIN branches ON assets.branch_id = branches.id
+            ${whereClause}
+            ORDER BY assets.purchase_date DESC
+            LIMIT $${nextParamIndex} OFFSET $${nextParamIndex + 1}
+        `;
 
+        // Count query needs branch join when company filtering is active
+        const countJoinClause = requireBranchJoin ? 'INNER JOIN branches ON assets.branch_id = branches.id' : '';
         const countQuery = `
-    Select Count(*) 
-    From assets`;
+            SELECT Count(*) 
+            FROM assets
+            ${countJoinClause}
+            ${whereClause}
+        `;
 
         const [result, countResult] = await Promise.all([
-            db.query(query, [itemsPerPage, offset]),
-            db.query(countQuery)
+            db.query(query, [...values, itemsPerPage, offset]),
+            db.query(countQuery, values)
         ]);
 
         return {
@@ -152,10 +223,18 @@ class AssetModel {
         return true;
     }
 
-    static async search(filters: any) {
+    static async search(filters: any, AccessFilterContext?: AccessFilterContext) {
         const queryParams: any[] = [];
         const whereClauses: string[] = [];
         let paramIndex = 1;
+
+        // Add access filter first
+        const accessFilter = buildAccessFilter(AccessFilterContext, paramIndex);
+        if (accessFilter.conditions.length > 0) {
+            whereClauses.push(...accessFilter.conditions);
+            queryParams.push(...accessFilter.values);
+            paramIndex = accessFilter.nextParamIndex;
+        }
 
         // Base Query with joins
         let query = `
@@ -250,12 +329,18 @@ class AssetModel {
         };
     }
 
-    static async findAllFiltered(filters: any): Promise<AssetReportData[]> {
+    static async findAllFiltered(filters: any, AccessFilterContext?: AccessFilterContext): Promise<AssetReportData[]> {
         const queryParams: any[] = [];
         const whereClauses: string[] = [];
         let paramIndex = 1;
 
-        // console.log('Filtering Asset Report with filters:', filters);
+        // Add access filter first
+        const accessFilter = buildAccessFilter(AccessFilterContext, paramIndex);
+        if (accessFilter.conditions.length > 0) {
+            whereClauses.push(...accessFilter.conditions);
+            queryParams.push(...accessFilter.values);
+            paramIndex = accessFilter.nextParamIndex;
+        }
 
         // Base Query: Performing necessary joins to get all required report fields
         let query = `

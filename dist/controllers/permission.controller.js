@@ -344,6 +344,9 @@ class PermissionController {
     }
     /**
      * Bulk assign permissions to a role
+     * Supports two formats:
+     * 1. { permissions: [...] } - replaces all permissions
+     * 2. { add: [...], remove: [...], branch_updates: [...], company_updates: [...] } - incremental updates
      */
     async bulkAssignRolePermissions(req, res) {
         var _a;
@@ -354,11 +357,78 @@ class PermissionController {
                 return;
             }
             const roleId = parseInt(req.params.roleId);
-            const { permissions } = req.body;
+            const { permissions, add, remove, branch_updates, company_updates } = req.body;
+            // Handle incremental add/remove format
+            if (add || remove || branch_updates || company_updates) {
+                const results = { added: 0, removed: 0, branch_updated: 0, company_updated: 0 };
+                // Add new permissions
+                if (add && Array.isArray(add)) {
+                    for (const perm of add) {
+                        try {
+                            await rolePermission_service_1.default.assignPermission({
+                                role_id: roleId,
+                                permission_id: perm.permission_id,
+                                branch_level_access: perm.branch_level_access || false,
+                                company_level_access: perm.company_level_access || false
+                            }, userId);
+                            results.added++;
+                        }
+                        catch (e) {
+                            // Permission may already exist, continue
+                            logger_1.default.warn(`Permission ${perm.permission_id} may already be assigned to role ${roleId}`);
+                        }
+                    }
+                }
+                // Remove permissions
+                if (remove && Array.isArray(remove)) {
+                    for (const permId of remove) {
+                        try {
+                            await rolePermission_service_1.default.removePermission(roleId, permId, userId);
+                            results.removed++;
+                        }
+                        catch (e) {
+                            // Permission may not exist, continue
+                            logger_1.default.warn(`Permission ${permId} may not be assigned to role ${roleId}`);
+                        }
+                    }
+                }
+                // Update branch level access
+                if (branch_updates && Array.isArray(branch_updates)) {
+                    for (const update of branch_updates) {
+                        try {
+                            // Update branch level access for permissions with this module code
+                            await rolePermission_service_1.default.updateBranchAccessByModule(roleId, update.moduleCode, update.value);
+                            results.branch_updated++;
+                        }
+                        catch (e) {
+                            logger_1.default.warn(`Failed to update branch access for ${update.moduleCode}`);
+                        }
+                    }
+                }
+                // Update company level access
+                if (company_updates && Array.isArray(company_updates)) {
+                    for (const update of company_updates) {
+                        try {
+                            // Update company level access for permissions with this module code
+                            await rolePermission_service_1.default.updateCompanyAccessByModule(roleId, update.moduleCode, update.value);
+                            results.company_updated++;
+                        }
+                        catch (e) {
+                            logger_1.default.warn(`Failed to update company access for ${update.moduleCode}`);
+                        }
+                    }
+                }
+                (0, response_1.successResponse)(res, 200, 'Permissions updated successfully', results);
+                return;
+            }
+            // Handle full replacement format
             if (!permissions || !Array.isArray(permissions)) {
                 (0, response_1.errorResponse)(res, 400, 'Permissions array is required');
                 return;
             }
+            // Get access control settings from request body
+            const branchLevelAccess = req.body.branch_level_access || false;
+            const companyLevelAccess = req.body.company_level_access || false;
             // Validate structure
             for (const perm of permissions) {
                 if (typeof perm.permission_id !== 'number') {
@@ -368,7 +438,8 @@ class PermissionController {
             }
             const permissionConfigs = permissions.map((p) => ({
                 permission_id: p.permission_id,
-                branch_level_access: p.branch_level_access || false
+                branch_level_access: p.branch_level_access !== undefined ? p.branch_level_access : branchLevelAccess,
+                company_level_access: p.company_level_access !== undefined ? p.company_level_access : companyLevelAccess
             }));
             const rolePermissions = await rolePermission_service_1.default.bulkAssign(roleId, permissionConfigs, userId);
             (0, response_1.successResponse)(res, 200, 'Permissions assigned successfully', {
@@ -445,6 +516,49 @@ class PermissionController {
         catch (error) {
             logger_1.default.error('Error getting user permissions:', error);
             (0, response_1.errorResponse)(res, 500, error.message || 'Failed to get user permissions');
+        }
+    }
+    // ==================== COMPANY ACCESS ====================
+    /**
+     * Get company access for a role
+     */
+    async getRoleCompanyAccess(req, res) {
+        try {
+            const roleId = parseInt(req.params.roleId);
+            const companyAccess = await rolePermission_service_1.default.getCompanyAccess(roleId);
+            (0, response_1.successResponse)(res, 200, 'Company access retrieved successfully', companyAccess);
+        }
+        catch (error) {
+            logger_1.default.error('Error getting role company access:', error);
+            (0, response_1.errorResponse)(res, 500, error.message || 'Failed to get company access');
+        }
+    }
+    /**
+     * Update company access for a role
+     */
+    async updateRoleCompanyAccess(req, res) {
+        var _a;
+        try {
+            const userId = (_a = req.user) === null || _a === void 0 ? void 0 : _a.id;
+            if (!userId) {
+                (0, response_1.errorResponse)(res, 401, 'User not authenticated');
+                return;
+            }
+            const roleId = parseInt(req.params.roleId);
+            const { company_ids } = req.body;
+            if (!Array.isArray(company_ids)) {
+                (0, response_1.errorResponse)(res, 400, 'company_ids must be an array');
+                return;
+            }
+            const companyAccess = await rolePermission_service_1.default.updateCompanyAccess(roleId, company_ids, userId);
+            (0, response_1.successResponse)(res, 200, 'Company access updated successfully', {
+                count: companyAccess.length,
+                companies: companyAccess
+            });
+        }
+        catch (error) {
+            logger_1.default.error('Error updating role company access:', error);
+            (0, response_1.errorResponse)(res, 400, error.message || 'Failed to update company access');
         }
     }
 }

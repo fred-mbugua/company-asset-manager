@@ -10,14 +10,15 @@ const permission_middleware_1 = require("../middlewares/permission.middleware");
 const express_async_handler_1 = __importDefault(require("express-async-handler"));
 const router = (0, express_1.Router)();
 // Asset routes with permission-based access control
-router.get('/', middlewares_1.authenticate, (0, permission_middleware_1.checkPermission)('ASSETS', 'read'), (0, express_async_handler_1.default)(controllers_1.AssetController.getAll));
-router.get('/search', middlewares_1.authenticate, (0, permission_middleware_1.checkPermission)('ASSETS', 'read'), (0, express_async_handler_1.default)(controllers_1.AssetController.search));
-router.get('/statuses/list', middlewares_1.authenticate, (0, permission_middleware_1.checkPermission)('ASSETS', 'read'), (0, express_async_handler_1.default)(controllers_1.AssetController.statusList));
-router.get('/next-tag/:assetTypeId', middlewares_1.authenticate, (0, permission_middleware_1.checkPermission)('ASSETS', 'read'), (0, express_async_handler_1.default)(controllers_1.AssetController.getNextTagPreview));
-router.get('/:id', middlewares_1.authenticate, (0, permission_middleware_1.checkPermission)('ASSETS', 'read'), (0, express_async_handler_1.default)(controllers_1.AssetController.getById));
-router.post('/', middlewares_1.authenticate, (0, permission_middleware_1.checkPermission)('ASSETS', 'create'), (0, express_async_handler_1.default)(controllers_1.AssetController.create));
-router.put('/:id', middlewares_1.authenticate, (0, permission_middleware_1.checkPermission)('ASSETS', 'update'), (0, express_async_handler_1.default)(controllers_1.AssetController.update));
-router.delete('/:id', middlewares_1.authenticate, (0, permission_middleware_1.checkPermission)('ASSETS', 'delete'), (0, express_async_handler_1.default)(controllers_1.AssetController.delete));
+// Read operations use ASSETS_VIEW, write operations use ASSETS_CREATE
+router.get('/', middlewares_1.authenticate, (0, permission_middleware_1.checkPermission)('ASSETS_VIEW', 'read'), (0, express_async_handler_1.default)(controllers_1.AssetController.getAll));
+router.get('/search', middlewares_1.authenticate, (0, permission_middleware_1.checkPermission)('ASSETS_VIEW', 'read'), (0, express_async_handler_1.default)(controllers_1.AssetController.search));
+router.get('/statuses/list', middlewares_1.authenticate, (0, permission_middleware_1.checkPermission)('ASSETS_VIEW', 'read'), (0, express_async_handler_1.default)(controllers_1.AssetController.statusList));
+router.get('/next-tag/:assetTypeId', middlewares_1.authenticate, (0, permission_middleware_1.checkPermission)('ASSETS_CREATE', 'read'), (0, express_async_handler_1.default)(controllers_1.AssetController.getNextTagPreview));
+router.get('/:id', middlewares_1.authenticate, (0, permission_middleware_1.checkPermission)('ASSETS_VIEW', 'read'), (0, express_async_handler_1.default)(controllers_1.AssetController.getById));
+router.post('/', middlewares_1.authenticate, (0, permission_middleware_1.checkPermission)('ASSETS_CREATE', 'create'), (0, express_async_handler_1.default)(controllers_1.AssetController.create));
+router.put('/:id', middlewares_1.authenticate, (0, permission_middleware_1.checkPermission)('ASSETS_CREATE', 'update'), (0, express_async_handler_1.default)(controllers_1.AssetController.update));
+router.delete('/:id', middlewares_1.authenticate, (0, permission_middleware_1.checkPermission)('ASSETS_CREATE', 'delete'), (0, express_async_handler_1.default)(controllers_1.AssetController.delete));
 // Asset Types routes
 router.post('/asset-types/create', middlewares_1.authenticate, (0, permission_middleware_1.checkPermission)('ADMIN_ASSET_TYPES', 'create'), (0, express_async_handler_1.default)(controllers_1.AssetTypeController.createAssetType));
 router.get('/asset-types/all', middlewares_1.authenticate, (0, permission_middleware_1.checkPermission)('ADMIN_ASSET_TYPES', 'read'), (0, express_async_handler_1.default)(controllers_1.AssetTypeController.getAllAssetTypes));

@@ -86,6 +86,7 @@
                                 <span class="legend-item"><i class="uil-edit"></i> Update</span>
                                 <span class="legend-item"><i class="uil-trash-alt"></i> Delete</span>
                                 <span class="legend-item branch-legend"><i class="uil-building"></i> Branch Only</span>
+                                <span class="legend-item company-legend"><i class="uil-city"></i> Company Only</span>
                             </div>
 
                             <div id="permissions-loading" class="loading-state">
@@ -93,6 +94,42 @@
                             </div>
 
                             <div id="permissions-grid" class="permissions-grid"></div>
+
+                            <!-- Access Control Section -->
+                            <div class="access-control-section mt-4">
+                                <h5><i class="uil-lock-access"></i> Access Control Settings</h5>
+                                <div class="access-control-info">
+                                    <p>Configure data visibility restrictions for this role. When enabled, users with this role will only see data from their assigned entities.</p>
+                                </div>
+                                
+                                <div class="access-control-options">
+                                    <div class="access-option">
+                                        <div class="access-option-header">
+                                            <label>
+                                                <input type="checkbox" id="branch-level-access-toggle" name="branch_level_access">
+                                                <span class="option-title"><i class="uil-building"></i> Branch-Level Access</span>
+                                            </label>
+                                        </div>
+                                        <p class="option-description">Restrict data visibility to the user's assigned branch and its descendants only.</p>
+                                    </div>
+                                    
+                                    <div class="access-option">
+                                        <div class="access-option-header">
+                                            <label>
+                                                <input type="checkbox" id="company-level-access-toggle" name="company_level_access">
+                                                <span class="option-title"><i class="uil-city"></i> Company-Level Access</span>
+                                            </label>
+                                        </div>
+                                        <p class="option-description">Restrict data visibility to specific companies. Enable this and select companies below.</p>
+                                        
+                                        <div id="company-selection-section" class="company-selection-section" style="display: none;">
+                                            <div class="company-list" id="company-access-list">
+                                                <!-- Companies will be loaded here -->
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
 
                             <div class="modal-actions mt-3">
                                 <button type="button" class="btn btn-secondary" id="cancel-permissions-btn">Cancel</button>
@@ -457,6 +494,142 @@
     padding: 30px;
     text-align: center;
     color: #888;
+}
+
+/* Access Control Section Styles */
+.access-control-section {
+    border-top: 1px solid #e0e0e0;
+    padding-top: 20px;
+    margin-top: 20px;
+}
+
+.access-control-section h5 {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    margin-bottom: 12px;
+    color: #333;
+    font-weight: 600;
+}
+
+.access-control-section h5 i {
+    color: #667eea;
+}
+
+.access-control-info {
+    padding: 12px 16px;
+    background: #fff7ed;
+    border-radius: 8px;
+    margin-bottom: 16px;
+    color: #9a3412;
+}
+
+.access-control-options {
+    display: flex;
+    flex-direction: column;
+    gap: 16px;
+}
+
+.access-option {
+    border: 1px solid #e0e0e0;
+    border-radius: 8px;
+    padding: 16px;
+    background: #fafafa;
+}
+
+.access-option-header {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+}
+
+.access-option-header label {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    cursor: pointer;
+    font-weight: 500;
+}
+
+.access-option-header input[type="checkbox"] {
+    width: 18px;
+    height: 18px;
+    cursor: pointer;
+}
+
+.option-title {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    font-size: 15px;
+    color: #333;
+}
+
+.option-title i {
+    color: #667eea;
+}
+
+.option-description {
+    margin: 8px 0 0 28px;
+    font-size: 13px;
+    color: #666;
+}
+
+.company-selection-section {
+    margin-top: 12px;
+    margin-left: 28px;
+    padding: 12px;
+    background: white;
+    border: 1px solid #e0e0e0;
+    border-radius: 6px;
+}
+
+.company-list {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+    max-height: 200px;
+    overflow-y: auto;
+}
+
+.company-list-item {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    padding: 8px 12px;
+    background: #f8f9fa;
+    border-radius: 4px;
+    cursor: pointer;
+}
+
+.company-list-item:hover {
+    background: #e9ecef;
+}
+
+.company-list-item input[type="checkbox"] {
+    width: 16px;
+    height: 16px;
+    cursor: pointer;
+}
+
+.company-list-item label {
+    flex: 1;
+    cursor: pointer;
+    font-size: 14px;
+}
+
+.company-list-empty {
+    padding: 20px;
+    text-align: center;
+    color: #888;
+}
+
+.company-legend i {
+    color: #10b981;
+}
+
+.legend-item.company-legend {
+    color: #059669;
 }
 </style>
 

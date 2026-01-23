@@ -103,6 +103,22 @@ class RolePermissionService {
         logger_1.default.info(`Permission ${permissionId} removed from role ${roleId}`);
     }
     /**
+     * Update branch level access for all permissions of a module for a role
+     */
+    async updateBranchAccessByModule(roleId, moduleCode, branchLevelAccess) {
+        await rolePermission_model_1.default.updateBranchAccessByModule(roleId, moduleCode, branchLevelAccess);
+        this.invalidateCache(roleId);
+        logger_1.default.info(`Branch access updated for module ${moduleCode} on role ${roleId}: ${branchLevelAccess}`);
+    }
+    /**
+     * Update company level access for all permissions of a module for a role
+     */
+    async updateCompanyAccessByModule(roleId, moduleCode, companyLevelAccess) {
+        await rolePermission_model_1.default.updateCompanyAccessByModule(roleId, moduleCode, companyLevelAccess);
+        this.invalidateCache(roleId);
+        logger_1.default.info(`Company access updated for module ${moduleCode} on role ${roleId}: ${companyLevelAccess}`);
+    }
+    /**
      * Bulk assign permissions to a role (replaces existing)
      */
     async bulkAssign(roleId, permissionConfigs, userId) {
@@ -229,6 +245,37 @@ class RolePermissionService {
         this.permissionCache.clear();
         this.cacheTimeout.forEach(timeout => clearTimeout(timeout));
         this.cacheTimeout.clear();
+    }
+    /**
+     * Get company access for a role
+     */
+    async getCompanyAccess(roleId) {
+        return await rolePermission_model_1.default.getCompanyAccess(roleId);
+    }
+    /**
+     * Update company access for a role
+     */
+    async updateCompanyAccess(roleId, companyIds, userId) {
+        // Validate role exists
+        const role = await role_model_1.default.findById(roleId);
+        if (!role) {
+            throw new Error('Role not found');
+        }
+        const companyAccess = await rolePermission_model_1.default.updateCompanyAccess(roleId, companyIds);
+        await actionLog_model_1.default.create({
+            user_id: userId,
+            action_type: 'UPDATE',
+            entity_type: 'RoleCompanyAccess',
+            entity_id: roleId,
+            details: {
+                role_name: role.name,
+                company_ids: companyIds,
+                action: 'update_company_access'
+            }
+        });
+        this.invalidateCache(roleId);
+        logger_1.default.info(`Company access updated for role ${role.name}: ${companyIds.length} companies`);
+        return companyAccess;
     }
 }
 exports.default = new RolePermissionService();

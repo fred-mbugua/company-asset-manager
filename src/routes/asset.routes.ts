@@ -7,14 +7,15 @@ import asyncHandler from 'express-async-handler';
 const router = Router();
 
 // Asset routes with permission-based access control
-router.get('/', authenticate, checkPermission('ASSETS', 'read'), asyncHandler(AssetController.getAll));
-router.get('/search', authenticate, checkPermission('ASSETS', 'read'), asyncHandler(AssetController.search));
-router.get('/statuses/list', authenticate, checkPermission('ASSETS', 'read'), asyncHandler(AssetController.statusList));
-router.get('/next-tag/:assetTypeId', authenticate, checkPermission('ASSETS', 'read'), asyncHandler(AssetController.getNextTagPreview));
-router.get('/:id', authenticate, checkPermission('ASSETS', 'read'), asyncHandler(AssetController.getById));
-router.post('/', authenticate, checkPermission('ASSETS', 'create'), asyncHandler(AssetController.create));
-router.put('/:id', authenticate, checkPermission('ASSETS', 'update'), asyncHandler(AssetController.update));
-router.delete('/:id', authenticate, checkPermission('ASSETS', 'delete'), asyncHandler(AssetController.delete));
+// Read operations use ASSETS_VIEW, write operations use ASSETS_CREATE
+router.get('/', authenticate, checkPermission('ASSETS_VIEW', 'read'), asyncHandler(AssetController.getAll));
+router.get('/search', authenticate, checkPermission('ASSETS_VIEW', 'read'), asyncHandler(AssetController.search));
+router.get('/statuses/list', authenticate, checkPermission('ASSETS_VIEW', 'read'), asyncHandler(AssetController.statusList));
+router.get('/next-tag/:assetTypeId', authenticate, checkPermission('ASSETS_CREATE', 'read'), asyncHandler(AssetController.getNextTagPreview));
+router.get('/:id', authenticate, checkPermission('ASSETS_VIEW', 'read'), asyncHandler(AssetController.getById));
+router.post('/', authenticate, checkPermission('ASSETS_CREATE', 'create'), asyncHandler(AssetController.create));
+router.put('/:id', authenticate, checkPermission('ASSETS_CREATE', 'update'), asyncHandler(AssetController.update));
+router.delete('/:id', authenticate, checkPermission('ASSETS_CREATE', 'delete'), asyncHandler(AssetController.delete));
 
 // Asset Types routes
 router.post(

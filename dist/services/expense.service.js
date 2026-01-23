@@ -11,8 +11,8 @@ class ExpenseService {
         await actionLog_service_1.default.logAction(userId, 'CREATE', 'Expense', newExpense.id, { asset_id: newExpense.asset_id, amount: newExpense.amount });
         return newExpense;
     }
-    async getAll() {
-        return models_1.ExpenseModel.findallAssets();
+    async getAll(permissionContext) {
+        return models_1.ExpenseModel.findAll(permissionContext);
     }
     async getExpenseById(id) {
         const expense = await models_1.ExpenseModel.findById(id);

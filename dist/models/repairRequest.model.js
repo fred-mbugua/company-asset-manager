@@ -51,11 +51,27 @@ class RepairRequestModel {
     /**
      * Find all repair requests with pagination and filters
      */
-    async findAll(filters = {}, page = 1, limit = 20) {
+    async findAll(filters = {}, page = 1, limit = 20, AccessFilterContext) {
         const offset = (page - 1) * limit;
         const conditions = [];
         const values = [];
         let paramIndex = 1;
+        // Add branch access filtering
+        if (AccessFilterContext && !AccessFilterContext.isAdmin &&
+            AccessFilterContext.branchLevelAccess &&
+            AccessFilterContext.accessibleBranchIds &&
+            AccessFilterContext.accessibleBranchIds.length > 0) {
+            if (AccessFilterContext.accessibleBranchIds.length === 1) {
+                conditions.push(`rr.branch_id = $${paramIndex++}`);
+                values.push(AccessFilterContext.accessibleBranchIds[0]);
+            }
+            else {
+                const placeholders = AccessFilterContext.accessibleBranchIds.map((_, i) => `$${paramIndex + i}`).join(', ');
+                conditions.push(`rr.branch_id IN (${placeholders})`);
+                values.push(...AccessFilterContext.accessibleBranchIds);
+                paramIndex += AccessFilterContext.accessibleBranchIds.length;
+            }
+        }
         // Build dynamic WHERE conditions
         if (filters.status_id) {
             conditions.push(`rr.status_id = $${paramIndex++}`);
@@ -311,22 +327,33 @@ class RepairRequestModel {
         }
     }
     /**
-     * Get dashboard statistics
+     * Get dashboard statistics with access filtering
      */
-    async getStatistics(userId, branchId) {
-        let whereClause = '';
+    async getStatistics(userId, permissionContext) {
+        const conditions = [];
         const values = [];
         let paramIndex = 1;
+        // User filter (for "my requests" view)
         if (userId) {
-            whereClause = `WHERE rr.requested_by = $${paramIndex++}`;
+            conditions.push(`rr.requested_by = $${paramIndex++}`);
             values.push(userId);
         }
-        if (branchId) {
-            whereClause = whereClause ?
-                `${whereClause} AND rr.branch_id = $${paramIndex++}` :
-                `WHERE rr.branch_id = $${paramIndex++}`;
-            values.push(branchId);
+        // Access filter - branch level filtering
+        if (permissionContext && !permissionContext.isAdmin && permissionContext.branchLevelAccess) {
+            if (permissionContext.accessibleBranchIds && permissionContext.accessibleBranchIds.length > 0) {
+                if (permissionContext.accessibleBranchIds.length === 1) {
+                    conditions.push(`rr.branch_id = $${paramIndex++}`);
+                    values.push(permissionContext.accessibleBranchIds[0]);
+                }
+                else {
+                    const placeholders = permissionContext.accessibleBranchIds.map((_, i) => `$${paramIndex + i}`).join(', ');
+                    conditions.push(`rr.branch_id IN (${placeholders})`);
+                    values.push(...permissionContext.accessibleBranchIds);
+                    paramIndex += permissionContext.accessibleBranchIds.length;
+                }
+            }
         }
+        const whereClause = conditions.length > 0 ? `WHERE ${conditions.join(' AND ')}` : '';
         const query = `
             SELECT 
                 COUNT(*) AS total_requests,

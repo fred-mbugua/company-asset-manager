@@ -50,8 +50,8 @@ class RepairRequestService {
     /**
      * Gets all repair requests with pagination and filters
      */
-    async getRequests(filters = {}, page = 1, limit = 20) {
-        const result = await repairRequest_model_1.default.findAll(filters, page, limit);
+    async getRequests(filters = {}, page = 1, limit = 20, permissionContext) {
+        const result = await repairRequest_model_1.default.findAll(filters, page, limit, permissionContext);
         return {
             requests: result.requests,
             total: result.total,
@@ -401,10 +401,10 @@ class RepairRequestService {
     // STATISTICS & REPORTS
     // ========================================================================
     /**
-     * Gets dashboard statistics
+     * Gets dashboard statistics with access filtering
      */
-    async getStatistics(userId, branchId) {
-        return await repairRequest_model_1.default.getStatistics(userId, branchId);
+    async getStatistics(userId, permissionContext) {
+        return await repairRequest_model_1.default.getStatistics(userId, permissionContext);
     }
     /**
      * Gets request history/timeline

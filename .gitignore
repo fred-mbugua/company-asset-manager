@@ -11,3 +11,4 @@ convert-to-word.js
 convert-user-manual.js
 DOCUMENTATION_CHANGES.md
 DEV_FILES
+test-permissions.js

@@ -7,6 +7,7 @@ export interface IBranch {
     parent_id?: number | null;
     hierarchy_level?: number;
     is_headquarters?: boolean;
+    company_id?: number | null;
     created_at?: Date;
     updated_at?: Date;
 }
@@ -18,15 +19,16 @@ export interface IBranchWithChildren extends IBranch {
 class BranchModel {
     static async create(branchData: any) {
         const query = `
-            INSERT INTO branches (name, location, parent_id, is_headquarters)
-            VALUES ($1, $2, $3, $4)
+            INSERT INTO branches (name, location, parent_id, is_headquarters, company_id)
+            VALUES ($1, $2, $3, $4, $5)
             RETURNING *;
         `;
         const result = await db.query(query, [
             branchData.name, 
             branchData.location,
             branchData.parent_id || null,
-            branchData.is_headquarters || false
+            branchData.is_headquarters || false,
+            branchData.company_id || null
         ]);
         return result.rows[0];
     }

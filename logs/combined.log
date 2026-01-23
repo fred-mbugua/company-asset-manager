@@ -1,0 +1,595 @@
+2026-01-23 11:05:49 info: Server running on port 4000
+2026-01-23 11:05:49 info: Database connected successfully!
+2026-01-23 11:06:34 info: User logged in successfully: dev@system.local
+2026-01-23 11:22:21 info: Server running on port 4000
+2026-01-23 11:22:21 info: Database connected successfully!
+2026-01-23 11:47:11 info: Retrieved 1 branches.
+2026-01-23 11:47:27 info: Branch created successfully: Mwatate
+2026-01-23 11:47:27 info: Retrieved 2 branches.
+2026-01-23 11:48:23 info: Branch hierarchy updated with 1 changes
+2026-01-23 11:48:36 info: Branch HQ set as headquarters
+2026-01-23 11:48:36 info: Branch hierarchy updated with 1 changes
+2026-01-23 11:48:57 info: User logged out successfully
+2026-01-23 11:49:02 info: User logged in successfully: dev@system.local
+2026-01-23 11:51:01 info: Retrieved 2 branches.
+2026-01-23 11:52:41 info: Received request to register a new user.
+2026-01-23 11:52:41 info: New user registered successfully with email: ckiprono@jiranismart.com
+2026-01-23 11:53:51 info: User logged in successfully: ckiprono@jiranismart.com
+2026-01-23 12:16:16 info: Server running on port 4000
+2026-01-23 12:16:16 info: Database connected successfully!
+2026-01-23 12:17:23 info: Server running on port 4000
+2026-01-23 12:17:23 info: Database connected successfully!
+2026-01-23 12:17:51 info: Server running on port 4000
+2026-01-23 12:17:51 info: Database connected successfully!
+2026-01-23 12:18:11 info: Server running on port 4000
+2026-01-23 12:18:11 info: Database connected successfully!
+2026-01-23 12:18:26 info: Server running on port 4000
+2026-01-23 12:18:26 info: Database connected successfully!
+2026-01-23 12:19:08 info: Server running on port 4000
+2026-01-23 12:19:08 info: Database connected successfully!
+2026-01-23 12:20:01 info: Server running on port 4000
+2026-01-23 12:20:02 info: Database connected successfully!
+2026-01-23 12:20:16 info: Server running on port 4000
+2026-01-23 12:20:17 info: Database connected successfully!
+2026-01-23 12:20:34 info: Server running on port 4000
+2026-01-23 12:20:34 info: Database connected successfully!
+2026-01-23 12:54:19 info: Server running on port 4000
+2026-01-23 12:54:19 info: Database connected successfully!
+2026-01-23 12:55:11 info: User logged out successfully
+2026-01-23 12:55:13 info: User logged in successfully: ckiprono@jiranismart.com
+2026-01-23 12:58:09 info: Server running on port 4000
+2026-01-23 12:58:09 info: Database connected successfully!
+2026-01-23 12:59:27 info: Server running on port 4000
+2026-01-23 12:59:27 info: Database connected successfully!
+2026-01-23 13:01:28 info: Server running on port 4000
+2026-01-23 13:01:28 info: Database connected successfully!
+2026-01-23 13:03:58 info: Server running on port 4000
+2026-01-23 13:03:58 info: Database connected successfully!
+2026-01-23 13:04:08 info: getAccessFilterContext - User: 1, Role: Admin, RoleID: 1, Branch: undefined
+2026-01-23 13:04:08 info: getAccessFilterContext - req.permissionContext: undefined
+2026-01-23 13:04:08 info: getAccessFilterContext - Fetched branchLevelAccess from DB: false
+2026-01-23 13:04:08 info: getAccessFilterContext - Final context: {"userId":1,"roleId":1,"branchId":null,"companyId":null,"branchLevelAccess":false,"companyLevelAccess":false,"isAdmin":true}
+2026-01-23 13:04:14 info: getAccessFilterContext - User: 1, Role: Admin, RoleID: 1, Branch: undefined
+2026-01-23 13:04:14 info: getAccessFilterContext - req.permissionContext: undefined
+2026-01-23 13:04:14 info: getAccessFilterContext - Fetched branchLevelAccess from DB: false
+2026-01-23 13:04:14 info: getAccessFilterContext - Final context: {"userId":1,"roleId":1,"branchId":null,"companyId":null,"branchLevelAccess":false,"companyLevelAccess":false,"isAdmin":true}
+2026-01-23 13:04:18 info: getAccessFilterContext - User: 1, Role: Admin, RoleID: 1, Branch: undefined
+2026-01-23 13:04:18 info: getAccessFilterContext - req.permissionContext: {"hasAccess":true,"branchLevelAccess":false,"companyLevelAccess":false,"userBranchId":null,"userCompanyId":null,"isAdmin":true}
+2026-01-23 13:04:18 info: getAccessFilterContext - Final context: {"userId":1,"roleId":1,"branchId":null,"companyId":null,"branchLevelAccess":false,"companyLevelAccess":false,"isAdmin":true}
+2026-01-23 13:04:22 info: getAccessFilterContext - User: 1, Role: Admin, RoleID: 1, Branch: undefined
+2026-01-23 13:04:22 info: getAccessFilterContext - req.permissionContext: {"hasAccess":true,"branchLevelAccess":false,"companyLevelAccess":false,"userBranchId":null,"userCompanyId":null,"isAdmin":true}
+2026-01-23 13:04:22 info: getAccessFilterContext - Final context: {"userId":1,"roleId":1,"branchId":null,"companyId":null,"branchLevelAccess":false,"companyLevelAccess":false,"isAdmin":true}
+2026-01-23 13:04:28 info: getAccessFilterContext - User: 2, Role: Branch User, RoleID: 3, Branch: undefined
+2026-01-23 13:04:28 info: getAccessFilterContext - req.permissionContext: {"hasAccess":true,"branchLevelAccess":true,"companyLevelAccess":true,"userBranchId":null,"userCompanyId":null,"accessibleCompanyIds":[1,2,3,4,5,6],"isAdmin":false}
+2026-01-23 13:04:28 info: getAccessFilterContext - Final context: {"userId":2,"roleId":3,"branchId":null,"companyId":null,"branchLevelAccess":true,"companyLevelAccess":true,"isAdmin":false,"accessibleCompanyIds":[1,2,3,4,5,6]}
+2026-01-23 13:04:32 info: getAccessFilterContext - User: 2, Role: Branch User, RoleID: 3, Branch: undefined
+2026-01-23 13:04:32 info: getAccessFilterContext - req.permissionContext: undefined
+2026-01-23 13:04:32 info: getAccessFilterContext - Fetched branchLevelAccess from DB: true
+2026-01-23 13:04:32 info: getAccessFilterContext - Final context: {"userId":2,"roleId":3,"branchId":null,"companyId":null,"branchLevelAccess":true,"companyLevelAccess":true,"isAdmin":false,"accessibleCompanyIds":[1,2,3,4,5,6]}
+2026-01-23 13:04:35 info: User logged out successfully
+2026-01-23 13:04:37 info: User logged in successfully: ckiprono@jiranismart.com
+2026-01-23 13:04:37 info: getAccessFilterContext - User: 2, Role: Branch User, RoleID: 3, Branch: undefined
+2026-01-23 13:04:37 info: getAccessFilterContext - req.permissionContext: undefined
+2026-01-23 13:04:37 info: getAccessFilterContext - Fetched branchLevelAccess from DB: true
+2026-01-23 13:04:37 info: getAccessFilterContext - Final context: {"userId":2,"roleId":3,"branchId":null,"companyId":null,"branchLevelAccess":true,"companyLevelAccess":true,"isAdmin":false,"accessibleCompanyIds":[1,2,3,4,5,6]}
+2026-01-23 13:04:44 info: getAccessFilterContext - User: 2, Role: Branch User, RoleID: 3, Branch: undefined
+2026-01-23 13:04:44 info: getAccessFilterContext - req.permissionContext: {"hasAccess":true,"branchLevelAccess":true,"companyLevelAccess":true,"userBranchId":null,"userCompanyId":null,"accessibleCompanyIds":[1,2,3,4,5,6],"isAdmin":false}
+2026-01-23 13:04:44 info: getAccessFilterContext - Final context: {"userId":2,"roleId":3,"branchId":null,"companyId":null,"branchLevelAccess":true,"companyLevelAccess":true,"isAdmin":false,"accessibleCompanyIds":[1,2,3,4,5,6]}
+2026-01-23 14:18:07 info: Server running on port 4000
+2026-01-23 14:18:08 info: Database connected successfully!
+2026-01-23 14:18:59 info: Server running on port 4000
+2026-01-23 14:18:59 info: Database connected successfully!
+2026-01-23 14:19:11 info: getAccessFilterContext - User: 2, Role: Branch User, RoleID: 3, Branch: 2
+2026-01-23 14:19:11 info: getAccessFilterContext - req.permissionContext: undefined
+2026-01-23 14:19:11 info: getAccessFilterContext - Fetched branchLevelAccess from DB: true
+2026-01-23 14:19:12 info: getAccessFilterContext - Final context: {"userId":2,"roleId":3,"branchId":2,"companyId":5,"branchLevelAccess":true,"companyLevelAccess":true,"isAdmin":false,"accessibleBranchIds":[2],"accessibleCompanyIds":[5]}
+2026-01-23 14:19:25 info: getAccessFilterContext - User: 2, Role: Branch User, RoleID: 3, Branch: 2
+2026-01-23 14:19:25 info: getAccessFilterContext - req.permissionContext: {"hasAccess":true,"branchLevelAccess":true,"companyLevelAccess":true,"userBranchId":2,"userCompanyId":5,"accessibleBranchIds":[2],"accessibleCompanyIds":[5],"isAdmin":false}
+2026-01-23 14:19:25 info: getAccessFilterContext - Final context: {"userId":2,"roleId":3,"branchId":2,"companyId":5,"branchLevelAccess":true,"companyLevelAccess":true,"isAdmin":false,"accessibleBranchIds":[2],"accessibleCompanyIds":[5]}
+2026-01-23 14:19:30 info: getAccessFilterContext - User: 2, Role: Branch User, RoleID: 3, Branch: 2
+2026-01-23 14:19:30 info: getAccessFilterContext - req.permissionContext: {"hasAccess":true,"branchLevelAccess":true,"companyLevelAccess":true,"userBranchId":2,"userCompanyId":5,"accessibleBranchIds":[2],"accessibleCompanyIds":[5],"isAdmin":false}
+2026-01-23 14:19:30 info: getAccessFilterContext - Final context: {"userId":2,"roleId":3,"branchId":2,"companyId":5,"branchLevelAccess":true,"companyLevelAccess":true,"isAdmin":false,"accessibleBranchIds":[2],"accessibleCompanyIds":[5]}
+2026-01-23 14:19:38 warn: Permission denied: User 2 attempted read on EXPENSES_CREATE
+2026-01-23 14:19:47 info: getAccessFilterContext - User: 2, Role: Branch User, RoleID: 3, Branch: 2
+2026-01-23 14:19:47 info: getAccessFilterContext - req.permissionContext: {"hasAccess":true,"branchLevelAccess":true,"companyLevelAccess":true,"userBranchId":2,"userCompanyId":5,"accessibleBranchIds":[2],"accessibleCompanyIds":[5],"isAdmin":false}
+2026-01-23 14:19:47 info: getAccessFilterContext - Final context: {"userId":2,"roleId":3,"branchId":2,"companyId":5,"branchLevelAccess":true,"companyLevelAccess":true,"isAdmin":false,"accessibleBranchIds":[2],"accessibleCompanyIds":[5]}
+2026-01-23 14:22:05 info: Server running on port 4000
+2026-01-23 14:22:05 info: Database connected successfully!
+2026-01-23 14:23:23 info: Server running on port 4000
+2026-01-23 14:23:23 info: Database connected successfully!
+2026-01-23 14:23:28 info: getAccessFilterContext - User: 2, Role: Branch User, RoleID: 3, Branch: 2
+2026-01-23 14:23:28 info: getAccessFilterContext - req.permissionContext: {"hasAccess":true,"branchLevelAccess":true,"companyLevelAccess":true,"userBranchId":2,"userCompanyId":5,"accessibleBranchIds":[2],"accessibleCompanyIds":[5],"isAdmin":false}
+2026-01-23 14:23:28 info: getAccessFilterContext - Final context: {"userId":2,"roleId":3,"branchId":2,"companyId":5,"branchLevelAccess":true,"companyLevelAccess":true,"isAdmin":false,"accessibleBranchIds":[2],"accessibleCompanyIds":[5]}
+2026-01-23 14:23:57 info: Server running on port 4000
+2026-01-23 14:23:57 info: Database connected successfully!
+2026-01-23 14:24:06 info: getAccessFilterContext - User: 2, Role: Branch User, RoleID: 3, Branch: 2
+2026-01-23 14:24:06 info: getAccessFilterContext - req.permissionContext: {"hasAccess":true,"branchLevelAccess":true,"companyLevelAccess":true,"userBranchId":2,"userCompanyId":5,"accessibleBranchIds":[2],"accessibleCompanyIds":[5],"isAdmin":false}
+2026-01-23 14:24:06 info: getAccessFilterContext - Final context: {"userId":2,"roleId":3,"branchId":2,"companyId":5,"branchLevelAccess":true,"companyLevelAccess":true,"isAdmin":false,"accessibleBranchIds":[2],"accessibleCompanyIds":[5]}
+2026-01-23 14:24:16 info: getAccessFilterContext - User: 2, Role: Branch User, RoleID: 3, Branch: 2
+2026-01-23 14:24:16 info: getAccessFilterContext - req.permissionContext: {"hasAccess":true,"branchLevelAccess":true,"companyLevelAccess":true,"userBranchId":2,"userCompanyId":5,"accessibleBranchIds":[2],"accessibleCompanyIds":[5],"isAdmin":false}
+2026-01-23 14:24:16 info: getAccessFilterContext - Final context: {"userId":2,"roleId":3,"branchId":2,"companyId":5,"branchLevelAccess":true,"companyLevelAccess":true,"isAdmin":false,"accessibleBranchIds":[2],"accessibleCompanyIds":[5]}
+2026-01-23 14:24:17 info: getAccessFilterContext - User: 2, Role: Branch User, RoleID: 3, Branch: 2
+2026-01-23 14:24:17 info: getAccessFilterContext - req.permissionContext: {"hasAccess":true,"branchLevelAccess":true,"companyLevelAccess":true,"userBranchId":2,"userCompanyId":5,"accessibleBranchIds":[2],"accessibleCompanyIds":[5],"isAdmin":false}
+2026-01-23 14:24:17 info: getAccessFilterContext - Final context: {"userId":2,"roleId":3,"branchId":2,"companyId":5,"branchLevelAccess":true,"companyLevelAccess":true,"isAdmin":false,"accessibleBranchIds":[2],"accessibleCompanyIds":[5]}
+2026-01-23 14:24:17 info: getAccessFilterContext - User: 2, Role: Branch User, RoleID: 3, Branch: 2
+2026-01-23 14:24:17 info: getAccessFilterContext - req.permissionContext: {"hasAccess":true,"branchLevelAccess":true,"companyLevelAccess":true,"userBranchId":2,"userCompanyId":5,"accessibleBranchIds":[2],"accessibleCompanyIds":[5],"isAdmin":false}
+2026-01-23 14:24:17 info: getAccessFilterContext - Final context: {"userId":2,"roleId":3,"branchId":2,"companyId":5,"branchLevelAccess":true,"companyLevelAccess":true,"isAdmin":false,"accessibleBranchIds":[2],"accessibleCompanyIds":[5]}
+2026-01-23 14:24:17 info: getAccessFilterContext - User: 2, Role: Branch User, RoleID: 3, Branch: 2
+2026-01-23 14:24:17 info: getAccessFilterContext - req.permissionContext: {"hasAccess":true,"branchLevelAccess":true,"companyLevelAccess":true,"userBranchId":2,"userCompanyId":5,"accessibleBranchIds":[2],"accessibleCompanyIds":[5],"isAdmin":false}
+2026-01-23 14:24:17 info: getAccessFilterContext - Final context: {"userId":2,"roleId":3,"branchId":2,"companyId":5,"branchLevelAccess":true,"companyLevelAccess":true,"isAdmin":false,"accessibleBranchIds":[2],"accessibleCompanyIds":[5]}
+2026-01-23 14:24:17 info: getAccessFilterContext - User: 2, Role: Branch User, RoleID: 3, Branch: 2
+2026-01-23 14:24:17 info: getAccessFilterContext - req.permissionContext: {"hasAccess":true,"branchLevelAccess":true,"companyLevelAccess":true,"userBranchId":2,"userCompanyId":5,"accessibleBranchIds":[2],"accessibleCompanyIds":[5],"isAdmin":false}
+2026-01-23 14:24:17 info: getAccessFilterContext - Final context: {"userId":2,"roleId":3,"branchId":2,"companyId":5,"branchLevelAccess":true,"companyLevelAccess":true,"isAdmin":false,"accessibleBranchIds":[2],"accessibleCompanyIds":[5]}
+2026-01-23 14:24:19 info: getAccessFilterContext - User: 2, Role: Branch User, RoleID: 3, Branch: 2
+2026-01-23 14:24:19 info: getAccessFilterContext - req.permissionContext: {"hasAccess":true,"branchLevelAccess":true,"companyLevelAccess":true,"userBranchId":2,"userCompanyId":5,"accessibleBranchIds":[2],"accessibleCompanyIds":[5],"isAdmin":false}
+2026-01-23 14:24:19 info: getAccessFilterContext - Final context: {"userId":2,"roleId":3,"branchId":2,"companyId":5,"branchLevelAccess":true,"companyLevelAccess":true,"isAdmin":false,"accessibleBranchIds":[2],"accessibleCompanyIds":[5]}
+2026-01-23 14:24:23 info: getAccessFilterContext - User: 2, Role: Branch User, RoleID: 3, Branch: 2
+2026-01-23 14:24:23 info: getAccessFilterContext - req.permissionContext: {"hasAccess":true,"branchLevelAccess":true,"companyLevelAccess":true,"userBranchId":2,"userCompanyId":5,"accessibleBranchIds":[2],"accessibleCompanyIds":[5],"isAdmin":false}
+2026-01-23 14:24:23 info: getAccessFilterContext - Final context: {"userId":2,"roleId":3,"branchId":2,"companyId":5,"branchLevelAccess":true,"companyLevelAccess":true,"isAdmin":false,"accessibleBranchIds":[2],"accessibleCompanyIds":[5]}
+2026-01-23 14:26:00 info: Server running on port 4000
+2026-01-23 14:26:01 info: Database connected successfully!
+2026-01-23 14:26:56 info: Server running on port 4000
+2026-01-23 14:26:56 info: Database connected successfully!
+2026-01-23 14:27:14 info: User logged out successfully
+2026-01-23 14:27:17 info: User logged in successfully: ckiprono@jiranismart.com
+2026-01-23 14:27:17 info: getAccessFilterContext - User: 2, Role: Branch User, RoleID: 3, Branch: 2
+2026-01-23 14:27:17 info: getAccessFilterContext - req.permissionContext: undefined
+2026-01-23 14:27:17 info: getAccessFilterContext - Fetched branchLevelAccess from DB: true
+2026-01-23 14:27:17 info: getAccessFilterContext - Final context: {"userId":2,"roleId":3,"branchId":2,"companyId":5,"branchLevelAccess":true,"companyLevelAccess":true,"isAdmin":false,"accessibleBranchIds":[2],"accessibleCompanyIds":[5]}
+2026-01-23 14:27:23 info: getAccessFilterContext - User: 2, Role: Branch User, RoleID: 3, Branch: 2
+2026-01-23 14:27:23 info: getAccessFilterContext - req.permissionContext: {"hasAccess":true,"branchLevelAccess":true,"companyLevelAccess":true,"userBranchId":2,"userCompanyId":5,"accessibleBranchIds":[2],"accessibleCompanyIds":[5],"isAdmin":false}
+2026-01-23 14:27:23 info: getAccessFilterContext - Final context: {"userId":2,"roleId":3,"branchId":2,"companyId":5,"branchLevelAccess":true,"companyLevelAccess":true,"isAdmin":false,"accessibleBranchIds":[2],"accessibleCompanyIds":[5]}
+2026-01-23 14:27:24 info: getStatistics - User: 2, Branch: 2, branchLevelAccess: true
+2026-01-23 14:27:24 info: getStatistics - permissionContext: {"userId":2,"roleId":3,"branchId":2,"companyId":5,"branchLevelAccess":true,"companyLevelAccess":true,"isAdmin":false,"accessibleBranchIds":[2],"accessibleCompanyIds":[5]}
+2026-01-23 14:27:28 info: getAccessFilterContext - User: 2, Role: Branch User, RoleID: 3, Branch: 2
+2026-01-23 14:27:28 info: getAccessFilterContext - req.permissionContext: {"hasAccess":true,"branchLevelAccess":true,"companyLevelAccess":true,"userBranchId":2,"userCompanyId":5,"accessibleBranchIds":[2],"accessibleCompanyIds":[5],"isAdmin":false}
+2026-01-23 14:27:28 info: getAccessFilterContext - Final context: {"userId":2,"roleId":3,"branchId":2,"companyId":5,"branchLevelAccess":true,"companyLevelAccess":true,"isAdmin":false,"accessibleBranchIds":[2],"accessibleCompanyIds":[5]}
+2026-01-23 14:27:35 info: getAccessFilterContext - User: 2, Role: Branch User, RoleID: 3, Branch: 2
+2026-01-23 14:27:35 info: getAccessFilterContext - req.permissionContext: {"hasAccess":true,"branchLevelAccess":true,"companyLevelAccess":true,"userBranchId":2,"userCompanyId":5,"accessibleBranchIds":[2],"accessibleCompanyIds":[5],"isAdmin":false}
+2026-01-23 14:27:35 info: getAccessFilterContext - Final context: {"userId":2,"roleId":3,"branchId":2,"companyId":5,"branchLevelAccess":true,"companyLevelAccess":true,"isAdmin":false,"accessibleBranchIds":[2],"accessibleCompanyIds":[5]}
+2026-01-23 14:27:39 warn: Permission denied: User 2 attempted read on EXPENSES_CREATE
+2026-01-23 14:27:50 info: getAccessFilterContext - User: 2, Role: Branch User, RoleID: 3, Branch: 2
+2026-01-23 14:27:50 info: getAccessFilterContext - req.permissionContext: {"hasAccess":true,"branchLevelAccess":true,"companyLevelAccess":true,"userBranchId":2,"userCompanyId":5,"accessibleBranchIds":[2],"accessibleCompanyIds":[5],"isAdmin":false}
+2026-01-23 14:27:50 info: getAccessFilterContext - Final context: {"userId":2,"roleId":3,"branchId":2,"companyId":5,"branchLevelAccess":true,"companyLevelAccess":true,"isAdmin":false,"accessibleBranchIds":[2],"accessibleCompanyIds":[5]}
+2026-01-23 14:27:51 info: getStatistics - User: 2, Branch: 2, branchLevelAccess: true
+2026-01-23 14:27:51 info: getStatistics - permissionContext: {"userId":2,"roleId":3,"branchId":2,"companyId":5,"branchLevelAccess":true,"companyLevelAccess":true,"isAdmin":false,"accessibleBranchIds":[2],"accessibleCompanyIds":[5]}
+2026-01-23 14:27:53 info: getAccessFilterContext - User: 2, Role: Branch User, RoleID: 3, Branch: 2
+2026-01-23 14:27:53 info: getAccessFilterContext - req.permissionContext: {"hasAccess":true,"branchLevelAccess":true,"companyLevelAccess":true,"userBranchId":2,"userCompanyId":5,"accessibleBranchIds":[2],"accessibleCompanyIds":[5],"isAdmin":false}
+2026-01-23 14:27:53 info: getAccessFilterContext - Final context: {"userId":2,"roleId":3,"branchId":2,"companyId":5,"branchLevelAccess":true,"companyLevelAccess":true,"isAdmin":false,"accessibleBranchIds":[2],"accessibleCompanyIds":[5]}
+2026-01-23 14:27:53 info: getStatistics - User: 2, Branch: 2, branchLevelAccess: true
+2026-01-23 14:27:53 info: getStatistics - permissionContext: {"userId":2,"roleId":3,"branchId":2,"companyId":5,"branchLevelAccess":true,"companyLevelAccess":true,"isAdmin":false,"accessibleBranchIds":[2],"accessibleCompanyIds":[5]}
+2026-01-23 14:27:56 warn: Permission denied: User 2 attempted read on REPORTS_REPAIR_SUMMARY
+2026-01-23 14:30:32 warn: Permission denied: User 2 attempted read on REPORTS_REPAIR_SUMMARY
+2026-01-23 14:31:25 warn: Permission denied: User 2 attempted read on REPORTS_REPAIR_SUMMARY
+2026-01-23 14:33:17 warn: Permission denied: User 2 attempted read on REPORTS_REPAIR_SUMMARY
+2026-01-23 14:37:26 info: Server running on port 4000
+2026-01-23 14:37:27 info: Database connected successfully!
+2026-01-23 14:39:06 info: getAccessFilterContext - User: 2, Role: Branch User, RoleID: 3, Branch: 2
+2026-01-23 14:39:06 info: getAccessFilterContext - req.permissionContext: {"hasAccess":true,"branchLevelAccess":true,"companyLevelAccess":true,"userBranchId":2,"userCompanyId":5,"accessibleBranchIds":[2],"accessibleCompanyIds":[5],"isAdmin":false}
+2026-01-23 14:39:06 info: getAccessFilterContext - Final context: {"userId":2,"roleId":3,"branchId":2,"companyId":5,"branchLevelAccess":true,"companyLevelAccess":true,"isAdmin":false,"accessibleBranchIds":[2],"accessibleCompanyIds":[5]}
+2026-01-23 14:39:07 info: getStatistics - User: 2, Branch: 2, branchLevelAccess: true
+2026-01-23 14:39:07 info: getStatistics - permissionContext: {"userId":2,"roleId":3,"branchId":2,"companyId":5,"branchLevelAccess":true,"companyLevelAccess":true,"isAdmin":false,"accessibleBranchIds":[2],"accessibleCompanyIds":[5]}
+2026-01-23 14:39:13 info: User logged out successfully
+2026-01-23 14:39:15 info: User logged in successfully: ckiprono@jiranismart.com
+2026-01-23 14:39:15 info: getAccessFilterContext - User: 2, Role: Branch User, RoleID: 3, Branch: 2
+2026-01-23 14:39:15 info: getAccessFilterContext - req.permissionContext: undefined
+2026-01-23 14:39:15 info: getAccessFilterContext - Fetched branchLevelAccess from DB: true
+2026-01-23 14:39:15 info: getAccessFilterContext - Final context: {"userId":2,"roleId":3,"branchId":2,"companyId":5,"branchLevelAccess":true,"companyLevelAccess":true,"isAdmin":false,"accessibleBranchIds":[2],"accessibleCompanyIds":[5]}
+2026-01-23 14:39:20 info: getAccessFilterContext - User: 2, Role: Branch User, RoleID: 3, Branch: 2
+2026-01-23 14:39:20 info: getAccessFilterContext - req.permissionContext: {"hasAccess":true,"branchLevelAccess":true,"companyLevelAccess":true,"userBranchId":2,"userCompanyId":5,"accessibleBranchIds":[2],"accessibleCompanyIds":[5],"isAdmin":false}
+2026-01-23 14:39:20 info: getAccessFilterContext - Final context: {"userId":2,"roleId":3,"branchId":2,"companyId":5,"branchLevelAccess":true,"companyLevelAccess":true,"isAdmin":false,"accessibleBranchIds":[2],"accessibleCompanyIds":[5]}
+2026-01-23 14:39:24 warn: Permission denied: User 2 attempted read on ASSETS_CREATE
+2026-01-23 14:39:32 info: getAccessFilterContext - User: 2, Role: Branch User, RoleID: 3, Branch: 2
+2026-01-23 14:39:32 info: getAccessFilterContext - req.permissionContext: {"hasAccess":true,"branchLevelAccess":true,"companyLevelAccess":true,"userBranchId":2,"userCompanyId":5,"accessibleBranchIds":[2],"accessibleCompanyIds":[5],"isAdmin":false}
+2026-01-23 14:39:32 info: getAccessFilterContext - Final context: {"userId":2,"roleId":3,"branchId":2,"companyId":5,"branchLevelAccess":true,"companyLevelAccess":true,"isAdmin":false,"accessibleBranchIds":[2],"accessibleCompanyIds":[5]}
+2026-01-23 14:39:36 warn: Permission denied: User 2 attempted read on EXPENSES_CREATE
+2026-01-23 14:42:33 info: Server running on port 4000
+2026-01-23 14:42:33 info: Database connected successfully!
+2026-01-23 14:45:26 info: Server running on port 4000
+2026-01-23 14:45:26 info: Database connected successfully!
+2026-01-23 14:46:22 info: Server running on port 4000
+2026-01-23 14:46:22 info: Database connected successfully!
+2026-01-23 14:47:31 info: Server running on port 4000
+2026-01-23 14:47:31 info: Database connected successfully!
+2026-01-23 14:48:22 info: getAccessFilterContext - User: 2, Role: Branch User, RoleID: 3, Branch: 2
+2026-01-23 14:48:22 info: getAccessFilterContext - req.permissionContext: undefined
+2026-01-23 14:48:22 info: getAccessFilterContext - Fetched branchLevelAccess from DB: true
+2026-01-23 14:48:22 info: getAccessFilterContext - Final context: {"userId":2,"roleId":3,"branchId":2,"companyId":5,"branchLevelAccess":true,"companyLevelAccess":true,"isAdmin":false,"accessibleBranchIds":[2],"accessibleCompanyIds":[5]}
+2026-01-23 14:48:36 info: getAccessFilterContext - User: 2, Role: Branch User, RoleID: 3, Branch: 2
+2026-01-23 14:48:36 info: getAccessFilterContext - req.permissionContext: {"hasAccess":true,"branchLevelAccess":true,"companyLevelAccess":true,"userBranchId":2,"userCompanyId":5,"accessibleBranchIds":[2],"accessibleCompanyIds":[5],"isAdmin":false}
+2026-01-23 14:48:36 info: getAccessFilterContext - Final context: {"userId":2,"roleId":3,"branchId":2,"companyId":5,"branchLevelAccess":true,"companyLevelAccess":true,"isAdmin":false,"accessibleBranchIds":[2],"accessibleCompanyIds":[5]}
+2026-01-23 14:48:43 info: getAccessFilterContext - User: 2, Role: Branch User, RoleID: 3, Branch: 2
+2026-01-23 14:48:43 info: getAccessFilterContext - req.permissionContext: {"hasAccess":true,"branchLevelAccess":true,"companyLevelAccess":true,"userBranchId":2,"userCompanyId":5,"accessibleBranchIds":[2],"accessibleCompanyIds":[5],"isAdmin":false}
+2026-01-23 14:48:43 info: getAccessFilterContext - Final context: {"userId":2,"roleId":3,"branchId":2,"companyId":5,"branchLevelAccess":true,"companyLevelAccess":true,"isAdmin":false,"accessibleBranchIds":[2],"accessibleCompanyIds":[5]}
+2026-01-23 14:48:45 info: getStatistics - User: 2, Branch: 2, branchLevelAccess: true
+2026-01-23 14:48:45 info: getStatistics - permissionContext: {"userId":2,"roleId":3,"branchId":2,"companyId":5,"branchLevelAccess":true,"companyLevelAccess":true,"isAdmin":false,"accessibleBranchIds":[2],"accessibleCompanyIds":[5]}
+2026-01-23 14:48:48 info: getAccessFilterContext - User: 2, Role: Branch User, RoleID: 3, Branch: 2
+2026-01-23 14:48:48 info: getAccessFilterContext - req.permissionContext: {"hasAccess":true,"branchLevelAccess":true,"companyLevelAccess":true,"userBranchId":2,"userCompanyId":5,"accessibleBranchIds":[2],"accessibleCompanyIds":[5],"isAdmin":false}
+2026-01-23 14:48:48 info: getAccessFilterContext - Final context: {"userId":2,"roleId":3,"branchId":2,"companyId":5,"branchLevelAccess":true,"companyLevelAccess":true,"isAdmin":false,"accessibleBranchIds":[2],"accessibleCompanyIds":[5]}
+2026-01-23 14:49:05 info: User logged in successfully: dev@system.local
+2026-01-23 14:49:05 info: getAccessFilterContext - User: 1, Role: Admin, RoleID: 1, Branch: 1
+2026-01-23 14:49:05 info: getAccessFilterContext - req.permissionContext: {"hasAccess":true,"branchLevelAccess":false,"companyLevelAccess":false,"userBranchId":1,"userCompanyId":5,"isAdmin":true}
+2026-01-23 14:49:05 info: getAccessFilterContext - Final context: {"userId":1,"roleId":1,"branchId":1,"companyId":5,"branchLevelAccess":false,"companyLevelAccess":false,"isAdmin":true}
+2026-01-23 14:49:24 info: Permission 1 assigned to role Branch User
+2026-01-23 14:49:33 info: getAccessFilterContext - User: 2, Role: Branch User, RoleID: 3, Branch: 2
+2026-01-23 14:49:33 info: getAccessFilterContext - req.permissionContext: {"hasAccess":true,"branchLevelAccess":true,"companyLevelAccess":true,"userBranchId":2,"userCompanyId":5,"accessibleBranchIds":[2],"accessibleCompanyIds":[5],"isAdmin":false}
+2026-01-23 14:49:33 info: getAccessFilterContext - Final context: {"userId":2,"roleId":3,"branchId":2,"companyId":5,"branchLevelAccess":true,"companyLevelAccess":true,"isAdmin":false,"accessibleBranchIds":[2],"accessibleCompanyIds":[5]}
+2026-01-23 14:49:34 info: getAccessFilterContext - User: 2, Role: Branch User, RoleID: 3, Branch: 2
+2026-01-23 14:49:34 info: getAccessFilterContext - req.permissionContext: undefined
+2026-01-23 14:49:34 info: getAccessFilterContext - Fetched branchLevelAccess from DB: true
+2026-01-23 14:49:34 info: getAccessFilterContext - Final context: {"userId":2,"roleId":3,"branchId":2,"companyId":5,"branchLevelAccess":true,"companyLevelAccess":true,"isAdmin":false,"accessibleBranchIds":[2],"accessibleCompanyIds":[5]}
+2026-01-23 14:49:42 info: getAccessFilterContext - User: 2, Role: Branch User, RoleID: 3, Branch: 2
+2026-01-23 14:49:42 info: getAccessFilterContext - req.permissionContext: {"hasAccess":true,"branchLevelAccess":true,"companyLevelAccess":true,"userBranchId":2,"userCompanyId":5,"accessibleBranchIds":[2],"accessibleCompanyIds":[5],"isAdmin":false}
+2026-01-23 14:49:42 info: getAccessFilterContext - Final context: {"userId":2,"roleId":3,"branchId":2,"companyId":5,"branchLevelAccess":true,"companyLevelAccess":true,"isAdmin":false,"accessibleBranchIds":[2],"accessibleCompanyIds":[5]}
+2026-01-23 14:49:48 info: getAccessFilterContext - User: 2, Role: Branch User, RoleID: 3, Branch: 2
+2026-01-23 14:49:48 info: getAccessFilterContext - req.permissionContext: {"hasAccess":true,"branchLevelAccess":true,"companyLevelAccess":true,"userBranchId":2,"userCompanyId":5,"accessibleBranchIds":[2],"accessibleCompanyIds":[5],"isAdmin":false}
+2026-01-23 14:49:48 info: getAccessFilterContext - Final context: {"userId":2,"roleId":3,"branchId":2,"companyId":5,"branchLevelAccess":true,"companyLevelAccess":true,"isAdmin":false,"accessibleBranchIds":[2],"accessibleCompanyIds":[5]}
+2026-01-23 14:49:49 info: getStatistics - User: 2, Branch: 2, branchLevelAccess: true
+2026-01-23 14:49:49 info: getStatistics - permissionContext: {"userId":2,"roleId":3,"branchId":2,"companyId":5,"branchLevelAccess":true,"companyLevelAccess":true,"isAdmin":false,"accessibleBranchIds":[2],"accessibleCompanyIds":[5]}
+2026-01-23 14:50:02 info: getAccessFilterContext - User: 1, Role: Admin, RoleID: 1, Branch: 1
+2026-01-23 14:50:02 info: getAccessFilterContext - req.permissionContext: {"hasAccess":true,"branchLevelAccess":false,"companyLevelAccess":false,"userBranchId":1,"userCompanyId":5,"isAdmin":true}
+2026-01-23 14:50:02 info: getAccessFilterContext - Final context: {"userId":1,"roleId":1,"branchId":1,"companyId":5,"branchLevelAccess":false,"companyLevelAccess":false,"isAdmin":true}
+2026-01-23 14:50:09 info: getAccessFilterContext - User: 1, Role: Admin, RoleID: 1, Branch: 1
+2026-01-23 14:50:09 info: getAccessFilterContext - req.permissionContext: {"hasAccess":true,"branchLevelAccess":false,"companyLevelAccess":false,"userBranchId":1,"userCompanyId":5,"isAdmin":true}
+2026-01-23 14:50:09 info: getAccessFilterContext - Final context: {"userId":1,"roleId":1,"branchId":1,"companyId":5,"branchLevelAccess":false,"companyLevelAccess":false,"isAdmin":true}
+2026-01-23 14:50:42 info: Asset 1 transferred from branch 1 to 2 by user 1
+2026-01-23 14:50:43 info: getAccessFilterContext - User: 1, Role: Admin, RoleID: 1, Branch: 1
+2026-01-23 14:50:43 info: getAccessFilterContext - req.permissionContext: {"hasAccess":true,"branchLevelAccess":false,"companyLevelAccess":false,"userBranchId":1,"userCompanyId":5,"isAdmin":true}
+2026-01-23 14:50:43 info: getAccessFilterContext - Final context: {"userId":1,"roleId":1,"branchId":1,"companyId":5,"branchLevelAccess":false,"companyLevelAccess":false,"isAdmin":true}
+2026-01-23 14:51:06 info: getAccessFilterContext - User: 2, Role: Branch User, RoleID: 3, Branch: 2
+2026-01-23 14:51:06 info: getAccessFilterContext - req.permissionContext: {"hasAccess":true,"branchLevelAccess":true,"companyLevelAccess":true,"userBranchId":2,"userCompanyId":5,"accessibleBranchIds":[2],"accessibleCompanyIds":[5],"isAdmin":false}
+2026-01-23 14:51:06 info: getAccessFilterContext - Final context: {"userId":2,"roleId":3,"branchId":2,"companyId":5,"branchLevelAccess":true,"companyLevelAccess":true,"isAdmin":false,"accessibleBranchIds":[2],"accessibleCompanyIds":[5]}
+2026-01-23 14:51:08 info: getAccessFilterContext - User: 2, Role: Branch User, RoleID: 3, Branch: 2
+2026-01-23 14:51:08 info: getAccessFilterContext - req.permissionContext: undefined
+2026-01-23 14:51:08 info: getAccessFilterContext - Fetched branchLevelAccess from DB: true
+2026-01-23 14:51:08 info: getAccessFilterContext - Final context: {"userId":2,"roleId":3,"branchId":2,"companyId":5,"branchLevelAccess":true,"companyLevelAccess":true,"isAdmin":false,"accessibleBranchIds":[2],"accessibleCompanyIds":[5]}
+2026-01-23 14:51:08 info: getStatistics - User: 2, Branch: 2, branchLevelAccess: true
+2026-01-23 14:51:08 info: getStatistics - permissionContext: {"userId":2,"roleId":3,"branchId":2,"companyId":5,"branchLevelAccess":true,"companyLevelAccess":true,"isAdmin":false,"accessibleBranchIds":[2],"accessibleCompanyIds":[5]}
+2026-01-23 14:51:10 info: getAccessFilterContext - User: 2, Role: Branch User, RoleID: 3, Branch: 2
+2026-01-23 14:51:10 info: getAccessFilterContext - req.permissionContext: undefined
+2026-01-23 14:51:10 info: getAccessFilterContext - Fetched branchLevelAccess from DB: true
+2026-01-23 14:51:10 info: getAccessFilterContext - Final context: {"userId":2,"roleId":3,"branchId":2,"companyId":5,"branchLevelAccess":true,"companyLevelAccess":true,"isAdmin":false,"accessibleBranchIds":[2],"accessibleCompanyIds":[5]}
+2026-01-23 14:51:33 info: getAccessFilterContext - User: 2, Role: Branch User, RoleID: 3, Branch: 2
+2026-01-23 14:51:33 info: getAccessFilterContext - req.permissionContext: {"hasAccess":true,"branchLevelAccess":true,"companyLevelAccess":true,"userBranchId":2,"userCompanyId":5,"accessibleBranchIds":[2],"accessibleCompanyIds":[5],"isAdmin":false}
+2026-01-23 14:51:33 info: getAccessFilterContext - Final context: {"userId":2,"roleId":3,"branchId":2,"companyId":5,"branchLevelAccess":true,"companyLevelAccess":true,"isAdmin":false,"accessibleBranchIds":[2],"accessibleCompanyIds":[5]}
+2026-01-23 14:51:35 info: getStatistics - User: 2, Branch: 2, branchLevelAccess: true
+2026-01-23 14:51:35 info: getStatistics - permissionContext: {"userId":2,"roleId":3,"branchId":2,"companyId":5,"branchLevelAccess":true,"companyLevelAccess":true,"isAdmin":false,"accessibleBranchIds":[2],"accessibleCompanyIds":[5]}
+2026-01-23 14:51:37 info: getAccessFilterContext - User: 2, Role: Branch User, RoleID: 3, Branch: 2
+2026-01-23 14:51:37 info: getAccessFilterContext - req.permissionContext: {"hasAccess":true,"branchLevelAccess":true,"companyLevelAccess":true,"userBranchId":2,"userCompanyId":5,"accessibleBranchIds":[2],"accessibleCompanyIds":[5],"isAdmin":false}
+2026-01-23 14:51:37 info: getAccessFilterContext - Final context: {"userId":2,"roleId":3,"branchId":2,"companyId":5,"branchLevelAccess":true,"companyLevelAccess":true,"isAdmin":false,"accessibleBranchIds":[2],"accessibleCompanyIds":[5]}
+2026-01-23 14:51:38 info: getStatistics - User: 2, Branch: 2, branchLevelAccess: true
+2026-01-23 14:51:38 info: getStatistics - permissionContext: {"userId":2,"roleId":3,"branchId":2,"companyId":5,"branchLevelAccess":true,"companyLevelAccess":true,"isAdmin":false,"accessibleBranchIds":[2],"accessibleCompanyIds":[5]}
+2026-01-23 14:51:41 info: getAccessFilterContext - User: 2, Role: Branch User, RoleID: 3, Branch: 2
+2026-01-23 14:51:41 info: getAccessFilterContext - req.permissionContext: {"hasAccess":true,"branchLevelAccess":true,"companyLevelAccess":true,"userBranchId":2,"userCompanyId":5,"accessibleBranchIds":[2],"accessibleCompanyIds":[5],"isAdmin":false}
+2026-01-23 14:51:41 info: getAccessFilterContext - Final context: {"userId":2,"roleId":3,"branchId":2,"companyId":5,"branchLevelAccess":true,"companyLevelAccess":true,"isAdmin":false,"accessibleBranchIds":[2],"accessibleCompanyIds":[5]}
+2026-01-23 14:51:47 warn: Permission denied: User 2 attempted read on ASSIGNMENTS
+2026-01-23 14:52:01 info: getAccessFilterContext - User: 1, Role: Admin, RoleID: 1, Branch: 1
+2026-01-23 14:52:01 info: getAccessFilterContext - req.permissionContext: {"hasAccess":true,"branchLevelAccess":false,"companyLevelAccess":false,"userBranchId":1,"userCompanyId":5,"isAdmin":true}
+2026-01-23 14:52:01 info: getAccessFilterContext - Final context: {"userId":1,"roleId":1,"branchId":1,"companyId":5,"branchLevelAccess":false,"companyLevelAccess":false,"isAdmin":true}
+2026-01-23 14:52:12 info: getAccessFilterContext - User: 1, Role: Admin, RoleID: 1, Branch: 1
+2026-01-23 14:52:12 info: getAccessFilterContext - req.permissionContext: undefined
+2026-01-23 14:52:12 info: getAccessFilterContext - Fetched branchLevelAccess from DB: false
+2026-01-23 14:52:12 info: getAccessFilterContext - Final context: {"userId":1,"roleId":1,"branchId":1,"companyId":5,"branchLevelAccess":false,"companyLevelAccess":false,"isAdmin":true}
+2026-01-23 14:52:21 info: getAccessFilterContext - User: 1, Role: Admin, RoleID: 1, Branch: 1
+2026-01-23 14:52:21 info: getAccessFilterContext - req.permissionContext: {"hasAccess":true,"branchLevelAccess":false,"companyLevelAccess":false,"userBranchId":1,"userCompanyId":5,"isAdmin":true}
+2026-01-23 14:52:21 info: getAccessFilterContext - Final context: {"userId":1,"roleId":1,"branchId":1,"companyId":5,"branchLevelAccess":false,"companyLevelAccess":false,"isAdmin":true}
+2026-01-23 14:52:22 info: getStatistics - User: 1, Branch: 1, branchLevelAccess: false
+2026-01-23 14:52:22 info: getStatistics - permissionContext: {"userId":1,"roleId":1,"branchId":1,"companyId":5,"branchLevelAccess":false,"companyLevelAccess":false,"isAdmin":true}
+2026-01-23 14:55:05 info: getAccessFilterContext - User: 2, Role: Branch User, RoleID: 3, Branch: 2
+2026-01-23 14:55:05 info: getAccessFilterContext - req.permissionContext: {"hasAccess":true,"branchLevelAccess":true,"companyLevelAccess":true,"userBranchId":2,"userCompanyId":5,"accessibleBranchIds":[2],"accessibleCompanyIds":[5],"isAdmin":false}
+2026-01-23 14:55:05 info: getAccessFilterContext - Final context: {"userId":2,"roleId":3,"branchId":2,"companyId":5,"branchLevelAccess":true,"companyLevelAccess":true,"isAdmin":false,"accessibleBranchIds":[2],"accessibleCompanyIds":[5]}
+2026-01-23 14:55:11 info: User logged out successfully
+2026-01-23 14:55:13 info: User logged in successfully: ckiprono@jiranismart.com
+2026-01-23 14:55:13 info: getAccessFilterContext - User: 2, Role: Admin, RoleID: 1, Branch: 2
+2026-01-23 14:55:13 info: getAccessFilterContext - req.permissionContext: undefined
+2026-01-23 14:55:13 info: getAccessFilterContext - Fetched branchLevelAccess from DB: false
+2026-01-23 14:55:13 info: getAccessFilterContext - Final context: {"userId":2,"roleId":1,"branchId":2,"companyId":5,"branchLevelAccess":false,"companyLevelAccess":false,"isAdmin":true}
+2026-01-23 14:55:21 info: getAccessFilterContext - User: 2, Role: Admin, RoleID: 1, Branch: 2
+2026-01-23 14:55:21 info: getAccessFilterContext - req.permissionContext: {"hasAccess":true,"branchLevelAccess":false,"companyLevelAccess":false,"userBranchId":2,"userCompanyId":5,"isAdmin":true}
+2026-01-23 14:55:21 info: getAccessFilterContext - Final context: {"userId":2,"roleId":1,"branchId":2,"companyId":5,"branchLevelAccess":false,"companyLevelAccess":false,"isAdmin":true}
+2026-01-23 14:55:29 info: getAccessFilterContext - User: 2, Role: Admin, RoleID: 1, Branch: 2
+2026-01-23 14:55:29 info: getAccessFilterContext - req.permissionContext: undefined
+2026-01-23 14:55:29 info: getAccessFilterContext - Fetched branchLevelAccess from DB: false
+2026-01-23 14:55:29 info: getAccessFilterContext - Final context: {"userId":2,"roleId":1,"branchId":2,"companyId":5,"branchLevelAccess":false,"companyLevelAccess":false,"isAdmin":true}
+2026-01-23 14:55:41 info: getAccessFilterContext - User: 2, Role: Admin, RoleID: 1, Branch: 2
+2026-01-23 14:55:41 info: getAccessFilterContext - req.permissionContext: {"hasAccess":true,"branchLevelAccess":false,"companyLevelAccess":false,"userBranchId":2,"userCompanyId":5,"isAdmin":true}
+2026-01-23 14:55:41 info: getAccessFilterContext - Final context: {"userId":2,"roleId":1,"branchId":2,"companyId":5,"branchLevelAccess":false,"companyLevelAccess":false,"isAdmin":true}
+2026-01-23 14:55:43 info: getStatistics - User: 2, Branch: 2, branchLevelAccess: false
+2026-01-23 14:55:43 info: getStatistics - permissionContext: {"userId":2,"roleId":1,"branchId":2,"companyId":5,"branchLevelAccess":false,"companyLevelAccess":false,"isAdmin":true}
+2026-01-23 14:56:47 info: getAccessFilterContext - User: 2, Role: Admin, RoleID: 1, Branch: 2
+2026-01-23 14:56:47 info: getAccessFilterContext - req.permissionContext: {"hasAccess":true,"branchLevelAccess":false,"companyLevelAccess":false,"userBranchId":2,"userCompanyId":5,"isAdmin":true}
+2026-01-23 14:56:47 info: getAccessFilterContext - Final context: {"userId":2,"roleId":1,"branchId":2,"companyId":5,"branchLevelAccess":false,"companyLevelAccess":false,"isAdmin":true}
+2026-01-23 14:56:48 info: getStatistics - User: 2, Branch: 2, branchLevelAccess: false
+2026-01-23 14:56:48 info: getStatistics - permissionContext: {"userId":2,"roleId":1,"branchId":2,"companyId":5,"branchLevelAccess":false,"companyLevelAccess":false,"isAdmin":true}
+2026-01-23 14:56:56 info: User logged out successfully
+2026-01-23 14:56:59 info: User logged in successfully: ckiprono@jiranismart.com
+2026-01-23 14:56:59 info: getAccessFilterContext - User: 2, Role: Branch User, RoleID: 3, Branch: 2
+2026-01-23 14:56:59 info: getAccessFilterContext - req.permissionContext: undefined
+2026-01-23 14:56:59 info: getAccessFilterContext - Fetched branchLevelAccess from DB: true
+2026-01-23 14:56:59 info: getAccessFilterContext - Final context: {"userId":2,"roleId":3,"branchId":2,"companyId":3,"branchLevelAccess":true,"companyLevelAccess":true,"isAdmin":false,"accessibleBranchIds":[2],"accessibleCompanyIds":[3]}
+2026-01-23 15:11:03 info: Server running on port 4000
+2026-01-23 15:11:03 info: Database connected successfully!
+2026-01-23 15:18:02 info: Server running on port 4000
+2026-01-23 15:18:03 info: Database connected successfully!
+2026-01-23 15:19:51 warn: Failed to update company access for DASHBOARD
+2026-01-23 15:23:58 info: Server running on port 4000
+2026-01-23 15:23:58 info: Database connected successfully!
+2026-01-23 15:25:56 info: Server running on port 4000
+2026-01-23 15:25:56 info: Database connected successfully!
+2026-01-23 15:27:56 info: Retrieved 2 branches.
+2026-01-23 15:32:34 info: Server running on port 4000
+2026-01-23 15:32:34 info: Database connected successfully!
+2026-01-23 15:33:30 info: Bulk permissions assigned to role Branch User: 6 permissions
+2026-01-23 15:33:30 info: Company access updated for role Branch User: 1 companies
+2026-01-23 15:33:52 info: getAccessFilterContext - User: 2, Role: Branch User, RoleID: 3, Branch: 2
+2026-01-23 15:33:52 info: getAccessFilterContext - req.permissionContext: undefined
+2026-01-23 15:33:52 info: getAccessFilterContext - Fetched branchLevelAccess from DB: true
+2026-01-23 15:33:52 info: getAccessFilterContext - Final context: {"userId":2,"roleId":3,"branchId":2,"companyId":3,"branchLevelAccess":true,"companyLevelAccess":true,"isAdmin":false,"accessibleBranchIds":[2],"accessibleCompanyIds":[5]}
+2026-01-23 15:33:56 info: User logged out successfully
+2026-01-23 15:33:59 info: User logged in successfully: ckiprono@jiranismart.com
+2026-01-23 15:33:59 info: getAccessFilterContext - User: 2, Role: Branch User, RoleID: 3, Branch: 2
+2026-01-23 15:33:59 info: getAccessFilterContext - req.permissionContext: undefined
+2026-01-23 15:33:59 info: getAccessFilterContext - Fetched branchLevelAccess from DB: true
+2026-01-23 15:33:59 info: getAccessFilterContext - Final context: {"userId":2,"roleId":3,"branchId":2,"companyId":3,"branchLevelAccess":true,"companyLevelAccess":true,"isAdmin":false,"accessibleBranchIds":[2],"accessibleCompanyIds":[5]}
+2026-01-23 15:34:09 info: getAccessFilterContext - User: 2, Role: Branch User, RoleID: 3, Branch: 2
+2026-01-23 15:34:09 info: getAccessFilterContext - req.permissionContext: undefined
+2026-01-23 15:34:09 info: getAccessFilterContext - Fetched branchLevelAccess from DB: true
+2026-01-23 15:34:09 info: getAccessFilterContext - Final context: {"userId":2,"roleId":3,"branchId":2,"companyId":3,"branchLevelAccess":true,"companyLevelAccess":true,"isAdmin":false,"accessibleBranchIds":[2],"accessibleCompanyIds":[5]}
+2026-01-23 15:34:19 info: getAccessFilterContext - User: 2, Role: Branch User, RoleID: 3, Branch: 2
+2026-01-23 15:34:19 info: getAccessFilterContext - req.permissionContext: undefined
+2026-01-23 15:34:19 info: getAccessFilterContext - Fetched branchLevelAccess from DB: true
+2026-01-23 15:34:19 info: getAccessFilterContext - Final context: {"userId":2,"roleId":3,"branchId":2,"companyId":3,"branchLevelAccess":true,"companyLevelAccess":true,"isAdmin":false,"accessibleBranchIds":[2],"accessibleCompanyIds":[5]}
+2026-01-23 15:35:21 info: getAccessFilterContext - User: 1, Role: Admin, RoleID: 1, Branch: 1
+2026-01-23 15:35:21 info: getAccessFilterContext - req.permissionContext: {"hasAccess":true,"branchLevelAccess":false,"companyLevelAccess":false,"userBranchId":1,"userCompanyId":5,"isAdmin":true}
+2026-01-23 15:35:21 info: getAccessFilterContext - Final context: {"userId":1,"roleId":1,"branchId":1,"companyId":5,"branchLevelAccess":false,"companyLevelAccess":false,"isAdmin":true}
+2026-01-23 15:36:38 info: getAccessFilterContext - User: 1, Role: Admin, RoleID: 1, Branch: 1
+2026-01-23 15:36:38 info: getAccessFilterContext - req.permissionContext: {"hasAccess":true,"branchLevelAccess":false,"companyLevelAccess":false,"userBranchId":1,"userCompanyId":5,"isAdmin":true}
+2026-01-23 15:36:38 info: getAccessFilterContext - Final context: {"userId":1,"roleId":1,"branchId":1,"companyId":5,"branchLevelAccess":false,"companyLevelAccess":false,"isAdmin":true}
+2026-01-23 15:38:17 info: getAccessFilterContext - User: 1, Role: Admin, RoleID: 1, Branch: 1
+2026-01-23 15:38:17 info: getAccessFilterContext - req.permissionContext: {"hasAccess":true,"branchLevelAccess":false,"companyLevelAccess":false,"userBranchId":1,"userCompanyId":5,"isAdmin":true}
+2026-01-23 15:38:17 info: getAccessFilterContext - Final context: {"userId":1,"roleId":1,"branchId":1,"companyId":5,"branchLevelAccess":false,"companyLevelAccess":false,"isAdmin":true}
+2026-01-23 15:38:19 info: getAccessFilterContext - User: 1, Role: Admin, RoleID: 1, Branch: 1
+2026-01-23 15:38:19 info: getAccessFilterContext - req.permissionContext: {"hasAccess":true,"branchLevelAccess":false,"companyLevelAccess":false,"userBranchId":1,"userCompanyId":5,"isAdmin":true}
+2026-01-23 15:38:19 info: getAccessFilterContext - Final context: {"userId":1,"roleId":1,"branchId":1,"companyId":5,"branchLevelAccess":false,"companyLevelAccess":false,"isAdmin":true}
+2026-01-23 15:38:30 info: getAccessFilterContext - User: 1, Role: Admin, RoleID: 1, Branch: 1
+2026-01-23 15:38:30 info: getAccessFilterContext - req.permissionContext: {"hasAccess":true,"branchLevelAccess":false,"companyLevelAccess":false,"userBranchId":1,"userCompanyId":5,"isAdmin":true}
+2026-01-23 15:38:30 info: getAccessFilterContext - Final context: {"userId":1,"roleId":1,"branchId":1,"companyId":5,"branchLevelAccess":false,"companyLevelAccess":false,"isAdmin":true}
+2026-01-23 15:39:11 info: getAccessFilterContext - User: 1, Role: Admin, RoleID: 1, Branch: 1
+2026-01-23 15:39:11 info: getAccessFilterContext - req.permissionContext: undefined
+2026-01-23 15:39:11 info: getAccessFilterContext - Fetched branchLevelAccess from DB: false
+2026-01-23 15:39:11 info: getAccessFilterContext - Final context: {"userId":1,"roleId":1,"branchId":1,"companyId":5,"branchLevelAccess":false,"companyLevelAccess":false,"isAdmin":true}
+2026-01-23 15:39:24 info: getAccessFilterContext - User: 1, Role: Admin, RoleID: 1, Branch: 1
+2026-01-23 15:39:24 info: getAccessFilterContext - req.permissionContext: {"hasAccess":true,"branchLevelAccess":false,"companyLevelAccess":false,"userBranchId":1,"userCompanyId":5,"isAdmin":true}
+2026-01-23 15:39:24 info: getAccessFilterContext - Final context: {"userId":1,"roleId":1,"branchId":1,"companyId":5,"branchLevelAccess":false,"companyLevelAccess":false,"isAdmin":true}
+2026-01-23 15:39:38 info: getAccessFilterContext - User: 1, Role: Admin, RoleID: 1, Branch: 1
+2026-01-23 15:39:38 info: getAccessFilterContext - req.permissionContext: {"hasAccess":true,"branchLevelAccess":false,"companyLevelAccess":false,"userBranchId":1,"userCompanyId":5,"isAdmin":true}
+2026-01-23 15:39:38 info: getAccessFilterContext - Final context: {"userId":1,"roleId":1,"branchId":1,"companyId":5,"branchLevelAccess":false,"companyLevelAccess":false,"isAdmin":true}
+2026-01-23 15:39:53 info: getAccessFilterContext - User: 1, Role: Admin, RoleID: 1, Branch: 1
+2026-01-23 15:39:53 info: getAccessFilterContext - req.permissionContext: {"hasAccess":true,"branchLevelAccess":false,"companyLevelAccess":false,"userBranchId":1,"userCompanyId":5,"isAdmin":true}
+2026-01-23 15:39:53 info: getAccessFilterContext - Final context: {"userId":1,"roleId":1,"branchId":1,"companyId":5,"branchLevelAccess":false,"companyLevelAccess":false,"isAdmin":true}
+2026-01-23 15:40:32 info: getAccessFilterContext - User: 2, Role: Branch User, RoleID: 3, Branch: 2
+2026-01-23 15:40:32 info: getAccessFilterContext - req.permissionContext: undefined
+2026-01-23 15:40:32 info: getAccessFilterContext - Fetched branchLevelAccess from DB: true
+2026-01-23 15:40:32 info: getAccessFilterContext - Final context: {"userId":2,"roleId":3,"branchId":2,"companyId":3,"branchLevelAccess":true,"companyLevelAccess":true,"isAdmin":false,"accessibleBranchIds":[2],"accessibleCompanyIds":[5]}
+2026-01-23 15:40:49 info: getAccessFilterContext - User: 2, Role: Branch User, RoleID: 3, Branch: 2
+2026-01-23 15:40:49 info: getAccessFilterContext - req.permissionContext: undefined
+2026-01-23 15:40:49 info: getAccessFilterContext - Fetched branchLevelAccess from DB: true
+2026-01-23 15:40:49 info: getAccessFilterContext - Final context: {"userId":2,"roleId":3,"branchId":2,"companyId":3,"branchLevelAccess":true,"companyLevelAccess":true,"isAdmin":false,"accessibleBranchIds":[2],"accessibleCompanyIds":[5]}
+2026-01-23 15:41:31 warn: Failed to update company access for ASSETS_VIEW
+2026-01-23 15:41:32 warn: Failed to update company access for REPAIR_REQUESTS_NEW
+2026-01-23 15:41:32 warn: Failed to update company access for DASHBOARD
+2026-01-23 15:41:32 warn: Failed to update company access for REPAIR_REQUESTS_LIST
+2026-01-23 15:41:38 info: getAccessFilterContext - User: 2, Role: Branch User, RoleID: 3, Branch: 2
+2026-01-23 15:41:38 info: getAccessFilterContext - req.permissionContext: undefined
+2026-01-23 15:41:38 info: getAccessFilterContext - Fetched branchLevelAccess from DB: true
+2026-01-23 15:41:38 info: getAccessFilterContext - Final context: {"userId":2,"roleId":3,"branchId":2,"companyId":3,"branchLevelAccess":true,"companyLevelAccess":true,"isAdmin":false,"accessibleBranchIds":[2],"accessibleCompanyIds":[5]}
+2026-01-23 15:41:48 info: User logged out successfully
+2026-01-23 15:41:52 info: User logged in successfully: ckiprono@jiranismart.com
+2026-01-23 15:41:52 info: getAccessFilterContext - User: 2, Role: Branch User, RoleID: 3, Branch: 2
+2026-01-23 15:41:52 info: getAccessFilterContext - req.permissionContext: undefined
+2026-01-23 15:41:52 info: getAccessFilterContext - Fetched branchLevelAccess from DB: true
+2026-01-23 15:41:52 info: getAccessFilterContext - Final context: {"userId":2,"roleId":3,"branchId":2,"companyId":3,"branchLevelAccess":true,"companyLevelAccess":true,"isAdmin":false,"accessibleBranchIds":[2],"accessibleCompanyIds":[5]}
+2026-01-23 15:42:25 info: Bulk permissions assigned to role Branch User: 6 permissions
+2026-01-23 15:42:25 info: Company access updated for role Branch User: 0 companies
+2026-01-23 15:42:33 info: getAccessFilterContext - User: 2, Role: Branch User, RoleID: 3, Branch: 2
+2026-01-23 15:42:33 info: getAccessFilterContext - req.permissionContext: undefined
+2026-01-23 15:42:33 info: getAccessFilterContext - Fetched branchLevelAccess from DB: true
+2026-01-23 15:42:33 info: getAccessFilterContext - Final context: {"userId":2,"roleId":3,"branchId":2,"companyId":3,"branchLevelAccess":true,"companyLevelAccess":false,"isAdmin":false,"accessibleBranchIds":[2]}
+2026-01-23 15:42:37 info: User logged out successfully
+2026-01-23 15:42:40 info: User logged in successfully: ckiprono@jiranismart.com
+2026-01-23 15:42:40 info: getAccessFilterContext - User: 2, Role: Branch User, RoleID: 3, Branch: 2
+2026-01-23 15:42:40 info: getAccessFilterContext - req.permissionContext: undefined
+2026-01-23 15:42:40 info: getAccessFilterContext - Fetched branchLevelAccess from DB: true
+2026-01-23 15:42:40 info: getAccessFilterContext - Final context: {"userId":2,"roleId":3,"branchId":2,"companyId":3,"branchLevelAccess":true,"companyLevelAccess":false,"isAdmin":false,"accessibleBranchIds":[2]}
+2026-01-23 15:42:46 info: getAccessFilterContext - User: 2, Role: Branch User, RoleID: 3, Branch: 2
+2026-01-23 15:42:46 info: getAccessFilterContext - req.permissionContext: undefined
+2026-01-23 15:42:46 info: getAccessFilterContext - Fetched branchLevelAccess from DB: true
+2026-01-23 15:42:46 info: getAccessFilterContext - Final context: {"userId":2,"roleId":3,"branchId":2,"companyId":3,"branchLevelAccess":true,"companyLevelAccess":false,"isAdmin":false,"accessibleBranchIds":[2]}
+2026-01-23 15:42:50 info: getAccessFilterContext - User: 2, Role: Branch User, RoleID: 3, Branch: 2
+2026-01-23 15:42:50 info: getAccessFilterContext - req.permissionContext: undefined
+2026-01-23 15:42:50 info: getAccessFilterContext - Fetched branchLevelAccess from DB: true
+2026-01-23 15:42:50 info: getAccessFilterContext - Final context: {"userId":2,"roleId":3,"branchId":2,"companyId":3,"branchLevelAccess":true,"companyLevelAccess":false,"isAdmin":false,"accessibleBranchIds":[2]}
+2026-01-23 15:42:54 info: User logged out successfully
+2026-01-23 15:42:57 info: User logged in successfully: ckiprono@jiranismart.com
+2026-01-23 15:42:57 info: getAccessFilterContext - User: 2, Role: Branch User, RoleID: 3, Branch: 2
+2026-01-23 15:42:57 info: getAccessFilterContext - req.permissionContext: undefined
+2026-01-23 15:42:57 info: getAccessFilterContext - Fetched branchLevelAccess from DB: true
+2026-01-23 15:42:57 info: getAccessFilterContext - Final context: {"userId":2,"roleId":3,"branchId":2,"companyId":3,"branchLevelAccess":true,"companyLevelAccess":false,"isAdmin":false,"accessibleBranchIds":[2]}
+2026-01-23 15:45:36 info: getAccessFilterContext - User: 2, Role: Branch User, RoleID: 3, Branch: 2
+2026-01-23 15:45:36 info: getAccessFilterContext - req.permissionContext: undefined
+2026-01-23 15:45:36 info: getAccessFilterContext - Fetched branchLevelAccess from DB: true
+2026-01-23 15:45:36 info: getAccessFilterContext - Final context: {"userId":2,"roleId":3,"branchId":2,"companyId":3,"branchLevelAccess":true,"companyLevelAccess":false,"isAdmin":false,"accessibleBranchIds":[2]}
+2026-01-23 15:45:41 info: User logged out successfully
+2026-01-23 15:45:43 info: User logged in successfully: ckiprono@jiranismart.com
+2026-01-23 15:45:43 info: getAccessFilterContext - User: 2, Role: Branch User, RoleID: 3, Branch: 2
+2026-01-23 15:45:43 info: getAccessFilterContext - req.permissionContext: undefined
+2026-01-23 15:45:43 info: getAccessFilterContext - Fetched branchLevelAccess from DB: true
+2026-01-23 15:45:43 info: getAccessFilterContext - Final context: {"userId":2,"roleId":3,"branchId":2,"companyId":5,"branchLevelAccess":true,"companyLevelAccess":false,"isAdmin":false,"accessibleBranchIds":[2]}
+2026-01-23 15:46:13 info: getAccessFilterContext - User: 2, Role: Branch User, RoleID: 3, Branch: 2
+2026-01-23 15:46:13 info: getAccessFilterContext - req.permissionContext: undefined
+2026-01-23 15:46:13 info: getAccessFilterContext - Fetched branchLevelAccess from DB: true
+2026-01-23 15:46:13 info: getAccessFilterContext - Final context: {"userId":2,"roleId":3,"branchId":2,"companyId":5,"branchLevelAccess":true,"companyLevelAccess":false,"isAdmin":false,"accessibleBranchIds":[2]}
+2026-01-23 15:46:21 info: User logged out successfully
+2026-01-23 15:46:24 info: User logged in successfully: ckiprono@jiranismart.com
+2026-01-23 15:46:24 info: getAccessFilterContext - User: 2, Role: Branch User, RoleID: 3, Branch: 2
+2026-01-23 15:46:24 info: getAccessFilterContext - req.permissionContext: undefined
+2026-01-23 15:46:24 info: getAccessFilterContext - Fetched branchLevelAccess from DB: true
+2026-01-23 15:46:24 info: getAccessFilterContext - Final context: {"userId":2,"roleId":3,"branchId":2,"companyId":5,"branchLevelAccess":true,"companyLevelAccess":false,"isAdmin":false,"accessibleBranchIds":[2]}
+2026-01-23 15:47:55 info: Bulk permissions assigned to role Branch User: 8 permissions
+2026-01-23 15:47:55 info: Company access updated for role Branch User: 0 companies
+2026-01-23 15:48:11 info: Bulk permissions assigned to role Branch User: 8 permissions
+2026-01-23 15:48:11 info: Company access updated for role Branch User: 0 companies
+2026-01-23 15:48:18 info: getAccessFilterContext - User: 2, Role: Branch User, RoleID: 3, Branch: 2
+2026-01-23 15:48:18 info: getAccessFilterContext - req.permissionContext: undefined
+2026-01-23 15:48:18 info: getAccessFilterContext - Fetched branchLevelAccess from DB: false
+2026-01-23 15:48:18 info: getAccessFilterContext - Final context: {"userId":2,"roleId":3,"branchId":2,"companyId":5,"branchLevelAccess":false,"companyLevelAccess":false,"isAdmin":false}
+2026-01-23 15:48:22 info: User logged out successfully
+2026-01-23 15:48:29 info: User logged in successfully: ckiprono@jiranismart.com
+2026-01-23 15:48:29 info: getAccessFilterContext - User: 2, Role: Branch User, RoleID: 3, Branch: 2
+2026-01-23 15:48:29 info: getAccessFilterContext - req.permissionContext: undefined
+2026-01-23 15:48:29 info: getAccessFilterContext - Fetched branchLevelAccess from DB: false
+2026-01-23 15:48:29 info: getAccessFilterContext - Final context: {"userId":2,"roleId":3,"branchId":2,"companyId":5,"branchLevelAccess":false,"companyLevelAccess":false,"isAdmin":false}
+2026-01-23 15:48:36 info: getAccessFilterContext - User: 2, Role: Branch User, RoleID: 3, Branch: 2
+2026-01-23 15:48:36 info: getAccessFilterContext - req.permissionContext: undefined
+2026-01-23 15:48:36 info: getAccessFilterContext - Fetched branchLevelAccess from DB: false
+2026-01-23 15:48:36 info: getAccessFilterContext - Final context: {"userId":2,"roleId":3,"branchId":2,"companyId":5,"branchLevelAccess":false,"companyLevelAccess":false,"isAdmin":false}
+2026-01-23 15:48:47 info: getAccessFilterContext - User: 2, Role: Branch User, RoleID: 3, Branch: 2
+2026-01-23 15:48:47 info: getAccessFilterContext - req.permissionContext: undefined
+2026-01-23 15:48:47 info: getAccessFilterContext - Fetched branchLevelAccess from DB: false
+2026-01-23 15:48:47 info: getAccessFilterContext - Final context: {"userId":2,"roleId":3,"branchId":2,"companyId":5,"branchLevelAccess":false,"companyLevelAccess":false,"isAdmin":false}
+2026-01-23 15:48:56 info: User logged out successfully
+2026-01-23 15:49:09 info: Bulk permissions assigned to role Branch User: 8 permissions
+2026-01-23 15:49:09 info: Company access updated for role Branch User: 0 companies
+2026-01-23 16:00:23 info: User logged in successfully: ckiprono@jiranismart.com
+2026-01-23 16:00:23 info: getAccessFilterContext - User: 2, Role: Branch User, RoleID: 3, Branch: 2
+2026-01-23 16:00:23 info: getAccessFilterContext - req.permissionContext: undefined
+2026-01-23 16:00:23 info: getAccessFilterContext - Fetched branchLevelAccess from DB: true
+2026-01-23 16:00:23 info: getAccessFilterContext - Final context: {"userId":2,"roleId":3,"branchId":2,"companyId":5,"branchLevelAccess":true,"companyLevelAccess":false,"isAdmin":false,"accessibleBranchIds":[2]}
+2026-01-23 16:01:41 info: User logged out successfully
+2026-01-23 16:01:44 info: User logged in successfully: ckiprono@jiranismart.com
+2026-01-23 16:01:44 info: getAccessFilterContext - User: 2, Role: Branch User, RoleID: 3, Branch: 2
+2026-01-23 16:01:44 info: getAccessFilterContext - req.permissionContext: undefined
+2026-01-23 16:01:44 info: getAccessFilterContext - Fetched branchLevelAccess from DB: true
+2026-01-23 16:01:44 info: getAccessFilterContext - Final context: {"userId":2,"roleId":3,"branchId":2,"companyId":5,"branchLevelAccess":true,"companyLevelAccess":false,"isAdmin":false,"accessibleBranchIds":[2]}
+2026-01-23 16:01:49 info: getAccessFilterContext - User: 2, Role: Branch User, RoleID: 3, Branch: 2
+2026-01-23 16:01:49 info: getAccessFilterContext - req.permissionContext: undefined
+2026-01-23 16:01:49 info: getAccessFilterContext - Fetched branchLevelAccess from DB: true
+2026-01-23 16:01:49 info: getAccessFilterContext - Final context: {"userId":2,"roleId":3,"branchId":2,"companyId":5,"branchLevelAccess":true,"companyLevelAccess":false,"isAdmin":false,"accessibleBranchIds":[2]}
+2026-01-23 16:04:08 info: Retrieved 2 branches.
+2026-01-23 16:05:08 info: Retrieved 2 branches.
+2026-01-23 16:06:46 info: Bulk permissions assigned to role Branch User: 8 permissions
+2026-01-23 16:06:46 info: Company access updated for role Branch User: 0 companies
+2026-01-23 16:06:50 info: getAccessFilterContext - User: 2, Role: Branch User, RoleID: 3, Branch: 2
+2026-01-23 16:06:50 info: getAccessFilterContext - req.permissionContext: undefined
+2026-01-23 16:06:50 info: getAccessFilterContext - Fetched branchLevelAccess from DB: false
+2026-01-23 16:06:50 info: getAccessFilterContext - Final context: {"userId":2,"roleId":3,"branchId":2,"companyId":5,"branchLevelAccess":false,"companyLevelAccess":false,"isAdmin":false}
+2026-01-23 16:06:56 info: User logged out successfully
+2026-01-23 16:06:59 info: User logged in successfully: ckiprono@jiranismart.com
+2026-01-23 16:06:59 info: getAccessFilterContext - User: 2, Role: Branch User, RoleID: 3, Branch: 2
+2026-01-23 16:06:59 info: getAccessFilterContext - req.permissionContext: undefined
+2026-01-23 16:06:59 info: getAccessFilterContext - Fetched branchLevelAccess from DB: false
+2026-01-23 16:06:59 info: getAccessFilterContext - Final context: {"userId":2,"roleId":3,"branchId":2,"companyId":5,"branchLevelAccess":false,"companyLevelAccess":false,"isAdmin":false}
+2026-01-23 16:07:14 info: Bulk permissions assigned to role Branch User: 8 permissions
+2026-01-23 16:07:14 info: Company access updated for role Branch User: 0 companies
+2026-01-23 16:18:55 info: Server running on port 4000
+2026-01-23 16:18:56 info: Database connected successfully!
+2026-01-23 16:19:27 info: Server running on port 4000
+2026-01-23 16:19:27 info: Database connected successfully!
+2026-01-23 16:20:33 info: Server running on port 4000
+2026-01-23 16:20:33 info: Database connected successfully!
+2026-01-23 16:23:17 info: Server running on port 4000
+2026-01-23 16:23:17 info: Database connected successfully!
+2026-01-23 16:24:11 info: Server running on port 4000
+2026-01-23 16:24:11 info: Database connected successfully!
+2026-01-23 16:26:01 info: Server running on port 4000
+2026-01-23 16:26:01 info: Database connected successfully!
+2026-01-23 16:26:39 info: Server running on port 4000
+2026-01-23 16:26:39 info: Database connected successfully!
+2026-01-23 16:27:56 info: Server running on port 4000
+2026-01-23 16:27:56 info: Database connected successfully!
+2026-01-23 16:28:52 info: Server running on port 4000
+2026-01-23 16:28:53 info: Database connected successfully!
+2026-01-23 16:30:11 info: Server running on port 4000
+2026-01-23 16:30:11 info: Database connected successfully!
+2026-01-23 16:31:04 info: Server running on port 4000
+2026-01-23 16:31:04 info: Database connected successfully!
+2026-01-23 16:38:00 info: Server running on port 4000
+2026-01-23 16:38:00 info: Database connected successfully!
+2026-01-23 16:43:36 info: Server running on port 4000
+2026-01-23 16:43:36 info: Database connected successfully!
+2026-01-23 16:43:53 info: User logged out successfully
+2026-01-23 16:43:56 info: User logged in successfully: ckiprono@jiranismart.com
+2026-01-23 16:43:56 info: getAccessFilterContext - User: 2, Role: Branch User, RoleID: 3, Branch: 2
+2026-01-23 16:43:56 info: getAccessFilterContext - req.permissionContext: undefined
+2026-01-23 16:43:56 info: getAccessFilterContext - Fetched branchLevelAccess from DB: true
+2026-01-23 16:43:56 info: getAccessFilterContext - Final context: {"userId":2,"roleId":3,"branchId":2,"companyId":5,"branchLevelAccess":true,"companyLevelAccess":true,"isAdmin":false,"accessibleBranchIds":[2],"accessibleCompanyIds":[5]}
+2026-01-23 16:44:00 info: getAccessFilterContext - User: 2, Role: Branch User, RoleID: 3, Branch: 2
+2026-01-23 16:44:00 info: getAccessFilterContext - req.permissionContext: undefined
+2026-01-23 16:44:00 info: getAccessFilterContext - Fetched branchLevelAccess from DB: true
+2026-01-23 16:44:00 info: getAccessFilterContext - Final context: {"userId":2,"roleId":3,"branchId":2,"companyId":5,"branchLevelAccess":true,"companyLevelAccess":true,"isAdmin":false,"accessibleBranchIds":[2],"accessibleCompanyIds":[5]}
+2026-01-23 16:45:35 info: Server running on port 4000
+2026-01-23 16:45:35 info: Database connected successfully!
+2026-01-23 16:45:56 info: Server running on port 4000
+2026-01-23 16:45:56 info: Database connected successfully!
+2026-01-23 16:46:32 info: Server running on port 4000
+2026-01-23 16:46:33 info: Database connected successfully!
+2026-01-23 16:47:11 info: Server running on port 4000
+2026-01-23 16:47:12 info: Database connected successfully!
+2026-01-23 16:48:12 info: getAccessFilterContext - User: 2, Role: Branch User, RoleID: 3, Branch: 2
+2026-01-23 16:48:12 info: getAccessFilterContext - req.permissionContext: undefined
+2026-01-23 16:48:12 info: getAccessFilterContext - Fetched branchLevelAccess from DB: true
+2026-01-23 16:48:12 info: getAccessFilterContext - Final context: {"userId":2,"roleId":3,"branchId":2,"companyId":5,"branchLevelAccess":true,"companyLevelAccess":true,"isAdmin":false,"accessibleBranchIds":[2],"accessibleCompanyIds":[5]}
+2026-01-23 16:48:23 info: getAccessFilterContext - User: 2, Role: Branch User, RoleID: 3, Branch: 2
+2026-01-23 16:48:23 info: getAccessFilterContext - req.permissionContext: {"hasAccess":true,"branchLevelAccess":true,"companyLevelAccess":true,"userBranchId":2,"userCompanyId":5,"accessibleBranchIds":[2],"accessibleCompanyIds":[5],"isAdmin":false}
+2026-01-23 16:48:23 info: getAccessFilterContext - Final context: {"userId":2,"roleId":3,"branchId":2,"companyId":5,"branchLevelAccess":true,"companyLevelAccess":true,"isAdmin":false,"accessibleBranchIds":[2],"accessibleCompanyIds":[5]}
+2026-01-23 16:49:32 info: Server running on port 4000
+2026-01-23 16:49:32 info: Database connected successfully!
+2026-01-23 16:50:00 info: Server running on port 4000
+2026-01-23 16:50:01 info: Database connected successfully!
+2026-01-23 16:50:28 info: getAccessFilterContext - User: 2, Role: Branch User, RoleID: 3, Branch: 2
+2026-01-23 16:50:28 info: getAccessFilterContext - req.permissionContext: {"hasAccess":true,"branchLevelAccess":true,"companyLevelAccess":true,"userBranchId":2,"userCompanyId":5,"accessibleBranchIds":[2],"accessibleCompanyIds":[5],"isAdmin":false}
+2026-01-23 16:50:28 info: getAccessFilterContext - Final context: {"userId":2,"roleId":3,"branchId":2,"companyId":5,"branchLevelAccess":true,"companyLevelAccess":true,"isAdmin":false,"accessibleBranchIds":[2],"accessibleCompanyIds":[5]}
+2026-01-23 16:50:29 warn: Permission denied: User 2 attempted read on ASSETS
+2026-01-23 16:50:34 warn: Permission denied: User 2 attempted read on ASSETS
+2026-01-23 16:50:53 info: getAccessFilterContext - User: 2, Role: Branch User, RoleID: 3, Branch: 2
+2026-01-23 16:50:53 info: getAccessFilterContext - req.permissionContext: {"hasAccess":true,"branchLevelAccess":true,"companyLevelAccess":true,"userBranchId":2,"userCompanyId":5,"accessibleBranchIds":[2],"accessibleCompanyIds":[5],"isAdmin":false}
+2026-01-23 16:50:53 info: getAccessFilterContext - Final context: {"userId":2,"roleId":3,"branchId":2,"companyId":5,"branchLevelAccess":true,"companyLevelAccess":true,"isAdmin":false,"accessibleBranchIds":[2],"accessibleCompanyIds":[5]}
+2026-01-23 16:50:54 warn: Permission denied: User 2 attempted read on ASSETS
+2026-01-23 16:53:09 info: Server running on port 4000
+2026-01-23 16:53:10 info: Database connected successfully!
+2026-01-23 16:53:50 info: Server running on port 4000
+2026-01-23 16:53:50 info: Database connected successfully!
+2026-01-23 16:54:09 info: getAccessFilterContext - User: 2, Role: Branch User, RoleID: 3, Branch: 2
+2026-01-23 16:54:09 info: getAccessFilterContext - req.permissionContext: {"hasAccess":true,"branchLevelAccess":true,"companyLevelAccess":true,"userBranchId":2,"userCompanyId":5,"accessibleBranchIds":[2],"accessibleCompanyIds":[5],"isAdmin":false}
+2026-01-23 16:54:09 info: getAccessFilterContext - Final context: {"userId":2,"roleId":3,"branchId":2,"companyId":5,"branchLevelAccess":true,"companyLevelAccess":true,"isAdmin":false,"accessibleBranchIds":[2],"accessibleCompanyIds":[5]}
+2026-01-23 16:54:16 info: getAccessFilterContext - User: 2, Role: Branch User, RoleID: 3, Branch: 2
+2026-01-23 16:54:16 info: getAccessFilterContext - req.permissionContext: {"hasAccess":true,"branchLevelAccess":true,"companyLevelAccess":true,"userBranchId":2,"userCompanyId":5,"accessibleBranchIds":[2],"accessibleCompanyIds":[5],"isAdmin":false}
+2026-01-23 16:54:16 info: getAccessFilterContext - Final context: {"userId":2,"roleId":3,"branchId":2,"companyId":5,"branchLevelAccess":true,"companyLevelAccess":true,"isAdmin":false,"accessibleBranchIds":[2],"accessibleCompanyIds":[5]}
+2026-01-23 16:54:17 info: getStatistics - User: 2, Branch: 2, branchLevelAccess: true
+2026-01-23 16:54:17 info: getStatistics - permissionContext: {"userId":2,"roleId":3,"branchId":2,"companyId":5,"branchLevelAccess":true,"companyLevelAccess":true,"isAdmin":false,"accessibleBranchIds":[2],"accessibleCompanyIds":[5]}
+2026-01-23 16:54:17 warn: Permission denied: User 2 attempted read on REPAIR_REQUESTS
+2026-01-23 16:54:20 warn: Permission denied: User 2 attempted read on REPAIR_REQUESTS
+2026-01-23 16:54:22 info: getAccessFilterContext - User: 2, Role: Branch User, RoleID: 3, Branch: 2
+2026-01-23 16:54:22 info: getAccessFilterContext - req.permissionContext: {"hasAccess":true,"branchLevelAccess":true,"companyLevelAccess":true,"userBranchId":2,"userCompanyId":5,"accessibleBranchIds":[2],"accessibleCompanyIds":[5],"isAdmin":false}
+2026-01-23 16:54:22 info: getAccessFilterContext - Final context: {"userId":2,"roleId":3,"branchId":2,"companyId":5,"branchLevelAccess":true,"companyLevelAccess":true,"isAdmin":false,"accessibleBranchIds":[2],"accessibleCompanyIds":[5]}
+2026-01-23 16:54:23 warn: Permission denied: User 2 attempted read on REPAIR_REQUESTS
+2026-01-23 16:54:23 info: getStatistics - User: 2, Branch: 2, branchLevelAccess: true
+2026-01-23 16:54:23 info: getStatistics - permissionContext: {"userId":2,"roleId":3,"branchId":2,"companyId":5,"branchLevelAccess":true,"companyLevelAccess":true,"isAdmin":false,"accessibleBranchIds":[2],"accessibleCompanyIds":[5]}
+2026-01-23 16:54:28 warn: Permission denied: User 2 attempted read on REPORTS
+2026-01-23 16:54:35 warn: Permission denied: User 2 attempted read on REPORTS
+2026-01-23 16:58:08 info: Server running on port 4000
+2026-01-23 16:58:08 info: Database connected successfully!
+2026-01-23 16:59:22 info: Server running on port 4000
+2026-01-23 16:59:22 info: Database connected successfully!
+2026-01-23 16:59:46 info: getAccessFilterContext - User: 2, Role: Branch User, RoleID: 3, Branch: 2
+2026-01-23 16:59:46 info: getAccessFilterContext - req.permissionContext: {"hasAccess":true,"branchLevelAccess":true,"companyLevelAccess":true,"userBranchId":2,"userCompanyId":5,"accessibleBranchIds":[2],"accessibleCompanyIds":[5],"isAdmin":false}
+2026-01-23 16:59:46 info: getAccessFilterContext - Final context: {"userId":2,"roleId":3,"branchId":2,"companyId":5,"branchLevelAccess":true,"companyLevelAccess":true,"isAdmin":false,"accessibleBranchIds":[2],"accessibleCompanyIds":[5]}
+2026-01-23 16:59:47 info: getStatistics - User: 2, Branch: 2, branchLevelAccess: true
+2026-01-23 16:59:47 info: getStatistics - permissionContext: {"userId":2,"roleId":3,"branchId":2,"companyId":5,"branchLevelAccess":true,"companyLevelAccess":true,"isAdmin":false,"accessibleBranchIds":[2],"accessibleCompanyIds":[5]}
+2026-01-23 16:59:49 info: getAccessFilterContext - User: 2, Role: Branch User, RoleID: 3, Branch: 2
+2026-01-23 16:59:49 info: getAccessFilterContext - req.permissionContext: {"hasAccess":true,"branchLevelAccess":true,"companyLevelAccess":true,"userBranchId":2,"userCompanyId":5,"accessibleBranchIds":[2],"accessibleCompanyIds":[5],"isAdmin":false}
+2026-01-23 16:59:49 info: getAccessFilterContext - Final context: {"userId":2,"roleId":3,"branchId":2,"companyId":5,"branchLevelAccess":true,"companyLevelAccess":true,"isAdmin":false,"accessibleBranchIds":[2],"accessibleCompanyIds":[5]}
+2026-01-23 16:59:51 info: getAccessFilterContext - User: 2, Role: Branch User, RoleID: 3, Branch: 2
+2026-01-23 16:59:51 info: getAccessFilterContext - req.permissionContext: undefined
+2026-01-23 16:59:51 info: getAccessFilterContext - Fetched branchLevelAccess from DB: true
+2026-01-23 16:59:51 info: getAccessFilterContext - Final context: {"userId":2,"roleId":3,"branchId":2,"companyId":5,"branchLevelAccess":true,"companyLevelAccess":true,"isAdmin":false,"accessibleBranchIds":[2],"accessibleCompanyIds":[5]}

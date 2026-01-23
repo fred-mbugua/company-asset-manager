@@ -3,11 +3,24 @@ import AssetService from '../services/asset.service';
 import { successResponse, errorResponse } from '../utils/response';
 import logger from '../utils/logger';
 import { AuthenticatedRequest } from '../types';
+import { PermissionRequest } from '../middlewares/permission.middleware';
+import AccessFilterUtil from '../utils/accessFilter.util';
 
 export class AssetController {
-    async getAll(req: Request, res: Response) {
+    async getAll(req: PermissionRequest, res: Response) {
         try {
-            const assets = await AssetService.getAll();
+            logger.info(`Asset getAll - User: ${req.user?.id}, Branch: ${req.user?.branch_id}`);
+            logger.info(`Asset getAll - PermissionContext: ${JSON.stringify(req.permissionContext)}`);
+            
+            // Build permission context using req.user object
+            const permissionContext = await AccessFilterUtil.buildContext(
+                req.user,
+                { branchLevelAccess: req.permissionContext?.branchLevelAccess || false, userBranchId: req.user?.branch_id || null }
+            );
+            
+            logger.info(`Asset getAll - Built AccessFilterContext: ${JSON.stringify(permissionContext)}`);
+
+            const assets = await AssetService.getAll(permissionContext);
             successResponse(res, 200, 'Assets retrieved successfully', assets);
         } catch (error: any) {
             logger.error('Failed to get assets:', error);
@@ -59,9 +72,15 @@ export class AssetController {
         }
     }
 
-    async search(req: Request, res: Response) {
+    async search(req: PermissionRequest, res: Response) {
         try {
-            const assets = await AssetService.search(req.query);
+            // Build permission context using req.user object
+            const permissionContext = await AccessFilterUtil.buildContext(
+                req.user,
+                { branchLevelAccess: req.permissionContext?.branchLevelAccess || false, userBranchId: req.user?.branch_id || null }
+            );
+
+            const assets = await AssetService.search(req.query, permissionContext);
             successResponse(res, 200, 'Assets retrieved successfully', assets);
         } catch (error: any) {
             logger.error('Failed to search assets:', error);

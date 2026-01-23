@@ -195,7 +195,7 @@ router.patch(
 router.post(
     '/',
     authenticate,
-    checkPermission('REPAIR_REQUESTS', 'create'),
+    checkPermission('REPAIR_REQUESTS_NEW', 'create'),
     asyncHandler(RepairRequestController.create)
 );
 
@@ -203,7 +203,7 @@ router.post(
 router.get(
     '/',
     authenticate,
-    checkPermission('REPAIR_REQUESTS', 'read'),
+    checkPermission('REPAIR_REQUESTS_LIST', 'read'),
     asyncHandler(RepairRequestController.getAll)
 );
 
@@ -211,7 +211,7 @@ router.get(
 router.get(
     '/number/:requestNumber',
     authenticate,
-    checkPermission('REPAIR_REQUESTS', 'read'),
+    checkPermission('REPAIR_REQUESTS_LIST', 'read'),
     asyncHandler(RepairRequestController.getByRequestNumber)
 );
 
@@ -219,7 +219,7 @@ router.get(
 router.get(
     '/:id',
     authenticate,
-    checkPermission('REPAIR_REQUESTS', 'read'),
+    checkPermission('REPAIR_REQUESTS_LIST', 'read'),
     asyncHandler(RepairRequestController.getById)
 );
 
@@ -227,7 +227,7 @@ router.get(
 router.put(
     '/:id',
     authenticate,
-    checkPermission('REPAIR_REQUESTS', 'update'),
+    checkPermission('REPAIR_REQUESTS_NEW', 'update'),
     asyncHandler(RepairRequestController.update)
 );
 
@@ -235,7 +235,7 @@ router.put(
 router.delete(
     '/:id',
     authenticate,
-    checkPermission('REPAIR_REQUESTS', 'delete'),
+    checkPermission('REPAIR_REQUESTS_NEW', 'delete'),
     asyncHandler(RepairRequestController.delete)
 );
 

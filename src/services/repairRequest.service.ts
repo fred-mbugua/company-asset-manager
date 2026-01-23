@@ -7,6 +7,7 @@ import ActionLogModel from '../models/actionLog.model';
 import ExpenseModel from '../models/expense.model';
 import ExpenseTypeModel from '../models/expenseType.model';
 import logger from '../utils/logger';
+import { AccessFilterContext } from '../utils/accessFilter.util';
 
 // ============================================================================
 // SERVICE CLASS
@@ -60,9 +61,10 @@ export class RepairRequestService {
     async getRequests(
         filters: IRepairRequestFilters = {},
         page: number = 1,
-        limit: number = 20
+        limit: number = 20,
+        permissionContext?: AccessFilterContext
     ): Promise<{ requests: IRepairRequest[]; total: number; totalPages: number }> {
-        const result = await RepairRequestModel.findAll(filters, page, limit);
+        const result = await RepairRequestModel.findAll(filters, page, limit, permissionContext);
         return {
             requests: result.requests,
             total: result.total,
@@ -499,10 +501,10 @@ export class RepairRequestService {
     // ========================================================================
 
     /**
-     * Gets dashboard statistics
+     * Gets dashboard statistics with access filtering
      */
-    async getStatistics(userId?: number, branchId?: number): Promise<any> {
-        return await RepairRequestModel.getStatistics(userId, branchId);
+    async getStatistics(userId?: number, permissionContext?: AccessFilterContext): Promise<any> {
+        return await RepairRequestModel.getStatistics(userId, permissionContext);
     }
 
     /**

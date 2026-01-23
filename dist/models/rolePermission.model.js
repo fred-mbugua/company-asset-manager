@@ -92,7 +92,8 @@ class RolePermissionModel {
         const rolePermissionsQuery = `
       SELECT 
         rp.permission_id,
-        rp.branch_level_access
+        rp.branch_level_access,
+        rp.company_level_access
       FROM role_permissions rp
       WHERE rp.role_id = $1
     `;
@@ -102,7 +103,10 @@ class RolePermissionModel {
         ]);
         const rolePermMap = new Map();
         rolePerms.rows.forEach((rp) => {
-            rolePermMap.set(rp.permission_id, rp.branch_level_access);
+            rolePermMap.set(rp.permission_id, {
+                branch: rp.branch_level_access,
+                company: rp.company_level_access || false
+            });
         });
         // Group by module
         const moduleMap = new Map();
@@ -116,10 +120,12 @@ class RolePermissionModel {
                 });
             }
             const module = moduleMap.get(perm.module_code);
+            const permData = rolePermMap.get(perm.permission_id);
             module.actions.push({
                 action: perm.action,
                 has_permission: rolePermMap.has(perm.permission_id),
-                branch_level_access: rolePermMap.get(perm.permission_id) || false,
+                branch_level_access: (permData === null || permData === void 0 ? void 0 : permData.branch) || false,
+                company_level_access: (permData === null || permData === void 0 ? void 0 : permData.company) || false,
                 permission_id: perm.permission_id
             });
         });
@@ -157,6 +163,36 @@ class RolePermissionModel {
         return result.rows[0];
     }
     /**
+     * Update branch level access for all permissions of a specific module for a role
+     */
+    async updateBranchAccessByModule(roleId, moduleCode, branchLevelAccess) {
+        const query = `
+      UPDATE role_permissions rp
+      SET branch_level_access = $3,
+          updated_at = CURRENT_TIMESTAMP
+      FROM permissions p
+      WHERE rp.permission_id = p.id
+        AND rp.role_id = $1
+        AND p.module_code = $2;
+    `;
+        await database_1.default.query(query, [roleId, moduleCode, branchLevelAccess]);
+    }
+    /**
+     * Update company level access for all permissions of a specific module for a role
+     */
+    async updateCompanyAccessByModule(roleId, moduleCode, companyLevelAccess) {
+        const query = `
+      UPDATE role_permissions rp
+      SET company_level_access = $3,
+          updated_at = CURRENT_TIMESTAMP
+      FROM permissions p
+      WHERE rp.permission_id = p.id
+        AND rp.role_id = $1
+        AND p.module_code = $2;
+    `;
+        await database_1.default.query(query, [roleId, moduleCode, companyLevelAccess]);
+    }
+    /**
      * Delete a role permission
      */
     async delete(id) {
@@ -181,7 +217,7 @@ class RolePermissionModel {
             // Insert new permissions
             const results = [];
             for (const config of permissionConfigs) {
-                const result = await client.query('INSERT INTO role_permissions (role_id, permission_id, branch_level_access) VALUES ($1, $2, $3) RETURNING *', [roleId, config.permission_id, config.branch_level_access]);
+                const result = await client.query('INSERT INTO role_permissions (role_id, permission_id, branch_level_access, company_level_access) VALUES ($1, $2, $3, $4) RETURNING *', [roleId, config.permission_id, config.branch_level_access, config.company_level_access || false]);
                 results.push(result.rows[0]);
             }
             await client.query('COMMIT');
@@ -218,9 +254,49 @@ class RolePermissionModel {
         const sourcePermissions = await this.findByRoleId(fromRoleId);
         const permissionConfigs = sourcePermissions.map(p => ({
             permission_id: p.permission_id,
-            branch_level_access: p.branch_level_access
+            branch_level_access: p.branch_level_access,
+            company_level_access: p.company_level_access
         }));
         return this.bulkAssign(toRoleId, permissionConfigs);
+    }
+    /**
+     * Get company access for a role
+     */
+    async getCompanyAccess(roleId) {
+        const query = `
+      SELECT rca.company_id, c.name as company_name
+      FROM role_company_access rca
+      JOIN companies c ON rca.company_id = c.id
+      WHERE rca.role_id = $1
+      ORDER BY c.name
+    `;
+        const result = await database_1.default.query(query, [roleId]);
+        return result.rows;
+    }
+    /**
+     * Update company access for a role (replaces existing)
+     */
+    async updateCompanyAccess(roleId, companyIds) {
+        const client = await database_1.default.connect();
+        try {
+            await client.query('BEGIN');
+            // Delete existing company access
+            await client.query('DELETE FROM role_company_access WHERE role_id = $1', [roleId]);
+            // Insert new company access
+            for (const companyId of companyIds) {
+                await client.query('INSERT INTO role_company_access (role_id, company_id) VALUES ($1, $2)', [roleId, companyId]);
+            }
+            await client.query('COMMIT');
+            // Return updated company access
+            return this.getCompanyAccess(roleId);
+        }
+        catch (error) {
+            await client.query('ROLLBACK');
+            throw error;
+        }
+        finally {
+            client.release();
+        }
     }
 }
 exports.default = new RolePermissionModel();

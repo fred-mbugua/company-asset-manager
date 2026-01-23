@@ -1,6 +1,8 @@
 import { ExpenseModel, ExpenseReportModel } from '../models';
 import { IExpenseReportFilters } from '../models/expenseReport.model';
 import ActionLogService from './actionLog.service';
+import { AccessFilterContext } from '../utils/accessFilter.util';
+
 class ExpenseService {
   async addExpense(expenseData: any, userId: number) {
     const newExpense = await ExpenseModel.create(expenseData);
@@ -16,8 +18,8 @@ class ExpenseService {
         return newExpense;
   }
 
-  async getAll() {
-        return ExpenseModel.findallAssets();
+  async getAll(permissionContext?: AccessFilterContext) {
+        return ExpenseModel.findAll(permissionContext);
 }
 
   async getExpenseById(id: number) {

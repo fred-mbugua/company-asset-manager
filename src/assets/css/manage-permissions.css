@@ -504,6 +504,7 @@
 .permissions-table th.update-col i { color: #f57c00; }
 .permissions-table th.delete-col i { color: #d32f2f; }
 .permissions-table th.branch-col i { color: #7b1fa2; }
+.permissions-table th.company-col i { color: #00838f; }
 
 .permissions-table tbody tr {
     border-bottom: 1px solid #eee;
@@ -642,6 +643,11 @@
 .perm-checkbox.branch input:checked + .checkmark {
     background: #7b1fa2;
     border-color: #7b1fa2;
+}
+
+.perm-checkbox.company input:checked + .checkmark {
+    background: #00838f;
+    border-color: #00838f;
 }
 
 /* No Permission Available */

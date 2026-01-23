@@ -19,6 +19,7 @@ import repairRequestRoutes from './repairRequest.routes';
 import roleRoutes from './role.routes';
 import permissionRoutes from './permission.routes';
 import SystemConfigurationController from '../controllers/systemConfiguration.controller';
+import LookupModel from '../models/lookup.model';
 import asyncHandler from 'express-async-handler';
 
 import { authenticate, authorize } from '../middlewares/auth.middleware'; 
@@ -39,6 +40,11 @@ router.use('/reports', authenticate, reportRoutes);
 router.use('/upload', authenticate, uploadRoutes);
 router.use('/departments', authenticate, departmentRoutes);
 router.use('/branches', authenticate, branchRoutes);
+// Companies endpoint - returns companies for access control
+router.get('/companies', authenticate, asyncHandler(async (req, res) => {
+    const companies = await LookupModel.getAllCompanies();
+    res.json({ success: true, data: companies });
+}));
 router.use('/asset-attachments', authenticate, assetAttachmentRoutes);
 router.use('/expense-attachments', authenticate, expenseAttachmentRoutes);
 router.use('/assignment-attachments', authenticate, assignmentAttachmentRoutes);

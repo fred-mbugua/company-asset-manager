@@ -1,11 +1,7 @@
 <%
     // Assuming 'user' object is passed to EJS and contains user role information (e.g., user.role_id or user.role_name)
     const userRole = locals.user?.role_name || locals.user?.role || 'Standard User';
-    const userPermissions = locals.userPermissions || null; // Will be populated by middleware
-    
-    // Debug: Log the user object to see what properties it has
-    // console.log('Sidebar user object:', JSON.stringify(locals.user));
-    // console.log('User role detected:', userRole);
+    const userPermissions = locals.userPermissions || null; // Will be populated by middleware if permissions system is used
     
     // Get current path to determine active menu item
     const currentPath = locals.currentPath || '';
@@ -86,7 +82,7 @@
         // Admin always has access
         if (isAdmin) return true;
         
-        // If dynamic permissions are available, check them first
+        // If dynamic permissions are available and item has module_code, check permissions
         if (userPermissions && item.module_code) {
             const modulePerms = userPermissions[item.module_code];
             
@@ -95,16 +91,26 @@
                 const actions = modulePerms.actions;
                 if (Array.isArray(actions)) {
                     return actions.includes('read');
-                } else if (actions.has) {
-                    return actions.has('read');
                 }
             }
             // If module_code is specified but not in permissions, deny access
+            // This ensures items with explicit module_code require that permission
             return false;
         }
         
-        // Fallback to role-based access
+        // If no permissions system or no module_code, fallback to role-based access
+        // But only allow if roles include '*' (all users) or specific user role
         return item.roles.includes('*') || item.roles.includes(userRole);
+    };
+    
+    /**
+     * Check if a parent menu should be visible based on whether any of its submenus are accessible
+     * @param {object} item - Menu item with submenu array
+     * @returns {boolean} - Whether the parent menu should be shown
+     */
+    const hasAccessibleSubmenu = (item) => {
+        if (!item.submenu || item.submenu.length === 0) return false;
+        return item.submenu.some(subItem => hasAccess(subItem));
     };
 %>
 
@@ -120,7 +126,15 @@
     </div>
     <ul id="menu">
         <% menuItems.forEach((item, itemIndex) => { %>
-            <% if (hasAccess(item)) { %>
+            <% 
+                // For items with submenu, check if at least one submenu item is accessible
+                // For parent menus, we should show them if ANY child is accessible
+                // For single items (no submenu), check the item's direct access
+                const itemHasAccess = item.submenu 
+                    ? hasAccessibleSubmenu(item)  // Parent menu: show if any child is accessible
+                    : hasAccess(item);            // Single item: check its own permission
+            %>
+            <% if (itemHasAccess) { %>
                 <% if (item.submenu) { %>
                     <% 
                         // Check if any submenu item matches current path
