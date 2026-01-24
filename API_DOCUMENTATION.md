@@ -4193,7 +4193,7 @@ Before starting, ensure you have the following installed:
 ### Step 1: Clone the Repository
 
 ```bash
-git clone https://github.com/Jirani-Smart-Systems/asset-manager.git
+git clone https://github.com/fred-mbugua/company-asset-manager
 cd asset-manager
 ```
 
@@ -4474,7 +4474,7 @@ For API support or questions, please contact:
 
 **Documentation:**
 - **API Docs:** This file (API_DOCUMENTATION.md)
-- **GitHub:** https://github.com/Jirani-Smart-Systems/asset-manager.git
+- **GitHub:** https://github.com/fred-mbugua/company-asset-manager
 
 **Environment URLs:**
 - **Development:** http://localhost:3000/api
