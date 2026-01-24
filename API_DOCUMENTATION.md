@@ -1,7 +1,13 @@
+<style>
+  body, table, th, td, p, li, h1, h2, h3, h4, h5, h6, code, pre {
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+  }
+</style>
+
 # Asset Management System - API Documentation
 
-**Version:** 2.1  
-**Last Updated:** January 17, 2026  
+**Version:** 2.2  
+**Last Updated:** January 24, 2026  
 **Base URL:** `/api`
 
 ---
@@ -196,6 +202,54 @@
 | GET | `/api/bulk-user-import/:batchId/users` | Get imported users | Admin |
 | POST | `/api/bulk-user-import/:batchId/resend-password/:userId` | Resend password | Admin |
 
+### Role Endpoints
+| Method | Endpoint | Description | Auth Required |
+|--------|----------|-------------|---------------|
+| GET | `/api/roles/` | Get all roles | Yes |
+| GET | `/api/roles/:id` | Get role by ID | Yes |
+| POST | `/api/roles/` | Create role | Admin |
+| PUT | `/api/roles/:id` | Update role | Admin |
+| DELETE | `/api/roles/:id` | Delete role | Admin |
+| PATCH | `/api/roles/:id/toggle` | Toggle role active status | Admin |
+
+### Permission Module Endpoints
+| Method | Endpoint | Description | Auth Required |
+|--------|----------|-------------|---------------|
+| GET | `/api/permissions/modules` | Get all modules | Yes |
+| GET | `/api/permissions/modules/:id` | Get module by ID | Yes |
+| POST | `/api/permissions/modules` | Create module | Admin |
+| PUT | `/api/permissions/modules/:id` | Update module | Admin |
+| DELETE | `/api/permissions/modules/:id` | Delete module | Admin |
+| PATCH | `/api/permissions/modules/:id/toggle` | Toggle module active status | Admin |
+
+### Permission Endpoints
+| Method | Endpoint | Description | Auth Required |
+|--------|----------|-------------|---------------|
+| GET | `/api/permissions/` | Get all permissions | Yes |
+| GET | `/api/permissions/by-module/:moduleId` | Get permissions by module | Yes |
+| POST | `/api/permissions/` | Create permission | Admin |
+| POST | `/api/permissions/bulk/:moduleId` | Bulk create permissions | Admin |
+| PATCH | `/api/permissions/:id/toggle` | Toggle permission active status | Admin |
+
+### Role Permission Endpoints
+| Method | Endpoint | Description | Auth Required |
+|--------|----------|-------------|---------------|
+| GET | `/api/permissions/my-permissions` | Get current user permissions | Yes |
+| GET | `/api/permissions/roles/:roleId` | Get role permissions | Yes |
+| GET | `/api/permissions/roles/:roleId/check` | Check if role has permission | Yes |
+| GET | `/api/permissions/roles/:roleId/routes` | Get role accessible routes | Yes |
+| POST | `/api/permissions/roles/:roleId` | Assign permission to role | Admin |
+| PUT | `/api/permissions/roles/:roleId/bulk` | Bulk assign role permissions | Admin |
+| POST | `/api/permissions/roles/:roleId/clone` | Clone role permissions | Admin |
+| DELETE | `/api/permissions/roles/:roleId/:permissionId` | Remove role permission | Admin |
+
+### Company Access Endpoints
+| Method | Endpoint | Description | Auth Required |
+|--------|----------|-------------|---------------|
+| GET | `/api/permissions/roles/:roleId/company-access` | Get role company access | Yes |
+| PUT | `/api/permissions/roles/:roleId/company-access` | Update role company access | Admin |
+| GET | `/api/companies` | Get all companies | Yes |
+
 ### System Configuration Endpoints
 | Method | Endpoint | Description | Auth Required |
 |--------|----------|-------------|---------------|
@@ -226,11 +280,13 @@
 17. [Departments](#departments)
 18. [Branches](#branches)
 19. [Users](#users)
-20. [Repair Requests](#repair-requests)
-21. [Repair Workflow](#repair-workflow)
-22. [Reports](#reports)
-23. [Bulk Upload](#bulk-upload)
-24. [System Configuration](#system-configuration)
+20. [Roles](#roles)
+21. [Permissions](#permissions)
+22. [Repair Requests](#repair-requests)
+23. [Repair Workflow](#repair-workflow)
+24. [Reports](#reports)
+25. [Bulk Upload](#bulk-upload)
+26. [System Configuration](#system-configuration)
 
 ---
 
@@ -243,7 +299,8 @@ The Asset Management System is a comprehensive web-based application designed to
 - **Expense Management**: Record and track expenses related to assets (purchases, repairs, logistics)
 - **Repair Request Workflow**: Multi-stage approval workflow for repair requests
 - **Reporting**: Generate reports on assets, assignments, expenses, and action logs
-- **User Management**: Role-based access control with Admin and Standard User roles
+- **User Management**: Role-based access control with configurable permissions
+- **Permission Management**: Granular module-based permissions with company access control
 - **Bulk Operations**: Import assets and users in bulk via Excel files
 - **Attachments**: Upload and manage documents/files for assets, assignments, and expenses
 
@@ -355,6 +412,7 @@ asset-manager/
 │   │   ├── expense.controller.ts         # Expense tracking
 │   │   ├── expenseAttachment.controller.ts
 │   │   ├── expenseType.controller.ts     # Expense type management
+│   │   ├── permission.controller.ts      # Permission management
 │   │   ├── repairRequest.controller.ts   # Repair request handling
 │   │   ├── repairRequestAttachment.controller.ts
 │   │   ├── repairRequestPriority.controller.ts
@@ -394,6 +452,9 @@ asset-manager/
 │   │   ├── expenseAttachment.model.ts
 │   │   ├── expenseReport.model.ts
 │   │   ├── expenseType.model.ts
+│   │   ├── module.model.ts
+│   │   ├── permission.model.ts
+│   │   ├── rolePermission.model.ts
 │   │   ├── actionLog.model.ts
 │   │   ├── actionLogReport.model.ts
 │   │   ├── lookup.model.ts
@@ -423,6 +484,7 @@ asset-manager/
 │   │   ├── employee.routes.ts    # /api/employees/*
 │   │   ├── expense.routes.ts     # /api/expenses/*
 │   │   ├── expenseAttachment.routes.ts
+│   │   ├── permission.routes.ts  # /api/permissions/*
 │   │   ├── repairRequest.routes.ts
 │   │   ├── report.routes.ts      # /api/reports/*
 │   │   ├── role.routes.ts        # /api/roles/*
@@ -452,6 +514,9 @@ asset-manager/
 │   │   ├── expenseAttachment.service.ts
 │   │   ├── expenseType.service.ts
 │   │   ├── lookup.service.ts
+│   │   ├── module.service.ts     # Module management
+│   │   ├── permission.service.ts # Permission management
+│   │   ├── rolePermission.service.ts # Role permission management
 │   │   ├── repairRequest.service.ts
 │   │   ├── repairRequestPriority.service.ts
 │   │   ├── repairRequestStatus.service.ts
@@ -606,6 +671,15 @@ The system uses **PostgreSQL** as its database with 27 tables organized into fun
 | `departments` | Organizational departments | id, name |
 | `companies` | Company entities | id, name, is_active |
 
+#### Permission Tables
+
+| Table | Description | Key Columns |
+|-------|-------------|-------------|
+| `modules` | Permission modules/functional areas | id, name, code, description, parent_id, icon, route, display_order, is_active |
+| `permissions` | Individual permissions | id, module_id, action, description, is_active |
+| `role_permissions` | Role-permission assignments | id, role_id, permission_id, branch_level_access |
+| `role_company_access` | Company access per role | id, role_id, company_id |
+
 #### System Tables
 
 | Table | Description | Key Columns |
@@ -632,6 +706,9 @@ The system uses **PostgreSQL** as its database with 27 tables organized into fun
 
 - `users` → `employees` (1:1) - Each user is linked to an employee record
 - `users` → `roles` (N:1) - Each user has one role
+- `roles` → `role_permissions` (1:N) - Each role can have multiple permissions
+- `permissions` → `modules` (N:1) - Each permission belongs to a module
+- `role_permissions` → `permissions` (N:1) - Links roles to permissions
 - `assets` → `asset_types` (N:1) - Each asset has one type
 - `assets` → `asset_statuses` (N:1) - Each asset has one status
 - `assignments` → `assets` (N:1) - Assets can be assigned multiple times
@@ -653,6 +730,8 @@ The system includes pre-configured lookup data:
 **Repair Priorities:** Low, Medium, High, Critical
 
 **Repair Statuses:** Pending, ICT Approved, ICT Rejected, In Repair, Awaiting Invoice, Invoice Submitted, Finance Approved, Finance Rejected, Completed, Cancelled
+
+**Permission Actions:** view, create, edit, delete, export, import, approve
 
 **Roles:** Admin (full access), Standard User (limited access)
 
@@ -2225,6 +2304,678 @@ The system includes pre-configured lookup data:
 
 ---
 
+## Roles
+
+### Get All Roles
+**Endpoint:** `GET /api/roles/`  
+**Authorization:** Required  
+**Description:** Retrieve all roles in the system
+
+**Success Response:**
+```json
+{
+  "success": true,
+  "message": "Roles retrieved successfully",
+  "data": [
+    {
+      "id": 1,
+      "name": "Admin",
+      "description": "Full system access",
+      "is_active": true,
+      "created_at": "2026-01-01T00:00:00Z",
+      "updated_at": "2026-01-01T00:00:00Z"
+    },
+    {
+      "id": 2,
+      "name": "Standard User",
+      "description": "Limited access for regular users",
+      "is_active": true,
+      "created_at": "2026-01-01T00:00:00Z",
+      "updated_at": "2026-01-01T00:00:00Z"
+    }
+  ]
+}
+```
+
+---
+
+### Get Role By ID
+**Endpoint:** `GET /api/roles/:id`  
+**Authorization:** Required  
+**Description:** Retrieve a specific role by ID
+
+**URL Parameters:**
+- `id` - Role ID
+
+**Success Response:**
+```json
+{
+  "success": true,
+  "message": "Role retrieved successfully",
+  "data": {
+    "id": 1,
+    "name": "Admin",
+    "description": "Full system access",
+    "is_active": true,
+    "created_at": "2026-01-01T00:00:00Z",
+    "updated_at": "2026-01-01T00:00:00Z"
+  }
+}
+```
+
+---
+
+### Create Role
+**Endpoint:** `POST /api/roles/`  
+**Authorization:** Required (Admin)  
+**Description:** Create a new role
+
+**Request Body:**
+```json
+{
+  "name": "Finance Manager",
+  "description": "Access to finance and expense modules"
+}
+```
+
+**Success Response:**
+```json
+{
+  "success": true,
+  "message": "Role created successfully",
+  "data": {
+    "id": 3,
+    "name": "Finance Manager",
+    "description": "Access to finance and expense modules",
+    "is_active": true,
+    "created_at": "2026-01-24T10:00:00Z"
+  }
+}
+```
+
+---
+
+### Update Role
+**Endpoint:** `PUT /api/roles/:id`  
+**Authorization:** Required (Admin)  
+**Description:** Update an existing role
+
+**URL Parameters:**
+- `id` - Role ID
+
+**Request Body:**
+```json
+{
+  "name": "Finance Admin",
+  "description": "Full access to finance and expense modules"
+}
+```
+
+**Success Response:**
+```json
+{
+  "success": true,
+  "message": "Role updated successfully",
+  "data": {
+    "id": 3,
+    "name": "Finance Admin",
+    "description": "Full access to finance and expense modules",
+    "is_active": true,
+    "updated_at": "2026-01-24T12:00:00Z"
+  }
+}
+```
+
+---
+
+### Delete Role
+**Endpoint:** `DELETE /api/roles/:id`  
+**Authorization:** Required (Admin)  
+**Description:** Delete a role
+
+**URL Parameters:**
+- `id` - Role ID
+
+**Success Response:**
+```json
+{
+  "success": true,
+  "message": "Role deleted successfully"
+}
+```
+
+**Error Response (Role In Use):**
+```json
+{
+  "success": false,
+  "message": "Cannot delete role that is assigned to users"
+}
+```
+
+---
+
+### Toggle Role Active Status
+**Endpoint:** `PATCH /api/roles/:id/toggle`  
+**Authorization:** Required (Admin)  
+**Description:** Toggle the active status of a role
+
+**URL Parameters:**
+- `id` - Role ID
+
+**Success Response:**
+```json
+{
+  "success": true,
+  "message": "Role status toggled successfully",
+  "data": {
+    "id": 3,
+    "name": "Finance Admin",
+    "is_active": false
+  }
+}
+```
+
+---
+
+## Permissions
+
+The permission system provides granular access control through modules and permissions. Each module represents a functional area (e.g., Assets, Expenses, Reports), and permissions define specific actions (View, Create, Edit, Delete) within those modules.
+
+### Permission Architecture
+
+```
+┌─────────────────────────────────────────────────────────────────┐
+│                      PERMISSION STRUCTURE                        │
+├─────────────────────────────────────────────────────────────────┤
+│                                                                  │
+│  ┌──────────┐         ┌─────────────┐        ┌──────────────┐   │
+│  │  Module  │ ────▶   │ Permissions │ ◀──── │    Roles     │   │
+│  │  (Area)  │         │  (Actions)  │        │              │   │
+│  └──────────┘         └─────────────┘        └──────────────┘   │
+│                                                                  │
+│  Example:                                                        │
+│  ┌──────────────────────────────────────────────────────────┐   │
+│  │ Module: ASSETS                                            │   │
+│  │ ├── Permission: assets.view   → Admin ✓, Standard ✓      │   │
+│  │ ├── Permission: assets.create → Admin ✓, Standard ✗      │   │
+│  │ ├── Permission: assets.edit   → Admin ✓, Standard ✗      │   │
+│  │ └── Permission: assets.delete → Admin ✓, Standard ✗      │   │
+│  └──────────────────────────────────────────────────────────┘   │
+│                                                                  │
+└─────────────────────────────────────────────────────────────────┘
+```
+
+### Module Endpoints
+
+#### Get All Modules
+**Endpoint:** `GET /api/permissions/modules`  
+**Authorization:** Required  
+**Description:** Retrieve all permission modules
+
+**Query Parameters:**
+- `include_inactive` - Include inactive modules (default: false)
+- `hierarchy` - Return modules in hierarchical structure (default: false)
+
+**Success Response:**
+```json
+{
+  "success": true,
+  "message": "Modules retrieved successfully",
+  "data": [
+    {
+      "id": 1,
+      "name": "Assets",
+      "code": "ASSETS",
+      "description": "Asset management module",
+      "icon": "fa-box",
+      "route": "/assets",
+      "display_order": 1,
+      "is_active": true,
+      "parent_id": null
+    },
+    {
+      "id": 2,
+      "name": "Expenses",
+      "code": "EXPENSES",
+      "description": "Expense tracking module",
+      "icon": "fa-receipt",
+      "route": "/expenses",
+      "display_order": 2,
+      "is_active": true,
+      "parent_id": null
+    }
+  ]
+}
+```
+
+---
+
+#### Get Module By ID
+**Endpoint:** `GET /api/permissions/modules/:id`  
+**Authorization:** Required  
+**Description:** Retrieve a specific module with its child modules
+
+**URL Parameters:**
+- `id` - Module ID
+
+**Success Response:**
+```json
+{
+  "success": true,
+  "message": "Module retrieved successfully",
+  "data": {
+    "id": 1,
+    "name": "Assets",
+    "code": "ASSETS",
+    "description": "Asset management module",
+    "icon": "fa-box",
+    "route": "/assets",
+    "display_order": 1,
+    "is_active": true,
+    "parent_id": null,
+    "children": []
+  }
+}
+```
+
+---
+
+#### Create Module
+**Endpoint:** `POST /api/permissions/modules`  
+**Authorization:** Required (Admin)  
+**Description:** Create a new permission module
+
+**Request Body:**
+```json
+{
+  "name": "Inventory",
+  "code": "INVENTORY",
+  "description": "Inventory management module",
+  "icon": "fa-warehouse",
+  "route": "/inventory",
+  "display_order": 10,
+  "parent_id": null,
+  "is_active": true
+}
+```
+
+**Success Response:**
+```json
+{
+  "success": true,
+  "message": "Module created successfully",
+  "data": {
+    "id": 15,
+    "name": "Inventory",
+    "code": "INVENTORY",
+    "description": "Inventory management module",
+    "icon": "fa-warehouse",
+    "route": "/inventory",
+    "display_order": 10,
+    "is_active": true,
+    "parent_id": null
+  }
+}
+```
+
+---
+
+#### Update Module
+**Endpoint:** `PUT /api/permissions/modules/:id`  
+**Authorization:** Required (Admin)  
+**Description:** Update an existing module
+
+**URL Parameters:**
+- `id` - Module ID
+
+---
+
+#### Delete Module
+**Endpoint:** `DELETE /api/permissions/modules/:id`  
+**Authorization:** Required (Admin)  
+**Description:** Delete a module
+
+**URL Parameters:**
+- `id` - Module ID
+
+---
+
+#### Toggle Module Active Status
+**Endpoint:** `PATCH /api/permissions/modules/:id/toggle`  
+**Authorization:** Required (Admin)  
+**Description:** Toggle the active status of a module
+
+**URL Parameters:**
+- `id` - Module ID
+
+---
+
+### Permission Endpoints
+
+#### Get All Permissions
+**Endpoint:** `GET /api/permissions/`  
+**Authorization:** Required  
+**Description:** Retrieve all permissions
+
+**Success Response:**
+```json
+{
+  "success": true,
+  "message": "Permissions retrieved successfully",
+  "data": [
+    {
+      "id": 1,
+      "module_id": 1,
+      "module_name": "Assets",
+      "module_code": "ASSETS",
+      "action": "view",
+      "description": "View assets",
+      "is_active": true
+    },
+    {
+      "id": 2,
+      "module_id": 1,
+      "module_name": "Assets",
+      "module_code": "ASSETS",
+      "action": "create",
+      "description": "Create new assets",
+      "is_active": true
+    }
+  ]
+}
+```
+
+---
+
+#### Get Permissions By Module
+**Endpoint:** `GET /api/permissions/by-module/:moduleId`  
+**Authorization:** Required  
+**Description:** Get all permissions for a specific module
+
+**URL Parameters:**
+- `moduleId` - Module ID
+
+---
+
+#### Create Permission
+**Endpoint:** `POST /api/permissions/`  
+**Authorization:** Required (Admin)  
+**Description:** Create a new permission
+
+**Request Body:**
+```json
+{
+  "module_id": 1,
+  "action": "export",
+  "description": "Export assets to Excel"
+}
+```
+
+---
+
+#### Bulk Create Permissions
+**Endpoint:** `POST /api/permissions/bulk/:moduleId`  
+**Authorization:** Required (Admin)  
+**Description:** Create multiple permissions for a module at once
+
+**URL Parameters:**
+- `moduleId` - Module ID
+
+**Request Body:**
+```json
+{
+  "actions": ["view", "create", "edit", "delete", "export"]
+}
+```
+
+---
+
+#### Toggle Permission Active Status
+**Endpoint:** `PATCH /api/permissions/:id/toggle`  
+**Authorization:** Required (Admin)  
+**Description:** Toggle the active status of a permission
+
+**URL Parameters:**
+- `id` - Permission ID
+
+---
+
+### Role Permission Endpoints
+
+#### Get Current User Permissions
+**Endpoint:** `GET /api/permissions/my-permissions`  
+**Authorization:** Required  
+**Description:** Get the current authenticated user's permissions
+
+**Success Response:**
+```json
+{
+  "success": true,
+  "message": "User permissions retrieved successfully",
+  "data": {
+    "role_id": 1,
+    "role_name": "Admin",
+    "permissions": {
+      "ASSETS": {
+        "actions": ["view", "create", "edit", "delete"],
+        "branch_level_access": false
+      },
+      "EXPENSES": {
+        "actions": ["view", "create", "edit", "delete"],
+        "branch_level_access": false
+      }
+    }
+  }
+}
+```
+
+---
+
+#### Get Role Permissions
+**Endpoint:** `GET /api/permissions/roles/:roleId`  
+**Authorization:** Required  
+**Description:** Get all permissions assigned to a role
+
+**URL Parameters:**
+- `roleId` - Role ID
+
+**Success Response:**
+```json
+{
+  "success": true,
+  "message": "Role permissions retrieved successfully",
+  "data": [
+    {
+      "permission_id": 1,
+      "module_name": "Assets",
+      "module_code": "ASSETS",
+      "action": "view",
+      "branch_level_access": false
+    },
+    {
+      "permission_id": 2,
+      "module_name": "Assets",
+      "module_code": "ASSETS",
+      "action": "create",
+      "branch_level_access": false
+    }
+  ]
+}
+```
+
+---
+
+#### Check Role Permission
+**Endpoint:** `GET /api/permissions/roles/:roleId/check`  
+**Authorization:** Required  
+**Description:** Check if a role has a specific permission
+
+**URL Parameters:**
+- `roleId` - Role ID
+
+**Query Parameters:**
+- `module_code` - Module code (e.g., "ASSETS")
+- `action` - Action to check (e.g., "view", "create", "edit", "delete")
+
+**Example:** `GET /api/permissions/roles/1/check?module_code=ASSETS&action=create`
+
+**Success Response:**
+```json
+{
+  "success": true,
+  "message": "Permission check completed",
+  "data": {
+    "has_permission": true,
+    "branch_level_access": false
+  }
+}
+```
+
+---
+
+#### Get Role Accessible Routes
+**Endpoint:** `GET /api/permissions/roles/:roleId/routes`  
+**Authorization:** Required  
+**Description:** Get all routes/menus accessible by a role
+
+**URL Parameters:**
+- `roleId` - Role ID
+
+---
+
+#### Assign Permission To Role
+**Endpoint:** `POST /api/permissions/roles/:roleId`  
+**Authorization:** Required (Admin)  
+**Description:** Assign a permission to a role
+
+**URL Parameters:**
+- `roleId` - Role ID
+
+**Request Body:**
+```json
+{
+  "permission_id": 5,
+  "branch_level_access": false
+}
+```
+
+---
+
+#### Bulk Assign Permissions To Role
+**Endpoint:** `PUT /api/permissions/roles/:roleId/bulk`  
+**Authorization:** Required (Admin)  
+**Description:** Assign multiple permissions to a role at once
+
+**URL Parameters:**
+- `roleId` - Role ID
+
+**Request Body:**
+```json
+{
+  "permissions": [
+    { "permission_id": 1, "branch_level_access": false },
+    { "permission_id": 2, "branch_level_access": false },
+    { "permission_id": 3, "branch_level_access": true }
+  ]
+}
+```
+
+---
+
+#### Clone Role Permissions
+**Endpoint:** `POST /api/permissions/roles/:roleId/clone`  
+**Authorization:** Required (Admin)  
+**Description:** Clone permissions from one role to another
+
+**URL Parameters:**
+- `roleId` - Target role ID (role to copy permissions to)
+
+**Request Body:**
+```json
+{
+  "source_role_id": 1
+}
+```
+
+---
+
+#### Remove Permission From Role
+**Endpoint:** `DELETE /api/permissions/roles/:roleId/:permissionId`  
+**Authorization:** Required (Admin)  
+**Description:** Remove a permission from a role
+
+**URL Parameters:**
+- `roleId` - Role ID
+- `permissionId` - Permission ID
+
+---
+
+### Company Access Endpoints
+
+Company access control allows restricting users to data from specific companies.
+
+#### Get Role Company Access
+**Endpoint:** `GET /api/permissions/roles/:roleId/company-access`  
+**Authorization:** Required  
+**Description:** Get company access settings for a role
+
+**URL Parameters:**
+- `roleId` - Role ID
+
+**Success Response:**
+```json
+{
+  "success": true,
+  "message": "Role company access retrieved successfully",
+  "data": {
+    "role_id": 2,
+    "companies": [
+      { "id": 1, "name": "JSL Systems", "has_access": true },
+      { "id": 2, "name": "Jirani Smart", "has_access": true },
+      { "id": 3, "name": "Tech Solutions", "has_access": false }
+    ]
+  }
+}
+```
+
+---
+
+#### Update Role Company Access
+**Endpoint:** `PUT /api/permissions/roles/:roleId/company-access`  
+**Authorization:** Required (Admin)  
+**Description:** Update company access settings for a role
+
+**URL Parameters:**
+- `roleId` - Role ID
+
+**Request Body:**
+```json
+{
+  "company_ids": [1, 2, 4]
+}
+```
+
+---
+
+#### Get All Companies
+**Endpoint:** `GET /api/companies`  
+**Authorization:** Required  
+**Description:** Get all companies for access control configuration
+
+**Success Response:**
+```json
+{
+  "success": true,
+  "data": [
+    { "id": 1, "name": "JSL Systems", "is_active": true },
+    { "id": 2, "name": "Jirani Smart", "is_active": true },
+    { "id": 3, "name": "Tech Solutions", "is_active": true }
+  ]
+}
+```
+
+---
+
 ## Reports
 
 ### Get All Assets Report
@@ -3711,6 +4462,10 @@ After setup, verify these features work:
 - [ ] Create repair request
 - [ ] Execute repair workflow actions
 - [ ] Manage system configuration
+- [ ] Create and manage roles
+- [ ] Configure module permissions
+- [ ] Assign permissions to roles
+- [ ] Set company access controls
 
 ---
 
@@ -3740,10 +4495,10 @@ For API support or questions, please contact:
 
 ---
 
-**Last Updated:** January 17, 2026  
-**Document Version:** 2.1  
-**API Version:** 2.1
+**Last Updated:** January 24, 2026  
+**Document Version:** 2.2  
+**API Version:** 2.2
 
 ---
 
-**Note:** This documentation is based on the current implementation as of January 17, 2026. Always refer to the latest version of this document for accurate API information. For the most up-to-date endpoint specifications, consult the source code in the `/src/routes` directory.
+**Note:** This documentation is based on the current implementation as of January 24, 2026. Always refer to the latest version of this document for accurate API information. For the most up-to-date endpoint specifications, consult the source code in the `/src/routes` directory.

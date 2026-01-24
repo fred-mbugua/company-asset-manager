@@ -877,6 +877,7 @@ select.select2-dropdown {
       box-shadow: 2px 0 10px rgba(0, 0, 0, 0.1);
       display: flex;
       flex-direction: column;
+      background: #efeeee;
     }
   
     .sidebar.open {
