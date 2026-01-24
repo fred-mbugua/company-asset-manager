@@ -1,8 +1,8 @@
 # Asset Management System
 # User Manual
 
-**Version:** 2.1  
-**Document Date:** January 18, 2026  
+**Version:** 2.2  
+**Document Date:** January 24, 2026  
 **Prepared by:** JSL-ICT
 
 ---
@@ -18,8 +18,10 @@
 7. [Repair Requests](#7-repair-requests)
 8. [Reports](#8-reports)
 9. [Administration](#9-administration)
-10. [System Configuration](#10-system-configuration)
-11. [Troubleshooting](#11-troubleshooting)
+10. [Permissions Management](#10-permissions-management)
+11. [Branch Hierarchy](#11-branch-hierarchy)
+12. [System Configuration](#12-system-configuration)
+13. [Troubleshooting](#13-troubleshooting)
 
 ---
 
@@ -39,15 +41,31 @@ The system provides the following core functionalities:
 - **Repair Requests**: Submit and manage repair requests with workflow approval
 - **Reporting**: Generate comprehensive reports on assets, expenses, and activities
 - **User Management**: Role-based access control for secure system usage
+- **Permissions Management**: Granular permission control for each role and module
+- **Branch Hierarchy**: Organizational branch structure with hierarchical data access
 
 ### 1.3 User Roles
 
-The system supports two primary user roles:
+The system supports flexible user roles with customizable permissions:
 
 | Role | Description | Access Level |
 |------|-------------|--------------|
 | **Admin** | Full system access including configuration and user management | All features |
-| **Standard User** | Access to daily operations and personal records | Limited features |
+| **Standard User** | Access to daily operations based on assigned permissions | Permission-based |
+| **Custom Roles** | Configurable roles with specific permissions per module | Customizable |
+
+### 1.4 Permission Types
+
+Each module can have the following permission types:
+
+| Permission | Description |
+|------------|-------------|
+| **Read** | View records and data |
+| **Create** | Add new records |
+| **Update** | Modify existing records |
+| **Delete** | Remove records |
+| **Branch Level Access** | Restrict data access to user's branch only |
+| **Company Level Access** | Restrict data access to user's company |
 
 ---
 
@@ -65,8 +83,6 @@ The system supports two primary user roles:
 2. Enter your **Password**
 3. Click the **Login** button
 4. Upon successful authentication, you will be redirected to the Dashboard
-
-![Login Page]
 
 > **Note:** If you forget your password, contact your system administrator to reset it.
 
@@ -94,10 +110,16 @@ The system interface consists of:
 | Expenses | Create | Expense recording functions |
 | Repair Requests | All Requests, New Request, Workflow Config* | Repair management |
 | Reports | Assets, Expenses, Assignments, Repair Summary, Action Logs* | Report generation |
-| Administration* | Users, Roles, Branches, Departments, etc. | System administration |
+| Administration* | Users, Roles, Permissions, Branches, Branch Hierarchy, Departments, etc. | System administration |
 | Settings* | System Configuration | System settings |
 
-*Admin only
+*Admin only (or based on role permissions)
+
+### 2.5 Access Denied (403)
+
+If you try to access a feature you don't have permission for, you will see an "Access Denied" page. This means:
+- Your role doesn't have the required permission for this module
+- Contact your administrator to request access if needed
 
 ---
 
@@ -115,6 +137,8 @@ The dashboard displays four main KPI cards:
 | **Total Asset Value** | The cumulative purchase value of all assets (in Ksh) |
 | **Total Expenses** | The total amount spent on asset-related expenses (in Ksh) |
 | **Active Assignments** | The number of assets currently assigned to employees |
+
+> **Note:** If your role has Branch Level Access enabled, the dashboard will only show data from your accessible branches.
 
 ### 3.2 Charts and Visualizations
 
@@ -165,6 +189,8 @@ To view all registered assets:
 
 1. Navigate to **Assets** → **View** from the sidebar
 2. The asset list will display all assets in a table format
+
+> **Branch Level Access:** If your role has branch level access enabled, you will only see assets from your assigned branch and its child branches.
 
 #### Using Filters:
 
@@ -416,10 +442,10 @@ The system provides several report types:
 
 | Report | Description | Access |
 |--------|-------------|--------|
-| Assets Report | Comprehensive list of all assets with filters | All Users |
-| Expenses Report | Detailed expense records with totals | All Users |
-| Assignments Report | Asset assignment history | All Users |
-| Repair Summary Report | Summary of repair requests | All Users |
+| Assets Report | Comprehensive list of all assets with filters | Permission-based |
+| Expenses Report | Detailed expense records with totals | Permission-based |
+| Assignments Report | Asset assignment history | Permission-based |
+| Repair Summary Report | Summary of repair requests | Permission-based |
 | Action Logs Report | System activity audit trail | Admin Only |
 
 ### 8.2 Assets Report
@@ -491,7 +517,7 @@ All reports can be exported to Excel format:
 
 ## 9. Administration
 
-> **Note:** This section is only accessible to users with Admin role.
+> **Note:** This section is only accessible to users with Admin role or appropriate permissions.
 
 ### 9.1 User Management
 
@@ -538,9 +564,28 @@ All reports can be exported to Excel format:
 ### 9.2 Role Management
 
 1. Navigate to **Administration** → **Roles**
-2. View existing roles and their permissions
-3. Add new roles if needed
-4. Edit role permissions
+2. View existing roles and their descriptions
+
+#### Adding a New Role:
+1. Click **Add New Role**
+2. Enter role name and description
+3. Set active status
+4. Click **Save Role**
+
+#### Managing Role Permissions:
+1. Click the **Permissions** button for a role
+2. The permissions modal displays all modules
+3. Configure permissions for each module (see Section 10)
+
+#### Editing a Role:
+1. Click **Edit** for the role
+2. Modify the role details
+3. Click **Save Changes**
+
+#### Deleting a Role:
+1. Click **Delete** for the role
+2. Confirm deletion
+> **Warning:** Roles with assigned users cannot be deleted
 
 ### 9.3 Branch Management
 
@@ -548,7 +593,7 @@ All reports can be exported to Excel format:
 2. View all branches/locations
 3. Add new branches:
    - Click **Add Branch**
-   - Enter branch name
+   - Enter branch name and location
    - Click **Save**
 4. Edit or delete existing branches
 
@@ -603,22 +648,165 @@ All reports can be exported to Excel format:
 
 ---
 
-## 10. System Configuration
+## 10. Permissions Management
 
 > **Note:** This section is only accessible to users with Admin role.
 
-### 10.1 Accessing System Configuration
+### 10.1 Overview
+
+The Permissions Management feature allows administrators to configure granular access control for each role. You can specify which modules and actions each role can access.
+
+### 10.2 Accessing Permissions Management
+
+1. Navigate to **Administration** → **Permissions**
+2. The permissions management page displays
+
+### 10.3 Managing Permissions
+
+#### Selecting a Role:
+1. Use the role dropdown to select a role
+2. Search for a role by typing in the search box
+3. Click on the role to load its permissions
+
+#### Permission Types:
+For each module, you can configure:
+
+| Permission | Description |
+|------------|-------------|
+| **Read** | View records in this module |
+| **Create** | Add new records |
+| **Update** | Modify existing records |
+| **Delete** | Remove records |
+
+#### Access Level Options:
+| Option | Description |
+|--------|-------------|
+| **Branch Level Access** | User can only see data from their branch and child branches |
+| **Company Level Access** | User can only see data from their assigned companies |
+
+### 10.4 Configuring Permissions
+
+1. Select a role from the dropdown
+2. The permissions grid displays all modules
+3. Check/uncheck permissions for each module:
+   - Check **Read** to allow viewing
+   - Check **Create** to allow adding
+   - Check **Update** to allow editing
+   - Check **Delete** to allow removing
+4. Enable **Branch Level Access** if data should be branch-restricted
+5. Enable **Company Level Access** if data should be company-restricted
+6. Click **Save Permissions**
+
+### 10.5 Quick Actions
+
+- **Select All**: Grant all permissions for all modules
+- **Clear All**: Remove all permissions
+
+### 10.6 Permission Statistics
+
+The sidebar shows:
+- **Permissions**: Total number of granted permissions
+- **Modules**: Number of modules with at least one permission
+
+---
+
+## 11. Branch Hierarchy
+
+> **Note:** This section is only accessible to users with Admin role.
+
+### 11.1 Overview
+
+The Branch Hierarchy feature allows you to configure your organization's branch structure. This affects how data access is controlled across branches.
+
+### 11.2 Understanding Branch Hierarchy
+
+#### Key Concepts:
+
+| Concept | Description |
+|---------|-------------|
+| **Headquarters (HQ)** | The main branch at the top of the hierarchy. Users in HQ can view data from all branches. |
+| **Parent Branch** | A branch that has child branches under it. Can view data from all child branches. |
+| **Child Branch** | A branch under a parent. Can only view its own data (unless it has children). |
+
+#### How It Works:
+- When a role has **Branch Level Access** enabled for a module, users can only see data within their accessible branches
+- A branch can access data from:
+  - Itself
+  - All its descendant branches (children, grandchildren, etc.)
+- HQ can access data from all branches
+
+### 11.3 Accessing Branch Hierarchy
+
+1. Navigate to **Administration** → **Branch Hierarchy**
+2. The hierarchy configuration page displays
+
+### 11.4 Viewing the Branch Tree
+
+The left panel shows the organization structure as a tree:
+- **HQ Badge**: Indicates which branch is the headquarters
+- **Branch Icons**: Shows the branch hierarchy
+- **Child Count**: Displays the number of child branches
+
+### 11.5 Configuring a Branch
+
+1. Click on a branch in the tree
+2. The configuration panel shows branch details
+3. Configure:
+
+| Setting | Description |
+|---------|-------------|
+| **Parent Branch** | Select which branch this branch reports to |
+| **Set as Headquarters** | Mark this branch as the main HQ |
+
+### 11.6 Setting Up Hierarchy
+
+#### Setting a Parent Branch:
+1. Select a branch from the tree
+2. Use the **Parent Branch** dropdown
+3. Select the parent branch or "None" for root level
+4. Click **Save Changes**
+
+#### Setting Headquarters:
+1. Select the branch to be HQ
+2. Check **Set as Headquarters**
+3. Click **Save Changes**
+> **Note:** Only one branch can be headquarters at a time
+
+### 11.7 Example Hierarchy
+
+```
+[HQ] Head Office
+├── Regional Office East
+│   ├── Branch A
+│   └── Branch B
+└── Regional Office West
+    ├── Branch C
+    └── Branch D
+```
+
+In this example:
+- HQ can see all data
+- Regional Office East can see data from Branch A and B
+- Branch A can only see its own data
+
+---
+
+## 12. System Configuration
+
+> **Note:** This section is only accessible to users with Admin role.
+
+### 12.1 Accessing System Configuration
 
 Navigate to **Settings** → **System Configuration**
 
-### 10.2 General Settings
+### 12.2 General Settings
 
 1. Select the **General Settings** tab
 2. Configure:
    - **Application Name**: The name displayed in the header and login page
 3. Click **Save Changes**
 
-### 10.3 Company Information
+### 12.3 Company Information
 
 1. Select the **Company Information** tab
 2. Configure:
@@ -628,7 +816,7 @@ Navigate to **Settings** → **System Configuration**
    - **Company Address**: Physical address
 3. Click **Save Changes**
 
-### 10.4 Email Settings
+### 12.4 Email Settings
 
 1. Select the **Email Settings** tab
 2. Configure SMTP settings for system emails:
@@ -642,7 +830,7 @@ Navigate to **Settings** → **System Configuration**
 3. Click **Test Connection** to verify settings
 4. Click **Save Changes**
 
-### 10.5 Security Settings
+### 12.5 Security Settings
 
 1. Select the **Security & Users** tab
 2. Configure:
@@ -650,7 +838,7 @@ Navigate to **Settings** → **System Configuration**
    - Session timeout settings
    - Login attempt limits
 
-### 10.6 Storage Settings
+### 12.6 Storage Settings
 
 1. Select the **Storage Settings** tab
 2. Configure file storage options:
@@ -660,9 +848,9 @@ Navigate to **Settings** → **System Configuration**
 
 ---
 
-## 11. Troubleshooting
+## 13. Troubleshooting
 
-### 11.1 Common Issues and Solutions
+### 13.1 Common Issues and Solutions
 
 #### Cannot Log In
 
@@ -674,6 +862,15 @@ Navigate to **Settings** → **System Configuration**
 3. Contact your administrator to:
    - Verify your account is active
    - Reset your password
+
+#### Access Denied (403)
+
+**Problem:** Seeing "Access Denied" when trying to access a feature.
+
+**Solutions:**
+1. Your role doesn't have permission for this module
+2. Contact your administrator to request access
+3. Ensure you're logged in with the correct account
 
 #### Session Expired
 
@@ -692,6 +889,15 @@ Navigate to **Settings** → **System Configuration**
 2. Clear your browser cache
 3. Try a different browser
 4. Contact your IT support
+
+#### Cannot See Expected Data
+
+**Problem:** Missing data that should be visible.
+
+**Solutions:**
+1. Check if you have **Branch Level Access** enabled - you may only see data from your branch
+2. Verify the data exists in your assigned branch
+3. Check with your administrator about your permission settings
 
 #### Cannot Upload Files
 
@@ -712,7 +918,7 @@ Navigate to **Settings** → **System Configuration**
 2. Ensure you have permission to download files
 3. Try a different browser
 
-### 11.2 Getting Help
+### 13.2 Getting Help
 
 If you encounter issues not covered in this manual:
 
@@ -720,13 +926,14 @@ If you encounter issues not covered in this manual:
 2. **IT Support**: For technical issues with the system
 3. **Training**: Request additional training sessions if needed
 
-### 11.3 Best Practices
+### 13.3 Best Practices
 
 1. **Regular Logout**: Always log out when leaving your workstation
 2. **Accurate Data Entry**: Double-check information before saving
 3. **Timely Updates**: Record asset changes, assignments, and expenses promptly
 4. **Attachments**: Upload supporting documents for audit trail
 5. **Report Regularly**: Generate reports periodically for monitoring
+6. **Check Permissions**: If you can't access something, verify your role's permissions
 
 ---
 
@@ -769,10 +976,49 @@ If you encounter issues not covered in this manual:
 | Asset Tag | Unique identifier for an asset |
 | Assignment | Allocation of an asset to an employee |
 | Branch | Physical location or office |
+| Branch Hierarchy | Parent-child relationships between branches |
+| Branch Level Access | Permission setting that restricts data to user's branch |
+| Company Level Access | Permission setting that restricts data to user's companies |
 | Department | Organizational unit or division |
 | Expense | Financial cost associated with an asset |
+| HQ (Headquarters) | Main branch at top of hierarchy |
+| Module | Functional area of the system (Assets, Reports, etc.) |
+| Permission | Access right to perform actions in a module |
 | Repair Request | Formal request for asset repair |
+| Role | User classification with specific permissions |
 | Workflow | Defined process for approvals |
+
+## Appendix D: Permission Module Codes
+
+| Module Code | Description |
+|-------------|-------------|
+| DASHBOARD | Dashboard access |
+| ASSETS | Asset management |
+| ASSETS_CREATE | Create new assets |
+| ASSETS_VIEW | View assets list |
+| ASSIGNMENTS | Assignment management |
+| ASSIGNMENTS_VIEW | View assignments |
+| ASSIGNMENTS_ASSIGN | Assign assets |
+| EXPENSES | Expense management |
+| EXPENSES_CREATE | Create expenses |
+| REPAIR_REQUESTS | Repair request management |
+| REPAIR_REQUESTS_LIST | View all repair requests |
+| REPAIR_REQUESTS_NEW | Create new repair requests |
+| REPAIR_REQUESTS_WORKFLOW | Configure repair workflow |
+| REPORTS | Reports access |
+| REPORTS_ASSETS | Assets report |
+| REPORTS_EXPENSES | Expenses report |
+| REPORTS_ASSIGNMENTS | Assignments report |
+| REPORTS_REPAIR_SUMMARY | Repair summary report |
+| REPORTS_ACTION_LOGS | Action logs report |
+| ADMINISTRATION | Administration access |
+| ADMIN_USERS | User management |
+| ADMIN_ROLES | Role management |
+| ADMIN_PERMISSIONS | Permissions management |
+| ADMIN_BRANCHES | Branch management |
+| ADMIN_DEPARTMENTS | Department management |
+| SETTINGS | System settings |
+| SETTINGS_SYSTEM | System configuration |
 
 ---
 

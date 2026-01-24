@@ -430,7 +430,7 @@ class RepairRequestController {
      * Get dashboard statistics
      */
     async getStatistics(req, res) {
-        var _a, _b, _c, _d, _e, _f;
+        var _a, _b, _c, _d;
         try {
             const userId = req.query.my_stats === 'true' ? (_a = req.user) === null || _a === void 0 ? void 0 : _a.id : undefined;
             // Get branch level access - from permission context or lookup from DB
@@ -450,8 +450,6 @@ class RepairRequestController {
                 branchLevelAccess: branchLevelAccess || false,
                 userBranchId: ((_d = req.user) === null || _d === void 0 ? void 0 : _d.branch_id) || null
             });
-            logger_1.default.info(`getStatistics - User: ${(_e = req.user) === null || _e === void 0 ? void 0 : _e.id}, Branch: ${(_f = req.user) === null || _f === void 0 ? void 0 : _f.branch_id}, branchLevelAccess: ${branchLevelAccess}`);
-            logger_1.default.info(`getStatistics - permissionContext: ${JSON.stringify(permissionContext)}`);
             const stats = await repairRequest_service_1.default.getStatistics(userId, permissionContext);
             (0, response_1.successResponse)(res, 200, 'Statistics retrieved successfully', stats);
         }

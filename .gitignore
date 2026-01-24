@@ -12,3 +12,4 @@ convert-user-manual.js
 DOCUMENTATION_CHANGES.md
 DEV_FILES
 test-permissions.js
+check_db.ts

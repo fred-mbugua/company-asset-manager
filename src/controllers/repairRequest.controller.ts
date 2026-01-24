@@ -496,9 +496,6 @@ class RepairRequestController {
                     userBranchId: req.user?.branch_id || null 
                 }
             );
-            
-            logger.info(`getStatistics - User: ${req.user?.id}, Branch: ${req.user?.branch_id}, branchLevelAccess: ${branchLevelAccess}`);
-            logger.info(`getStatistics - permissionContext: ${JSON.stringify(permissionContext)}`);
 
             const stats = await RepairRequestService.getStatistics(userId, permissionContext);
             successResponse(res, 200, 'Statistics retrieved successfully', stats);

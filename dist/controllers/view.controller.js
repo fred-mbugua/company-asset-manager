@@ -23,8 +23,6 @@ async function getAccessFilterContext(req) {
         return undefined;
     // Use branch level access from permission context if available
     let branchLevelAccess = (_a = req.permissionContext) === null || _a === void 0 ? void 0 : _a.branchLevelAccess;
-    utils_1.logger.info(`getAccessFilterContext - User: ${user.id}, Role: ${user.role}, RoleID: ${user.role_id}, Branch: ${user.branch_id}`);
-    utils_1.logger.info(`getAccessFilterContext - req.permissionContext: ${JSON.stringify(req.permissionContext)}`);
     // If permission context is not set (e.g., dashboard without checkPermission middleware),
     // we need to look up the user's branch level access from any of their permissions
     if (branchLevelAccess === undefined && user.role_id) {
@@ -32,7 +30,6 @@ async function getAccessFilterContext(req) {
             const permissions = await rolePermission_service_1.default.getPermissionsGroupedByModule(user.role_id);
             // Check if any permission has branch level access enabled
             branchLevelAccess = permissions.some(p => p.actions.some(a => a.has_permission && a.branch_level_access));
-            utils_1.logger.info(`getAccessFilterContext - Fetched branchLevelAccess from DB: ${branchLevelAccess}`);
         }
         catch (error) {
             utils_1.logger.error('Error fetching branch level access:', error);
@@ -44,7 +41,6 @@ async function getAccessFilterContext(req) {
         branchLevelAccess: branchLevelAccess || false,
         userBranchId: user.branch_id || null
     });
-    utils_1.logger.info(`getAccessFilterContext - Final context: ${JSON.stringify(context)}`);
     return context;
 }
 class ViewsController {
