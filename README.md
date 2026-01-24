@@ -246,10 +246,10 @@ For detailed API documentation including request/response examples, see [API_DOC
 
 ## License
 
-Proprietary - JSL Systems
+Proprietary - freestylecodetechnologies systems
 
 ---
 
 ## Support
 
-For technical support or questions, contact JSL-ICT.
+For technical support or questions, contact Fred.

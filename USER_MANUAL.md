@@ -3,7 +3,7 @@
 
 **Version:** 2.2  
 **Document Date:** January 24, 2026  
-**Prepared by:** JSL-ICT
+**Prepared by:** Fred
 
 ---
 
@@ -1026,4 +1026,4 @@ If you encounter issues not covered in this manual:
 
 *For technical API documentation, please refer to the API_DOCUMENTATION.md file.*
 
-*© 2026 JSL-ICT. All rights reserved.*
+*© 2026 Fred. All rights reserved.*

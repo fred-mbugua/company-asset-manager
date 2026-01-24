@@ -570,15 +570,9 @@ asset-manager/
 ├── db_backup/                    # Database backup files
 │   └── *.sql                     # SQL backup/restore scripts
 │
-├── db_queries/                   # Database migration scripts
-│   ├── initial db.sql
-│   ├── repair_requests_migration.sql
-│   ├── repair_workflow_config_migration.sql
-│   └── *.sql
 │
 ├── logs/                         # Application logs
 │
-├── DEV_FILES/                    # Development files
 │
 ├── package.json                  # NPM dependencies
 ├── tsconfig.json                 # TypeScript configuration
@@ -750,7 +744,7 @@ The system includes pre-configured lookup data:
   "first_name": "Caleb",
   "middle_name": "Kiprop",
   "last_name": "Kiprono",
-  "email": "caleb.kiprono@jiranismart.com",
+  "email": "caleb.kiprono@freestylecodetechnologies.com",
   "password": "securePassword123",
   "phone": "+254712345678",
   "role_id": 2,
@@ -772,7 +766,7 @@ The system includes pre-configured lookup data:
     "first_name": "Caleb",
     "middle_name": "Kiprop",
     "last_name": "Kiprono",
-    "email": "caleb.kiprono@jiranismart.com",
+    "email": "caleb.kiprono@freestylecodetechnologies.com",
     "phone": "+254712345678",
     "company_id": null
   }
@@ -791,7 +785,7 @@ The system includes pre-configured lookup data:
 **Request Body:**
 ```json
 {
-  "email": "fredrick.mbugua@jiranismart.com",
+  "email": "fredrick.mbugua@freestylecodetechnologies.com",
   "password": "securePassword123"
 }
 ```
@@ -808,7 +802,7 @@ The system includes pre-configured lookup data:
       "first_name": "Fredrick",
       "middle_name": "Mwangi",
       "last_name": "Mbugua",
-      "email": "fredrick.mbugua@jiranismart.com",
+      "email": "fredrick.mbugua@freestylecodetechnologies.com",
       "password": "$2a$10$pvN0OKHi7HAfYAoid6F3.e9ag3r57KVmPL/tezhi6zubmPPAlFp.C",
       "role_id": 1,
       "department_id": 1,
@@ -908,7 +902,7 @@ The system includes pre-configured lookup data:
 **Request Body:**
 ```json
 {
-  "email": "newemail@jiranismart.com",
+  "email": "newemail@freestylecodetechnologies.com",
   "first_name": "Jane",
   "last_name": "Smith",
   "role_id": 2
@@ -2156,7 +2150,7 @@ The system includes pre-configured lookup data:
     "first_name": "Fredrick",
     "middle_name": "Mwangi",
     "last_name": "Mbugua",
-    "email": "fredrick.mbugua@jiranismart.com",
+    "email": "fredrick.mbugua@freestylecodetechnologies.com",
     "password": "$2a$10$pvN0OKHi7HAfYAoid6F3.e9ag3r57KVmPL/tezhi6zubmPPAlFp.C",
     "role_id": 1,
     "department_id": 1,
@@ -2191,7 +2185,7 @@ The system includes pre-configured lookup data:
 {
   "first_name": "Benson",
   "last_name": "Wambua",
-  "email": "benson.wambua@jiranismart.com",
+  "email": "benson.wambua@freestylecodetechnologies.com",
   "phone": "+254723456789"
 }
 ```
@@ -2203,7 +2197,7 @@ The system includes pre-configured lookup data:
   "message": "Profile updated successfully",
   "data": {
     "id": 5,
-    "email": "benson.wambua@jiranismart.com",
+    "email": "benson.wambua@freestylecodetechnologies.com",
     "first_name": "Benson",
     "last_name": "Wambua",
     "phone": "+254723456789"
@@ -2294,7 +2288,7 @@ The system includes pre-configured lookup data:
   "message": "User status updated successfully",
   "data": {
     "id": 8,
-    "email": "user@jiranismart.com",
+    "email": "user@freestylecodetechnologies.com",
     "is_active": false
   }
 }
@@ -2930,7 +2924,7 @@ Company access control allows restricting users to data from specific companies.
   "data": {
     "role_id": 2,
     "companies": [
-      { "id": 1, "name": "JSL Systems", "has_access": true },
+      { "id": 1, "name": "freestylecodetechnologies systems", "has_access": true },
       { "id": 2, "name": "Jirani Smart", "has_access": true },
       { "id": 3, "name": "Tech Solutions", "has_access": false }
     ]
@@ -2967,7 +2961,7 @@ Company access control allows restricting users to data from specific companies.
 {
   "success": true,
   "data": [
-    { "id": 1, "name": "JSL Systems", "is_active": true },
+    { "id": 1, "name": "freestylecodetechnologies systems", "is_active": true },
     { "id": 2, "name": "Jirani Smart", "is_active": true },
     { "id": 3, "name": "Tech Solutions", "is_active": true }
   ]
@@ -3345,7 +3339,7 @@ Company access control allows restricting users to data from specific companies.
         "entity_id": 1,
         "user_id": 5,
         "user_name": "Caleb Kiprono",
-        "user_email": "caleb.kiprono@jiranismart.com",
+        "user_email": "caleb.kiprono@freestylecodetechnologies.com",
         "created_at": "2026-01-08T10:30:00.000Z",
         "description": "Created new asset ASSET-001",
         "details": "{\"asset_tag\":\"ASSET-001\",\"asset_name\":\"Dell Laptop\"}",
@@ -3472,7 +3466,7 @@ Optional columns:
   "data": {
     "id": 1,
     "company_name": "Jirani Smart Systems",
-    "company_email": "info@jiranismart.com",
+    "company_email": "info@freestylecodetechnologies.com",
     "company_phone": "+254740790088",
     "company_address": "Westlands, Nairobi, Kenya",
     "logo_url": "/uploads/logos/company-logo.png",
@@ -3513,7 +3507,7 @@ Optional columns:
 ```json
 {
   "company_name": "Jirani Smart Systems Ltd",
-  "company_email": "support@jiranismart.com",
+  "company_email": "support@freestylecodetechnologies.com",
   "company_phone": "+254740790088",
   "company_address": "Westlands Commercial Center, Nairobi, Kenya",
   "currency": "KES",
@@ -3530,7 +3524,7 @@ Optional columns:
   "data": {
     "id": 1,
     "company_name": "Jirani Smart Systems Ltd",
-    "company_email": "support@jiranismart.com",
+    "company_email": "support@freestylecodetechnologies.com",
     "company_phone": "+254740790088",
     "company_address": "Westlands Commercial Center, Nairobi, Kenya",
     "currency": "KES",
@@ -3711,7 +3705,7 @@ GET /api/reports/assets?limit=50&offset=100
 curl -X POST http://localhost:3000/api/auth/login \
   -H "Content-Type: application/json" \
   -d '{
-    "email": "fredrick.mbugua@jiranismart.com",
+    "email": "fredrick.mbugua@freestylecodetechnologies.com",
     "password": "password123"
   }' \
   -c cookies.txt
@@ -3780,7 +3774,7 @@ const login = async () => {
     headers: { 'Content-Type': 'application/json' },
     credentials: 'include',
     body: JSON.stringify({
-      email: 'fredrick.mbugua@jiranismart.com',
+      email: 'fredrick.mbugua@freestylecodetechnologies.com',
       password: 'password123'
     })
   });
@@ -4038,7 +4032,7 @@ If you encounter issues not covered here:
 1. Check the server logs for detailed error messages
 2. Verify all required fields are included in request body
 3. Test with a simple cURL command first
-4. Contact support at: fmbugua@jiranismart.com
+4. Contact support at: fmbugua@freestylecodetechnologies.com
 
 ---
 
@@ -4474,7 +4468,7 @@ After setup, verify these features work:
 For API support or questions, please contact:
 
 **Technical Support:**
-- **Email:** fmbugua@jiranismart.com
+- **Email:** fmbugua@freestylecodetechnologies.com
 - **Phone:** +254 740 790 088
 - **Hours:** Monday - Friday, 8:00 AM - 5:00 PM EAT
 
