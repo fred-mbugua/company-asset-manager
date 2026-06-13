@@ -120,7 +120,12 @@
                 <td><%= expense.expense_notes || 'N/A' %></td>
                 <td>Ksh. <%= expense.expense_amount.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ',') %></td>
                 <td>
-                  <button class="btn btn-edit" onclick="showExpenseDetails(<%= expense.id %>)">View/Attachments</button>
+                  <div style="display: flex; gap: 5px;">
+                    <button class="btn btn-edit" onclick="showExpenseDetails(<%= expense.id %>)">View/Attachments</button>
+                    <% if (locals.user && (locals.user.role === 'Admin' || (locals.userPermissions && locals.userPermissions.EXPENSES && locals.userPermissions.EXPENSES.actions.includes('delete')))) { %>
+                      <button class="btn btn-danger btn-delete" onclick="deleteExpense(<%= expense.id %>)">Delete</button>
+                    <% } %>
+                  </div>
                 </td>
               </tr>
               <% }); %>

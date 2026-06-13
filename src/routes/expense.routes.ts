@@ -14,6 +14,10 @@ router.get('/:id', authenticate, checkPermission('EXPENSES', 'read'), asyncHandl
 
 router.post('/', authenticate, checkPermission('EXPENSES', 'create'), asyncHandler(ExpenseController.addExpense));
 
+router.put('/:id', authenticate, checkPermission('EXPENSES', 'update'), asyncHandler(ExpenseController.update));
+
+router.delete('/:id', authenticate, checkPermission('EXPENSES', 'delete'), asyncHandler(ExpenseController.delete));
+
 // Expense Types routes
 router.post(
     '/expense-types/create', 

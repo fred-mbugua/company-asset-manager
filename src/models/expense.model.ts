@@ -151,6 +151,9 @@ class ExpenseModel {
     return result.rows[0];
   }
   async delete(id: number) {
+    // Clear references in repair_requests first to prevent foreign key constraint violations
+    await pool.query('UPDATE repair_requests SET expense_id = NULL WHERE expense_id = $1', [id]);
+
     const query = 'DELETE FROM expenses WHERE id = $1';
     await pool.query(query, [id]);
     return { message: 'Expense deleted successfully.' };

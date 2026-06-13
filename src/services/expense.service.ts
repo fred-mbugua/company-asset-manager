@@ -43,7 +43,7 @@ class ExpenseService {
   }
 
   async update(id: number, updateData: any, userId: number) {
-        const expense = await this.getExpensesByAssetId(id);
+        const expense = await this.getExpenseById(id);
         const changes = { old_data: expense, new_data: updateData };
 
         const updatedExpense = await ExpenseModel.update(id, updateData);
@@ -60,7 +60,7 @@ class ExpenseService {
     }
 
     async delete(id: number, userId: number) {
-        const expense = await this.getExpensesByAssetId(id);
+        const expense = await this.getExpenseById(id);
         await ExpenseModel.delete(id);
 
         await ActionLogService.logAction(

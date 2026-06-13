@@ -472,6 +472,25 @@ window.onclick = function(event) {
     }
 }
 
+// Delete expense function
+async function deleteExpense(expenseId) {
+    const confirmDelete = await AppConfirm.delete('Are you sure you want to delete this expense? This action cannot be undone.');
+    if (!confirmDelete) return;
+
+    try {
+        const response = await API.delete(`/expenses/${expenseId}`);
+        showMessage('success', response.message || 'Expense deleted successfully!');
+        
+        // Reload expense history after toast
+        setTimeout(() => {
+            window.location.reload();
+        }, 1500);
+    } catch (error) {
+        showMessage('error', error.message || 'Failed to delete expense.');
+    }
+}
+
 // Make functions globally available
 window.showExpenseDetails = showExpenseDetails;
 window.closeExpenseDetail = closeExpenseDetail;
+window.deleteExpense = deleteExpense;
