@@ -1,8 +1,8 @@
 # Asset Management System
 # User Manual
 
-**Version:** 2.2  
-**Document Date:** January 24, 2026  
+**Version:** 2.3  
+**Document Date:** June 13, 2026  
 **Prepared by:** Fred
 
 ---
@@ -223,11 +223,13 @@ To view the assignment history of an asset:
 
 ### 4.5 Deleting an Asset (Admin Only)
 
-1. In the asset list, click **Delete** button for the asset
+1. In the asset list, click the **Delete** button for the asset
 2. A confirmation dialog will appear
 3. Click **Delete** to confirm deletion or **Cancel** to abort
 
 > **Warning:** Deleting an asset is permanent and will remove all associated history. This action cannot be undone.
+
+> **Important:** An asset cannot be deleted if there are expenses attached to it. If you attempt to delete an asset with attached expenses, the database will block the deletion to maintain data integrity. You must first navigate to **Expenses** (via the **Create** or history view), locate and delete all expenses associated with this asset, and then return to delete the asset.
 
 ### 4.6 Asset Attachments
 
@@ -324,11 +326,16 @@ To record an asset-related expense:
 
 3. Click **Save Expense** to record the expense
 
-### 6.2 Viewing Expense History
+### 6.2 Viewing and Deleting Expense History
 
 1. The expense history table displays all recorded expenses
 2. Use the search box to filter by asset, vendor, invoice number, or notes
 3. The subtotal shows the sum of displayed expenses
+4. **Deleting an Expense (Admin/Authorized Roles)**:
+   - In the **Actions** column, click the **Delete** button next to the expense you wish to remove.
+   - A confirmation dialog will prompt you: *"Are you sure you want to delete this expense? This action cannot be undone."*
+   - Click **Delete** to confirm or **Cancel** to keep the record.
+   - **System note**: If this expense was linked to a repair request, deleting it will automatically detach the expense from the repair request (setting the request's expense link to empty) to prevent database errors.
 
 #### Expense Table Information:
 
@@ -342,7 +349,7 @@ To record an asset-related expense:
 | Invoice # | Invoice reference number |
 | Notes | Additional notes |
 | Amount | Expense amount (Ksh) |
-| Actions | View details and attachments |
+| Actions | View details/attachments or Delete |
 
 ### 6.3 Expense Attachments
 

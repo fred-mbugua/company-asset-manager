@@ -6,8 +6,8 @@
 
 # Asset Management System - API Documentation
 
-**Version:** 2.2  
-**Last Updated:** January 24, 2026  
+**Version:** 2.3  
+**Last Updated:** June 13, 2026  
 **Base URL:** `/api`
 
 ---
@@ -88,6 +88,8 @@
 |--------|----------|-------------|---------------|
 | GET | `/api/expenses/:id` | Get expense by ID | Yes |
 | POST | `/api/expenses/` | Add expense | Admin |
+| PUT | `/api/expenses/:id` | Update expense | Admin |
+| DELETE | `/api/expenses/:id` | Delete expense | Admin |
 
 ### Expense Type Endpoints
 | Method | Endpoint | Description | Auth Required |
@@ -1721,6 +1723,58 @@ The system includes pre-configured lookup data:
     "description": "Screen replacement",
     "vendor": "Nairobi Tech Solutions"
   }
+}
+```
+
+---
+
+### Update Expense
+**Endpoint:** `PUT /api/expenses/:id`  
+**Authorization:** Required (Admin)  
+**Description:** Update an existing expense record
+
+**URL Parameters:**
+- `id` - Expense ID
+
+**Request Body:**
+```json
+{
+  "amount": 28000.00,
+  "notes": "Updated Screen replacement including shipping costs"
+}
+```
+
+**Success Response:**
+```json
+{
+  "success": true,
+  "message": "Expense updated successfully",
+  "data": {
+    "id": 15,
+    "asset_id": 1,
+    "expense_type_id": 2,
+    "expense_date": "2026-01-08",
+    "amount": 28000.00,
+    "notes": "Updated Screen replacement including shipping costs"
+  }
+}
+```
+
+---
+
+### Delete Expense
+**Endpoint:** `DELETE /api/expenses/:id`  
+**Authorization:** Required (Admin)  
+**Description:** Delete an expense record. Clears referencing `repair_requests.expense_id` first to prevent foreign key violations.
+
+**URL Parameters:**
+- `id` - Expense ID
+
+**Success Response:**
+```json
+{
+  "success": true,
+  "message": "Expense deleted successfully."
 }
 ```
 
